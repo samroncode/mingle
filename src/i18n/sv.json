@@ -1,0 +1,10 @@
+{
+  "app": {
+    "name": "Mingle"
+  },
+  "language": {
+    "label": "Språk",
+    "sv": "Svenska",
+    "en": "English"
+  }
+}
