@@ -168,6 +168,42 @@ Each sub-step follows [`docs/plans/foundation.md`](docs/plans/foundation.md). Ev
 
 **My comments:** _(fill in)_
 
+### 4.2 ESLint + Prettier, with the `src/api/` guardrail
+
+**What was done:**
+- Installed dev dependencies:
+  - `eslint` 10.12, `@eslint/js` 10, `typescript-eslint` 8.71
+  - `eslint-plugin-react-hooks` 7.1, `eslint-plugin-react-refresh` 0.5, `globals` 17
+  - `prettier` 3.9, `eslint-config-prettier` 10.1
+  - No peer-dependency conflicts.
+- `eslint.config.js` (flat config) for `*.ts` / `*.tsx`:
+  - JS recommended, typescript-eslint `recommendedTypeChecked` (project service), the react-hooks flat recommended config and the react-refresh Vite config, with `eslint-config-prettier` last.
+  - **Guardrail:** `no-restricted-imports` blocks `@supabase/*` and `@/api/client` (or any `…/api/client`) in every file outside `src/api/**`. The error message points to `CLAUDE.md` principle 3.
+- `.prettierrc.json` (`{}`, Prettier defaults) and `.prettierignore`.
+- Scripts `lint`, `format` and `format:check`.
+
+**Not in the plan, added in this step:**
+- **`.gitattributes` with `* text=auto eol=lf`.** Committing Step 4.1 showed that Git on Windows checks files out with CRLF line endings. Prettier expects LF, so `format:check` would have failed on the desktop. After `git add --renormalize .`, no committed file changed, because the repo already stored LF.
+- **Markdown is excluded from Prettier.** A dry run showed that the only files Prettier would change were the 9 Markdown docs, mostly by re-padding tables (including `CLAUDE.md`). All code files already passed. Excluding `*.md` keeps the docs as written, and keeps edits from the phone easy to review. This can be reversed later with a one-time `npm run format`.
+
+**Verification:**
+
+| Check | Result |
+|---|---|
+| `npm run lint` | ✅ |
+| `npm run format:check` | ✅ All matched files use Prettier code style |
+| `npm run typecheck`, `npm run build` | ✅ Unchanged from 4.1 |
+| Guardrail demo: a temporary file outside `src/api/` imports `@supabase/supabase-js` and `@/api/client` | ✅ 2 × `no-restricted-imports` errors, with the principle 3 message |
+| Allowed case: the same Supabase import in a temporary file inside `src/api/` | ✅ No error |
+| Type-aware rule demo: a temporary file calls a promise-returning function without `await` | ✅ `@typescript-eslint/no-floating-promises` error. This is the rule we kept by staying on TypeScript 6 |
+| Lint after the demo files were removed | ✅ |
+
+**How to test manually:** add `import { createClient } from "@supabase/supabase-js";` at the top of `src/main.tsx` and run `npm run lint`. It should fail with the "only accessed inside src/api/" message. Remove the line again.
+
+**Stopped or changed:** nothing stopped. The agent made the two additions listed above. It flagged `.gitattributes` at the end of 4.1, before this step started. It made the Markdown exclusion during the step and explained it in this entry.
+
+**My comments:** _(fill in)_
+
 ---
 
 ## Deliverable summary
