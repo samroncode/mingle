@@ -120,6 +120,8 @@ The full plan is in [`docs/plans/foundation.md`](docs/plans/foundation.md). In s
 
 Approved as written, with no changes. I accepted the combined i18n + Vitest step based on the reason the agent gave. I approved the 17 extra dependencies.
 
+Before implementation started, I asked why we couldn't use the newer TypeScript 7. The agent explained that TypeScript 7 is the same language with a faster compiler written in Go. It doesn't work yet with typescript-eslint's type-aware rules, which catch unhandled Supabase calls. The choice was TypeScript 7 without those rules, or TypeScript 6 and upgrade later. I chose to stay on 6. The decision is logged in `docs/decisions.md`.
+
 **My comments:** _(fill in)_
 
 ## Step 4: Implementation, one step at a time
