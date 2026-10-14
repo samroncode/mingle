@@ -204,6 +204,41 @@ Each sub-step follows [`docs/plans/foundation.md`](docs/plans/foundation.md). Ev
 
 **My comments:** _(fill in)_
 
+### 4.3 i18n (sv/en) + Vitest
+
+**What was done:**
+- Installed `i18next` 26.4 and `react-i18next` 17.0, and `vitest` 5.0 as a dev dependency.
+- Created in `src/i18n/`:
+  - `en.json` / `sv.json`: starter keys (`app.name`, plus the `language.*` labels the language switcher will use in 4.6).
+  - `language.ts`:
+    - `resolveLanguage()` picks the language in the order from decision D: the user's stored choice → the event's language → the first supported browser language → English.
+    - `loadStoredLanguage()` / `storeLanguage()` wrap localStorage, so blocked storage doesn't crash the app.
+  - `index.ts`: initializes i18next with the resolved language and keeps `<html lang>` in sync. It is imported from `src/main.tsx`.
+  - `i18next.d.ts`: types every key from `en.json`, so `t("unknown.key")` fails typecheck.
+- Vitest is configured in `vite.config.ts` (node environment, stubbed globals reset after each test). Added the scripts `test` (`vitest run`) and `test:watch`.
+- Tests: 11 in total.
+  - `locales.test.ts`: sv and en have the same keys, and every value is a non-empty string.
+  - `language.test.ts`: the resolution order, unsupported values ignored, the localStorage round trip, and blocked storage.
+
+**Verification:**
+
+| Check | Result |
+|---|---|
+| `npm run typecheck`, `lint`, `format:check`, `build` | ✅ The JS bundle grew from 219.5 to 264.9 kB (82.9 kB gzip) with i18next |
+| `npm run test` | ✅ 2 files, 11 tests |
+| Demo: remove `language.label` from `sv.json` | ✅ The key-parity test fails and names the missing key. Passes again after it is restored |
+| Demo: a temporary file calls `i18n.t("does.not.exist")` next to `i18n.t("language.label")` | ✅ Typecheck fails only on the unknown key (TS2345) |
+| Browser, nothing stored (browser languages `en-GB`, `en-SE`) | ✅ `<html lang="en">` |
+| Browser, `mingle.language = "sv"` in localStorage, then reload | ✅ `<html lang="sv">`. The stored choice wins over the browser. No console errors |
+
+**Problem found and fixed during the step:** the first try at the missing-key demo used a PowerShell script to edit `sv.json`. Windows PowerShell 5.1 read the UTF-8 file with the wrong encoding, so the line was never removed and the test stayed green. Worse, restoring the file turned "Språk" into "SprÃ¥k". The agent noticed both problems before committing, rewrote the file correctly, searched the repo for other broken characters (none), and redid the demo with the editor tool, where it failed as expected. Lesson: don't let PowerShell 5.1 rewrite UTF-8 files. Note that the tests would not have caught the broken character on their own, because the text was still a non-empty string.
+
+**How to test manually:** run `npm run test`. For the language: open http://localhost:5173 in `npm run dev`, run `localStorage.setItem("mingle.language", "sv")` in the console, reload, and check that `<html lang="sv">`.
+
+**Stopped or changed:** nothing stopped. No changes to the plan.
+
+**My comments:** _(fill in)_
+
 ---
 
 ## Deliverable summary
