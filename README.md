@@ -43,6 +43,9 @@ AI suggestions for activity content are generated on request. Nothing is shown t
 
 - [CLAUDE.md](CLAUDE.md): scope for v1, architecture principles, folder structure and working rules
 - [IDEAS.md](IDEAS.md): parking lot for ideas that are not part of v1
+- [docs/workflow.md](docs/workflow.md): how work moves between the desktop, the phone and GitHub
+- [docs/decisions.md](docs/decisions.md): log of product and architecture decisions
+- [docs/plans/](docs/plans/): plans for larger changes, written before building
 
 ## Privacy
 
