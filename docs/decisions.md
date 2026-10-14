@@ -12,6 +12,22 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-15: shadcn/ui 4 setup with Radix, the cn package and the Geist font
+
+**Decision:**
+- Initialize shadcn/ui 4 with Radix primitives and the "nova" preset (style `radix-nova`, neutral colors, Lucide icons).
+- Accept the dependencies that setup brings, all three beyond the original foundation plan:
+  - `cn`, shadcn's own class-merging package. It replaces `clsx` + `tailwind-merge`.
+  - `shadcn` as a **dev** dependency, because `src/index.css` imports `shadcn/tailwind.css`.
+  - `@fontsource-variable/geist`, the preset's self-hosted font, until the visual design picks one.
+
+**Why:** shadcn 4 changed its setup after the plan was written. A trial run in a scratch copy showed exactly what `init` adds.
+- Keeping the generated setup means future `shadcn add` components work without edits. Copying the CSS file into the repo, or hand-writing the older `clsx` setup, was rejected for that reason.
+- The `shadcn` package pulls in about 270 install-time packages. It's listed as a dev dependency, because only its CSS reaches the browser.
+- The font is self-hosted, so pages make no requests to third-party font servers.
+
+**Known issue:** `npm audit` reports 7 high-severity findings, all from a single advisory (GHSA-vfj7-8cjw-p6xm: `braces` ≤3.0.3, a denial of service through deeply nested glob patterns). It reaches us only through the shadcn CLI's `fast-glob`. There is no patched `braces` release yet. The CLI only runs locally on our own files, so this is accepted for now. Revisit when a fix is published.
+
 ## 2026-10-15: Stay on TypeScript 6.0 for now
 
 **Decision:** Pin TypeScript to ~6.0. Upgrade to 7 once typescript-eslint supports it.
