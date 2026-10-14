@@ -87,11 +87,40 @@ Decisions A, B, D, F, G and H were added to `docs/decisions.md`, and `CLAUDE.md`
 
 ## Step 2: Plan
 
-_(to be added)_
+### Prompt
+
+> Create a plan for building the foundation. Scope: project setup (Vite, React, TS strict, Tailwind v4, shadcn/ui, React Router), empty views for all routes in CLAUDE.md, src/api/ with a Supabase client, i18n with sv/en, one example niche configuration, theme tokens, and Vitest with a first test. No features, and no database schema beyond what the client needs to start. List which files are created or changed, what each step does, in what order, and how each step is verified. Do not implement anything. I want to see the plan first. Follow docs/decisions.md and the Step 1 analysis in implementation.md, and list every dependency not already in CLAUDE.md so I can approve it.
+
+### What the agent produced
+
+The full plan is in [`docs/plans/foundation.md`](docs/plans/foundation.md). In short:
+
+- **8 steps, each with its own files and verification:**
+  1. Scaffold
+  2. ESLint + Prettier
+  3. i18n + Vitest
+  4. Tailwind + shadcn + tokens
+  5. Niche config
+  6. Routes, layouts and views
+  7. `src/api/` Supabase client
+  8. Docs and final check
+- **Before planning, it checked the toolchain and current package versions.** It found that TypeScript 7.0 is out but typescript-eslint only supports TypeScript `<6.1`, so it pinned TypeScript ~6.0.3. Without that check, the scaffold would have pulled TS 7 and the lint setup would have failed.
+- **A dependency table:** 17 packages that are not in `CLAUDE.md`, each with a reason. It also listed what it deliberately left out (language detector, Testing Library, jsdom, Tailwind Prettier plugin, state library, QR library, Playwright, Supabase CLI).
+- **Several Step 1 risks became concrete guardrails:**
+  - a lint rule that blocks Supabase outside `src/api/`
+  - typed i18n keys plus a key-parity test
+  - a niche schema that only allows existing shadcn tokens
+  - env validation that rejects secret keys
+  - a lazy Supabase client, so the app starts without `.env`
+  - a `vercel.json` SPA rewrite
+- **It flagged one step that combines two things itself:** Step 3 is i18n + Vitest, so that the first tests check real rules instead of `1 + 1`.
+- **It listed what is deferred:** schema, RLS, Edge Functions, realtime, the module interface, `#key=` parsing, Playwright and CI.
 
 ## Step 3: Review of the plan
 
-_(to be added)_
+Approved as written, with no changes. I accepted the combined i18n + Vitest step based on the reason the agent gave. I approved the 17 extra dependencies.
+
+**My comments:** _(fill in)_
 
 ## Step 4: Implementation, one step at a time
 
