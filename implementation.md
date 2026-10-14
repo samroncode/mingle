@@ -282,6 +282,48 @@ I chose: `shadcn` as a **dev** dependency, and keep the Geist font. Recorded in 
 
 **My comments:** _(fill in)_
 
+### 4.5 Niche config + theme override
+
+**What was done:**
+- Installed `zod` 4.6. It is in the `CLAUDE.md` stack, and was already in `node_modules` through shadcn; now it's a direct dependency.
+- `src/modules/registry.ts`: the module ids `quiz | awards | hottakes`. The shared module interface waits until the first module.
+- `src/niches/types.ts`:
+  - `themeTokens`, the shadcn tokens a niche may override.
+  - `NicheConfigSchema` (Zod, strict). Its fields are `id`, `nameKey` / `descriptionKey` (i18n keys, never text), `theme` (only allowed tokens), `defaultModules` (only known module ids), and `promptHints` (English, for AI only).
+- `src/niches/aw.ts`: the afterwork niche. Its theme values are placeholders until the design exists.
+- `src/niches/index.ts`: the registry `niches`, the type `NicheId` derived from it, `getNiche()`, and `isNicheId()` for untrusted values such as an id read from the database.
+- `src/niches/theme.ts`: `nicheThemeStyle()`, which turns tokens into CSS custom properties.
+- `src/components/NicheTheme.tsx`: a wrapper that applies them and paints its own background and text, because `body` reads the `:root` tokens.
+- `en.json` / `sv.json`: `niches.aw.name` and `niches.aw.description`.
+- `src/niches/niches.test.ts`, with 9 tests:
+  - the allowed tokens exist on `:root` in `src/index.css`
+  - every niche passes the schema and is registered under its own id
+  - its name and description exist in both languages
+  - the schema rejects an unknown token or module
+  - the CSS variable mapping
+  - `isNicheId`
+
+**Found during the step:** the first run of the token test failed, because Vitest returns CSS files as **empty strings**, even with `?raw`. The test failed for the right reason: it noticed it could see no tokens. The fix is `test.css.include` for `src/index.css` in `vite.config.ts`, so Vitest loads the real file.
+
+**Verification:**
+
+| Check | Result |
+|---|---|
+| `npm run typecheck`, `lint`, `format:check`, `build` | ✅ |
+| `npm run test` | ✅ 3 files, 20 tests |
+| Demo: add `"brand"` to the allowed tokens | ✅ The token test fails ("expected […] to include 'brand'"). Reverted |
+| Demo: remove `niches.aw.description` from `sv.json` | ✅ Two tests fail: key parity, and "has its name and description in sv". Reverted |
+| Browser: temporarily render an element with `bg-primary` inside and outside `<NicheTheme niche="aw">` | ✅ Inside: the afterwork primary `oklch(0.6 0.16 45)` and a 12px radius. Outside: the default `oklch(0.205 0 0)` and 10px, so the override doesn't leak. No console errors. `main.tsx` was reverted afterwards (empty diff) |
+
+**How to test manually:** run `npm run test`. To see a niche theme, wrap something in `<NicheTheme niche="aw">` and check that `bg-primary` turns orange inside the wrapper only.
+
+**Stopped or changed:** nothing stopped. Additions not in the plan:
+- `isNicheId()`, so a niche id from the database can be validated later.
+- Two negative schema tests.
+- The Vitest `css.include` setting.
+
+**My comments:** _(fill in)_
+
 ---
 
 ## Deliverable summary
