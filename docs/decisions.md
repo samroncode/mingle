@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-15: Stay on TypeScript 6.0 for now
+
+**Decision:** Pin TypeScript to ~6.0. Upgrade to 7 once typescript-eslint supports it.
+
+**Why:** TypeScript 7 is the compiler rewritten in Go. It's faster, but the language is the same as 6.0. typescript-eslint's type-aware rules (for example `no-floating-promises`, which catches unhandled Supabase calls) use the JavaScript compiler API that TypeScript 7 doesn't provide in the same way. Even the newest typescript-eslint canary only accepts TypeScript `<6.1`. Moving to TypeScript 7 now would have meant dropping those rules, for a speed gain this codebase doesn't need yet.
+
 ## 2026-10-15: Admin key goes in the URL fragment
 
 **Decision:** The host link is `/host/:code#key=…`, not `/host/:code?key=…`. The host still saves the link to get back into the control panel.
