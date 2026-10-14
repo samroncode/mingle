@@ -126,7 +126,47 @@ Before implementation started, I asked why we couldn't use the newer TypeScript 
 
 ## Step 4: Implementation, one step at a time
 
-_(to be added)_
+Each sub-step follows [`docs/plans/foundation.md`](docs/plans/foundation.md). Every one was started with this prompt:
+
+> The plan is approved. Implement only step N. Then stop, run the verification for that step, and report the result before going further.
+
+### 4.1 Scaffold Vite + React + TS strict
+
+**What was done:**
+- Generated the official `create-vite@9.2.1` react-ts template in a scratch folder and copied only the config files. These were **not** copied: the demo app, CSS, images, favicon, template README and `.oxlintrc.json`.
+- Created:
+  - `package.json`: name `mingle`, `engines.node >=22.22`, scripts `dev`, `build`, `preview`, `typecheck`.
+  - `package-lock.json`.
+  - `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`.
+  - `vite.config.ts`: React plugin plus the `@/` alias.
+  - `index.html`: title "Mingle".
+  - `src/main.tsx`: renders an empty root.
+  - `.nvmrc` (`24`).
+- Removed the pnpm lines from `.gitignore`.
+- Installed `react` / `react-dom` 19.3, and as dev dependencies `vite` 8.3, `@vitejs/plugin-react` 6.1, `typescript` 6.0.3, `@types/react` / `@types/react-dom` 19.3 and `@types/node` 24.
+
+**Found during the step:**
+- The `create-vite` template now ships **Oxlint instead of ESLint**. It was not copied. ESLint comes in 4.2, as decided.
+- The template already pins TypeScript ~6.0, which matches our decision.
+- The template no longer sets `"strict": true`, because TypeScript 6 has it on by default. It is set explicitly anyway, per `CLAUDE.md` principle 10. `noUncheckedIndexedAccess` was also added.
+- Small addition not in the plan: `<link rel="icon" href="data:,">`. With no favicon until the design exists, it avoids a 404 request on every page load.
+- The files are written in Prettier's default style (double quotes, semicolons), so 4.2 won't reformat everything.
+
+**Verification:**
+
+| Check | Result |
+|---|---|
+| `npm ci` from a clean state (`node_modules` deleted) | ✅ 25 packages, 0 vulnerabilities |
+| `npm run typecheck` | ✅ |
+| `npm run build` | ✅ 219.5 kB JS (68.6 kB gzip): React itself, with an empty page |
+| Strict + alias demo: a temporary file imports through `@/` and reads `numbers[0]` as `number` | ✅ The `@/` import resolves, and typecheck fails with TS2322 (`number \| undefined`). It passes again once the files are removed |
+| `npm run dev`, checked in the browser pane | ✅ Title "Mingle", entry script loads, no failed requests, no console errors, empty root |
+
+**How to test manually:** run `npm ci` and then `npm run dev`, and open http://localhost:5173. You should see a blank page titled "Mingle", with no errors in the devtools console.
+
+**Stopped or changed:** nothing.
+
+**My comments:** _(fill in)_
 
 ---
 
