@@ -14,5 +14,7 @@ export default defineConfig({
   test: {
     environment: "node",
     unstubGlobals: true,
+    // Vitest stubs CSS as empty by default; the niche tests read the real tokens.
+    css: { include: [/src\/index\.css/] },
   },
 });
