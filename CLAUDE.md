@@ -127,6 +127,27 @@ supabase/
 - Write a migration for every schema change. Never edit the database by hand.
 - When unsure about a product decision, ask instead of guessing.
 
+## Git and PR workflow
+
+Work on this repo happens in several places: Claude Code on the desktop, cloud sessions started from the phone, and Remote Control. GitHub is the only thing they share. The repo and its PRs are the record; a chat is not, because a session on another device cannot see it. The human side of this flow is described in `docs/workflow.md`.
+
+### Branches and PRs
+- Start every task from the latest `main`. In a local session, pull first.
+- One task, one branch, one PR. Never commit or push directly to `main`.
+- Keep PRs small and focused on that task.
+- Fill in the PR description using `.github/pull_request_template.md`. Write "How to test" so it can be followed from a phone when possible.
+- PRs are squash-merged, so the PR title becomes the commit message on `main`. Write it as a short imperative sentence.
+- Only the repo owner merges. Do not merge PRs, force-push, or delete branches unless asked.
+
+### Plans and decisions
+- For larger changes, write the plan to `docs/plans/<short-name>.md` and get it approved (in chat or on the PR) before building.
+- When a product or architecture decision is made, add it to `docs/decisions.md` in the same PR.
+- If a decision changes a rule in this file, update this file in the same PR.
+
+### Cloud sessions
+- Cloud sessions clone from GitHub. Work that is not pushed does not exist there, so push before handing work off.
+- Secrets come from the cloud environment's variables, or a local `.env` on the desktop. List every variable in `.env.example` without real values. This repo is public.
+
 ## Design
 
 Visual design (screens per view and niche themes) is defined separately. Until it exists, use shadcn/ui defaults with theme tokens so the design can be applied without rewriting components.
