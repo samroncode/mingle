@@ -25,8 +25,13 @@ Approved together with this plan. These are not listed in `CLAUDE.md`:
 | `@types/react`, `@types/react-dom`, `@types/node` | dev | Type definitions |
 | `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `globals` | dev | Standard ESLint setup for Vite + React + TS |
 | `eslint-config-prettier` | dev | Turns off ESLint rules that conflict with Prettier |
-| `class-variance-authority`, `clsx`, `tailwind-merge`, `tw-animate-css`, `lucide-react` | runtime | Installed by `shadcn init` |
-| Radix Slot (`@radix-ui/react-slot` or `radix-ui`) | runtime | Used by the shadcn Button |
+| `class-variance-authority`, `tw-animate-css`, `lucide-react` | runtime | Installed by `shadcn init` |
+| `radix-ui` | runtime | Radix primitives, used by the shadcn Button (`Slot`) |
+| `cn` | runtime | *Changed in Step 4:* shadcn 4's class-merging package, which replaced the planned `clsx` + `tailwind-merge` |
+| `@fontsource-variable/geist` | runtime | *Added in Step 4:* the shadcn preset's self-hosted font |
+| `shadcn` | dev | *Added in Step 4:* provides `shadcn/tailwind.css`, which `src/index.css` imports |
+
+The three changes in Step 4 were approved during the step. They are recorded in `docs/decisions.md` (2026-10-15, shadcn/ui 4 setup), together with an `npm audit` finding that comes in through the shadcn CLI.
 
 **Deliberately not added:** `i18next-browser-languagedetector` (our own small resolver implements the language rule), `jsdom` and `@testing-library/react` (only pure logic is tested so far), `prettier-plugin-tailwindcss`, state libraries, a QR library, Playwright and the Supabase CLI. Each needs a new approval when a feature calls for it.
 

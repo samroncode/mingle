@@ -29,6 +29,13 @@ export default defineConfig([
     },
   },
   {
+    // Generated shadcn/ui files export variant helpers next to components.
+    files: ["src/components/ui/**/*.tsx"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  {
     // Guardrail: the Supabase client and SDK never leave the data layer.
     files: ["**/*.{ts,tsx}"],
     ignores: ["src/api/**"],

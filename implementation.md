@@ -239,6 +239,49 @@ Each sub-step follows [`docs/plans/foundation.md`](docs/plans/foundation.md). Ev
 
 **My comments:** _(fill in)_
 
+### 4.4 Tailwind v4 + shadcn/ui + theme tokens
+
+**What was done:**
+- Installed `tailwindcss` 4.3 and `@tailwindcss/vite`, added the plugin in `vite.config.ts`, and imported `src/index.css` from `src/main.tsx`.
+- Ran `shadcn@4.21.5 init --template vite --base radix --preset nova`. It created:
+  - `components.json` (style `radix-nova`).
+  - `src/lib/utils.ts`.
+  - `src/components/ui/button.tsx`. `init` already includes the Button, so the planned `shadcn add button` wasn't needed.
+  - `src/index.css`: neutral tokens on `:root`, `.dark` overrides, `@theme inline`, and the base layer that sets `bg-background text-foreground`.
+- Ran Prettier on the generated files. Added an ESLint exception for `src/components/ui/**`, because shadcn files export `buttonVariants` next to the component. The plan included this exception.
+
+**The plan didn't match reality, and the agent stopped to ask:**
+shadcn 4 changed after the plan was written. `init` now asks for a component library (its default is Base UI; the plan said Radix) and a style preset, and every preset brings a font. Instead of running it in the repo, the agent:
+1. Read the CLI's options and preset definitions.
+2. Did a **trial run in a scratch copy** of the project to see exactly what `init` would add.
+3. Found three dependencies that weren't approved:
+   - `cn`, which replaces the approved `clsx` + `tailwind-merge`.
+   - `shadcn` itself, needed for `@import "shadcn/tailwind.css"`, which pulls in 271 packages.
+   - `@fontsource-variable/geist`.
+4. Checked that `cn` is legitimate (published by shadcn's own account, with no dependencies) before asking.
+5. Stopped and asked me.
+
+I chose: `shadcn` as a **dev** dependency, and keep the Geist font. Recorded in `docs/decisions.md`, with the dependency table updated in `docs/plans/foundation.md`.
+
+**Found after installing:** `npm audit` went from 0 to **7 high-severity** findings. The agent traced all of them to one advisory (GHSA-vfj7-8cjw-p6xm, `braces` ≤3.0.3, a denial of service through deeply nested glob patterns) that comes in only through the shadcn CLI's `fast-glob`. No patched `braces` release exists. npm's suggested "fix", downgrading shadcn to 1.0.0, makes no sense. The finding is accepted as a dev-only risk and documented in `docs/decisions.md`. It's worth bringing up in the Part B security review.
+
+**Verification:**
+
+| Check | Result |
+|---|---|
+| `npm run typecheck`, `lint`, `test` (11), `format:check` | ✅ |
+| `npm run build` | ✅ CSS 21.8 kB (4.7 kB gzip) plus the Geist `woff2` files. JS unchanged, since the Button isn't used yet |
+| Browser: body colors | ✅ `background` = `--background` (`oklch(1 0 0)`), `color` = `--foreground` (`oklch(0.145 0 0)`) |
+| Browser: override `--background` on `:root` | ✅ The body background changes. Removing the override restores it |
+| Browser: font | ✅ `"Geist Variable", sans-serif`. No failed requests and no console errors |
+| `npm audit` | ⚠️ 7 high, all from the advisory above (dev-only, accepted) |
+
+**How to test manually:** open http://localhost:5173 in `npm run dev`. In devtools, change `--background` on `<html>` and check that the page background follows.
+
+**Stopped or changed:** the agent stopped itself before adding dependencies that weren't approved, and asked. Two changes to the plan: `cn` replaced `clsx` + `tailwind-merge`, and `shadcn` and the Geist font were added. One planned step was dropped: `shadcn add button`, because `init` already created the Button.
+
+**My comments:** _(fill in)_
+
 ---
 
 ## Deliverable summary
