@@ -56,6 +56,7 @@ Out of scope for v1 (do not build unless asked):
 | i18n | react-i18next | Swedish + English, well-known |
 | Hosting | Vercel (frontend), Supabase (backend) | Free tiers, simple deploys |
 | Testing | Vitest (unit), Playwright (key flows) | Standard for this stack |
+| Lint and format | ESLint + Prettier | Vite default linter; one format across desktop, phone and cloud sessions |
 
 ## Views and routes
 
@@ -63,7 +64,7 @@ Out of scope for v1 (do not build unless asked):
 |---|---|---|
 | `/` | Everyone | Landing page |
 | `/new` | Host | Create wizard |
-| `/host/:code?key=…` | Host | Control panel (secret admin link) |
+| `/host/:code#key=…` | Host | Control panel (secret admin link; the key is in the fragment so it never reaches the server) |
 | `/tv/:code` | TV | Shared big-screen view |
 | `/p/:code` | Guests | Join and play |
 | `/p/:code/summary` | Everyone | Post-event summary |
@@ -76,9 +77,9 @@ One app serves every event. Events are rows in the database identified by a shor
 2. **The host is the only one who changes event flow.** Every host action goes through an Edge Function that verifies the admin key (stored hashed). Guests can only write their own answers and votes, enforced by RLS.
 3. **All data access lives in one layer.** Supabase calls only happen in `src/api/`. Components never import the Supabase client directly.
 4. **Niches are data, not branches.** Each niche is a config object in `src/niches/` (theme tokens, default modules, prompt hints, copy). Add a niche by adding a config file. Never scatter `if (niche === 'aw')` checks through components.
-5. **Modules are self-contained.** Each module in `src/modules/<name>/` has its own host, TV and guest components plus its own types and API functions, and implements a shared module interface.
+5. **Modules are self-contained.** Each module in `src/modules/<name>/` has its own host, TV and guest components plus its own types, and implements a shared module interface. Its data access lives in `src/api/<name>.ts` (principle 3).
 6. **AI output is untrusted until approved.** Validate every AI response with Zod. Store it as `draft`. Only host-approved items (`approved`) are ever shown to guests or on the TV.
-7. **All UI text goes through i18n.** No hardcoded user-facing strings. Code, identifiers and comments are in English.
+7. **All UI text goes through i18n.** No hardcoded user-facing strings. Code, identifiers and comments are in English. The UI defaults to the event's language, and any user can switch between Swedish and English (remembered per device). Content the host wrote or approved stays in the event language.
 8. **Theming via CSS variables.** Niche themes set tokens on `:root` or a wrapper element; components use tokens, never hardcoded colors.
 9. **Small, single-purpose functions and components.** Prefer composition. Keep files short.
 10. **TypeScript strict mode.** No `any`. Database types are generated from the Supabase schema.
@@ -87,9 +88,11 @@ One app serves every event. Events are rows in the database identified by a shor
 
 ```
 src/
-  api/          # all Supabase access (queries, mutations, realtime subscriptions)
+  api/          # all Supabase access (queries, mutations, realtime subscriptions); one file per module, e.g. api/quiz.ts
+  hooks/        # shared React hooks that call src/api/
+  layouts/      # host, TV and guest page shells
   partyscreen/  # TV idle state: welcome, QR codes, menu, schedule, guests
-  modules/      # quiz/, awards/, hottakes/ — each with host/, tv/, guest/ parts
+  modules/      # quiz/, awards/, hottakes/ — each with host/, tv/, guest/ parts; registry.ts lists them
   niches/       # aw.ts, team.ts, bachelor.ts — config objects
   views/        # route-level pages: create, host, tv, guest, summary
   components/   # shared UI (shadcn/ui lives in components/ui)
