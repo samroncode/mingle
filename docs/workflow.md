@@ -23,9 +23,9 @@ GitHub connects all three. Every task ends as a PR, and `main` only changes when
 
 ## Testing PRs
 
-For now, review the diff and the "How to test" section of the PR.
+Until the repo is connected to Vercel, review the diff and the "How to test" section of the PR, or check out the branch at the desk and run `npm run dev`.
 
-Once the app is scaffolded and connected to Vercel, every PR gets a preview deployment with its own URL, so a PR can be tried on the phone before it is merged.
+Once Vercel is connected, every PR gets a preview deployment with its own URL, so a PR can be tried on the phone before it is merged.
 
 ## Keeping things together
 
@@ -39,5 +39,9 @@ Once the app is scaffolded and connected to Vercel, every PR gets a preview depl
 - A cloud environment named "Default" on claude.ai/code.
 - Desktop app: new sessions connect to Remote Control.
 - GitHub CLI (`gh`) signed in on the desktop, so local sessions can open PRs.
+- The app foundation (see `docs/plans/foundation.md`). `npm ci` installs everything. The checks are `npm run typecheck`, `npm run lint`, `npm run test` and `npm run build`.
 
-To do once the app is scaffolded: add a setup script (`npm ci`) and the Supabase variables to the cloud environment, and connect the repo to Vercel for preview deployments.
+Still to do by the repo owner, now that the app is scaffolded:
+
+- In the cloud environment, add the setup script `npm ci` and the variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
+- Connect the repo to Vercel for preview deployments (framework Vite, build command `npm run build`, output folder `dist`). `vercel.json` already handles deep links.

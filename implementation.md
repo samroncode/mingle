@@ -410,6 +410,40 @@ The Vercel rewrite itself can only be tested on the first preview deploy, and Ve
 
 **My comments:** _(fill in)_
 
+### 4.8 Docs and final check
+
+**What was done:**
+- `README.md`:
+  - The status now says the foundation is in place but there are no features yet.
+  - New "Getting started" section (Node 24, `npm ci`, copy `.env.example`, `npm run dev`) with a table of the npm scripts.
+  - ESLint and Prettier added to the tech stack.
+  - Link to this log.
+- `docs/workflow.md`:
+  - "Testing PRs" explains how to test until Vercel is connected.
+  - "What is set up" lists the foundation and its checks.
+  - Your remaining manual to-dos:
+    - In the cloud environment, add the setup script `npm ci` and the two `VITE_SUPABASE_*` variables.
+    - Connect Vercel (Vite, `npm run build`, `dist`).
+
+**Final verification, from a clean state** (`node_modules` and `dist` deleted first):
+
+| Check | Result |
+|---|---|
+| `npm ci` | ✅ |
+| `npm run typecheck` | ✅ |
+| `npm run lint` | ✅ |
+| `npm run format:check` | ✅ |
+| `npm run test` | ✅ 5 files, 30 tests |
+| `npm run build` | ✅ JS 399.3 kB (128.8 kB gzip), CSS 23.8 kB (5.1 kB gzip) |
+| Dev smoke test of `/`, `/new`, `/host/ABC123`, `/tv/ABC123`, `/p/ABC123`, `/p/ABC123/summary` and `/nope`, in a fresh tab | ✅ Each shows the right view, layout and code. No console errors |
+| `npm audit` | ⚠️ 7 high, all from the known `braces` advisory via the shadcn CLI (see 4.4 and `docs/decisions.md`) |
+
+**How to test manually:** follow "Getting started" in the README, then click through the routes listed above.
+
+**Stopped or changed:** nothing.
+
+**My comments:** _(fill in)_
+
 ---
 
 ## Deliverable summary
