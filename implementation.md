@@ -371,6 +371,45 @@ The Vercel rewrite itself can only be tested on the first preview deploy, and Ve
 
 **My comments:** _(fill in)_
 
+### 4.7 `src/api/` with the Supabase client
+
+**What was done:**
+- Installed `@supabase/supabase-js` 2.117.
+- `src/api/env.ts`: `parseSupabaseEnv()` validates `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` with Zod.
+  - The URL must be http(s).
+  - The key must not be empty, must not be a `sb_secret_…` key, and must not be a legacy JWT whose role is `service_role`.
+  - Errors name every bad setting and point to `.env.example`.
+- `src/api/client.ts`: `getSupabase()` creates **one** typed client on first use. Importing it never throws, so the app starts without `.env`.
+- `src/api/database.types.ts`: an empty placeholder in the shape `supabase gen types` produces, to be replaced after the first migration.
+- `.env.example`: the two variables, where to find them, and a warning that service-role/secret keys and the Anthropic key must never have a `VITE_` prefix.
+- `vite.config.ts`: `unstubEnvs: true`, so env values stubbed in one test don't leak into the next.
+- Tests: 10 new, 30 in total.
+  - `src/api/env.test.ts` (7): a valid publishable key, a legacy anon key, missing settings (both named, with the hint), a bad URL including `javascript:`, a `sb_secret_` key, and a `service_role` JWT.
+  - `src/api/client.test.ts` (3): imports without settings, fails on first use without settings, and returns one shared client.
+
+**Verification:**
+
+| Check | Result |
+|---|---|
+| `npm run typecheck`, `lint`, `format:check`, `build` | ✅ The bundle is byte-identical, because nothing imports the client yet |
+| `npm run test` | ✅ 5 files, 30 tests, with no warnings in the output |
+| Lint demo: a temporary view imports `@/api/client` **and** `../api/client` | ✅ 2 × `no-restricted-imports`. The relative path is blocked too, which Step 4.2 had not tested |
+| Mutation demo: remove the `sb_secret_` check | ✅ "rejects a secret key" fails. Passes again once restored |
+| `npm run dev` with **no `.env`** | ✅ `/p/ABC123`, `/tv/ABC123` and `/host/ABC123` render. No console errors in a fresh tab |
+| Git: `.env.example` tracked, `.env` ignored | ✅ |
+
+**Side note from verification:** the browser tool kept console messages from earlier pages in the same tab. Step 4.6's crash demo showed up again, so the agent opened a fresh tab to get a clean reading. Worth knowing when you read console output.
+
+**How to test manually:** run `npm run test`. Copy `.env.example` to `.env` with your Supabase URL and publishable key. Nothing calls Supabase yet, so the first real check comes with the first feature that reads data.
+
+**Stopped or changed:** nothing stopped. Additions not in the plan:
+- The legacy `service_role` JWT check (many projects still use JWT keys).
+- `http(s)`-only URLs.
+- `client.test.ts`.
+- `unstubEnvs`.
+
+**My comments:** _(fill in)_
+
 ---
 
 ## Deliverable summary
