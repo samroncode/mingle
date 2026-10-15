@@ -324,6 +324,53 @@ I chose: `shadcn` as a **dev** dependency, and keep the Geist font. Recorded in 
 
 **My comments:** _(fill in)_
 
+### 4.6 Routes, layouts and empty views
+
+**What was done:**
+- Installed `react-router` 8.4. It has the same data-router API as v7, and `RouterProvider` for the browser comes from `react-router/dom`.
+- `src/router.tsx`: `createBrowserRouter` with every route from `CLAUDE.md`, grouped by layout. A root `errorElement` shows `ErrorView`, and `*` shows `NotFoundView`. The file exports only an `AppRouter` component, so the react-refresh lint rule stays happy.
+
+  | Layout | Routes |
+  |---|---|
+  | Guest | `/`, `/p/:code`, `/p/:code/summary`, `*` |
+  | Host | `/new`, `/host/:code` |
+  | TV | `/tv/:code` |
+
+- `src/layouts/GuestLayout.tsx`, `HostLayout.tsx`, `TvLayout.tsx`: small shells with `<Outlet />`, the language switcher, and a `data-layout` attribute that makes them easy to check.
+- `src/components/LanguageSwitcher.tsx`: shadcn Buttons for sv and en. It stores the choice per device (`storeLanguage`), switches i18next, and sets `aria-pressed`.
+- `src/components/EventCode.tsx`: shows `:code` from the route. Five views use it, so the param handling isn't repeated.
+- Eight views in `src/views/`, each with a translated title. NotFound has a link to `/`, and Error has a reload button.
+- New `common.code` and `views.*` keys in `en.json` / `sv.json`.
+- `vercel.json`: SPA rewrite to `/index.html`.
+- `src/main.tsx` renders `<AppRouter />`.
+
+**Verification:**
+
+| Check | Result |
+|---|---|
+| `npm run typecheck`, `lint`, `test` (20), `format:check`, `build` | ✅ Passed on the first run. JS 399 kB (128.8 kB gzip) with React Router |
+| Browser: `/` | ✅ guest layout, "Mingle" |
+| Browser: `/new` | ✅ host layout, "Create an event" |
+| Browser: `/host/ABC123#key=demo-secret` | ✅ host layout, "Control panel", "Code: ABC123". The key stays in `location.hash` |
+| Browser: `/tv/ABC123` | ✅ TV layout, "TV screen", "Code: ABC123" |
+| Browser: `/p/ABC123` and `/p/ABC123/summary` | ✅ guest layout, "Join the party" / "Summary", with the code |
+| Browser: `/does/not/exist` | ✅ guest layout, "Page not found", with a link to `/` |
+| Language switch (real click on "Svenska" on the TV view) | ✅ "TV-skärm", "Kod: ABC123", `<html lang="sv">`, stored `sv`, `aria-pressed` updated. **Still Swedish after a reload.** Switching back to English works too |
+| Error view demo: `SummaryView` temporarily throws | ✅ "Something went wrong" with a reload button instead of a blank screen. The demo line was removed afterwards |
+| Production build: `npm run build && npm run preview`, then load `/tv/ABC123` and `/p/XYZ789/summary` directly | ✅ HTTP 200, the right view, no console errors |
+| Console | ✅ No errors, except the expected ones from the error demo |
+
+The Vercel rewrite itself can only be tested on the first preview deploy, and Vercel isn't connected yet.
+
+**How to test manually:** run `npm run dev` and open `/`, `/new`, `/host/ABC123`, `/tv/ABC123`, `/p/ABC123`, `/p/ABC123/summary` and a made-up path. Click "Svenska", reload, and check that the page is still in Swedish.
+
+**Stopped or changed:** nothing stopped. Small additions not in the plan:
+- `EventCode`, to avoid repeating the param handling in five views.
+- `data-layout` attributes.
+- A home link on the not-found page and a reload button on the error page.
+
+**My comments:** _(fill in)_
+
 ---
 
 ## Deliverable summary
