@@ -448,18 +448,78 @@ The Vercel rewrite itself can only be tested on the first preview deploy, and Ve
 
 ## Deliverable summary
 
+> Drafted by the agent from the step log above. Lines marked ✏️ are my own judgment to confirm or rewrite.
+
 ### What did the agent identify?
 
-_(fill in at the end)_
+**In the analysis (Step 1),** with no code to look at, only `CLAUDE.md`:
+- **11 ranked technical-debt risks.** The most important:
+  - Supabase calls leaking out of `src/api/`.
+  - Draft AI content hidden only by the UI instead of by RLS.
+  - The host having no identity that RLS can see.
+  - Realtime clients drifting from the database.
+  - Secrets exposed through `VITE_` variables.
+  - The admin key sitting in the query string.
+- **8 gaps or contradictions in `CLAUDE.md`.** The clearest: principle 3 ("Supabase only in `src/api/`") contradicted principle 5 ("each module has its own API functions"). Six of them became decisions in `docs/decisions.md`, and two are still open.
+- **What the foundation needs from day one**, mostly guardrails that are cheap now and expensive later: a lint rule for the data layer, typed i18n keys, one token layer, env validation and an SPA rewrite.
+
+**During implementation,** by checking the real tools instead of assuming:
+- TypeScript 7 doesn't work with typescript-eslint yet, so we stayed on 6.0.
+- The official Vite template now ships Oxlint, not ESLint.
+- Git on Windows checks files out with CRLF, which would have broken the Prettier check, so `.gitattributes` was added.
+- shadcn 4 had changed since the plan was written: a new default component library, and dependencies that weren't approved.
+- `npm audit` found a dev-only advisory that came with the shadcn CLI.
+- Vitest silently turns CSS into empty strings, which the token test caught.
+
+✏️ Which of these mattered most to you?
 
 ### What did the agent want to do that I stopped, and why?
 
-_(fill in at the end)_
+I never had to stop the agent in the middle of an action. Plan mode and the "one step, then report" prompt meant every change was proposed before it happened. The closest cases:
+
+- **Unapproved dependencies (Step 4.4).** Running `shadcn init` as planned would have added three packages nobody had approved: `cn`, `shadcn` itself (271 packages at install time) and a font. It would also have picked Base UI instead of the Radix we had agreed on. The agent stopped itself, did a trial run in a scratch copy, checked that `cn` is a genuine shadcn package, and asked me. I chose to keep `shadcn` as a dev dependency and to keep the font. ✏️ Would you have chosen differently, knowing about the `npm audit` finding that showed up afterwards (see "What did it miss?")?
+- **TypeScript 6 instead of 7.** I questioned why we weren't on the newest version. The agent explained the typescript-eslint limitation, and I kept 6.0. That was a check on the agent, not a stop.
+- **Combining steps.** The agent merged i18n and Vitest into one step, but flagged it in the plan and explained why. I accepted it.
+- **Small additions not in the plan,** reported after each step:
+  - `.gitattributes`
+  - excluding Markdown from Prettier
+  - `isNicheId`
+  - `EventCode`
+  - the legacy `service_role` key check
+  - `data-layout` attributes
+
+  ✏️ Excluding Markdown from Prettier was decided during the step without asking first. Should it have been a question?
+- ✏️ Anything I would strike if I did it again?
 
 ### What did it miss?
 
-_(fill in at the end)_
+- **Tool versions in the plan.** The Step 2 plan assumed how shadcn and the dependency list worked, based on what the agent already knew. In reality `cn` replaced `clsx` + `tailwind-merge`, shadcn needed its own package and a font, and `init` already creates the Button. The agent did check version compatibility for TypeScript before planning, but not for shadcn.
+- **The security cost came after my decision.** The agent asked me about the shadcn dependency using package counts, but only ran `npm audit` after installing. The 7 high-severity findings (a `braces` advisory with no fix yet) were therefore not part of my decision.
+- **Windows problems:**
+  - CRLF line endings would have broken Prettier. This was caught after the Step 4.1 commit.
+  - A PowerShell 5.1 script **corrupted `sv.json`** during a demo ("Språk" became "SprÃ¥k"). The agent caught it before committing. The tests would not have caught it, because the text was still a non-empty string.
+- **A gap in the guardrail test.** Step 4.2 only tested the `@/api/client` import. The relative `../api/client` path wasn't tested until 4.7 (it was blocked).
+- **The browser tool keeps old console logs** in a tab. Errors from an earlier demo nearly looked like a new problem in 4.7.
+- **Still not covered by the foundation:**
+  - No component tests (no jsdom). The language switcher, `NicheTheme` and the router are only checked by hand in the browser.
+  - No CI. A follow-up session has been proposed for it.
+  - The Vercel rewrite and a real Supabase connection are untested.
+  - Open questions C (how the host reads drafts under RLS) and E (how long data is kept).
+- ✏️ Anything you noticed that the agent didn't?
 
 ### Is the project runnable after the implementation?
 
-_(fill in at the end)_
+**Yes.** From a clean clone:
+- `npm ci` and `npm run dev` start the app without any `.env`.
+- Every route in `CLAUDE.md` renders the right view and layout in Swedish and English.
+- The language choice survives a reload.
+- A crashing view shows an error page instead of a blank screen.
+- The production build serves deep links with HTTP 200.
+- `typecheck`, `lint`, `format:check`, all 30 tests and `build` pass (Step 4.8).
+
+**What "runnable" doesn't include yet:**
+- There are no features: no events, modules or party screen.
+- The app has never talked to a real Supabase project.
+- Vercel isn't connected, and there is no CI.
+
+Everything is in PR [samroncode/mingle#3](https://github.com/samroncode/mingle/pull/3).
