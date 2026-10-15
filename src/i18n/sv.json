@@ -2,6 +2,9 @@
   "app": {
     "name": "Mingle"
   },
+  "common": {
+    "code": "Kod: {{code}}"
+  },
   "language": {
     "label": "Språk",
     "sv": "Svenska",
@@ -11,6 +14,31 @@
     "aw": {
       "name": "Afterwork",
       "description": "Mingel och lekar med kollegorna efter jobbet."
+    }
+  },
+  "views": {
+    "create": {
+      "title": "Skapa ett event"
+    },
+    "host": {
+      "title": "Kontrollpanel"
+    },
+    "tv": {
+      "title": "TV-skärm"
+    },
+    "guest": {
+      "title": "Var med i festen"
+    },
+    "summary": {
+      "title": "Sammanfattning"
+    },
+    "notFound": {
+      "title": "Sidan finns inte",
+      "home": "Till startsidan"
+    },
+    "error": {
+      "title": "Något gick fel",
+      "reload": "Ladda om sidan"
     }
   }
 }

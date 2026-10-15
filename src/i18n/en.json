@@ -2,6 +2,9 @@
   "app": {
     "name": "Mingle"
   },
+  "common": {
+    "code": "Code: {{code}}"
+  },
   "language": {
     "label": "Language",
     "sv": "Svenska",
@@ -11,6 +14,31 @@
     "aw": {
       "name": "Afterwork",
       "description": "Drinks and games with colleagues after work."
+    }
+  },
+  "views": {
+    "create": {
+      "title": "Create an event"
+    },
+    "host": {
+      "title": "Control panel"
+    },
+    "tv": {
+      "title": "TV screen"
+    },
+    "guest": {
+      "title": "Join the party"
+    },
+    "summary": {
+      "title": "Summary"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "home": "Go to the start page"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "reload": "Reload the page"
     }
   }
 }
