@@ -12,6 +12,30 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-20: The host's session is bound to the event (open question C)
+
+**Decision:** The host signs in anonymously like guests and the TV. When `host-actions` verifies the admin key (`create_event` or `claim_host`), it records that session as `host` in `members`. RLS then lets the host read everything in their event, including drafts and individual answers, directly and through realtime. Every host write still goes through `host-actions` with the admin key, as `CLAUDE.md` principle 2 requires.
+
+**Why:** The host panel needs live data that guests must not see. Binding the session lets RLS and realtime serve it. The rejected alternative was routing every host read through the Edge Function, which keeps RLS simpler but gives the host panel no realtime, so it would have to refetch or poll. A side effect is that anyone who opens the host link on another device becomes a co-host, which matches what a shared admin link means.
+
+## 2026-10-20: Server-only tables live in a `private` schema
+
+**Decision:** Secrets and internal counters (the admin key hash and rate limits) go in a `private` schema that the Data API doesn't expose. RLS stays enabled on them with no client policies, on purpose.
+
+**Why:** Keeping the admin key hash out of `public` means no policy mistake can leak it. The "a table without policies is a bug" rule in `CLAUDE.md` applies to tables clients can reach; `private` tables are server-only by design.
+
+## 2026-10-20: Database and RLS tests run against a local Supabase stack
+
+**Decision:** Add the Supabase CLI as a dev dependency once the backend core plan is approved. Schema, RLS, RPCs and Edge Functions are tested by Vitest integration tests (`*.db.test.ts`) that sign in as each role against a local stack in Docker, run with `npm run test:db`. `npm run test` stays fast and needs no Docker.
+
+**Why:** RLS is where a bug would hurt most, so it's tested through the real client the app uses, in the same language and runner as the rest of the tests. pgTAP (tests in SQL) was rejected as a second test language. A hosted test project was rejected because it needs extra secrets and a project to maintain. The cost is that cloud sessions without Docker can't run `test:db`, so it's run on the desktop before merging.
+
+## 2026-10-20: The backend core creates only the shared tables
+
+**Decision:** The backend core migration creates `events` and `members` (plus the `private` tables). Each module plan adds its own typed tables, following the draft/approved and answer-visibility pattern in [`docs/plans/backend-core.md`](plans/backend-core.md).
+
+**Why:** Typed tables per module keep database constraints meaningful. Generic `module_items`/`responses` tables with JSON payloads would save a few migrations but move all checks into application code.
+
 ## 2026-10-15: shadcn/ui 4 setup with Radix, the cn package and the Geist font
 
 **Decision:**
