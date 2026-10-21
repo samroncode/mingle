@@ -30,9 +30,6 @@
     }
   },
   "views": {
-    "create": {
-      "title": "Skapa ett event"
-    },
     "host": {
       "title": "Kontrollpanel"
     },
@@ -76,6 +73,7 @@
     "codeLabel": "Eventkod",
     "hostLabel": "Värdlänk",
     "tvLabel": "TV-adress",
+    "showHost": "Visa värdlänken",
     "copyHost": "Kopiera värdlänken",
     "copyTv": "Kopiera TV-adressen"
   },
@@ -136,7 +134,8 @@
     },
     "music": {
       "label": "Musiklänk",
-      "hint": "En Spotify Jam eller delad spellista (https)."
+      "hint": "En Spotify Jam eller delad spellista (https).",
+      "placeholder": "https://"
     },
     "lines": {
       "moveUp": "Flytta rad {{n}} uppåt",

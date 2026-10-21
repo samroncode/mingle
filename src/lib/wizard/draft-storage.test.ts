@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { clearDraft, loadDraft, saveDraft } from "./draft-storage";
-import { initialDraft, wizardReducer } from "./state";
+import { partyLimits } from "@/lib/schemas/party";
+import { initialDraft, wizardReducer, type WizardDraft } from "./state";
 
 function memoryStorage() {
   const data = new Map<string, string>();
@@ -35,6 +36,28 @@ describe("wizard draft storage", () => {
     memoryStorage();
     saveDraft(typed);
     expect(loadDraft()).toEqual(typed);
+  });
+
+  it("restores a draft filled to every limit the wizard allows", () => {
+    memoryStorage();
+    const line = "x".repeat(partyLimits.line);
+    const full: WizardDraft = {
+      ...typed,
+      party: {
+        welcome: "x".repeat(partyLimits.welcome),
+        welcomeEdited: true,
+        menu: Array.from({ length: partyLimits.lines }, () => line),
+        schedule: Array.from({ length: partyLimits.lines }, () => ({
+          time: "19:00",
+          title: line,
+        })),
+        wifiSsid: "x".repeat(partyLimits.ssid),
+        wifiPassword: "x".repeat(partyLimits.password),
+        musicUrl: "x".repeat(partyLimits.musicUrl),
+      },
+    };
+    saveDraft(full);
+    expect(loadDraft()).toEqual(full);
   });
 
   it("returns nothing when no draft is stored", () => {

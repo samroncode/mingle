@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createEvent, type HostActionError } from "@/api/host-actions";
-import { ensureAnonymousSession } from "@/api/session";
+import { trySession } from "@/api/session";
 import type { CreateEventResponse } from "@/lib/schemas/host-actions";
 import { toCreateInput, type WizardDraft } from "@/lib/wizard/state";
 
@@ -19,9 +19,7 @@ export function useCreateEvent(
     if (busy) return;
     setBusy(true);
     setError(undefined);
-    try {
-      await ensureAnonymousSession();
-    } catch {
+    if (!(await trySession())) {
       setError("network_error");
       setBusy(false);
       return;

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CopyButton } from "@/components/CopyButton";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,12 @@ import { hostLink, tvAddress } from "@/lib/links";
 interface EventLinksProps {
   code: string;
   hostKey: string;
+  /**
+   * Keeps the host link off screen until the host taps to show it, so a
+   * mirrored or shared phone screen doesn't expose it. Copy and Share work
+   * either way.
+   */
+  hideHostLink?: boolean;
 }
 
 /**
@@ -13,8 +20,13 @@ interface EventLinksProps {
  * browser has it) and the TV address. Used by the create flow's last screen
  * and by the control panel.
  */
-export function EventLinks({ code, hostKey }: EventLinksProps) {
+export function EventLinks({
+  code,
+  hostKey,
+  hideHostLink = false,
+}: EventLinksProps) {
   const { t } = useTranslation();
+  const [hostShown, setHostShown] = useState(!hideHostLink);
   const host = hostLink(window.location.origin, code, hostKey);
   const tv = tvAddress(window.location.origin, code);
   const canShare = typeof navigator.share === "function";
@@ -40,9 +52,19 @@ export function EventLinks({ code, hostKey }: EventLinksProps) {
       </section>
       <section className="space-y-2">
         <h2 className="font-medium">{t("links.hostLabel")}</h2>
-        <p data-testid="host-link" className="text-sm break-all">
-          {host}
-        </p>
+        {hostShown ? (
+          <p data-testid="host-link" className="text-sm break-all">
+            {host}
+          </p>
+        ) : (
+          <Button
+            variant="link"
+            className="px-0"
+            onClick={() => setHostShown(true)}
+          >
+            {t("links.showHost")}
+          </Button>
+        )}
         <div className="flex gap-2">
           <CopyButton text={host} label={t("links.copyHost")} />
           {canShare && (

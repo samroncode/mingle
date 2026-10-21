@@ -30,9 +30,6 @@
     }
   },
   "views": {
-    "create": {
-      "title": "Create an event"
-    },
     "host": {
       "title": "Control panel"
     },
@@ -76,6 +73,7 @@
     "codeLabel": "Event code",
     "hostLabel": "Host link",
     "tvLabel": "TV address",
+    "showHost": "Show host link",
     "copyHost": "Copy host link",
     "copyTv": "Copy TV address"
   },
@@ -136,7 +134,8 @@
     },
     "music": {
       "label": "Music link",
-      "hint": "A Spotify Jam or shared playlist link (https)."
+      "hint": "A Spotify Jam or shared playlist link (https).",
+      "placeholder": "https://"
     },
     "lines": {
       "moveUp": "Move line {{n}} up",

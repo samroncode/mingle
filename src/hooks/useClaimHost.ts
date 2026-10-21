@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { claimHost } from "@/api/host-actions";
-import { ensureAnonymousSession } from "@/api/session";
+import { trySession } from "@/api/session";
 import type { HostDoorError, HostLinkParts } from "@/lib/host-door";
 
 export type ClaimState =
@@ -9,9 +9,7 @@ export type ClaimState =
   | { status: "error"; error: HostDoorError };
 
 async function claim(link: HostLinkParts): Promise<ClaimState> {
-  try {
-    await ensureAnonymousSession();
-  } catch {
+  if (!(await trySession())) {
     return { status: "error", error: "network_error" };
   }
   const result = await claimHost(link);

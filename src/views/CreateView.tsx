@@ -9,6 +9,7 @@ import { addMyEvent } from "@/lib/my-events";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/wizard/draft-storage";
 import { createErrorKey } from "@/lib/wizard/create-error";
 import {
+  firstInvalidStep,
   initialDraft,
   isSkippable,
   stepInvalidFields,
@@ -161,7 +162,11 @@ export function CreateView() {
               size="lg"
               className="flex-1"
               disabled={busy}
-              onClick={() => void create(draft)}
+              onClick={() => {
+                const step = firstInvalidStep(draft.party);
+                if (step) dispatch({ type: "go_to", step });
+                else void create(draft);
+              }}
             >
               {busy ? t("wizard.creating") : t("wizard.create")}
             </Button>

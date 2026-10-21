@@ -115,8 +115,18 @@ test("creates an event through the wizard", async ({ page }) => {
 
   await page.getByRole("link", { name: "Open the control panel" }).click();
   await expect(page).toHaveURL(`${origin}/host/${code}#key=${key}`);
-  // The control panel claims the event and shows the code and links again.
+  // The control panel claims the event and shows the code and TV address; the
+  // host link stays hidden until the host taps to show it.
   await expect(page.getByTestId("event-code")).toHaveText(code);
+  await expect(page.getByTestId("tv-address")).toHaveText(
+    `${origin}/tv/${code}`,
+  );
+  await expect(page.getByTestId("host-link")).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText(key);
+  await expect(
+    page.getByRole("button", { name: "Copy host link" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Show host link" }).click();
   await expect(page.getByTestId("host-link")).toHaveText(
     `${origin}/host/${code}#key=${key}`,
   );
@@ -158,4 +168,48 @@ test("remembers the created event under Your events", async ({ page }) => {
   await expect(page.getByText("Your events")).toBeHidden();
   await page.reload();
   await expect(page.getByText("Your events")).toBeHidden();
+});
+
+test("stops adding menu lines at the party screen's limit", async ({
+  page,
+}) => {
+  await page.goto("/new");
+  for (let i = 0; i < 4; i++) {
+    await page.getByRole("button", { name: "Next" }).click();
+  }
+  const add = page.getByRole("button", { name: "Add a line" });
+  for (let i = 0; i < 20; i++) await add.click();
+  await expect(page.getByLabel("Menu line 20")).toBeVisible();
+  await expect(add).toBeDisabled();
+});
+
+test("Create sends the host to an invalid step instead of sending", async ({
+  page,
+}) => {
+  const bodies = await fakeSupabase(page, []);
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "mingle.wizard-draft",
+      JSON.stringify({
+        step: "summary",
+        niche: "aw",
+        language: "en",
+        enabledModules: [],
+        party: {
+          welcome: "Hi",
+          welcomeEdited: true,
+          menu: [],
+          schedule: [],
+          wifiSsid: "",
+          wifiPassword: "",
+          musicUrl: "http://not-https.example",
+        },
+      }),
+    );
+  });
+  await page.goto("/new");
+  await page.getByRole("button", { name: "Create event" }).click();
+  await expect(page.getByRole("alert")).toContainText("valid https link");
+  await expect(page.getByLabel("Music link")).toBeVisible();
+  expect(bodies).toEqual([]);
 });

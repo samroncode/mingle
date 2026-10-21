@@ -225,6 +225,15 @@ export function stepInvalidFields(
   return invalidFields(form).filter((field) => fieldStep[field] === step);
 }
 
+/**
+ * The first step, in step order, that holds an invalid part, or undefined
+ * when everything is valid. Create sends the host there instead of sending.
+ */
+export function firstInvalidStep(form: PartyForm): WizardStep | undefined {
+  const steps = new Set(invalidFields(form).map((field) => fieldStep[field]));
+  return stepOrder.find((step) => steps.has(step));
+}
+
 /** The input for `createEvent`: the `create_event` request without its action. */
 export function toCreateInput(
   draft: WizardDraft,

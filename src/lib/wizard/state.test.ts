@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { getNiche, niches } from "@/niches";
 import { CreateEventRequestSchema } from "@/lib/schemas/host-actions";
 import {
+  firstInvalidStep,
   initialDraft,
   invalidFields,
   isSkippable,
@@ -184,6 +185,21 @@ describe("party content in the request", () => {
       "wifi",
     ]);
     expect(stepInvalidFields(draft.party, "menu")).toEqual([]);
+  });
+
+  it("finds the first step in step order with invalid content", () => {
+    const draft = run(
+      initialDraft("en"),
+      { type: "set_music_url", url: "nope" },
+      { type: "set_schedule", schedule: [{ time: "25:99", title: "Late" }] },
+    );
+    expect(firstInvalidStep(draft.party)).toBe("schedule");
+    expect(
+      firstInvalidStep(
+        run(draft, { type: "set_schedule", schedule: [] }).party,
+      ),
+    ).toBe("wifi");
+    expect(firstInvalidStep(initialDraft("en").party)).toBeUndefined();
   });
 
   it("accepts a valid https music link", () => {

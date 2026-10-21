@@ -47,7 +47,7 @@ export function HostView() {
       {state.status === "loading" || !link ? (
         <p className="text-muted-foreground">{t("hostDoor.opening")}</p>
       ) : (
-        <EventLinks code={link.code} hostKey={link.key} />
+        <EventLinks code={link.code} hostKey={link.key} hideHostLink />
       )}
     </div>
   );

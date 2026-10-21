@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { partyLimits } from "@/lib/schemas/party";
 import type { PartyField, PartyForm, ScheduleLine } from "@/lib/wizard/state";
 import { LineControls } from "./LineControls";
 
@@ -69,6 +70,7 @@ export function WelcomeStep({
       <Field label={t("wizard.welcome.label")} hint={t("wizard.welcome.hint")}>
         <Textarea
           value={value}
+          maxLength={partyLimits.welcome}
           aria-invalid={invalid.length > 0}
           onChange={(event) => onChange(event.target.value)}
         />
@@ -94,6 +96,7 @@ export function MenuStep({
         <div key={index} className="flex items-center gap-1">
           <Input
             value={line}
+            maxLength={partyLimits.line}
             aria-label={t("wizard.menu.line", { n: index + 1 })}
             onChange={(event) =>
               onChange(replaceItem(menu, index, event.target.value))
@@ -110,6 +113,7 @@ export function MenuStep({
       <Button
         variant="outline"
         size="lg"
+        disabled={menu.length >= partyLimits.lines}
         onClick={() => onChange([...menu, ""])}
       >
         {t("wizard.menu.add")}
@@ -149,6 +153,7 @@ export function ScheduleStep({
           />
           <Input
             value={line.title}
+            maxLength={partyLimits.line}
             aria-label={t("wizard.schedule.title", { n: index + 1 })}
             onChange={(event) =>
               onChange(
@@ -170,6 +175,7 @@ export function ScheduleStep({
       <Button
         variant="outline"
         size="lg"
+        disabled={schedule.length >= partyLimits.lines}
         onClick={() => onChange([...schedule, { time: "", title: "" }])}
       >
         {t("wizard.schedule.add")}
@@ -196,6 +202,7 @@ export function WifiStep({
       <Field label={t("wizard.wifi.ssid")}>
         <Input
           value={party.wifiSsid}
+          maxLength={partyLimits.ssid}
           autoCapitalize="none"
           aria-invalid={invalid.includes("wifi")}
           onChange={(event) =>
@@ -209,6 +216,7 @@ export function WifiStep({
       >
         <Input
           value={party.wifiPassword}
+          maxLength={partyLimits.password}
           autoCapitalize="none"
           onChange={(event) => onWifiChange(party.wifiSsid, event.target.value)}
         />
@@ -218,7 +226,8 @@ export function WifiStep({
           type="url"
           inputMode="url"
           value={party.musicUrl}
-          placeholder="https://"
+          maxLength={partyLimits.musicUrl}
+          placeholder={t("wizard.music.placeholder")}
           aria-invalid={invalid.includes("musicUrl")}
           onChange={(event) => onMusicChange(event.target.value)}
         />
