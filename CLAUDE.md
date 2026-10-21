@@ -106,7 +106,7 @@ supabase/
 
 ## Data rules
 
-- Events expire and are deleted after a fixed retention period (scheduled cleanup function).
+- Events expire 30 days after they are created and are then deleted (scheduled cleanup function).
 - Store only display names for guests. No emails, phone numbers or other personal data.
 - Never send guest names or other personal data to an AI provider. Prompts carry only the event's settings and the niche's hints.
 - RLS is enabled on every table. A new table in `public` without policies is a bug. Tables in the `private` schema are server-only: RLS is on and they have no client policies, on purpose (see `docs/decisions.md`).
