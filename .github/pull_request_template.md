@@ -11,8 +11,9 @@
 <!-- Mark what was run. Note anything that failed or was skipped, and why. -->
 
 - [ ] Typecheck
-- [ ] Lint
+- [ ] Lint and format
 - [ ] Tests
+- [ ] DB tests (`npm run test:db`, desktop only; skip if `supabase/` is unchanged)
 
 ## Decisions and open questions
 
