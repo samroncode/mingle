@@ -19,6 +19,14 @@
     "aw": {
       "name": "Afterwork",
       "description": "Drinks and games with colleagues after work."
+    },
+    "team": {
+      "name": "Team event",
+      "description": "Time with your team, with games and a bit of friendly competition."
+    },
+    "bachelor": {
+      "name": "Bachelor/bachelorette party",
+      "description": "Celebrate the guest of honour with laughs, games and votes."
     }
   },
   "views": {

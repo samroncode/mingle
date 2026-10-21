@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import en from "@/i18n/en.json";
 import sv from "@/i18n/sv.json";
 import indexCss from "@/index.css?raw";
+import { supportedLanguages } from "@/i18n/language";
+import { PartySchema } from "@/lib/schemas/party";
+import { nicheIds } from "./ids";
 import { isNicheId, niches } from "./index";
 import { nicheThemeStyle } from "./theme";
 import { NicheConfigSchema, themeTokens } from "./types";
@@ -55,11 +58,42 @@ describe.each(Object.entries(niches))("niche %s", (registryKey, niche) => {
   });
 });
 
+describe("niche registry", () => {
+  it("covers all three niches, matching the shared id list", () => {
+    expect(Object.keys(niches).sort()).toEqual(["aw", "bachelor", "team"]);
+    expect(Object.keys(niches).sort()).toEqual([...nicheIds].sort());
+  });
+});
+
+describe.each(Object.values(niches))("niche $id content", (niche) => {
+  it.each(supportedLanguages)(
+    "has a welcome text in %s that passes the party schema",
+    (language) => {
+      const result = PartySchema.safeParse({
+        welcome: niche.welcome[language],
+      });
+      expect(result.error).toBeUndefined();
+    },
+  );
+
+  it("has English prompt hints", () => {
+    expect(niche.promptHints).toMatch(/^[\x20-\x7e]+$/);
+  });
+});
+
 describe("NicheConfigSchema", () => {
   it("rejects a token that shadcn does not define", () => {
     const result = NicheConfigSchema.safeParse({
       ...niches.aw,
       theme: { "brand-pink": "pink" },
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a niche missing a welcome text for a language", () => {
+    const result = NicheConfigSchema.safeParse({
+      ...niches.aw,
+      welcome: { en: "Hi" },
     });
     expect(result.success).toBe(false);
   });
