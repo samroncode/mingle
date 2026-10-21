@@ -31,6 +31,14 @@ test("creates an event through the wizard", async ({ page }) => {
   await welcome.fill("Välkomna hem till mig!");
   await page.getByRole("button", { name: "Next" }).click();
 
+  // A reload keeps the step and what was typed.
+  await page.getByRole("button", { name: "Back" }).click();
+  await page.reload();
+  await expect(
+    page.getByLabel("Shown on the TV when guests arrive"),
+  ).toHaveValue("Välkomna hem till mig!");
+  await page.getByRole("button", { name: "Next" }).click();
+
   // Menu: add two lines, reorder, remove an empty one.
   await page.getByRole("button", { name: "Add a line" }).click();
   await page.getByLabel("Menu line 1").fill("Pizza");
@@ -107,13 +115,20 @@ test("creates an event through the wizard", async ({ page }) => {
 
   await page.getByRole("link", { name: "Open the control panel" }).click();
   await expect(page).toHaveURL(`${origin}/host/${code}#key=${key}`);
-
   // The control panel claims the event and shows the code and links again.
   await expect(page.getByTestId("event-code")).toHaveText(code);
   await expect(page.getByTestId("host-link")).toHaveText(
     `${origin}/host/${code}#key=${key}`,
   );
   expect(bodies.at(-1)).toEqual({ action: "claim_host", code, key });
+
+  // The draft is gone once the event exists: a new wizard starts fresh.
+  await page.goto("/new");
+  await expect(page.getByRole("button", { name: /Afterwork/ })).toBeVisible();
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(
+    page.getByRole("main").getByRole("button", { name: "English" }),
+  ).toHaveAttribute("aria-pressed", "true");
 });
 
 test("remembers the created event under Your events", async ({ page }) => {

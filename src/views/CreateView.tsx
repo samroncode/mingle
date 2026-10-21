@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NicheTheme } from "@/components/NicheTheme";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { useCreateEvent } from "@/hooks/useCreateEvent";
 import { isLanguage } from "@/i18n/language";
 import type { CreateEventResponse } from "@/lib/schemas/host-actions";
 import { addMyEvent } from "@/lib/my-events";
+import { clearDraft, loadDraft, saveDraft } from "@/lib/wizard/draft-storage";
 import { createErrorKey } from "@/lib/wizard/create-error";
 import {
   initialDraft,
@@ -30,16 +31,25 @@ import {
 
 export function CreateView() {
   const { t, i18n } = useTranslation();
-  const [draft, dispatch] = useReducer(wizardReducer, undefined, () =>
-    initialDraft(
-      isLanguage(i18n.resolvedLanguage) ? i18n.resolvedLanguage : "en",
-    ),
+  const [draft, dispatch] = useReducer(
+    wizardReducer,
+    undefined,
+    () =>
+      loadDraft() ??
+      initialDraft(
+        isLanguage(i18n.resolvedLanguage) ? i18n.resolvedLanguage : "en",
+      ),
   );
   const [created, setCreated] = useState<CreateEventResponse>();
   const { busy, error, create } = useCreateEvent((event) => {
     addMyEvent({ ...event, niche: draft.niche, createdAt: Date.now() });
+    clearDraft();
     setCreated(event);
   });
+
+  useEffect(() => {
+    if (!created) saveDraft(draft);
+  }, [draft, created]);
 
   const stepIndex = stepOrder.indexOf(draft.step);
   const isFirst = stepIndex === 0;
