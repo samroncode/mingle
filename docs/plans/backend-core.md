@@ -1,6 +1,6 @@
 # Plan: Backend core
 
-**Status:** Draft, awaiting the owner's approval. Nothing in this plan is built yet.
+**Status:** Approved. Step 1 is done (see "Step 1 result"); Steps 2–8 are not built yet.
 
 ## Goal
 
@@ -189,7 +189,7 @@ Only the type is added here. `registry.ts` keeps its ids until the first module 
 - **Function code:** the function code under `supabase/functions/` is Deno.
   - It gets its own `deno.json`.
   - It's excluded from the app's `tsconfig`, and linted with a separate ESLint block that doesn't use the browser globals.
-  - Its typecheck happens when it's served. Step 1 confirms this setup.
+  - ~~Its typecheck happens when it's served.~~ Step 1 showed it doesn't: see "Step 1 result" and the open question on typechecking.
 - **`.env.example`:** gets a commented section listing the function secrets (`ALLOWED_ORIGINS`). It also notes that the Supabase URL and service-role key are injected by the platform and must never get a `VITE_` prefix.
 
 ## Steps
@@ -203,6 +203,12 @@ Each step ends with: checks pass → commit → push → wait for the owner's go
    - Spike: a throwaway function imports a schema from `src/lib/schemas/`, and is served and called locally.
    - Set up the ESLint and tsconfig split for function code.
    - *Verify:* `db:start` brings up the stack, the spike function answers, and the standard check passes. The spike is removed before the commit. Its result, and the fallback if it was needed, are recorded in this plan.
+   - **Step 1 result (2026-10-21):**
+     - **The default works for `serve`.** A throwaway function imported a Zod schema from `src/lib/schemas/` by relative path (`../../../src/lib/schemas/…ts`). `supabase functions serve` (edge runtime 1.77.4, Deno 2.1.4) bundled it and answered 200 for a valid body and 400 for an invalid one. The fallback (`_shared/` with an `@shared` alias) is **not** needed.
+     - **One import map for all functions:** `supabase/functions/deno.json` maps `zod` to `npm:zod`. It is what resolves the bare `zod` import inside `src/lib/schemas/` too. With a bogus mapping the worker failed to boot, and without the file it failed with `Relative import path "zod" not prefixed…`. So the app (`node_modules`) and the functions (`npm:`) each resolve their own copy; keep the version ranges in `package.json` and `deno.json` in step.
+     - **`deploy` is not verified.** It needs a linked project (owner to-do). Verify it in Step 5 when `host-actions` is first deployed; if bundling fails there, switch to the fallback.
+     - **`serve` does not typecheck.** A deliberate type error in the function still served 200. The edge runtime only strips types, and the app's `tsc -b` doesn't cover `supabase/functions/`. Today the function code is only linted. See the open question on typechecking.
+     - **Other notes:** `config.toml` sets `project_id = "mingle"` (otherwise it defaults to the folder name, which differs per worktree), and the local auth `site_url` is the Vite dev server (`http://localhost:5173`). `db:types` runs Prettier on the generated file so `format:check` stays green. `test:db` passes with no test files until Step 3 adds them.
 2. **Migration 1: schema, helpers, publication.**
    - Create `supabase/migrations/<timestamp>_core.sql` and run `db:types`.
    - *Verify:* `db:reset` applies it cleanly, and the generated types compile. Every table in `public` has RLS on (a SQL check in the test suite).
@@ -260,4 +266,5 @@ These are outside the repo, so the agent can't do them:
 
 - **E:** How long is event data kept? The schema uses one constant until this is decided.
 - **CAPTCHA on anonymous sign-in:** Supabase recommends it against abuse. It would mean a third-party widget (hCaptcha or Turnstile) on the join and create pages. Should it come before a public launch?
+- **Typechecking function code (from Step 1):** nothing typechecks `supabase/functions/` today. Options: (a) add the `deno` npm package as a dev dependency and a `typecheck:functions` script running `deno check` (new dependency, needs approval); (b) rely on lint plus the Step 5 integration tests; (c) also typecheck the functions with `tsc`, which doesn't understand `npm:` specifiers or `Deno` types without extra setup. Recommendation: (a), decided before Step 5.
 - **TV as a member:** the plan lets anyone with the code register as a TV, which is no more than a guest can see. A stricter option is a separate TV token shown only in the host panel. Is the simpler model acceptable?
