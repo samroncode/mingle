@@ -159,7 +159,7 @@ Skills copied from mattpocock/skills live in `.claude/skills/`. The main session
 2. `/to-spec`, then `/to-tickets`: the spec becomes a GitHub issue and the tickets its sub-issues.
 3. `/implement-spec` builds a whole spec with one `implementer` subagent per ticket and one PR. `/implement` builds a single ticket in the main session.
 
-Tickets that touch `src/i18n/*.json` or `src/modules/registry.ts` collide when built in parallel, so give them a blocking edge.
+Parallel tickets often both add entries to `src/i18n/*.json` or `src/modules/registry.ts`. Don't add a blocking edge for that; keep both sides when merging.
 
 ### Issue tracker
 
