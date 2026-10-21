@@ -36,6 +36,8 @@ export default defineConfig({
           exclude: ["node_modules/**"],
           // The db tests share one local database, so run files one at a time.
           fileParallelism: false,
+          // Serves the Edge Functions for the tests that call them over HTTP.
+          globalSetup: ["supabase/tests/functions-setup.ts"],
         },
       },
     ],

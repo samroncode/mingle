@@ -56,7 +56,7 @@ The first ticket of the backend core adds the Supabase CLI and these scripts. Th
 | `npm run db:stop` | Stops it. |
 | `npm run db:reset` | Rebuilds the local database from the migrations. Local data is lost. |
 | `npm run db:types` | Regenerates `src/api/database.types.ts` from the local schema. |
-| `npm run test:db` | Runs the `*.db.test.ts` tests against the local stack. |
+| `npm run test:db` | Runs the `*.db.test.ts` tests against the local stack. It first serves this checkout's Edge Functions with `supabase functions serve`, so the `host-actions` tests call them over HTTP. |
 
 While the stack is running, Supabase Studio at http://localhost:54323 shows the tables, the users and a SQL editor.
 
