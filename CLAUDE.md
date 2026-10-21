@@ -76,7 +76,7 @@ One app serves every event. Events are rows in the database identified by a shor
 
 1. **The database is the source of truth.** The event's state (`current_module`, `current_step`, `status`) lives in Postgres. TV and guest views subscribe through Realtime and render that state. No client holds authoritative state.
 2. **The host is the only one who changes event flow.** Every host action goes through an Edge Function that verifies the admin key (stored hashed). Guests can only write their own answers and votes, enforced by RLS.
-3. **All data access lives in one layer.** Supabase calls only happen in `src/api/`. Components never import the Supabase client directly.
+3. **All data access lives in one layer.** Supabase calls only happen in `src/api/`. Components never import the Supabase client directly. The only exception is the db tests in `supabase/tests/`.
 4. **Niches are data, not branches.** Each niche is a config object in `src/niches/` (theme tokens, default modules, built-in content, prompt hints, copy). Add a niche by adding a config file. Never scatter `if (niche === 'aw')` checks through components.
 5. **Modules are self-contained.** Each module in `src/modules/<name>/` has its own host, TV and guest components plus its own types, and implements a shared module interface. Its data access lives in `src/api/<name>.ts` (principle 3).
 6. **AI is optional, and its output is untrusted until approved.** The app works fully without AI. Validate every AI response with Zod. Store it as `draft`. Only host-approved items (`approved`) are ever shown to guests or on the TV.

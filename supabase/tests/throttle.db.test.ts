@@ -132,6 +132,27 @@ describe("code guessing", () => {
     expect(data).toEqual({ event_id: event.id, error: null });
   });
 
+  it("can't be beaten with a burst of parallel guesses", async () => {
+    const event = await seedEvent();
+    const guesser = await anonymousUser();
+
+    const results = await Promise.all(
+      Array.from({ length: 3 * limit }, (_, i) =>
+        i % 2
+          ? joinTv(guesser, randomCode())
+          : joinEvent(guesser, randomCode()),
+      ),
+    );
+
+    const errors = results.map(({ data }) => data?.error);
+    expect(errors.filter((error) => error === "not_found")).toHaveLength(limit);
+    expect(errors.filter((error) => error === "rate_limited")).toHaveLength(
+      2 * limit,
+    );
+    const { data } = await joinEvent(guesser, event.code);
+    expect(data).toEqual({ event_id: null, error: "rate_limited" });
+  });
+
   it("can't be reset by the client", async () => {
     const event = await seedEvent();
     const guesser = await anonymousUser();

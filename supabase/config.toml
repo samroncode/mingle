@@ -203,7 +203,7 @@ email_sent = 2
 # Number of SMS messages that can be sent per hour. Requires auth.sms to be enabled.
 sms_sent = 30
 # Number of anonymous sign-ins that can be made per hour per IP address. Requires enable_anonymous_sign_ins = true.
-# Raised for the local stack only: every `npm run test:db` run signs in dozens of
+# Raised for the local stack only: every `npm run test:db` run signs in about 150
 # fresh anonymous users. The hosted project keeps its own (lower) limit, set in the
 # dashboard under Authentication → Rate Limits.
 anonymous_users = 10000

@@ -190,6 +190,21 @@ describe("writing members", () => {
 });
 
 describe("the private schema", () => {
+  // The Data API doesn't expose `private`, so the API tests below can't tell
+  // whether the grants hold too. These check the grants themselves, as the
+  // database roles every client request runs as.
+  it.each(["anon", "authenticated"])(
+    "gives the %s role no access, even if the schema were exposed",
+    (role) => {
+      expect(() =>
+        sql(`set role ${role}; select count(*) from private.rate_limits`),
+      ).toThrow(/permission denied for schema private/);
+      expect(() =>
+        sql(`set role ${role}; select private.join_failure_limit()`),
+      ).toThrow(/permission denied for schema private/);
+    },
+  );
+
   it.each(allRoles)("the %s can't read server-only data", async (role) => {
     const { data, error } = await user(role)
       .client.schema("private" as "public")

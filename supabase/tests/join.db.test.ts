@@ -193,6 +193,35 @@ describe("a guest joins", () => {
     });
   });
 
+  it("with no-break and zero-width spaces trimmed from their name", async () => {
+    const event = await seedEvent();
+    const guest = await anonymousUser();
+
+    await joinEvent(guest, event.code, " ​Anna　﻿");
+
+    expect((await ownRow(guest, event.id))?.display_name).toBe("Anna");
+  });
+
+  it("not with a name of only invisible spaces", async () => {
+    const event = await seedEvent();
+    const guest = await anonymousUser();
+
+    const { data } = await joinEvent(guest, event.code, "​ ﻿");
+
+    expect(data).toEqual({ event_id: null, error: "invalid_name" });
+  });
+
+  it("again after the event has ended, and keeps access", async () => {
+    const event = await seedEvent();
+    const guest = await anonymousUser();
+    await joinEvent(guest, event.code, "Anna");
+    await setEventStatus(event.id, "ended");
+
+    const { data } = await joinEvent(guest, event.code, "Anna");
+
+    expect(data).toEqual({ event_id: event.id, error: null });
+  });
+
   it("only with a session", async () => {
     const event = await seedEvent();
 
@@ -348,6 +377,17 @@ describe("the TV joins", () => {
     const { data } = await joinTv(tv, event.code);
 
     expect(data).toEqual({ event_id: null, error: "ended" });
+  });
+
+  it("again after the event has ended", async () => {
+    const event = await seedEvent();
+    const tv = await anonymousUser();
+    await joinTv(tv, event.code);
+    await setEventStatus(event.id, "ended");
+
+    const { data } = await joinTv(tv, event.code);
+
+    expect(data).toEqual({ event_id: event.id, error: null });
   });
 
   it("only with a session", async () => {

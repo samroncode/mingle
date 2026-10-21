@@ -83,17 +83,37 @@ create unique index members_guest_name_key
   on public.members (event_id, lower(display_name))
   where role = 'guest';
 
--- Trims surrounding whitespace from display names on every insert and update,
--- so the length check and the uniqueness index see the trimmed name.
+-- Removes surrounding whitespace from a display name, including no-break and
+-- zero-width spaces that a plain trim would keep. The trigger below and
+-- join_event both use it, so they apply the same rule.
+create function private.clean_display_name(name text)
+returns text
+language sql
+immutable
+set search_path = ''
+as $$
+  select pg_catalog.regexp_replace(
+    name,
+    '^[\s   -​    　﻿]+'
+      || '|[\s   -​    　﻿]+$',
+    '',
+    'g'
+  );
+$$;
+
+revoke execute on function private.clean_display_name(text) from public;
+
+-- Cleans display names on every insert and update, so the length check and
+-- the uniqueness index see the cleaned name.
 create function private.trim_display_name()
 returns trigger
 language plpgsql
+-- Runs as the owner, since a guest renaming themselves has no access to private.
+security definer
 set search_path = ''
 as $$
 begin
-  new.display_name := pg_catalog.regexp_replace(
-    new.display_name, '^\s+|\s+$', '', 'g'
-  );
+  new.display_name := private.clean_display_name(new.display_name);
   return new;
 end;
 $$;
@@ -251,52 +271,65 @@ immutable
 set search_path = ''
 as $$ select interval '1 minute' $$;
 
-create function private.join_is_throttled(caller uuid)
-returns boolean
-language sql
-stable
-set search_path = ''
-as $$
-  select exists (
-    select 1
-    from private.rate_limits r
-    where r.user_id = caller
-      and r.action = 'join'
-      and r.count >= private.join_failure_limit()
-      and r.window_start > pg_catalog.now() - private.join_failure_window()
-  );
-$$;
+revoke execute on function private.join_failure_limit() from public;
+revoke execute on function private.join_failure_window() from public;
 
--- Counts one failure. A failure after the window has passed starts a new one.
-create function private.record_join_failure(caller uuid)
-returns void
-language sql
+-- The shared first half of both join RPCs. It locks the caller's counter row
+-- until the transaction ends, so parallel requests from one user are checked
+-- and counted one at a time and a burst can't slip past the limit. Returns the
+-- event, or the error code to answer with.
+create function private.find_event_for_join(
+  caller uuid,
+  code text,
+  out target public.events,
+  out error text
+)
+language plpgsql
 volatile
 set search_path = ''
 as $$
-  insert into private.rate_limits as r (user_id, action, window_start, count)
-  values (caller, 'join', pg_catalog.now(), 1)
-  on conflict (user_id, action) do update set
-    window_start = case
-      when r.window_start <= pg_catalog.now() - private.join_failure_window()
-        then pg_catalog.now()
-      else r.window_start
-    end,
-    count = case
-      when r.window_start <= pg_catalog.now() - private.join_failure_window()
-        then 1
-      else r.count + 1
-    end;
+declare
+  counter private.rate_limits;
+  window_open boolean;
+begin
+  insert into private.rate_limits (user_id, action)
+  values (caller, 'join')
+  on conflict (user_id, action) do nothing;
+
+  select * into counter
+  from private.rate_limits r
+  where r.user_id = caller and r.action = 'join'
+  for update;
+
+  window_open :=
+    counter.window_start > pg_catalog.now() - private.join_failure_window();
+
+  if window_open and counter.count >= private.join_failure_limit() then
+    error := 'rate_limited';
+    return;
+  end if;
+
+  target := private.find_event_by_code(find_event_for_join.code);
+  if target.id is null then
+    -- A failure after the window has passed starts a new window.
+    update private.rate_limits r
+    set window_start = case
+          when window_open then r.window_start
+          else pg_catalog.now()
+        end,
+        count = case when window_open then r.count + 1 else 1 end
+    where r.user_id = caller and r.action = 'join';
+    error := 'not_found';
+  end if;
+end;
 $$;
 
-revoke execute on function private.join_failure_limit() from public;
-revoke execute on function private.join_failure_window() from public;
-revoke execute on function private.join_is_throttled(uuid) from public;
-revoke execute on function private.record_join_failure(uuid) from public;
+revoke execute on function private.find_event_for_join(uuid, text) from public;
 
 -- Joins the event with this code as a guest. Calling again from the same
--- session returns the same event id and changes nothing, so a guest keeps
--- their name and a host or TV can't turn into a guest.
+-- session returns the same event id and changes nothing, even after the event
+-- has ended, so a guest keeps their name and a host or TV can't turn into a
+-- guest.
 create function public.join_event(code text, display_name text)
 returns public.join_result
 language plpgsql
@@ -306,53 +339,47 @@ set search_path = ''
 as $$
 declare
   caller uuid := auth.uid();
-  target public.events;
+  found record;
   clean_name text;
-  violated text;
+  violated_constraint text;
 begin
   if caller is null then
     raise exception 'not_authenticated' using errcode = '42501';
   end if;
 
-  if private.join_is_throttled(caller) then
-    return row(null, 'rate_limited')::public.join_result;
-  end if;
-
-  target := private.find_event_by_code(join_event.code);
-  if target.id is null then
-    perform private.record_join_failure(caller);
-    return row(null, 'not_found')::public.join_result;
-  end if;
-  if target.status = 'ended' then
-    return row(null, 'ended')::public.join_result;
+  found := private.find_event_for_join(caller, join_event.code);
+  if found.error is not null then
+    return row(null, found.error)::public.join_result;
   end if;
 
   if exists (
     select 1 from public.members m
-    where m.event_id = target.id and m.user_id = caller
+    where m.event_id = (found.target).id and m.user_id = caller
   ) then
-    return row(target.id, null)::public.join_result;
+    return row((found.target).id, null)::public.join_result;
   end if;
 
-  clean_name := pg_catalog.regexp_replace(
-    coalesce(join_event.display_name, ''), '^\s+|\s+$', '', 'g'
-  );
-  if pg_catalog.char_length(clean_name) not between 1 and 30 then
+  if (found.target).status = 'ended' then
+    return row(null, 'ended')::public.join_result;
+  end if;
+
+  clean_name := private.clean_display_name(join_event.display_name);
+  if coalesce(pg_catalog.char_length(clean_name), 0) not between 1 and 30 then
     return row(null, 'invalid_name')::public.join_result;
   end if;
 
   begin
     insert into public.members (event_id, user_id, role, display_name)
-    values (target.id, caller, 'guest', clean_name);
+    values ((found.target).id, caller, 'guest', clean_name);
   exception when unique_violation then
-    get stacked diagnostics violated = constraint_name;
-    if violated = 'members_guest_name_key' then
+    get stacked diagnostics violated_constraint = constraint_name;
+    if violated_constraint = 'members_guest_name_key' then
       return row(null, 'name_taken')::public.join_result;
     end if;
-    -- The same session joined at the same moment in another request.
+    -- Otherwise the same session joined at the same moment in another request.
   end;
 
-  return row(target.id, null)::public.join_result;
+  return row((found.target).id, null)::public.join_result;
 end;
 $$;
 
@@ -367,30 +394,33 @@ set search_path = ''
 as $$
 declare
   caller uuid := auth.uid();
-  target public.events;
+  found record;
 begin
   if caller is null then
     raise exception 'not_authenticated' using errcode = '42501';
   end if;
 
-  if private.join_is_throttled(caller) then
-    return row(null, 'rate_limited')::public.join_result;
+  found := private.find_event_for_join(caller, join_tv.code);
+  if found.error is not null then
+    return row(null, found.error)::public.join_result;
   end if;
 
-  target := private.find_event_by_code(join_tv.code);
-  if target.id is null then
-    perform private.record_join_failure(caller);
-    return row(null, 'not_found')::public.join_result;
+  if exists (
+    select 1 from public.members m
+    where m.event_id = (found.target).id and m.user_id = caller
+  ) then
+    return row((found.target).id, null)::public.join_result;
   end if;
-  if target.status = 'ended' then
+
+  if (found.target).status = 'ended' then
     return row(null, 'ended')::public.join_result;
   end if;
 
   insert into public.members (event_id, user_id, role)
-  values (target.id, caller, 'tv')
+  values ((found.target).id, caller, 'tv')
   on conflict (event_id, user_id) do nothing;
 
-  return row(target.id, null)::public.join_result;
+  return row((found.target).id, null)::public.join_result;
 end;
 $$;
 

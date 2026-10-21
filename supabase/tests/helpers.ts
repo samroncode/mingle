@@ -10,7 +10,11 @@ import type { Database } from "../../src/api/database.types";
 export type Client = SupabaseClient<Database>;
 export type EventRow = Database["public"]["Tables"]["events"]["Row"];
 export type MemberRow = Database["public"]["Tables"]["members"]["Row"];
-export type Role = MemberRow["role"];
+export type EventInsert = Partial<
+  Database["public"]["Tables"]["events"]["Insert"]
+>;
+/** The roles the members table allows (`text` with a check, so not in the generated types). */
+export type Role = "host" | "guest" | "tv";
 
 type LocalStack = {
   API_URL: string;
@@ -83,9 +87,7 @@ export function randomCode(): string {
 }
 
 /** Inserts an event with the service role, as host-actions will in spec 2. */
-export async function seedEvent(
-  fields: Partial<Database["public"]["Tables"]["events"]["Insert"]> = {},
-): Promise<EventRow> {
+export async function seedEvent(fields: EventInsert = {}): Promise<EventRow> {
   const { data, error } = await serviceClient()
     .from("events")
     .insert({ code: randomCode(), niche: "aw", language: "sv", ...fields })
@@ -172,9 +174,7 @@ export type Cast = {
 };
 
 /** Seeds an event with a host, two guests and a TV, plus a second event. */
-export async function seedCast(
-  fields: Partial<Database["public"]["Tables"]["events"]["Insert"]> = {},
-): Promise<Cast> {
+export async function seedCast(fields: EventInsert = {}): Promise<Cast> {
   const [event, otherEvent] = await Promise.all([
     seedEvent(fields),
     seedEvent(),
