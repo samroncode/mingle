@@ -93,6 +93,10 @@
       "niche": "Vad för slags kväll?",
       "language": "Språk",
       "activities": "Aktiviteter",
+      "welcome": "Välkomsttext",
+      "menu": "Meny",
+      "schedule": "Program",
+      "wifi": "Wifi och musik",
       "summary": "Sammanfattning"
     },
     "activities": {
@@ -101,7 +105,8 @@
     "summary": {
       "noActivities": "Inga",
       "edit": "Ändra",
-      "change": "Ändra {{step}}"
+      "change": "Ändra {{step}}",
+      "skipped": "Hoppades över"
     },
     "create": "Skapa event",
     "creating": "Skapar...",
@@ -109,6 +114,41 @@
       "title": "Ditt event är klart",
       "warning": "Spara värdlänken nu. Den kan inte visas igen och är det enda sättet att komma tillbaka till kontrollpanelen.",
       "openPanel": "Öppna kontrollpanelen"
+    },
+    "skip": "Hoppa över",
+    "welcome": {
+      "label": "Visas på TV:n när gästerna kommer",
+      "hint": "Färdig för din typ av kväll. Ändra eller rensa den."
+    },
+    "menu": {
+      "add": "Lägg till rad",
+      "line": "Menyrad {{n}}"
+    },
+    "schedule": {
+      "add": "Lägg till rad",
+      "time": "Tid för rad {{n}}",
+      "title": "Titel för rad {{n}}"
+    },
+    "wifi": {
+      "ssid": "Wifi-namn",
+      "password": "Wifi-lösenord",
+      "passwordHint": "Lämna tomt för ett öppet nätverk."
+    },
+    "music": {
+      "label": "Musiklänk",
+      "hint": "En Spotify Jam eller delad spellista (https)."
+    },
+    "lines": {
+      "moveUp": "Flytta rad {{n}} uppåt",
+      "moveDown": "Flytta rad {{n}} nedåt",
+      "remove": "Ta bort rad {{n}}"
+    },
+    "errors": {
+      "welcome": "Välkomsttexten är för lång (högst 500 tecken).",
+      "menu": "Menyrader får vara 80 tecken och det får finnas 20 stycken.",
+      "schedule": "Varje programrad behöver en tid som 19:00 och en titel på högst 80 tecken (högst 20 rader).",
+      "wifi": "Ange ett wifi-namn på högst 32 tecken. Lösenordet får vara högst 63.",
+      "musicUrl": "Musiklänken måste vara en giltig https-länk."
     }
   }
 }

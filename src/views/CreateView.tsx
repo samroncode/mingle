@@ -6,8 +6,20 @@ import { useCreateEvent } from "@/hooks/useCreateEvent";
 import { isLanguage } from "@/i18n/language";
 import type { CreateEventResponse } from "@/lib/schemas/host-actions";
 import { createErrorKey } from "@/lib/wizard/create-error";
-import { initialDraft, stepOrder, wizardReducer } from "@/lib/wizard/state";
+import {
+  initialDraft,
+  isSkippable,
+  stepInvalidFields,
+  stepOrder,
+  wizardReducer,
+} from "@/lib/wizard/state";
 import { DoneScreen } from "./create/DoneScreen";
+import {
+  MenuStep,
+  ScheduleStep,
+  WelcomeStep,
+  WifiStep,
+} from "./create/party-steps";
 import {
   ActivitiesStep,
   LanguageStep,
@@ -28,6 +40,7 @@ export function CreateView() {
   const stepIndex = stepOrder.indexOf(draft.step);
   const isFirst = stepIndex === 0;
   const isLast = draft.step === "summary";
+  const invalid = stepInvalidFields(draft.party, draft.step);
 
   if (created) {
     return (
@@ -72,6 +85,39 @@ export function CreateView() {
             onToggle={(module) => dispatch({ type: "toggle_module", module })}
           />
         )}
+        {draft.step === "welcome" && (
+          <WelcomeStep
+            value={draft.party.welcome}
+            invalid={invalid}
+            onChange={(text) => dispatch({ type: "set_welcome", text })}
+          />
+        )}
+        {draft.step === "menu" && (
+          <MenuStep
+            menu={draft.party.menu}
+            invalid={invalid}
+            onChange={(menu) => dispatch({ type: "set_menu", menu })}
+          />
+        )}
+        {draft.step === "schedule" && (
+          <ScheduleStep
+            schedule={draft.party.schedule}
+            invalid={invalid}
+            onChange={(schedule) =>
+              dispatch({ type: "set_schedule", schedule })
+            }
+          />
+        )}
+        {draft.step === "wifi" && (
+          <WifiStep
+            party={draft.party}
+            invalid={invalid}
+            onWifiChange={(ssid, password) =>
+              dispatch({ type: "set_wifi", ssid, password })
+            }
+            onMusicChange={(url) => dispatch({ type: "set_music_url", url })}
+          />
+        )}
         {draft.step === "summary" && (
           <SummaryStep
             draft={draft}
@@ -106,13 +152,25 @@ export function CreateView() {
               {busy ? t("wizard.creating") : t("wizard.create")}
             </Button>
           ) : (
-            <Button
-              size="lg"
-              className="flex-1"
-              onClick={() => dispatch({ type: "next" })}
-            >
-              {t("common.next")}
-            </Button>
+            <>
+              {isSkippable(draft.step) && (
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  onClick={() => dispatch({ type: "skip" })}
+                >
+                  {t("wizard.skip")}
+                </Button>
+              )}
+              <Button
+                size="lg"
+                className="flex-1"
+                disabled={invalid.length > 0}
+                onClick={() => dispatch({ type: "next" })}
+              >
+                {t("common.next")}
+              </Button>
+            </>
           )}
         </div>
       </div>

@@ -3,6 +3,9 @@ import { niches } from "@/niches";
 import { CreateEventRequestSchema } from "@/lib/schemas/host-actions";
 import {
   initialDraft,
+  invalidFields,
+  isSkippable,
+  stepInvalidFields,
   stepOrder,
   toCreateRequest,
   wizardReducer,
@@ -86,7 +89,7 @@ describe("toCreateRequest", () => {
       niche: "aw",
       language: "sv",
       enabledModules: ["quiz", "hottakes"],
-      party: {},
+      party: { welcome: niches.aw.welcome.sv },
     });
   });
 
@@ -103,5 +106,112 @@ describe("toCreateRequest", () => {
     expect(
       CreateEventRequestSchema.safeParse(toCreateRequest(draft)).success,
     ).toBe(true);
+  });
+});
+
+describe("welcome text", () => {
+  it("starts as the niche's text in the language and follows language and niche changes", () => {
+    let draft = initialDraft("en");
+    expect(draft.party.welcome).toBe(niches.aw.welcome.en);
+    draft = run(draft, { type: "set_language", language: "sv" });
+    expect(draft.party.welcome).toBe(niches.aw.welcome.sv);
+    draft = run(draft, { type: "select_niche", niche: "team" });
+    expect(draft.party.welcome).toBe(niches.team.welcome.sv);
+  });
+
+  it("is kept once the host has edited it", () => {
+    const draft = run(
+      initialDraft("en"),
+      { type: "set_welcome", text: "Hello mates" },
+      { type: "set_language", language: "sv" },
+      { type: "select_niche", niche: "bachelor" },
+    );
+    expect(draft.party.welcome).toBe("Hello mates");
+  });
+
+  it("stays cleared after the host clears it, and is then left out", () => {
+    const draft = run(
+      initialDraft("en"),
+      { type: "set_welcome", text: "" },
+      { type: "set_language", language: "sv" },
+    );
+    expect(draft.party.welcome).toBe("");
+    expect(toCreateRequest(draft).party).toEqual({});
+  });
+});
+
+describe("party content in the request", () => {
+  it("drops empty parts and keeps filled ones", () => {
+    const draft = run(
+      initialDraft("en"),
+      { type: "set_welcome", text: "  " },
+      { type: "set_menu", menu: ["Pizza", " ", "Cake "] },
+      {
+        type: "set_schedule",
+        schedule: [
+          { time: "19:00", title: "Dinner" },
+          { time: "", title: "" },
+        ],
+      },
+      { type: "set_wifi", ssid: "Home", password: "" },
+      { type: "set_music_url", url: "" },
+    );
+    const request = toCreateRequest(draft);
+    expect(CreateEventRequestSchema.safeParse(request).success).toBe(true);
+    expect(request.party).toEqual({
+      menu: ["Pizza", "Cake"],
+      schedule: [{ time: "19:00", title: "Dinner" }],
+      wifi: { ssid: "Home", password: "" },
+    });
+  });
+
+  it("reports invalid content by field and step", () => {
+    const draft = run(
+      initialDraft("en"),
+      { type: "set_schedule", schedule: [{ time: "25:99", title: "Late" }] },
+      { type: "set_wifi", ssid: "", password: "secret" },
+      { type: "set_music_url", url: "http://open.spotify.com/x" },
+      { type: "set_welcome", text: "x".repeat(501) },
+    );
+    expect(invalidFields(draft.party).sort()).toEqual([
+      "musicUrl",
+      "schedule",
+      "welcome",
+      "wifi",
+    ]);
+    expect(stepInvalidFields(draft.party, "wifi").sort()).toEqual([
+      "musicUrl",
+      "wifi",
+    ]);
+    expect(stepInvalidFields(draft.party, "menu")).toEqual([]);
+  });
+
+  it("accepts a valid https music link", () => {
+    const draft = run(initialDraft("en"), {
+      type: "set_music_url",
+      url: "https://open.spotify.com/jam/abc",
+    });
+    expect(invalidFields(draft.party)).toEqual([]);
+  });
+});
+
+describe("skipping", () => {
+  it("only allows skipping steps after language", () => {
+    expect(isSkippable("niche")).toBe(false);
+    expect(isSkippable("language")).toBe(false);
+    expect(stepOrder.slice(2).every(isSkippable)).toBe(true);
+  });
+
+  it("clears invalid content on the step and moves on", () => {
+    const draft = run(
+      initialDraft("en"),
+      { type: "go_to", step: "wifi" },
+      { type: "set_wifi", ssid: "", password: "secret" },
+      { type: "set_music_url", url: "nope" },
+      { type: "skip" },
+    );
+    expect(draft.step).toBe("summary");
+    expect(invalidFields(draft.party)).toEqual([]);
+    expect(toCreateRequest(draft).party.wifi).toBeUndefined();
   });
 });
