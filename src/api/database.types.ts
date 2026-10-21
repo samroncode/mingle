@@ -93,6 +93,38 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      claim_host: {
+        Args: { caller: string; target_event_id: string };
+        Returns: boolean;
+      };
+      consume_rate_limit: {
+        Args: {
+          action: string;
+          caller: string;
+          max_attempts: number;
+          window_seconds: number;
+        };
+        Returns: boolean;
+      };
+      create_event: {
+        Args: {
+          admin_key_hash: string;
+          caller: string;
+          code: string;
+          enabled_modules: string[];
+          language: string;
+          niche: string;
+          party: Json;
+        };
+        Returns: string;
+      };
+      event_admin_key_hash: {
+        Args: { code: string };
+        Returns: {
+          admin_key_hash: string;
+          event_id: string;
+        }[];
+      };
       is_host: { Args: { target_event_id: string }; Returns: boolean };
       is_member: { Args: { target_event_id: string }; Returns: boolean };
       join_event: {
@@ -114,6 +146,33 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      rate_limit_reached: {
+        Args: {
+          action: string;
+          caller: string;
+          max_attempts: number;
+          window_seconds: number;
+        };
+        Returns: boolean;
+      };
+      set_event_flow: {
+        Args: {
+          from_module?: string;
+          from_phase: string;
+          from_status: string;
+          from_step: number;
+          target_event_id: string;
+          to_module?: string;
+          to_phase: string;
+          to_status: string;
+          to_step: number;
+        };
+        Returns: boolean;
+      };
+      update_event_party: {
+        Args: { party: Json; target_event_id: string };
+        Returns: string;
       };
     };
     Enums: {

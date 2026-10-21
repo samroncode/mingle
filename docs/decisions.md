@@ -12,6 +12,61 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: How a live event view handles a failed refetch and a non-member (#23)
+
+**Decision:**
+- `subscribeToEvent` in `src/api/realtime.ts` treats every change as a signal to refetch the snapshot. When a refetch fails, the view keeps the last snapshot on screen and sets the error code (`useEventState` goes to `error` with the old `event` and `members`); the next successful refetch makes it `ready` again.
+- A subscription by someone who isn't a member of the event only ever gets `not_found`, never event or member data. RLS decides every read, so the realtime channel itself carries nothing the caller couldn't read directly.
+
+**Why:** A TV losing the network for a moment should keep showing the party screen instead of going blank. Answering a non-member with `not_found` matches the join RPCs, so nobody learns more about an event from realtime than from joining it.
+
+## 2026-10-21: How `update_party_content` replaces the party screen (#19)
+
+**Decision:**
+- The body is `{ action: "update_party_content", code, key, party }`, where `party` is validated by the same `PartySchema` that `create_event` uses. It replaces `events.party` as a whole: parts the host leaves out are removed. It answers `{}`; members see the new content on their next read.
+- An ended event's content can't be changed: it answers `409 invalid_transition`, the same code as any flow move after the end, so "the event is over" has one code for the host. An expired event answers `403 not_authorized` like every other host action, because the admin key check already treats it as unknown.
+- The write goes through the service-role-only RPC `update_event_party`, which checks expiry and status in the same statement as the update and answers `updated`, `ended` or `not_found`, so an event that ends or expires between the key check and the write is never changed.
+- After the key check, updates are rate-limited per user and event: 10 per minute, counted under `update_party_content:<event id>`.
+
+**Why:** Replacing the whole object keeps the action simple and matches the wizard, which edits all of it at once. Reusing `invalid_transition` avoids a new error code and i18n key for a case the host only reaches after ending the event. Ten saves a minute is plenty for fixing a typo or the wifi password during the evening.
+
+## 2026-10-21: How `set_flow` moves the event's flow (#20)
+
+**Decision:**
+- The body is `{ action: "set_flow", code, key, move }`, where `move` is one of `start_module` (with `module`), `stop_module`, `next_step`, `open`, `reveal` and `end_event`. It answers the flow after the move: `{ status, currentModule, currentStep, phase }`.
+- Which move is allowed in which state lives in one place, the state machine in `supabase/functions/host-actions/flow.ts`, with the table in its header. An activity can only start when none is running (stop it first). `next_step` is allowed from `idle` (skipping a step) and `revealed`, but not while a step is `open`, so guests' answers are never dropped unseen. `stop_module` leaves the event `live` with no activity: the party screen. `end_event` clears the activity, and after it every move, `end_event` included, answers `invalid_transition`.
+- Disallowed moves answer `409 invalid_transition`; starting an activity that isn't in `enabled_modules` answers `409 module_disabled`.
+- The write is a compare-and-set: the service-role-only RPC `set_event_flow` changes the event only if it still has the flow the move was checked against, so two simultaneous moves can't both apply. A new constraint, `events_flow_check`, holds the same shape in the database: no activity means step 0 and `idle`, and an activity means `live` with an enabled activity.
+- After the key check, moves are rate-limited per user and event: 30 per minute, counted in `private.rate_limits` under `set_flow:<event id>`. `consumeEventRateLimit` in `rate-limit.ts` builds that key and is meant for the other actions that run after the key check, such as `update_party_content`.
+
+**Why:** Keeping the rules in a plain TypeScript function makes them readable in one table. The compare-and-set and the constraint make sure the database never holds a broken flow, whatever the function does. Counting per event lets a host who runs two events keep their limit on each.
+
+## 2026-10-21: How the admin key check and `claim_host` work (#18)
+
+**Decision:**
+- Every host action except `create_event` starts with `authorizeHost(db, caller, code, key)` in `supabase/functions/host-actions/admin-key.ts`, which answers the event id or `not_authorized`/`rate_limited`. Request schemas spread `hostLinkFields` (`code`, `key`) from `src/lib/schemas/host-actions.ts`.
+- The stored hash comes from a service-role-only RPC, `event_admin_key_hash(code)`, which finds no row for an unknown or expired code. The function hashes the received key and compares the two hex hashes in constant time in TypeScript. An unknown code is compared against a dummy hash, so both paths do the same work.
+- A wrong key, a key for another event, an unknown code and an expired event all answer `403 {"error":"not_authorized"}`.
+- Only failed key checks are counted, as `admin_key_failure` in `private.rate_limits`: 10 per user per 10 minutes. Before checking a key, the read-only RPC `rate_limit_reached` asks whether the caller is over the limit; if so, even the right key answers `rate_limited` until the window has passed. Parallel requests can each pass that check before a failure is counted, which gives a burst a few extra guesses at a 256-bit key and was accepted.
+- `claim_host(caller, target_event_id)` upserts the member row as `host`. A guest or TV of the event becomes host in their existing row, and a guest's display name is cleared (hosts have none), which frees the name for other guests. It answers `{}`.
+
+**Why:** Postgres has no constant-time text comparison, and the key never reaches SQL, so the comparison happens in the function. Counting only failures means a host who reopens the link many times is never locked out. Refusing the right key while over the limit means a guesser learns nothing from an attempt made over the limit.
+
+## 2026-10-21: How `host-actions` and `create_event` work (#17)
+
+**Decision:**
+- The function reaches `private` through two `public` RPCs that only `service_role` may execute: `create_event` (inserts the event, its admin key hash and the host member in one transaction, and answers null on a code clash so the function retries with a new code) and `consume_rate_limit` (a fixed window per user and counter name, counting every attempt). The Data API exposes only `public`, so this avoids a direct Postgres connection and a new driver dependency.
+- The admin key is generated, hashed and returned in the function; the database only ever sees the hash. The hash is SHA-256 of the key's text as it appears in the host link, stored as lowercase hex in `private.event_secrets`. The event code is generated in the function with rejection sampling, so every character is equally likely.
+- The gateway's JWT check is off for `host-actions` (`verify_jwt = false` in `supabase/config.toml`), because it would refuse CORS preflights. The function checks the caller's session itself with `auth.getUser`; the publishable or anon key alone is refused as `not_authenticated`.
+- Checks run in this order: CORS, method, body size (32 KiB, read as a capped stream, so an oversized body is never parsed), JWT, the Zod request union, the action's rate limit. `create_event` allows 5 per user per hour.
+- A request with an `Origin` that isn't in `ALLOWED_ORIGINS` is refused with `origin_not_allowed`, preflight or not. A request without `Origin` doesn't come from a browser page, so CORS doesn't apply; it still needs a valid session.
+- Error codes so far: `invalid_request`, `not_authenticated`, `origin_not_allowed`, `method_not_allowed`, `payload_too_large`, `rate_limited`, `internal_error`, listed once in `src/lib/schemas/host-actions.ts`. The app's wrapper adds `network_error` for a call that got no answer, and maps any answer it doesn't recognise to `internal_error`.
+- `events.party` is `{ welcome?, menu?, schedule?, wifi?, musicUrl? }` (`src/lib/schemas/party.ts`): every part optional, unknown fields refused, the music link https only.
+- Shared schemas import only `zod` and relative paths with a `.ts` extension, because the function imports them under Deno. Niche ids therefore live in `src/niches/ids.ts`, and the typecheck makes `niches` list exactly those ids.
+- `npm run test:db` serves this checkout's functions itself (`supabase/tests/functions-setup.ts`), with `ALLOWED_ORIGINS` from a test env file in `supabase/.temp/`. The local gateway answers every preflight itself with `*`, unlike the hosted one, so the preflight tests call the edge runtime directly from inside the Docker network.
+
+**Why:** The ticket left these details open. Generating the key in the function keeps it out of SQL statements and database logs. Counting every `create_event` attempt, not only failures, is what limits flooding.
+
 ## 2026-10-21: How the join RPCs and db tests work (spec 1 build)
 
 **Decision:**

@@ -1,0 +1,164 @@
+// The host-actions request and response contract, shared by the app and the
+// Edge Function. The function imports this file by relative path under Deno:
+// only `zod` and relative imports with a `.ts` extension, and no browser or
+// Node APIs. Later actions add their schema to `HostActionRequestSchema`.
+import { z } from "zod";
+import { supportedLanguages } from "../../i18n/language.ts";
+import { moduleIds } from "../../modules/registry.ts";
+import { nicheIds } from "../../niches/ids.ts";
+import { ADMIN_KEY_PATTERN, EVENT_CODE_PATTERN } from "../formats.ts";
+import { PartySchema } from "./party.ts";
+
+/** 6 characters without look-alikes (no 0/O, no 1/I/L), as in the database. */
+export const EventCodeSchema = z.string().regex(EVENT_CODE_PATTERN);
+
+/** 32 random bytes, base64url-encoded without padding. */
+export const AdminKeySchema = z.string().regex(ADMIN_KEY_PATTERN);
+
+export const ModuleIdSchema = z.enum(moduleIds);
+
+export const CreateEventRequestSchema = z.strictObject({
+  action: z.literal("create_event"),
+  niche: z.enum(nicheIds),
+  language: z.enum(supportedLanguages),
+  /** The activities the host kept switched on. May be empty. */
+  enabledModules: z
+    .array(ModuleIdSchema)
+    .refine((ids) => new Set(ids).size === ids.length, "duplicate module"),
+  party: PartySchema,
+});
+
+export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;
+
+/** The only response that ever contains the admin key. */
+export const CreateEventResponseSchema = z.strictObject({
+  code: EventCodeSchema,
+  key: AdminKeySchema,
+});
+
+export type CreateEventResponse = z.infer<typeof CreateEventResponseSchema>;
+
+/**
+ * The fields every action except `create_event` carries: the event's code and
+ * admin key from the host link. Spread into each action's schema.
+ */
+export const hostLinkFields = {
+  code: EventCodeSchema,
+  key: AdminKeySchema,
+};
+
+/** Makes the caller's session a host of the event (a new device, a lost session). */
+export const ClaimHostRequestSchema = z.strictObject({
+  action: z.literal("claim_host"),
+  ...hostLinkFields,
+});
+
+export type ClaimHostRequest = z.infer<typeof ClaimHostRequestSchema>;
+
+/** Empty: the caller can now read the event as its host. */
+export const ClaimHostResponseSchema = z.strictObject({});
+
+export type ClaimHostResponse = z.infer<typeof ClaimHostResponseSchema>;
+
+/**
+ * The moves a host makes in the event's flow. Which move is allowed in which
+ * state is decided by the flow state machine in host-actions (`flow.ts`).
+ */
+export const FlowMoveSchema = z.discriminatedUnion("type", [
+  z.strictObject({
+    type: z.literal("start_module"),
+    module: ModuleIdSchema,
+  }),
+  z.strictObject({ type: z.literal("stop_module") }),
+  z.strictObject({ type: z.literal("next_step") }),
+  z.strictObject({ type: z.literal("open") }),
+  z.strictObject({ type: z.literal("reveal") }),
+  z.strictObject({ type: z.literal("end_event") }),
+]);
+
+export type FlowMove = z.infer<typeof FlowMoveSchema>;
+
+/** Moves the event's flow: start or stop an activity, next step, open, reveal, end. */
+export const SetFlowRequestSchema = z.strictObject({
+  action: z.literal("set_flow"),
+  ...hostLinkFields,
+  move: FlowMoveSchema,
+});
+
+export type SetFlowRequest = z.infer<typeof SetFlowRequestSchema>;
+
+/** The event's flow (CLAUDE.md principle 1), as stored in `events`. */
+export const FlowStateSchema = z.strictObject({
+  status: z.enum(["lobby", "live", "ended"]),
+  currentModule: ModuleIdSchema.nullable(),
+  currentStep: z.number().int().nonnegative(),
+  phase: z.enum(["idle", "open", "revealed"]),
+});
+
+export type FlowState = z.infer<typeof FlowStateSchema>;
+
+/** The event's flow after the move. */
+export const SetFlowResponseSchema = FlowStateSchema;
+
+export type SetFlowResponse = z.infer<typeof SetFlowResponseSchema>;
+
+/**
+ * Replaces the event's party-screen content (welcome text, menu, schedule,
+ * wifi, music link) as a whole, validated like `create_event`'s `party`.
+ */
+export const UpdatePartyContentRequestSchema = z.strictObject({
+  action: z.literal("update_party_content"),
+  ...hostLinkFields,
+  party: PartySchema,
+});
+
+export type UpdatePartyContentRequest = z.infer<
+  typeof UpdatePartyContentRequestSchema
+>;
+
+/** Empty: members read the new content on their next read. */
+export const UpdatePartyContentResponseSchema = z.strictObject({});
+
+export type UpdatePartyContentResponse = z.infer<
+  typeof UpdatePartyContentResponseSchema
+>;
+
+/** Every body host-actions accepts, told apart by `action`. */
+export const HostActionRequestSchema = z.discriminatedUnion("action", [
+  CreateEventRequestSchema,
+  ClaimHostRequestSchema,
+  SetFlowRequestSchema,
+  UpdatePartyContentRequestSchema,
+]);
+
+export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
+export type HostActionName = HostActionRequest["action"];
+
+/**
+ * Every error host-actions answers with, as `{ "error": code }`. Never free
+ * text: the app maps each code to an i18n key.
+ */
+export const hostActionErrorCodes = [
+  "invalid_request",
+  "not_authenticated",
+  /** A wrong key, a key for another event, or an unknown or expired code. */
+  "not_authorized",
+  "origin_not_allowed",
+  "method_not_allowed",
+  "payload_too_large",
+  "rate_limited",
+  /**
+   * A flow move the event's state doesn't allow, including any move after it
+   * ended, and any change to the party content of an ended event.
+   */
+  "invalid_transition",
+  /** start_module for an activity the host turned off. */
+  "module_disabled",
+  "internal_error",
+] as const;
+
+export type HostActionErrorCode = (typeof hostActionErrorCodes)[number];
+
+export const HostActionErrorSchema = z.strictObject({
+  error: z.enum(hostActionErrorCodes),
+});

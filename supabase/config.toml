@@ -391,6 +391,11 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# host-actions checks the caller's JWT itself (see its index.ts): the gateway's
+# check would refuse CORS preflights, which carry no Authorization header.
+[functions.host-actions]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327

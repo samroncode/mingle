@@ -19,4 +19,4 @@ If the ticket touches `supabase/`, follow "Database rules" in `CLAUDE.md`:
 - The stack is shared with the main checkout. Start it with `npm run db:start` if it isn't running, and never stop it.
 - Apply your migrations with `npm run db:reset`, regenerate types with `npm run db:types`, and test with `npm run test:db`.
 
-Before reporting, run `npm run typecheck`, `npm run lint`, `npm run format:check` and `npm run test`, plus `npm run test:db` if the ticket touches `supabase/`. Reply in at most five lines: what changed, check results, and anything the orchestrator must know.
+Before reporting, run `npm run typecheck`, `npm run typecheck:functions`, `npm run lint`, `npm run format:check` and `npm run test`, plus `npm run test:db` if the ticket touches `supabase/`. Reply in at most five lines: what changed, check results, and anything the orchestrator must know.
