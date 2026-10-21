@@ -120,8 +120,8 @@ These apply to everything under `supabase/`. How Supabase works in this project,
 - **`security definer` functions** set `search_path = ''` and use schema-qualified names (`public.events`), so they can't be tricked into using objects from another schema.
 - **Errors are codes, not text.** RPCs and Edge Functions return codes such as `not_found` or `name_taken`; the UI maps them to i18n keys (principle 7).
 - **Secrets stay server-side.** The service-role key and the AI provider's key exist only in the Edge Functions' environment and never get a `VITE_` prefix.
-- **Generated types are never edited by hand.** `src/api/database.types.ts` comes from `npm run db:types` once the Supabase CLI is set up. Until then it is a hand-written placeholder.
-- **Every policy, RPC and function has a test.** `*.db.test.ts` files sign in as real roles (non-member, guest, TV, host) against the local stack and run with `npm run test:db`. Removing a policy must make a test fail.
+- **Generated types are never edited by hand.** `src/api/database.types.ts` comes from `npm run db:types`. Regenerate it after every migration.
+- **Every policy, RPC and function has a test.** `*.db.test.ts` files in `supabase/tests/` sign in as real roles (non-member, guest, TV, host) against the local stack and run with `npm run test:db`. `supabase/tests/helpers.ts` has the seeding helpers; copy the pattern in `core.db.test.ts` for new tables. Removing a policy must make a test fail.
 
 ## Things the agent must NOT do
 

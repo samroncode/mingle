@@ -27,15 +27,10 @@ async function failTimes(user: User, times: number, join = joinEvent) {
   }
 }
 
-/** Server-only counter, read as the database owner. */
-function failureCount(user: User): number {
-  const [count] = sql(
-    `select count from private.rate_limits where user_id = '${user.id}' and action = 'join'`,
-  );
-  return Number(count ?? 0);
-}
-
-/** Pretends the failures happened just over a minute ago. */
+/**
+ * Pretends the failures happened just over a minute ago. The counter is
+ * server-only, so only the database owner can move it.
+ */
 function moveWindowBack(user: User) {
   sql(
     `update private.rate_limits set window_start = window_start - interval '61 seconds' ` +
@@ -72,23 +67,25 @@ describe("code guessing", () => {
   it("doesn't count successful joins", async () => {
     const event = await seedEvent();
     const guest = await anonymousUser();
-    await failTimes(guest, 3);
-
+    await failTimes(guest, limit - 1);
     for (let i = 0; i < limit; i++) await joinEvent(guest, event.code);
     await joinTv(guest, event.code);
 
-    expect(failureCount(guest)).toBe(3);
+    const { data } = await joinEvent(guest, event.code);
+
+    expect(data).toEqual({ event_id: event.id, error: null });
   });
 
   it("counts an expired code as a failure", async () => {
-    const event = await seedEvent();
-    await expireEvent(event.id);
+    const [event, expired] = await Promise.all([seedEvent(), seedEvent()]);
+    await expireEvent(expired.id);
     const guesser = await anonymousUser();
+    await failTimes(guesser, limit - 1);
 
-    await joinEvent(guesser, event.code);
-    await joinTv(guesser, event.code);
+    await joinTv(guesser, expired.code);
+    const { data } = await joinEvent(guesser, event.code);
 
-    expect(failureCount(guesser)).toBe(2);
+    expect(data).toEqual({ event_id: null, error: "rate_limited" });
   });
 
   it("shares one counter between join_event and join_tv", async () => {
@@ -124,13 +121,15 @@ describe("code guessing", () => {
   });
 
   it("starts a fresh count once the window has passed", async () => {
+    const event = await seedEvent();
     const guesser = await anonymousUser();
     await failTimes(guesser, limit - 1);
     moveWindowBack(guesser);
+    await failTimes(guesser, limit - 1);
 
-    await failTimes(guesser, 1);
+    const { data } = await joinEvent(guesser, event.code);
 
-    expect(failureCount(guesser)).toBe(1);
+    expect(data).toEqual({ event_id: event.id, error: null });
   });
 
   it("can't be reset by the client", async () => {

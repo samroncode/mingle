@@ -12,6 +12,20 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: How the join RPCs and db tests work (spec 1 build)
+
+**Decision:**
+- `join_event` and `join_tv` return a `join_result` (`event_id`, `error`) instead of raising. On success `error` is null; otherwise it holds the code (`not_found`, `ended`, `name_taken`, `invalid_name`, `rate_limited`) and `event_id` is null. Calling without a session is refused by Postgres before the function runs.
+- Codes are matched in upper case with surrounding whitespace removed, so a guest can type `ab3xyz `.
+- An existing member who calls a join RPC again gets the event id back with nothing changed, whatever their role. An `ended` event answers `ended` even to its members (they can still read it).
+- Throttling is a fixed window per user: the first failure starts a one-minute window, and the tenth failure in it blocks both RPCs until the window ends. Limit and window are `private.join_failure_limit()` and `private.join_failure_window()`; the retention is `private.event_retention()`.
+- A guest renames themselves with a normal `update` on `display_name`. A name clash is a unique violation on `members_guest_name_key`, which the data layer maps to `name_taken`; a bad length is a check violation it maps to `invalid_name`.
+- `role`, `status` and `phase` are `text` with `check` constraints, not Postgres enums, so values can be added and removed with a plain migration. The data layer narrows them with Zod.
+- The db tests live in `supabase/tests/` with their own `tsconfig.db.json`. They read the URL and keys from `supabase status`, and use `psql` inside the database container only for the catalog guardrails and to move the server-only throttle window.
+- The local stack allows 10,000 anonymous sign-ins an hour (`supabase/config.toml`), because every `npm run test:db` signs in about 150 fresh users. The hosted project keeps the limit set in its dashboard.
+
+**Why:** A raised error rolls back the whole call, which would also roll back the failure counter, so errors have to be returned for throttling to work. Returning every code the same way keeps the data layer simple. The rest follows the spec; these are the details it left open.
+
 ## 2026-10-21: The backend core is built as two specs
 
 **Decision:**
