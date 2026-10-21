@@ -2,7 +2,7 @@
 
 Set up an interactive party evening in a few minutes. A host creates an event, picks a niche (afterwork, team event, bachelor/bachelorette party) and gets ready-made activities. Guests join from their phones by scanning a QR code on the TV, and results show up live on the big screen.
 
-> **Status:** early development. The foundation is in place (routes, layouts, Swedish/English UI, theming and the Supabase client), but none of the features are built yet.
+> **Status:** early development. The backend core (database, security rules, joining, host actions and live updates) and the setup wizard are built. The TV party screen, the guest screens and the activities are not built yet.
 
 ## Why
 

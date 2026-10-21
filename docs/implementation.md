@@ -1,5 +1,7 @@
 # Implementation log: Part A
 
+> Historical record of the course work (Part A and Part B). It describes the repo as it was then; for how things work now, see `CLAUDE.md` and `docs/decisions.md`.
+
 Running log of building the Mingle foundation with Claude Code in plan mode. Each step records the prompt, what the agent produced, and my review. The deliverable summary is at the bottom.
 
 ## Method

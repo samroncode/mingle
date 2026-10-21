@@ -18,11 +18,11 @@ Every time someone hosts an afterwork, team event or bachelor party, they build 
 
 ### Core concept: two layers
 1. **Party screen (always on, zero effort).** The TV must be good even if the host never starts an activity. When no activity is running, the TV rotates calmly between: welcome message, join QR code, music and wifi QR codes, menu, evening schedule, and guests who have joined.
-2. **Activities (optional).** Quiz, Awards and Hot takes are things the host *can* start, never must. Every activity can be turned off in the create flow.
+2. **Activities (optional).** Quiz, Awards and Hot takes are things the host *can* start, never must. Every activity can be turned off in the setup wizard.
 
 In scope:
 - **Party screen** (TV idle state) as described above
-- Create flow (wizard): niche, language, welcome message, menu, schedule, wifi details, music link, and **which activities to use** (niche config sets the defaults; the host can turn any activity on or off). When AI is enabled, it may suggest welcome text, menu wording and schedule; the host approves.
+- Setup wizard: niche, language, welcome message, menu, schedule, wifi details, music link, and **which activities to use** (niche config sets the defaults; the host can turn any activity on or off). When AI is enabled, it may suggest welcome text, menu wording and schedule; the host approves.
 - Three modules: **Quiz**, **Awards** ("most likely to…" voting on guest names), **Hot takes** (agree/disagree polls)
 - Optional **music link**: the host can paste a Spotify Jam or shared playlist link, shown as a QR code in the TV lobby (link only, no Spotify API integration)
 - **Built-in content per niche**: quiz questions, award categories and hot takes in Swedish and English. The host picks from it and adds their own.
@@ -98,7 +98,7 @@ src/
   views/        # route-level pages: create, host, tv, guest, summary
   components/   # shared UI (shadcn/ui lives in components/ui)
   i18n/         # sv.json, en.json
-  lib/          # pure helpers, schemas (Zod)
+  lib/          # helpers, Zod schemas, wizard state and small browser-storage helpers (no Supabase)
 supabase/
   migrations/   # SQL schema + RLS policies
   functions/    # edge functions: host-actions, ai-suggest, cleanup

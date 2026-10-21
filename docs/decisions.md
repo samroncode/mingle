@@ -48,7 +48,7 @@ Entry format:
 
 **Why:** Every later step needs a way to create an event, and the backend for it already exists, so the wizard is small and safe. Steps keep each screen short on a phone. Asking for things nothing uses yet would only slow the host down. The host link is the only way back into an event, so the wizard makes it hard to lose: a clear warning, Share, and a copy on the device. Faking the server in the browser test keeps it fast and runnable anywhere; `host-actions` itself is already tested over HTTP.
 
-## 2026-10-22: How a live event view handles a failed refetch and a non-member (#23)
+## 2026-10-21: How a live event view handles a failed refetch and a non-member (#23)
 
 **Decision:**
 - `subscribeToEvent` in `src/api/realtime.ts` treats every change as a signal to refetch the snapshot. When a refetch fails, the view keeps the last snapshot on screen and sets the error code (`useEventState` goes to `error` with the old `event` and `members`); the next successful refetch makes it `ready` again.
