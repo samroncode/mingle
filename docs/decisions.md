@@ -12,6 +12,34 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: The backend core is built as two specs
+
+**Decision:**
+- The rest of the backend core plan is split into two specs, each built as one PR. Spec 1 is the database, its RLS and the join RPCs. Spec 2 is `host-actions`, the function typecheck, `src/api/` with realtime, and admin key parsing.
+- Spec 1 creates no `private.event_secrets`. That table arrives with `create_event` in spec 2. Spec 1's tests seed events and host members with the service role.
+- The shared module interface (Step 7) moves to the first module's spec.
+- Tests use only three seams: the Supabase client signed in as each role (RLS and RPCs), `host-actions` over HTTP, and `src/api/` (realtime and the wrappers). One test reads the database catalog directly to check that every table in `public` has RLS on; it's an intended guardrail, not a fourth seam.
+
+**Why:** The owner reviews the migration and RLS, the most security-sensitive code, in a small PR before anything is built on it. One spec was rejected as one large review. An interface written before any module exists is a guess; the quiz will give it a real shape. Testing only through the doors the app and an attacker use keeps the tests valid when the inside changes.
+
+## 2026-10-21: CAPTCHA is added before the public launch, not in the backend core
+
+**Decision:** The backend core has no CAPTCHA. Before Mingle is shared publicly, anonymous sign-in gets a CAPTCHA, using Cloudflare Turnstile (free) through Supabase's built-in support, with the widget on the join and create pages.
+
+**Why:** There are no pages to put it on yet. Until launch, the join RPCs and `host-actions` are rate-limited per user and Supabase limits anonymous sign-ins per IP. Never adding it was rejected, because bots could create many sessions once Mingle is public. Building it now was rejected as setup with nothing to attach it to.
+
+## 2026-10-21: Event data is kept for 30 days after creation (open question E)
+
+**Decision:** `events.expires_at` is set to 30 days after `created_at`, from one constant in the migration. An expired event counts as no membership at once, and the later `cleanup` function deletes it and everything that belongs to it.
+
+**Why:** 30 days covers a few weeks of preparation plus the summary page afterwards, without keeping guest names and answers longer than needed. 14 days was rejected because a host who prepares two weeks ahead would lose the event before the party. 90 days was rejected as keeping personal data longer than the evening needs. It's one constant, so it's easy to change.
+
+## 2026-10-21: The TV joins with the event code (TV as a member)
+
+**Decision:** The TV opens `/tv/:code` and joins with the event code through `join_tv`, which makes it a `tv` member. There is no separate TV token.
+
+**Why:** A TV member can read nothing a guest can't (the event, its members, approved content and revealed results), and the code is shown on the TV anyway. Anyone with the code can register as a TV, which is no more exposure than joining as a guest. The stricter option, a secret TV link from the host panel, was rejected as one more link for the host to manage and more to build and test, without protecting anything.
+
 ## 2026-10-21: Edge Function code is typechecked with `deno check`
 
 **Decision:** Add the `deno` npm package as a dev dependency and a `typecheck:functions` script that runs `deno check` on `supabase/functions/`. It is added before `host-actions` is built (in the backend core spec, ahead of the `host-actions` tickets), not in the Step 1 tooling PR.

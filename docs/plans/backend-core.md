@@ -1,6 +1,6 @@
 # Plan: Backend core
 
-**Status:** Draft. Only Step 1 (tooling and the schema spike) is built; see "Step 1 result" under Steps. The rest becomes a spec through `/grill-with-docs`, `/to-spec` and `/to-tickets` on GitHub; start with "Before the spec" below.
+**Status:** Turned into two specs on 2026-10-21: [#9](https://github.com/samroncode/mingle/issues/9) (database, RLS and joining) and [#10](https://github.com/samroncode/mingle/issues/10) (`host-actions`, the data layer and realtime), each with its tickets as sub-issues. Only Step 1 is built. The specs and tickets are now the source of truth; this plan stays as background. The questions under "Before the spec" and "Open questions" are settled in `docs/decisions.md`.
 
 ## Before the spec
 
@@ -292,6 +292,8 @@ These are outside the repo, so the agent can't do them:
 
 ## Open questions
 
-- **E:** How long is event data kept? The schema uses one constant until this is decided.
-- **CAPTCHA on anonymous sign-in:** Supabase recommends it against abuse. It would mean a third-party widget (hCaptcha or Turnstile) on the join and create pages. Should it come before a public launch?
-- **TV as a member:** the plan lets anyone with the code register as a TV, which is no more than a guest can see. A stricter option is a separate TV token shown only in the host panel. Is the simpler model acceptable?
+All settled on 2026-10-21 (see `docs/decisions.md`):
+
+- **E:** event data is kept for 30 days after creation.
+- **CAPTCHA:** added before the public launch with Cloudflare Turnstile, not in the backend core.
+- **TV as a member:** the TV joins with the code. No separate TV token.
