@@ -22,6 +22,12 @@ Entry format:
 
 **Why:** The root was hard to scan on GitHub. Moving tool config into a subfolder would need custom paths in several tools and break their defaults, so only docs and the empty config were moved. The Prettier key is kept, rather than deleted, so an editor's own Prettier settings can't override the project's defaults.
 
+## 2026-10-21: The party screen and guest join come next, before the activities
+
+**Decision:** The next spec builds the TV party screen and guests joining from their phones. The activities (quiz first), cleanup and AI follow after it.
+
+**Why:** The architecture check after the wizard (#37) found the TV and guest pages still empty, while `CLAUDE.md` calls the party screen the layer that must work even if no activity ever runs. The backend it needs (join RPCs, live updates) is built and tested. Every activity needs guests who have joined and a TV that shows something, so building them first keeps the quiz spec smaller. Starting with the quiz was rejected because it would have had to build basic TV and join screens anyway.
+
 ## 2026-10-21: Details settled while building the setup wizard (#29)
 
 **Decision:**
@@ -48,7 +54,7 @@ Entry format:
 
 **Why:** Every later step needs a way to create an event, and the backend for it already exists, so the wizard is small and safe. Steps keep each screen short on a phone. Asking for things nothing uses yet would only slow the host down. The host link is the only way back into an event, so the wizard makes it hard to lose: a clear warning, Share, and a copy on the device. Faking the server in the browser test keeps it fast and runnable anywhere; `host-actions` itself is already tested over HTTP.
 
-## 2026-10-22: How a live event view handles a failed refetch and a non-member (#23)
+## 2026-10-21: How a live event view handles a failed refetch and a non-member (#23)
 
 **Decision:**
 - `subscribeToEvent` in `src/api/realtime.ts` treats every change as a signal to refetch the snapshot. When a refetch fails, the view keeps the last snapshot on screen and sets the error code (`useEventState` goes to `error` with the old `event` and `members`); the next successful refetch makes it `ready` again.
