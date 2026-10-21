@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: Database specs are built on the desktop, one database ticket at a time
+
+**Decision:** Specs that touch `supabase/` can be planned in any session, but `/implement-spec` for them runs on the desktop, where Docker runs the local Supabase stack. Tickets that touch `supabase/` are built one at a time; other tickets still run in parallel. The `implementer` and `merger` also run `format:check`, and `test:db` when the change touches `supabase/`. These specs get `/security-review` after `/diff-review`, their security-critical tickets run the `implementer` on Opus, and the security rules from the design go into ticket acceptance criteria. "Database rules" in `CLAUDE.md` is written now, before the backend core is built, so implementers and `/diff-review` check against it from the first ticket.
+
+**Why:** `test:db` needs Docker. Cloud sessions can start Docker, but their network policy blocks the Supabase images (tested 2026-10-21), so cloud implementers couldn't test database code and test-first work would be guesswork. All worktrees share one local stack, and `db:reset` from one worktree replaces the schema under another. Separate stacks per worktree with their own ports were rejected as too much setup for a few tickets. `/diff-review` checks standards and the spec but not security, and this is the most security-sensitive code in the project.
+
 ## 2026-10-21: Agent workflow built on Matt Pocock's skills
 
 **Decision:** Larger changes go grill, spec, tickets, implement, using skills copied from [mattpocock/skills](https://github.com/mattpocock/skills) (commit `5beb35b`) into `.claude/skills/`. Specs and tickets are GitHub issues and replace plans in `docs/plans/`. The main session orchestrates (Opus recommended); the `implementer` and `merger` subagents run on Sonnet and `Explore` on Haiku. Mingle's edits to the copies: `code-review` is renamed `diff-review`, decisions go to this file instead of `docs/adr/`, `to-spec` applies no triage label, and the setup is written by hand in `docs/agents/`, so `setup-matt-pocock-skills` isn't included.

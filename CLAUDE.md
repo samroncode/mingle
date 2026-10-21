@@ -107,7 +107,19 @@ supabase/
 
 - Events expire and are deleted after a fixed retention period (scheduled cleanup function).
 - Store only display names for guests. No emails, phone numbers or other personal data.
-- RLS is enabled on every table. A new table without policies is a bug.
+- RLS is enabled on every table. A new table in `public` without policies is a bug. Tables in the `private` schema are server-only: RLS is on and they have no client policies, on purpose (see `docs/decisions.md`).
+
+## Database rules
+
+These apply to everything under `supabase/`. How Supabase works in this project, and how to run it locally, is in `docs/supabase.md`.
+
+- **Security lives in the database.** A guest who calls Supabase directly from devtools must not be able to do anything the app wouldn't let them do. RLS enforces this, never the UI.
+- **Every schema change is a new migration** in `supabase/migrations/`. Never edit a migration that is already on `main`; add a new one.
+- **`security definer` functions** set `search_path = ''` and use schema-qualified names (`public.events`), so they can't be tricked into using objects from another schema.
+- **Errors are codes, not text.** RPCs and Edge Functions return codes such as `not_found` or `name_taken`; the UI maps them to i18n keys (principle 7).
+- **Secrets stay server-side.** The service-role key and the Anthropic key exist only in the Edge Functions' environment and never get a `VITE_` prefix.
+- **Generated types are never edited by hand.** `src/api/database.types.ts` comes from `npm run db:types` once the Supabase CLI is set up. Until then it is a hand-written placeholder.
+- **Every policy, RPC and function has a test.** `*.db.test.ts` files sign in as real roles (non-member, guest, TV, host) against the local stack and run with `npm run test:db`. Removing a policy must make a test fail.
 
 ## Things the agent must NOT do
 
@@ -160,6 +172,15 @@ Skills copied from mattpocock/skills live in `.claude/skills/`. The main session
 3. `/implement-spec` builds a whole spec with one `implementer` subagent per ticket and one PR. `/implement` builds a single ticket in the main session.
 
 Parallel tickets often both add entries to `src/i18n/*.json` or `src/modules/registry.ts`. Don't add a blocking edge for that; keep both sides when merging.
+
+### Specs that touch the database
+
+- **Plan anywhere, build on the desktop.** `/grill-with-docs`, `/to-spec` and `/to-tickets` work in any session. `/implement-spec` for a spec with tickets under `supabase/` runs on the desktop, because `npm run test:db` needs Docker (see `docs/supabase.md`).
+- **One database ticket at a time.** All worktrees share one local Supabase stack, and `db:reset` from one worktree replaces the schema under another. Start the next ticket that touches `supabase/` only after the previous one is merged. Other tickets still run in parallel.
+- **Security rules go in the tickets.** The spec template leaves out details like "a wrong key and an unknown code return the same error". Put each one in the acceptance criteria of the ticket that builds it.
+- **Opus for security-critical tickets.** Run the `implementer` with `model: opus` for tickets that write RLS policies, `security definer` functions or `host-actions`.
+- **Security review before the PR is ready.** After `/diff-review`, also run `/security-review` on the integration branch, and give its findings to the same fix-up implementer.
+- **Auto mode.** Background implementers can't stop to ask for permission. Switch the session to Auto mode before `/implement-spec`. `.claude/settings.json` pre-approves the routine commands for the other modes.
 
 ### Issue tracker
 
