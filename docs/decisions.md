@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: Edge Function code is typechecked with `deno check`
+
+**Decision:** Add the `deno` npm package as a dev dependency and a `typecheck:functions` script that runs `deno check` on `supabase/functions/`. It is added in a step before `host-actions` (Step 5 of the backend core plan), not in Step 1.
+
+**Why:** The Step 1 spike showed that `supabase functions serve` only strips types, and the app's `tsc -b` doesn't cover `supabase/functions/`, so function code was only linted. The rejected alternatives were relying on lint plus integration tests, and running `tsc` on the functions, which doesn't understand `npm:` specifiers or Deno types without extra setup.
+
 ## 2026-10-20: The host's session is bound to the event (open question C)
 
 **Decision:** The host signs in anonymously like guests and the TV. When `host-actions` verifies the admin key (`create_event` or `claim_host`), it records that session as `host` in `members`. RLS then lets the host read everything in their event, including drafts and individual answers, directly and through realtime. Every host write still goes through `host-actions` with the admin key, as `CLAUDE.md` principle 2 requires.
