@@ -1,9 +1,9 @@
-import type { ParseKeys } from "i18next";
+import type { ParseKeys, TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { supportedLanguages, type Language } from "@/i18n/language";
-import type { WizardDraft } from "@/lib/wizard/state";
+import { toParty, type WizardDraft, type WizardStep } from "@/lib/wizard/state";
 import { moduleIds, type ModuleId } from "@/modules/registry";
 import { niches, type NicheId } from "@/niches";
 import { nicheIds } from "@/niches/ids";
@@ -99,12 +99,46 @@ export function ActivitiesStep({
   );
 }
 
+type SummaryRow = { step: WizardStep; label: string; value: string };
+
+/** One summary row per party step; skipped or empty parts read "Skipped". */
+function partyRows(draft: WizardDraft, t: TFunction): SummaryRow[] {
+  const party = toParty(draft.party);
+  const skipped = t("wizard.summary.skipped");
+  return [
+    {
+      step: "welcome",
+      label: t("wizard.steps.welcome"),
+      value: party.welcome ?? skipped,
+    },
+    {
+      step: "menu",
+      label: t("wizard.steps.menu"),
+      value: party.menu?.join(", ") ?? skipped,
+    },
+    {
+      step: "schedule",
+      label: t("wizard.steps.schedule"),
+      value:
+        party.schedule?.map((l) => `${l.time} ${l.title}`).join(", ") ??
+        skipped,
+    },
+    {
+      step: "wifi",
+      label: t("wizard.steps.wifi"),
+      value:
+        [party.wifi?.ssid, party.musicUrl].filter(Boolean).join(", ") ||
+        skipped,
+    },
+  ];
+}
+
 export function SummaryStep({
   draft,
   onEdit,
 }: {
   draft: WizardDraft;
-  onEdit: (step: "niche" | "language" | "activities") => void;
+  onEdit: (step: WizardStep) => void;
 }) {
   const { t } = useTranslation();
   const rows = [
@@ -128,6 +162,7 @@ export function SummaryStep({
               .map((id) => t(`modules.${id}.name`))
               .join(", "),
     },
+    ...partyRows(draft, t),
   ] as const;
 
   return (

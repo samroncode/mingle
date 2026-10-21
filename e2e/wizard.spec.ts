@@ -25,8 +25,40 @@ test("creates an event through the wizard", async ({ page }) => {
   await page.getByRole("switch", { name: "Awards" }).click();
   await page.getByRole("button", { name: "Next" }).click();
 
+  // Welcome text is prefilled in the event language (Swedish); edit it.
+  const welcome = page.getByLabel("Shown on the TV when guests arrive");
+  await expect(welcome).not.toHaveValue("");
+  await welcome.fill("Välkomna hem till mig!");
+  await page.getByRole("button", { name: "Next" }).click();
+
+  // Menu: add two lines, reorder, remove an empty one.
+  await page.getByRole("button", { name: "Add a line" }).click();
+  await page.getByLabel("Menu line 1").fill("Pizza");
+  await page.getByRole("button", { name: "Add a line" }).click();
+  await page.getByLabel("Menu line 2").fill("Tårta");
+  await page.getByRole("button", { name: "Move line 2 up" }).click();
+  await expect(page.getByLabel("Menu line 1")).toHaveValue("Tårta");
+  await page.getByRole("button", { name: "Add a line" }).click();
+  await page.getByRole("button", { name: "Remove line 3" }).click();
+  await page.getByRole("button", { name: "Next" }).click();
+
+  // Schedule: one line with a time and a title.
+  await page.getByRole("button", { name: "Add a line" }).click();
+  await page.getByLabel("Time for line 1").fill("19:30");
+  await page.getByLabel("Title for line 1").fill("Middag");
+  await page.getByRole("button", { name: "Next" }).click();
+
+  // Wifi and music: a bad link blocks Next until fixed.
+  await page.getByLabel("Wifi name").fill("HomeNet");
+  await page.getByLabel("Music link").fill("http://open.spotify.com/jam/x");
+  await expect(page.getByRole("alert")).toContainText("valid https link");
+  await expect(page.getByRole("button", { name: "Next" })).toBeDisabled();
+  await page.getByLabel("Music link").fill("https://open.spotify.com/jam/x");
+  await page.getByRole("button", { name: "Next" }).click();
+
   // Summary shows the choices.
   await expect(page.getByText("Quiz, Hot takes")).toBeVisible();
+  await expect(page.getByText("Tårta, Pizza")).toBeVisible();
   await expect(
     page.getByRole("definition").filter({ hasText: "Svenska" }),
   ).toBeVisible();
@@ -40,20 +72,27 @@ test("creates an event through the wizard", async ({ page }) => {
   await page.getByRole("button", { name: "Create event" }).click();
   await expect(page.getByTestId("event-code")).toHaveText(code);
 
+  const party = {
+    welcome: "Välkomna hem till mig!",
+    menu: ["Tårta", "Pizza"],
+    schedule: [{ time: "19:30", title: "Middag" }],
+    wifi: { ssid: "HomeNet", password: "" },
+    musicUrl: "https://open.spotify.com/jam/x",
+  };
   expect(bodies).toEqual([
     {
       action: "create_event",
       niche: "aw",
       language: "sv",
       enabledModules: ["quiz", "hottakes"],
-      party: {},
+      party,
     },
     {
       action: "create_event",
       niche: "aw",
       language: "sv",
       enabledModules: ["quiz", "hottakes"],
-      party: {},
+      party,
     },
   ]);
 

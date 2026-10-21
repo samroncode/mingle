@@ -93,6 +93,10 @@
       "niche": "What kind of evening?",
       "language": "Language",
       "activities": "Activities",
+      "welcome": "Welcome text",
+      "menu": "Menu",
+      "schedule": "Schedule",
+      "wifi": "Wifi and music",
       "summary": "Summary"
     },
     "activities": {
@@ -101,7 +105,8 @@
     "summary": {
       "noActivities": "None",
       "edit": "Change",
-      "change": "Change {{step}}"
+      "change": "Change {{step}}",
+      "skipped": "Skipped"
     },
     "create": "Create event",
     "creating": "Creating...",
@@ -109,6 +114,41 @@
       "title": "Your event is ready",
       "warning": "Save the host link now. It can't be shown again, and it is the only way back into the control panel.",
       "openPanel": "Open the control panel"
+    },
+    "skip": "Skip",
+    "welcome": {
+      "label": "Shown on the TV when guests arrive",
+      "hint": "Ready-made for your kind of evening. Edit it or clear it."
+    },
+    "menu": {
+      "add": "Add a line",
+      "line": "Menu line {{n}}"
+    },
+    "schedule": {
+      "add": "Add a line",
+      "time": "Time for line {{n}}",
+      "title": "Title for line {{n}}"
+    },
+    "wifi": {
+      "ssid": "Wifi name",
+      "password": "Wifi password",
+      "passwordHint": "Leave empty for an open network."
+    },
+    "music": {
+      "label": "Music link",
+      "hint": "A Spotify Jam or shared playlist link (https)."
+    },
+    "lines": {
+      "moveUp": "Move line {{n}} up",
+      "moveDown": "Move line {{n}} down",
+      "remove": "Remove line {{n}}"
+    },
+    "errors": {
+      "welcome": "The welcome text is too long (500 characters at most).",
+      "menu": "Menu lines can be 80 characters and there can be 20 of them.",
+      "schedule": "Each schedule line needs a time like 19:00 and a title of up to 80 characters (20 lines at most).",
+      "wifi": "Enter a wifi name of up to 32 characters. The password can be up to 63.",
+      "musicUrl": "The music link must be a valid https link."
     }
   },
   "hostDoor": {
