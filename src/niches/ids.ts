@@ -4,5 +4,5 @@
  * niche without loading the configs. `niches` in ./index.ts must list exactly
  * these; the typecheck enforces it.
  */
-export const nicheIds = ["aw"] as const;
+export const nicheIds = ["aw", "team", "bachelor"] as const;
 export type NicheId = (typeof nicheIds)[number];

@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { supportedLanguages } from "@/i18n/language";
+import { PartySchema } from "@/lib/schemas/party";
 import { moduleIds } from "@/modules/registry";
 
 /**
@@ -35,6 +37,15 @@ export const NicheConfigSchema = z.strictObject({
   theme: z.partialRecord(z.enum(themeTokens), z.string().min(1)),
   /** Activities that start switched on in the create flow. */
   defaultModules: z.array(z.enum(moduleIds)),
+  /**
+   * Ready welcome text for the party screen, one per supported language. It is
+   * built-in content in the event language (not UI text) and the host may edit
+   * it, so it must pass the party schema's welcome limit.
+   */
+  welcome: z.record(
+    z.enum(supportedLanguages),
+    PartySchema.shape.welcome.unwrap(),
+  ),
   /** Guidance for AI suggestions. English, never shown in the UI. */
   promptHints: z.string().min(1),
 });
