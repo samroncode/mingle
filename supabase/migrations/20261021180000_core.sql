@@ -200,3 +200,149 @@ create policy "Members can read the members of their event"
 -- ---------------------------------------------------------------------------
 
 alter publication supabase_realtime add table public.events, public.members;
+
+-- ---------------------------------------------------------------------------
+-- Join RPCs
+-- ---------------------------------------------------------------------------
+
+-- What both join RPCs return: the event id on success, otherwise an error code
+-- (`not_found`, `ended`, `name_taken`, `invalid_name`, `rate_limited`) that
+-- the UI maps to an i18n key. Errors are returned, not raised, so that a
+-- failed attempt can still be counted for throttling.
+create type public.join_result as (event_id uuid, error text);
+
+-- Finds a joinable event by code. Codes are compared in upper case with
+-- surrounding whitespace removed, since guests type them by hand. An expired
+-- event is treated as unknown.
+create function private.find_event_by_code(code text)
+returns public.events
+language sql
+stable
+set search_path = ''
+as $$
+  select e.*
+  from public.events e
+  where e.code = pg_catalog.upper(pg_catalog.btrim(find_event_by_code.code))
+    and e.expires_at > pg_catalog.now();
+$$;
+
+revoke execute on function private.find_event_by_code(text) from public;
+
+-- Joins the event with this code as a guest. Calling again from the same
+-- session returns the same event id and changes nothing, so a guest keeps
+-- their name and a host or TV can't turn into a guest.
+create function public.join_event(code text, display_name text)
+returns public.join_result
+language plpgsql
+volatile
+security definer
+set search_path = ''
+as $$
+declare
+  caller uuid := auth.uid();
+  target public.events;
+  clean_name text;
+  violated text;
+begin
+  if caller is null then
+    raise exception 'not_authenticated' using errcode = '42501';
+  end if;
+
+  target := private.find_event_by_code(join_event.code);
+  if target.id is null then
+    return row(null, 'not_found')::public.join_result;
+  end if;
+  if target.status = 'ended' then
+    return row(null, 'ended')::public.join_result;
+  end if;
+
+  if exists (
+    select 1 from public.members m
+    where m.event_id = target.id and m.user_id = caller
+  ) then
+    return row(target.id, null)::public.join_result;
+  end if;
+
+  clean_name := pg_catalog.regexp_replace(
+    coalesce(join_event.display_name, ''), '^\s+|\s+$', '', 'g'
+  );
+  if pg_catalog.char_length(clean_name) not between 1 and 30 then
+    return row(null, 'invalid_name')::public.join_result;
+  end if;
+
+  begin
+    insert into public.members (event_id, user_id, role, display_name)
+    values (target.id, caller, 'guest', clean_name);
+  exception when unique_violation then
+    get stacked diagnostics violated = constraint_name;
+    if violated = 'members_guest_name_key' then
+      return row(null, 'name_taken')::public.join_result;
+    end if;
+    -- The same session joined at the same moment in another request.
+  end;
+
+  return row(target.id, null)::public.join_result;
+end;
+$$;
+
+-- Joins the event with this code as its TV. Idempotent like join_event; a
+-- host or guest of the event stays what they were.
+create function public.join_tv(code text)
+returns public.join_result
+language plpgsql
+volatile
+security definer
+set search_path = ''
+as $$
+declare
+  caller uuid := auth.uid();
+  target public.events;
+begin
+  if caller is null then
+    raise exception 'not_authenticated' using errcode = '42501';
+  end if;
+
+  target := private.find_event_by_code(join_tv.code);
+  if target.id is null then
+    return row(null, 'not_found')::public.join_result;
+  end if;
+  if target.status = 'ended' then
+    return row(null, 'ended')::public.join_result;
+  end if;
+
+  insert into public.members (event_id, user_id, role)
+  values (target.id, caller, 'tv')
+  on conflict (event_id, user_id) do nothing;
+
+  return row(target.id, null)::public.join_result;
+end;
+$$;
+
+revoke execute on function public.join_event(text, text) from public, anon;
+revoke execute on function public.join_tv(text) from public, anon;
+grant execute on function public.join_event(text, text) to authenticated;
+grant execute on function public.join_tv(text) to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Guests rename themselves
+-- ---------------------------------------------------------------------------
+
+-- A guest may change only the display_name column of their own row. The
+-- column grant stops changes to role, event and user; the policy stops
+-- changes to anyone else's row and to host and TV rows. The trigger, check and
+-- unique index above apply the same name rules as join_event.
+grant update (display_name) on public.members to authenticated;
+
+create policy "Guests can rename themselves"
+  on public.members for update
+  to authenticated
+  using (
+    user_id = (select auth.uid())
+    and role = 'guest'
+    and public.is_member(event_id)
+  )
+  with check (
+    user_id = (select auth.uid())
+    and role = 'guest'
+    and public.is_member(event_id)
+  );

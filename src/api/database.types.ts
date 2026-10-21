@@ -95,12 +95,35 @@ export type Database = {
     Functions: {
       is_host: { Args: { target_event_id: string }; Returns: boolean };
       is_member: { Args: { target_event_id: string }; Returns: boolean };
+      join_event: {
+        Args: { code: string; display_name: string };
+        Returns: Database["public"]["CompositeTypes"]["join_result"];
+        SetofOptions: {
+          from: "*";
+          to: "join_result";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      join_tv: {
+        Args: { code: string };
+        Returns: Database["public"]["CompositeTypes"]["join_result"];
+        SetofOptions: {
+          from: "*";
+          to: "join_result";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
     };
     Enums: {
       [_ in never]: never;
     };
     CompositeTypes: {
-      [_ in never]: never;
+      join_result: {
+        event_id: string | null;
+        error: string | null;
+      };
     };
   };
 };
