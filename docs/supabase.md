@@ -12,7 +12,7 @@ Supabase is a Postgres database with services around it. Mingle uses five of the
 | **Row Level Security (RLS)** | Rules inside the database that decide which rows each user may read or write. This is what stops a guest from reading another guest's answers, even from devtools. |
 | **Auth, anonymous sign-in** | Gives every browser (host, guest, TV) a user id, `auth.uid()`, without an account. RLS rules are written against that id. |
 | **Realtime** | Tells the TV and the phones when rows change, so every screen updates live. |
-| **Edge Functions** | Small server programs (Deno) for what the browser must never do itself: checking the admin key in `host-actions`, and calling the Claude API in `ai-suggest`. |
+| **Edge Functions** | Small server programs (Deno) for what the browser must never do itself: checking the admin key in `host-actions`, and, when AI is enabled, calling the AI provider in `ai-suggest`. |
 
 The browser talks to Supabase with the publishable key, which is public by design. Everything the browser may do is decided by RLS. The service-role key skips RLS, so it only exists inside the Edge Functions.
 
