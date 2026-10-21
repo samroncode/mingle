@@ -22,7 +22,7 @@ Every time someone hosts an afterwork, team event or bachelor party, they build 
 
 In scope:
 - **Party screen** (TV idle state) as described above
-- Create flow (wizard): niche, language, guest names, vibe, themes, welcome message, menu, schedule, wifi details, and **which activities to use** (niche config sets the defaults; the host can turn any activity on or off). When AI is enabled, it may suggest welcome text, menu wording and schedule; the host approves.
+- Create flow (wizard): niche, language, welcome message, menu, schedule, wifi details, music link, and **which activities to use** (niche config sets the defaults; the host can turn any activity on or off). When AI is enabled, it may suggest welcome text, menu wording and schedule; the host approves.
 - Three modules: **Quiz**, **Awards** ("most likely to…" voting on guest names), **Hot takes** (agree/disagree polls)
 - Optional **music link**: the host can paste a Spotify Jam or shared playlist link, shown as a QR code in the TV lobby (link only, no Spotify API integration)
 - **Built-in content per niche**: quiz questions, award categories and hot takes in Swedish and English. The host picks from it and adds their own.

@@ -52,6 +52,10 @@ To become a host of an event by opening its host link on a device.
 The kind of evening (afterwork, team event, bachelor/bachelorette party), which sets the event's default activities, content and look.
 _Avoid_: Theme, category, template
 
+**Setup wizard**:
+The short steps a host goes through to create an event, ending with its code and host link.
+_Avoid_: Create flow, onboarding
+
 **Party screen**:
 What the TV shows when no activity is running: welcome message, join QR code, menu, schedule and the guests who have joined.
 _Avoid_: Idle screen, home screen
