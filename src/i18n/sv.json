@@ -110,5 +110,15 @@
       "warning": "Spara värdlänken nu. Den kan inte visas igen och är det enda sättet att komma tillbaka till kontrollpanelen.",
       "openPanel": "Öppna kontrollpanelen"
     }
+  },
+  "hostDoor": {
+    "opening": "Öppnar kontrollpanelen…",
+    "badLink": "Den här länken fungerar inte",
+    "badLinkHint": "Kontrollera att du kopierade hela värdlänken. Event raderas 30 dagar efter att de skapades.",
+    "home": "Gå till startsidan",
+    "rate_limited": "För många försök. Vänta en minut och försök igen.",
+    "network_error": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
+    "internal_error": "Något gick fel. Försök igen.",
+    "retry": "Försök igen"
   }
 }

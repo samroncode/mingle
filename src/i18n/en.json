@@ -110,5 +110,15 @@
       "warning": "Save the host link now. It can't be shown again, and it is the only way back into the control panel.",
       "openPanel": "Open the control panel"
     }
+  },
+  "hostDoor": {
+    "opening": "Opening the control panel…",
+    "badLink": "This link doesn't work",
+    "badLinkHint": "Check that you copied the whole host link. Events are deleted 30 days after they're created.",
+    "home": "Go to the start page",
+    "rate_limited": "Too many tries. Wait a minute and try again.",
+    "network_error": "Couldn't reach the server. Check your connection and try again.",
+    "internal_error": "Something went wrong. Try again.",
+    "retry": "Try again"
   }
 }
