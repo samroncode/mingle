@@ -13,11 +13,11 @@ This repo has a single context:
 
 ```
 /
-├── GLOSSARY.md          ← terms
+├── docs/GLOSSARY.md     ← terms
 └── docs/decisions.md    ← decisions (ADRs), newest first
 ```
 
-Create `GLOSSARY.md` lazily: only when the first term is resolved.
+Create `docs/GLOSSARY.md` lazily: only when the first term is resolved.
 
 ## During the session
 

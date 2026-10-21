@@ -38,7 +38,7 @@ Database code needs the local Supabase stack, which runs in Docker on the deskto
 
 - **One session per task.** When the PR is merged, archive the session.
 - **Decisions go in the repo.** If something is decided in a chat, make sure it ends up in `docs/decisions.md` (or `CLAUDE.md` if it changes a rule).
-- **Ideas go in `IDEAS.md`**, not into the current task.
+- **Ideas go in `docs/IDEAS.md`**, not into the current task.
 - **Opus in the main session** (`/model opus`). It plans with you and orchestrates; the subagents pick cheaper models themselves.
 
 ## What is set up

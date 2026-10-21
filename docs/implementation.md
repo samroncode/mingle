@@ -94,7 +94,7 @@ Kunde inte svara på alla så de ser man nedan i open questions
 
 ### What the agent produced
 
-The full plan is in [`docs/plans/foundation.md`](docs/plans/foundation.md). In short:
+The full plan is in [`docs/plans/foundation.md`](plans/foundation.md). In short:
 
 - **8 steps, each with its own files and verification:**
   1. Scaffold
@@ -127,7 +127,7 @@ Before implementation started, I asked why we couldn't use the newer TypeScript 
 
 ## Step 4: Implementation, one step at a time
 
-Each sub-step follows [`docs/plans/foundation.md`](docs/plans/foundation.md). Every one was started with this prompt:
+Each sub-step follows [`docs/plans/foundation.md`](plans/foundation.md). Every one was started with this prompt:
 
 > The plan is approved. Implement only step N. Then stop, run the verification for that step, and report the result before going further.
 

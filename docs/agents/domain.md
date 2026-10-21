@@ -2,12 +2,12 @@
 
 Single context. Before exploring, read these if they exist (don't flag them if missing):
 
-- **`GLOSSARY.md`** at the repo root: the project's terms. `/domain-modeling` creates it when the first term is resolved.
+- **`docs/GLOSSARY.md`**: the project's terms. `/domain-modeling` creates it when the first term is resolved.
 - **`docs/decisions.md`**: product and architecture decisions (ADRs), newest first. Read the ones that touch the area you're working in.
 
 ## Use the glossary's vocabulary
 
-When your output names a domain concept (an issue title, a test name, a proposal), use the term as defined in `GLOSSARY.md`. A concept missing from the glossary is a signal: either you're inventing language the project doesn't use, or there's a gap to note for `/domain-modeling`.
+When your output names a domain concept (an issue title, a test name, a proposal), use the term as defined in `docs/GLOSSARY.md`. A concept missing from the glossary is a signal: either you're inventing language the project doesn't use, or there's a gap to note for `/domain-modeling`.
 
 ## Flag decision conflicts
 
