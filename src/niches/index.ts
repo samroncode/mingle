@@ -1,5 +1,7 @@
 import { aw } from "./aw";
+import { bachelor } from "./bachelor";
 import type { NicheId } from "./ids";
+import { team } from "./team";
 import type { NicheConfig } from "./types";
 
 export type { NicheId } from "./ids";
@@ -8,7 +10,10 @@ export type { NicheId } from "./ids";
  * Every niche. Add a niche by adding a config file, listing it here and adding
  * its id to ./ids.ts.
  */
-export const niches = { aw } satisfies Record<NicheId, NicheConfig>;
+export const niches = { aw, team, bachelor } satisfies Record<
+  NicheId,
+  NicheConfig
+>;
 
 export function getNiche(id: NicheId): NicheConfig {
   return niches[id];

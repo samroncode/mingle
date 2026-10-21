@@ -12,6 +12,16 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: Details settled while building the setup wizard (#29)
+
+**Decision:**
+- Skip on the welcome step puts back the niche's ready welcome text. Skip on the other steps clears what was typed there, so that part is left out of the event.
+- The control panel shows the code and TV address, and keeps the host link hidden until the host taps "Show host link". Copy and Share work without showing it. The done screen still shows it in full.
+- The wizard's inputs and Add buttons use the party schema's limits, so anything the wizard accepts also survives a reload and passes the server.
+- The shadcn components added here (card, input, switch, textarea) were written by hand in the existing style, because the shadcn CLI couldn't reach its registry from the cloud session.
+
+**Why:** A host in a hurry who skips everything should still get a good TV. A host who mirrors their phone or shares the screen shouldn't show the key to the room, since anyone with it can run the evening.
+
 ## 2026-10-21: What the setup wizard covers (#29)
 
 **Decision:**

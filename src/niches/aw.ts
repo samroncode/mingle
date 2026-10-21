@@ -11,6 +11,10 @@ export const aw: NicheConfig = {
     radius: "0.75rem",
   },
   defaultModules: ["quiz", "awards", "hottakes"],
+  welcome: {
+    sv: "Välkomna! Ta en dryck, slå er ner och njut av kvällen. Vi har lekar och omröstningar på gång, så håll telefonen nära till hands.",
+    en: "Welcome! Grab a drink, settle in and enjoy the evening. We have games and votes coming up, so keep your phone handy.",
+  },
   promptHints:
     "Relaxed after-work with colleagues. Keep it light and inclusive, and avoid anything that could embarrass someone in front of their manager.",
 };

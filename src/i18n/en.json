@@ -3,7 +3,12 @@
     "name": "Mingle"
   },
   "common": {
-    "code": "Code: {{code}}"
+    "code": "Code: {{code}}",
+    "back": "Back",
+    "next": "Next",
+    "copy": "Copy",
+    "copied": "Copied",
+    "share": "Share"
   },
   "language": {
     "label": "Language",
@@ -14,12 +19,17 @@
     "aw": {
       "name": "Afterwork",
       "description": "Drinks and games with colleagues after work."
+    },
+    "team": {
+      "name": "Team event",
+      "description": "Time with your team, with games and a bit of friendly competition."
+    },
+    "bachelor": {
+      "name": "Bachelor/bachelorette party",
+      "description": "Celebrate the guest of honour with laughs, games and votes."
     }
   },
   "views": {
-    "create": {
-      "title": "Create an event"
-    },
     "host": {
       "title": "Control panel"
     },
@@ -39,6 +49,122 @@
     "error": {
       "title": "Something went wrong",
       "reload": "Reload the page"
+    },
+    "landing": {
+      "intro": "Set up a party evening in minutes: quiz, awards and hot takes on the big screen, played from everyone's phone.",
+      "create": "Create an event"
     }
+  },
+  "modules": {
+    "quiz": {
+      "name": "Quiz",
+      "description": "Questions the guests answer on their phones."
+    },
+    "awards": {
+      "name": "Awards",
+      "description": "Vote on who is most likely to...?"
+    },
+    "hottakes": {
+      "name": "Hot takes",
+      "description": "Agree or disagree with bold statements."
+    }
+  },
+  "links": {
+    "codeLabel": "Event code",
+    "hostLabel": "Host link",
+    "tvLabel": "TV address",
+    "showHost": "Show host link",
+    "copyHost": "Copy host link",
+    "copyTv": "Copy TV address"
+  },
+  "errors": {
+    "create": {
+      "network_error": "Couldn't reach the server. Check your connection and try again.",
+      "rate_limited": "Too many tries. Wait a minute and try again.",
+      "invalid_request": "Something in your choices isn't valid. Check them and try again.",
+      "internal_error": "Something went wrong. Try again."
+    }
+  },
+  "wizard": {
+    "progress": "Step {{current}} of {{total}}",
+    "steps": {
+      "niche": "What kind of evening?",
+      "language": "Language",
+      "activities": "Activities",
+      "welcome": "Welcome text",
+      "menu": "Menu",
+      "schedule": "Schedule",
+      "wifi": "Wifi and music",
+      "summary": "Summary"
+    },
+    "activities": {
+      "noneHint": "No activities: the TV will only show the party screen."
+    },
+    "summary": {
+      "noActivities": "None",
+      "edit": "Change",
+      "change": "Change {{step}}",
+      "skipped": "Skipped"
+    },
+    "create": "Create event",
+    "creating": "Creating...",
+    "done": {
+      "title": "Your event is ready",
+      "warning": "Save the host link now. It can't be shown again, and it is the only way back into the control panel.",
+      "openPanel": "Open the control panel"
+    },
+    "skip": "Skip",
+    "welcome": {
+      "label": "Shown on the TV when guests arrive",
+      "hint": "Ready-made for your kind of evening. Edit it or clear it."
+    },
+    "menu": {
+      "add": "Add a line",
+      "line": "Menu line {{n}}"
+    },
+    "schedule": {
+      "add": "Add a line",
+      "time": "Time for line {{n}}",
+      "title": "Title for line {{n}}"
+    },
+    "wifi": {
+      "ssid": "Wifi name",
+      "password": "Wifi password",
+      "passwordHint": "Leave empty for an open network."
+    },
+    "music": {
+      "label": "Music link",
+      "hint": "A Spotify Jam or shared playlist link (https).",
+      "placeholder": "https://"
+    },
+    "lines": {
+      "moveUp": "Move line {{n}} up",
+      "moveDown": "Move line {{n}} down",
+      "remove": "Remove line {{n}}"
+    },
+    "errors": {
+      "welcome": "The welcome text is too long (500 characters at most).",
+      "menu": "Menu lines can be 80 characters and there can be 20 of them.",
+      "schedule": "Each schedule line needs a time like 19:00 and a title of up to 80 characters (20 lines at most).",
+      "wifi": "Enter a wifi name of up to 32 characters. The password can be up to 63.",
+      "musicUrl": "The music link must be a valid https link."
+    }
+  },
+  "hostDoor": {
+    "opening": "Opening the control panel…",
+    "badLink": "This link doesn't work",
+    "badLinkHint": "Check that you copied the whole host link. Events are deleted 30 days after they're created.",
+    "home": "Go to the start page",
+    "rate_limited": "Too many tries. Wait a minute and try again.",
+    "network_error": "Couldn't reach the server. Check your connection and try again.",
+    "internal_error": "Something went wrong. Try again.",
+    "retry": "Try again"
+  },
+  "myEvents": {
+    "title": "Your events",
+    "open": "Open",
+    "forget": "Forget",
+    "forgetLabel": "Forget event {{code}} on this device",
+    "hint": "Only remembered on this device. Forgetting does not delete the event."
   }
 }

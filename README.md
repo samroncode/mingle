@@ -59,6 +59,7 @@ Then open http://localhost:5173. The app also starts without `.env`. The Supabas
 | `npm run lint` | Runs ESLint |
 | `npm run format` / `npm run format:check` | Formats with Prettier / checks formatting |
 | `npm run test` | Runs the Vitest tests once (`npm run test:watch` keeps them running) |
+| `npm run test:e2e` | Runs the Playwright browser tests at phone size, with Supabase faked (no Docker). On a desktop, run `npx playwright install chromium` once first |
 
 ## Project documents
 

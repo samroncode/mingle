@@ -3,18 +3,30 @@
 // extension, and no browser or Node APIs.
 import { z } from "zod";
 
+/** The longest each part of the party content may be; the wizard uses these too. */
+export const partyLimits = {
+  welcome: 500,
+  /** One menu line, or one schedule line's title. */
+  line: 80,
+  /** Menu lines, and schedule lines. */
+  lines: 20,
+  ssid: 32,
+  password: 63,
+  musicUrl: 500,
+} as const;
+
 const text = (max: number) => z.string().trim().min(1).max(max);
 
 /** One line of the evening's schedule, such as 19:00 Dinner. */
 export const ScheduleItemSchema = z.strictObject({
   time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
-  title: text(80),
+  title: text(partyLimits.line),
 });
 
 /** Wifi details for the QR code. An empty password means an open network. */
 export const WifiSchema = z.strictObject({
-  ssid: text(32),
-  password: z.string().max(63),
+  ssid: text(partyLimits.ssid),
+  password: z.string().max(partyLimits.password),
 });
 
 /**
@@ -23,14 +35,14 @@ export const WifiSchema = z.strictObject({
  * is optional: the party screen skips what the host left out.
  */
 export const PartySchema = z.strictObject({
-  welcome: text(500).optional(),
-  menu: z.array(text(80)).max(20).optional(),
-  schedule: z.array(ScheduleItemSchema).max(20).optional(),
+  welcome: text(partyLimits.welcome).optional(),
+  menu: z.array(text(partyLimits.line)).max(partyLimits.lines).optional(),
+  schedule: z.array(ScheduleItemSchema).max(partyLimits.lines).optional(),
   wifi: WifiSchema.optional(),
   /** A Spotify Jam or shared playlist link, shown as a QR code. */
   musicUrl: z
     .url({ protocol: /^https$/ })
-    .max(500)
+    .max(partyLimits.musicUrl)
     .optional(),
 });
 

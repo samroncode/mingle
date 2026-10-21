@@ -3,7 +3,12 @@
     "name": "Mingle"
   },
   "common": {
-    "code": "Kod: {{code}}"
+    "code": "Kod: {{code}}",
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "copy": "Kopiera",
+    "copied": "Kopierad",
+    "share": "Dela"
   },
   "language": {
     "label": "Språk",
@@ -14,12 +19,17 @@
     "aw": {
       "name": "Afterwork",
       "description": "Mingel och lekar med kollegorna efter jobbet."
+    },
+    "team": {
+      "name": "Teamkväll",
+      "description": "Roliga stunder med kollegorna, med lekar och lite tävling."
+    },
+    "bachelor": {
+      "name": "Svensexa/möhippa",
+      "description": "Fira bruden eller brudgummen med skratt, lekar och omröstningar."
     }
   },
   "views": {
-    "create": {
-      "title": "Skapa ett event"
-    },
     "host": {
       "title": "Kontrollpanel"
     },
@@ -39,6 +49,122 @@
     "error": {
       "title": "Något gick fel",
       "reload": "Ladda om sidan"
+    },
+    "landing": {
+      "intro": "Skapa en festkväll på några minuter: quiz, utmärkelser och heta åsikter på storbilden, spelade från allas mobiler.",
+      "create": "Skapa ett event"
     }
+  },
+  "modules": {
+    "quiz": {
+      "name": "Quiz",
+      "description": "Frågor som gästerna svarar på i mobilen."
+    },
+    "awards": {
+      "name": "Utmärkelser",
+      "description": "Rösta på vem som är mest benägen att...?"
+    },
+    "hottakes": {
+      "name": "Het åsikt",
+      "description": "Håll med eller håll inte med om djärva påståenden."
+    }
+  },
+  "links": {
+    "codeLabel": "Eventkod",
+    "hostLabel": "Värdlänk",
+    "tvLabel": "TV-adress",
+    "showHost": "Visa värdlänken",
+    "copyHost": "Kopiera värdlänken",
+    "copyTv": "Kopiera TV-adressen"
+  },
+  "errors": {
+    "create": {
+      "network_error": "Det gick inte att nå servern. Kontrollera uppkopplingen och försök igen.",
+      "rate_limited": "För många försök. Vänta en minut och försök igen.",
+      "invalid_request": "Något i dina val stämmer inte. Kontrollera dem och försök igen.",
+      "internal_error": "Något gick fel. Försök igen."
+    }
+  },
+  "wizard": {
+    "progress": "Steg {{current}} av {{total}}",
+    "steps": {
+      "niche": "Vad för slags kväll?",
+      "language": "Språk",
+      "activities": "Aktiviteter",
+      "welcome": "Välkomsttext",
+      "menu": "Meny",
+      "schedule": "Program",
+      "wifi": "Wifi och musik",
+      "summary": "Sammanfattning"
+    },
+    "activities": {
+      "noneHint": "Inga aktiviteter: TV:n visar bara partyskärmen."
+    },
+    "summary": {
+      "noActivities": "Inga",
+      "edit": "Ändra",
+      "change": "Ändra {{step}}",
+      "skipped": "Hoppades över"
+    },
+    "create": "Skapa event",
+    "creating": "Skapar...",
+    "done": {
+      "title": "Ditt event är klart",
+      "warning": "Spara värdlänken nu. Den kan inte visas igen och är det enda sättet att komma tillbaka till kontrollpanelen.",
+      "openPanel": "Öppna kontrollpanelen"
+    },
+    "skip": "Hoppa över",
+    "welcome": {
+      "label": "Visas på TV:n när gästerna kommer",
+      "hint": "Färdig för din typ av kväll. Ändra eller rensa den."
+    },
+    "menu": {
+      "add": "Lägg till rad",
+      "line": "Menyrad {{n}}"
+    },
+    "schedule": {
+      "add": "Lägg till rad",
+      "time": "Tid för rad {{n}}",
+      "title": "Titel för rad {{n}}"
+    },
+    "wifi": {
+      "ssid": "Wifi-namn",
+      "password": "Wifi-lösenord",
+      "passwordHint": "Lämna tomt för ett öppet nätverk."
+    },
+    "music": {
+      "label": "Musiklänk",
+      "hint": "En Spotify Jam eller delad spellista (https).",
+      "placeholder": "https://"
+    },
+    "lines": {
+      "moveUp": "Flytta rad {{n}} uppåt",
+      "moveDown": "Flytta rad {{n}} nedåt",
+      "remove": "Ta bort rad {{n}}"
+    },
+    "errors": {
+      "welcome": "Välkomsttexten är för lång (högst 500 tecken).",
+      "menu": "Menyrader får vara 80 tecken och det får finnas 20 stycken.",
+      "schedule": "Varje programrad behöver en tid som 19:00 och en titel på högst 80 tecken (högst 20 rader).",
+      "wifi": "Ange ett wifi-namn på högst 32 tecken. Lösenordet får vara högst 63.",
+      "musicUrl": "Musiklänken måste vara en giltig https-länk."
+    }
+  },
+  "hostDoor": {
+    "opening": "Öppnar kontrollpanelen…",
+    "badLink": "Den här länken fungerar inte",
+    "badLinkHint": "Kontrollera att du kopierade hela värdlänken. Event raderas 30 dagar efter att de skapades.",
+    "home": "Gå till startsidan",
+    "rate_limited": "För många försök. Vänta en minut och försök igen.",
+    "network_error": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
+    "internal_error": "Något gick fel. Försök igen.",
+    "retry": "Försök igen"
+  },
+  "myEvents": {
+    "title": "Dina event",
+    "open": "Öppna",
+    "forget": "Glöm",
+    "forgetLabel": "Glöm eventet {{code}} på den här enheten",
+    "hint": "Kommer bara ihåg på den här enheten. Att glömma tar inte bort eventet."
   }
 }

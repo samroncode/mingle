@@ -21,3 +21,13 @@ export async function ensureAnonymousSession(
   }
   return data.user.id;
 }
+
+/** Like `ensureAnonymousSession`, but says false instead of throwing. */
+export async function trySession(client?: AppClient): Promise<boolean> {
+  try {
+    await ensureAnonymousSession(client);
+    return true;
+  } catch {
+    return false;
+  }
+}
