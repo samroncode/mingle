@@ -59,10 +59,53 @@ export const ClaimHostResponseSchema = z.strictObject({});
 
 export type ClaimHostResponse = z.infer<typeof ClaimHostResponseSchema>;
 
+/**
+ * The moves a host makes in the event's flow. Which move is allowed in which
+ * state is decided by the flow state machine in host-actions (`flow.ts`).
+ */
+export const FlowMoveSchema = z.discriminatedUnion("type", [
+  z.strictObject({
+    type: z.literal("start_module"),
+    module: z.enum(moduleIds),
+  }),
+  z.strictObject({ type: z.literal("stop_module") }),
+  z.strictObject({ type: z.literal("next_step") }),
+  z.strictObject({ type: z.literal("open") }),
+  z.strictObject({ type: z.literal("reveal") }),
+  z.strictObject({ type: z.literal("end_event") }),
+]);
+
+export type FlowMove = z.infer<typeof FlowMoveSchema>;
+
+/** Moves the event's flow: start or stop an activity, next step, open, reveal, end. */
+export const SetFlowRequestSchema = z.strictObject({
+  action: z.literal("set_flow"),
+  ...hostLinkFields,
+  move: FlowMoveSchema,
+});
+
+export type SetFlowRequest = z.infer<typeof SetFlowRequestSchema>;
+
+/** The event's flow (CLAUDE.md principle 1), as stored in `events`. */
+export const FlowStateSchema = z.strictObject({
+  status: z.enum(["lobby", "live", "ended"]),
+  currentModule: z.enum(moduleIds).nullable(),
+  currentStep: z.number().int().nonnegative(),
+  phase: z.enum(["idle", "open", "revealed"]),
+});
+
+export type FlowState = z.infer<typeof FlowStateSchema>;
+
+/** The event's flow after the move. */
+export const SetFlowResponseSchema = FlowStateSchema;
+
+export type SetFlowResponse = z.infer<typeof SetFlowResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
   ClaimHostRequestSchema,
+  SetFlowRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -81,6 +124,10 @@ export const hostActionErrorCodes = [
   "method_not_allowed",
   "payload_too_large",
   "rate_limited",
+  /** A flow move the event's state doesn't allow, including any move after it ended. */
+  "invalid_transition",
+  /** start_module for an activity the host turned off. */
+  "module_disabled",
   "internal_error",
 ] as const;
 

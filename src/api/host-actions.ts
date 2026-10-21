@@ -10,6 +10,9 @@ import {
   type HostActionErrorCode,
   HostActionErrorSchema,
   type HostActionRequest,
+  type SetFlowRequest,
+  type SetFlowResponse,
+  SetFlowResponseSchema,
 } from "@/lib/schemas/host-actions";
 import { getSupabase } from "./client";
 
@@ -94,5 +97,20 @@ export async function claimHost(
   return toHostActionResult(
     ClaimHostResponseSchema,
     await invokeHostActions({ action: "claim_host", ...input }),
+  );
+}
+
+/**
+ * Moves the event's flow: start or stop an activity, next step, open, reveal
+ * or end the event. Returns the flow after the move. A move the event's state
+ * doesn't allow fails with `invalid_transition`, an activity the host turned
+ * off with `module_disabled`.
+ */
+export async function setFlow(
+  input: Omit<SetFlowRequest, "action">,
+): Promise<HostActionResult<SetFlowResponse>> {
+  return toHostActionResult(
+    SetFlowResponseSchema,
+    await invokeHostActions({ action: "set_flow", ...input }),
   );
 }

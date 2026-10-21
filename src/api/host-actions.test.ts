@@ -30,6 +30,8 @@ describe("toHostActionResult", () => {
     "origin_not_allowed",
     "payload_too_large",
     "rate_limited",
+    "invalid_transition",
+    "module_disabled",
   ] as const)("passes on the %s error code", (code) => {
     expect(
       toHostActionResult(CreateEventResponseSchema, {

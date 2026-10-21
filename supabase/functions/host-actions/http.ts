@@ -10,6 +10,8 @@ const statusByError: Record<HostActionErrorCode, number> = {
   method_not_allowed: 405,
   payload_too_large: 413,
   rate_limited: 429,
+  invalid_transition: 409,
+  module_disabled: 409,
   internal_error: 500,
 };
 

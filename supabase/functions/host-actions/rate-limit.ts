@@ -27,3 +27,20 @@ export async function consumeRateLimit(
   if (error) throw new Error(`consume_rate_limit failed: ${error.code}`);
   return data;
 }
+
+/**
+ * Like consumeRateLimit, but counted per user and event: a host's actions on
+ * one event don't use up their limit on another. For the actions that run
+ * after the admin key check, once the event is known.
+ */
+export function consumeEventRateLimit(
+  db: Db,
+  caller: string,
+  eventId: string,
+  rule: RateLimitRule,
+): Promise<boolean> {
+  return consumeRateLimit(db, caller, {
+    ...rule,
+    key: `${rule.key}:${eventId}`,
+  });
+}

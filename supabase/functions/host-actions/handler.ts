@@ -14,6 +14,7 @@ import { createEvent, createEventRateLimit } from "./create-event.ts";
 import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
 import { consumeRateLimit } from "./rate-limit.ts";
+import { setFlow } from "./set-flow.ts";
 
 export type HandlerConfig = {
   db: Db;
@@ -78,5 +79,7 @@ async function runAction(
     }
     case "claim_host":
       return claimHost(db, caller, request);
+    case "set_flow":
+      return setFlow(db, caller, request);
   }
 }

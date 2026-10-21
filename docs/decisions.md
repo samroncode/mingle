@@ -12,6 +12,17 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: How `set_flow` moves the event's flow (#20)
+
+**Decision:**
+- The body is `{ action: "set_flow", code, key, move }`, where `move` is one of `start_module` (with `module`), `stop_module`, `next_step`, `open`, `reveal` and `end_event`. It answers the flow after the move: `{ status, currentModule, currentStep, phase }`.
+- Which move is allowed in which state lives in one place, the state machine in `supabase/functions/host-actions/flow.ts`, with the table in its header. An activity can only start when none is running (stop it first). `next_step` is allowed from `idle` (skipping a step) and `revealed`, but not while a step is `open`, so guests' answers are never dropped unseen. `stop_module` leaves the event `live` with no activity: the party screen. `end_event` clears the activity, and after it every move, `end_event` included, answers `invalid_transition`.
+- Disallowed moves answer `409 invalid_transition`; starting an activity that isn't in `enabled_modules` answers `409 module_disabled`.
+- The write is a compare-and-set: the service-role-only RPC `set_event_flow` changes the event only if it still has the flow the move was checked against, so two simultaneous moves can't both apply. A new constraint, `events_flow_check`, holds the same shape in the database: no activity means step 0 and `idle`, and an activity means `live` with an enabled activity.
+- After the key check, moves are rate-limited per user and event: 30 per minute, counted in `private.rate_limits` under `set_flow:<event id>`. `consumeEventRateLimit` in `rate-limit.ts` builds that key and is meant for the other actions that run after the key check, such as `update_party_content`.
+
+**Why:** Keeping the rules in a plain TypeScript function makes them readable in one table. The compare-and-set and the constraint make sure the database never holds a broken flow, whatever the function does. Counting per event lets a host who runs two events keep their limit on each.
+
 ## 2026-10-21: How the admin key check and `claim_host` work (#18)
 
 **Decision:**

@@ -156,6 +156,20 @@ export type Database = {
         };
         Returns: boolean;
       };
+      set_event_flow: {
+        Args: {
+          from_module?: string;
+          from_phase: string;
+          from_status: string;
+          from_step: number;
+          target_event_id: string;
+          to_module?: string;
+          to_phase: string;
+          to_status: string;
+          to_step: number;
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       [_ in never]: never;
