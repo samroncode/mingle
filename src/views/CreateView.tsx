@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateEvent } from "@/hooks/useCreateEvent";
 import { isLanguage } from "@/i18n/language";
 import type { CreateEventResponse } from "@/lib/schemas/host-actions";
+import { addMyEvent } from "@/lib/my-events";
 import { createErrorKey } from "@/lib/wizard/create-error";
 import {
   initialDraft,
@@ -35,7 +36,10 @@ export function CreateView() {
     ),
   );
   const [created, setCreated] = useState<CreateEventResponse>();
-  const { busy, error, create } = useCreateEvent(setCreated);
+  const { busy, error, create } = useCreateEvent((event) => {
+    addMyEvent({ ...event, niche: draft.niche, createdAt: Date.now() });
+    setCreated(event);
+  });
 
   const stepIndex = stepOrder.indexOf(draft.step);
   const isFirst = stepIndex === 0;

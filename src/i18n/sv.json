@@ -160,5 +160,12 @@
     "network_error": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
     "internal_error": "Något gick fel. Försök igen.",
     "retry": "Försök igen"
+  },
+  "myEvents": {
+    "title": "Dina event",
+    "open": "Öppna",
+    "forget": "Glöm",
+    "forgetLabel": "Glöm eventet {{code}} på den här enheten",
+    "hint": "Kommer bara ihåg på den här enheten. Att glömma tar inte bort eventet."
   }
 }

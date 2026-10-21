@@ -115,3 +115,32 @@ test("creates an event through the wizard", async ({ page }) => {
   );
   expect(bodies.at(-1)).toEqual({ action: "claim_host", code, key });
 });
+
+test("remembers the created event under Your events", async ({ page }) => {
+  await fakeSupabase(page, [() => [200, { code, key }]]);
+
+  await page.goto("/");
+  await expect(page.getByText("Your events")).toBeHidden();
+  await page.getByRole("link", { name: "Create an event" }).click();
+  for (let i = 0; i < 7; i++) {
+    await page
+      .getByRole("button", { name: /Next|Skip/ })
+      .first()
+      .click();
+  }
+  await page.getByRole("button", { name: "Create event" }).click();
+  await expect(page.getByTestId("event-code")).toHaveText(code);
+
+  await page.goto("/");
+  const section = page.getByRole("region", { name: "Your events" });
+  await expect(section).toContainText(code);
+  await expect(section).toContainText("Afterwork");
+  await section.getByRole("link", { name: "Open" }).click();
+  await expect(page).toHaveURL(/\/host\/ABC234#key=/);
+
+  await page.goto("/");
+  await page.getByRole("button", { name: `Forget event ${code}` }).click();
+  await expect(page.getByText("Your events")).toBeHidden();
+  await page.reload();
+  await expect(page.getByText("Your events")).toBeHidden();
+});

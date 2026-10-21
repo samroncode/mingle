@@ -160,5 +160,12 @@
     "network_error": "Couldn't reach the server. Check your connection and try again.",
     "internal_error": "Something went wrong. Try again.",
     "retry": "Try again"
+  },
+  "myEvents": {
+    "title": "Your events",
+    "open": "Open",
+    "forget": "Forget",
+    "forgetLabel": "Forget event {{code}} on this device",
+    "hint": "Only remembered on this device. Forgetting does not delete the event."
   }
 }
