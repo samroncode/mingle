@@ -170,6 +170,10 @@ export type Database = {
         };
         Returns: boolean;
       };
+      update_event_party: {
+        Args: { party: Json; target_event_id: string };
+        Returns: string;
+      };
     };
     Enums: {
       [_ in never]: never;

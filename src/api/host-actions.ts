@@ -13,6 +13,9 @@ import {
   type SetFlowRequest,
   type SetFlowResponse,
   SetFlowResponseSchema,
+  type UpdatePartyContentRequest,
+  type UpdatePartyContentResponse,
+  UpdatePartyContentResponseSchema,
 } from "@/lib/schemas/host-actions";
 import { getSupabase } from "./client";
 
@@ -112,5 +115,19 @@ export async function setFlow(
   return toHostActionResult(
     SetFlowResponseSchema,
     await invokeHostActions({ action: "set_flow", ...input }),
+  );
+}
+
+/**
+ * Replaces the event's party-screen content (welcome text, menu, schedule,
+ * wifi, music link) as a whole: parts left out are removed. Members see it on
+ * their next read. An ended event fails with `invalid_transition`.
+ */
+export async function updatePartyContent(
+  input: Omit<UpdatePartyContentRequest, "action">,
+): Promise<HostActionResult<UpdatePartyContentResponse>> {
+  return toHostActionResult(
+    UpdatePartyContentResponseSchema,
+    await invokeHostActions({ action: "update_party_content", ...input }),
   );
 }

@@ -12,6 +12,16 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: How `update_party_content` replaces the party screen (#19)
+
+**Decision:**
+- The body is `{ action: "update_party_content", code, key, party }`, where `party` is validated by the same `PartySchema` that `create_event` uses. It replaces `events.party` as a whole: parts the host leaves out are removed. It answers `{}`; members see the new content on their next read.
+- An ended event's content can't be changed: it answers `409 invalid_transition`, the same code as any flow move after the end, so "the event is over" has one code for the host. An expired event answers `403 not_authorized` like every other host action, because the admin key check already treats it as unknown.
+- The write goes through the service-role-only RPC `update_event_party`, which checks expiry and status in the same statement as the update and answers `updated`, `ended` or `not_found`, so an event that ends or expires between the key check and the write is never changed.
+- After the key check, updates are rate-limited per user and event: 10 per minute, counted under `update_party_content:<event id>`.
+
+**Why:** Replacing the whole object keeps the action simple and matches the wizard, which edits all of it at once. Reusing `invalid_transition` avoids a new error code and i18n key for a case the host only reaches after ending the event. Ten saves a minute is plenty for fixing a typo or the wifi password during the evening.
+
 ## 2026-10-21: How `set_flow` moves the event's flow (#20)
 
 **Decision:**

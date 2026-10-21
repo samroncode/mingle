@@ -101,11 +101,33 @@ export const SetFlowResponseSchema = FlowStateSchema;
 
 export type SetFlowResponse = z.infer<typeof SetFlowResponseSchema>;
 
+/**
+ * Replaces the event's party-screen content (welcome text, menu, schedule,
+ * wifi, music link) as a whole, validated like `create_event`'s `party`.
+ */
+export const UpdatePartyContentRequestSchema = z.strictObject({
+  action: z.literal("update_party_content"),
+  ...hostLinkFields,
+  party: PartySchema,
+});
+
+export type UpdatePartyContentRequest = z.infer<
+  typeof UpdatePartyContentRequestSchema
+>;
+
+/** Empty: members read the new content on their next read. */
+export const UpdatePartyContentResponseSchema = z.strictObject({});
+
+export type UpdatePartyContentResponse = z.infer<
+  typeof UpdatePartyContentResponseSchema
+>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
   ClaimHostRequestSchema,
   SetFlowRequestSchema,
+  UpdatePartyContentRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -124,7 +146,10 @@ export const hostActionErrorCodes = [
   "method_not_allowed",
   "payload_too_large",
   "rate_limited",
-  /** A flow move the event's state doesn't allow, including any move after it ended. */
+  /**
+   * A flow move the event's state doesn't allow, including any move after it
+   * ended, and any change to the party content of an ended event.
+   */
   "invalid_transition",
   /** start_module for an activity the host turned off. */
   "module_disabled",
