@@ -93,6 +93,27 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      consume_rate_limit: {
+        Args: {
+          action: string;
+          caller: string;
+          max_attempts: number;
+          window_seconds: number;
+        };
+        Returns: boolean;
+      };
+      create_event: {
+        Args: {
+          admin_key_hash: string;
+          caller: string;
+          code: string;
+          enabled_modules: string[];
+          language: string;
+          niche: string;
+          party: Json;
+        };
+        Returns: string;
+      };
       is_host: { Args: { target_event_id: string }; Returns: boolean };
       is_member: { Args: { target_event_id: string }; Returns: boolean };
       join_event: {

@@ -12,6 +12,21 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: How `host-actions` and `create_event` work (#17)
+
+**Decision:**
+- The function reaches `private` through two `public` RPCs that only `service_role` may execute: `create_event` (inserts the event, its admin key hash and the host member in one transaction, and answers null on a code clash so the function retries with a new code) and `consume_rate_limit` (a fixed window per user and counter name, counting every attempt). The Data API exposes only `public`, so this avoids a direct Postgres connection and a new driver dependency.
+- The admin key is generated, hashed and returned in the function; the database only ever sees the hash. The hash is SHA-256 of the key's text as it appears in the host link, stored as lowercase hex in `private.event_secrets`. The event code is generated in the function with rejection sampling, so every character is equally likely.
+- The gateway's JWT check is off for `host-actions` (`verify_jwt = false` in `supabase/config.toml`), because it would refuse CORS preflights. The function checks the caller's session itself with `auth.getUser`; the publishable or anon key alone is refused as `not_authenticated`.
+- Checks run in this order: CORS, method, body size (32 KiB, read as a capped stream, so an oversized body is never parsed), JWT, the Zod request union, the action's rate limit. `create_event` allows 5 per user per hour.
+- A request with an `Origin` that isn't in `ALLOWED_ORIGINS` is refused with `origin_not_allowed`, preflight or not. A request without `Origin` doesn't come from a browser page, so CORS doesn't apply; it still needs a valid session.
+- Error codes so far: `invalid_request`, `not_authenticated`, `origin_not_allowed`, `method_not_allowed`, `payload_too_large`, `rate_limited`, `internal_error`, listed once in `src/lib/schemas/host-actions.ts`. The app's wrapper adds `network_error` for a call that got no answer, and maps any answer it doesn't recognise to `internal_error`.
+- `events.party` is `{ welcome?, menu?, schedule?, wifi?, musicUrl? }` (`src/lib/schemas/party.ts`): every part optional, unknown fields refused, the music link https only.
+- Shared schemas import only `zod` and relative paths with a `.ts` extension, because the function imports them under Deno. Niche ids therefore live in `src/niches/ids.ts`, and the typecheck makes `niches` list exactly those ids.
+- `npm run test:db` serves this checkout's functions itself (`supabase/tests/functions-setup.ts`), with `ALLOWED_ORIGINS` from a test env file in `supabase/.temp/`. The local gateway answers every preflight itself with `*`, unlike the hosted one, so the preflight tests call the edge runtime directly from inside the Docker network.
+
+**Why:** The ticket left these details open. Generating the key in the function keeps it out of SQL statements and database logs. Counting every `create_event` attempt, not only failures, is what limits flooding.
+
 ## 2026-10-21: How the join RPCs and db tests work (spec 1 build)
 
 **Decision:**

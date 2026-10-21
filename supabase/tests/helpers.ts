@@ -25,7 +25,7 @@ type LocalStack = {
 let stack: LocalStack | undefined;
 
 /** URL and keys of the running local stack, read once from the CLI. */
-function localStack(): LocalStack {
+export function localStack(): LocalStack {
   if (!stack) {
     const output = execSync("npx supabase status -o json", {
       encoding: "utf8",
