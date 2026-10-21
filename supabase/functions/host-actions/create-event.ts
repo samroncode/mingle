@@ -5,8 +5,8 @@ import type {
   CreateEventResponse,
 } from "../../../src/lib/schemas/host-actions.ts";
 import type { Db } from "./db.ts";
-import type { ActionResult } from "./http.ts";
-import type { RateLimitRule } from "./rate-limit.ts";
+import { type ActionResult, databaseFailed } from "./http.ts";
+import { consumeRateLimit, type RateLimitRule } from "./rate-limit.ts";
 import {
   generateAdminKey,
   generateEventCode,
@@ -28,6 +28,10 @@ export async function createEvent(
   caller: string,
   request: CreateEventRequest,
 ): Promise<ActionResult> {
+  if (!(await consumeRateLimit(db, caller, createEventRateLimit))) {
+    return { ok: false, error: "rate_limited" };
+  }
+
   const key = generateAdminKey();
   const adminKeyHash = await hashAdminKey(key);
 
@@ -42,10 +46,7 @@ export async function createEvent(
       party: request.party,
       admin_key_hash: adminKeyHash,
     });
-    if (error) {
-      console.error("create_event failed", error.code);
-      return { ok: false, error: "internal_error" };
-    }
+    if (error) return databaseFailed("create_event", error);
     if (eventId !== null) {
       const body: CreateEventResponse = { code, key };
       return { ok: true, body };

@@ -20,6 +20,7 @@ import type {
   FlowMove,
   FlowState,
 } from "../../../src/lib/schemas/host-actions.ts";
+import type { ModuleId } from "../../../src/modules/registry.ts";
 
 export type FlowTransition =
   | { ok: true; state: FlowState }
@@ -29,7 +30,7 @@ const idle = { currentStep: 0, phase: "idle" } as const;
 
 export function applyMove(
   state: FlowState,
-  enabledModules: readonly string[],
+  enabledModules: readonly ModuleId[],
   move: FlowMove,
 ): FlowTransition {
   if (state.status === "ended") return refused();

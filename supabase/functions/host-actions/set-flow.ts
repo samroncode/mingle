@@ -1,17 +1,20 @@
 // set_flow: the host moves the event's flow (start or stop an activity, next
 // step, open, reveal, end the event). flow.ts decides whether the move is
 // allowed; the write only lands if nothing else moved the event meanwhile.
+import type { ModuleId } from "../../../src/modules/registry.ts";
 import {
+  type FlowMove,
   type FlowState,
   FlowStateSchema,
+  ModuleIdSchema,
   type SetFlowRequest,
   type SetFlowResponse,
 } from "../../../src/lib/schemas/host-actions.ts";
-import { authorizeHost } from "./admin-key.ts";
+import { asHost } from "./as-host.ts";
 import type { Db } from "./db.ts";
 import { applyMove } from "./flow.ts";
-import type { ActionResult } from "./http.ts";
-import { consumeEventRateLimit, type RateLimitRule } from "./rate-limit.ts";
+import { type ActionResult, databaseFailed } from "./http.ts";
+import type { RateLimitRule } from "./rate-limit.ts";
 
 /**
  * Flow moves per user per event. A host running a quiz makes a few moves per
@@ -23,37 +26,32 @@ export const setFlowRateLimit: RateLimitRule = {
   windowSeconds: 60,
 };
 
-export async function setFlow(
+export function setFlow(
   db: Db,
   caller: string,
   request: SetFlowRequest,
 ): Promise<ActionResult> {
-  const auth = await authorizeHost(db, caller, request.code, request.key);
-  if (!auth.ok) return auth;
-  if (
-    !(await consumeEventRateLimit(db, caller, auth.eventId, setFlowRateLimit))
-  ) {
-    return { ok: false, error: "rate_limited" };
-  }
+  return asHost(db, caller, request, setFlowRateLimit, (eventId) =>
+    moveFlow(db, eventId, request.move),
+  );
+}
 
-  const current = await readFlow(db, auth.eventId);
+async function moveFlow(
+  db: Db,
+  eventId: string,
+  move: FlowMove,
+): Promise<ActionResult> {
+  const current = await readFlow(db, eventId);
   if (current === null) return { ok: false, error: "internal_error" };
 
-  const transition = applyMove(
-    current.state,
-    current.enabledModules,
-    request.move,
-  );
+  const transition = applyMove(current.state, current.enabledModules, move);
   if (!transition.ok) return transition;
 
   const { data: written, error } = await db.rpc(
     "set_event_flow",
-    writeArgs(auth.eventId, current.state, transition.state),
+    writeArgs(eventId, current.state, transition.state),
   );
-  if (error) {
-    console.error("set_event_flow failed", error.code);
-    return { ok: false, error: "internal_error" };
-  }
+  if (error) return databaseFailed("set_event_flow", error);
   // Another move landed after the read, so this one was checked against a
   // state that no longer exists.
   if (!written) return { ok: false, error: "invalid_transition" };
@@ -66,7 +64,7 @@ export async function setFlow(
 async function readFlow(
   db: Db,
   eventId: string,
-): Promise<{ state: FlowState; enabledModules: string[] } | null> {
+): Promise<{ state: FlowState; enabledModules: ModuleId[] } | null> {
   const { data, error } = await db
     .from("events")
     .select("status, current_module, current_step, phase, enabled_modules")
@@ -86,7 +84,15 @@ async function readFlow(
     console.error("the stored flow has an unknown shape");
     return null;
   }
-  return { state: state.data, enabledModules: data.enabled_modules };
+  return {
+    state: state.data,
+    // An id this app doesn't know can never be started, so it's dropped.
+    enabledModules: data.enabled_modules.filter(isModuleId),
+  };
+}
+
+function isModuleId(id: string): id is ModuleId {
+  return ModuleIdSchema.safeParse(id).success;
 }
 
 function writeArgs(eventId: string, from: FlowState, to: FlowState) {

@@ -1,7 +1,8 @@
 // The checks every host action passes, in order: CORS, method, body size,
-// the caller's JWT, the request schema and the action's rate limit. Then the
-// action runs. Add an action by adding its schema to HostActionRequestSchema
-// and a case to `runAction`.
+// the caller's JWT and the request schema. Then the action runs, starting with
+// its own checks: the rate limit, and for every action but create_event the
+// admin key (as-host.ts). Add an action by adding its schema to
+// HostActionRequestSchema and a case to `runAction`.
 import {
   type HostActionRequest,
   HostActionRequestSchema,
@@ -10,10 +11,9 @@ import { authenticate } from "./auth.ts";
 import { readJsonBody } from "./body.ts";
 import { claimHost } from "./claim-host.ts";
 import { corsHeaders } from "./cors.ts";
-import { createEvent, createEventRateLimit } from "./create-event.ts";
+import { createEvent } from "./create-event.ts";
 import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
-import { consumeRateLimit } from "./rate-limit.ts";
 import { setFlow } from "./set-flow.ts";
 import { updatePartyContent } from "./update-party-content.ts";
 
@@ -72,12 +72,8 @@ async function runAction(
   request: HostActionRequest,
 ): Promise<ActionResult> {
   switch (request.action) {
-    case "create_event": {
-      if (!(await consumeRateLimit(db, caller, createEventRateLimit))) {
-        return { ok: false, error: "rate_limited" };
-      }
+    case "create_event":
       return createEvent(db, caller, request);
-    }
     case "claim_host":
       return claimHost(db, caller, request);
     case "set_flow":

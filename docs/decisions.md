@@ -12,6 +12,14 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: How a live event view handles a failed refetch and a non-member (#23)
+
+**Decision:**
+- `subscribeToEvent` in `src/api/realtime.ts` treats every change as a signal to refetch the snapshot. When a refetch fails, the view keeps the last snapshot on screen and sets the error code (`useEventState` goes to `error` with the old `event` and `members`); the next successful refetch makes it `ready` again.
+- A subscription by someone who isn't a member of the event only ever gets `not_found`, never event or member data. RLS decides every read, so the realtime channel itself carries nothing the caller couldn't read directly.
+
+**Why:** A TV losing the network for a moment should keep showing the party screen instead of going blank. Answering a non-member with `not_found` matches the join RPCs, so nobody learns more about an event from realtime than from joining it.
+
 ## 2026-10-21: How `update_party_content` replaces the party screen (#19)
 
 **Decision:**

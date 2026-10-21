@@ -5,10 +5,10 @@ import type {
   UpdatePartyContentRequest,
   UpdatePartyContentResponse,
 } from "../../../src/lib/schemas/host-actions.ts";
-import { authorizeHost } from "./admin-key.ts";
+import { asHost } from "./as-host.ts";
 import type { Db } from "./db.ts";
-import type { ActionResult } from "./http.ts";
-import { consumeEventRateLimit, type RateLimitRule } from "./rate-limit.ts";
+import { type ActionResult, databaseFailed } from "./http.ts";
+import type { RateLimitRule } from "./rate-limit.ts";
 
 /**
  * Content updates per user per event. A host fixes the content now and then
@@ -20,37 +20,31 @@ export const updatePartyContentRateLimit: RateLimitRule = {
   windowSeconds: 60,
 };
 
-export async function updatePartyContent(
+export function updatePartyContent(
   db: Db,
   caller: string,
   request: UpdatePartyContentRequest,
 ): Promise<ActionResult> {
-  const auth = await authorizeHost(db, caller, request.code, request.key);
-  if (!auth.ok) return auth;
-  if (
-    !(await consumeEventRateLimit(
-      db,
-      caller,
-      auth.eventId,
-      updatePartyContentRateLimit,
-    ))
-  ) {
-    return { ok: false, error: "rate_limited" };
-  }
+  return asHost(
+    db,
+    caller,
+    request,
+    updatePartyContentRateLimit,
+    async (eventId) => {
+      const { data: outcome, error } = await db.rpc("update_event_party", {
+        target_event_id: eventId,
+        party: request.party,
+      });
+      if (error) return databaseFailed("update_event_party", error);
+      // An ended event is frozen, like its flow.
+      if (outcome === "ended") {
+        return { ok: false, error: "invalid_transition" };
+      }
+      // The event expired between the key check and the write.
+      if (outcome !== "updated") return { ok: false, error: "not_authorized" };
 
-  const { data: outcome, error } = await db.rpc("update_event_party", {
-    target_event_id: auth.eventId,
-    party: request.party,
-  });
-  if (error) {
-    console.error("update_event_party failed", error.code);
-    return { ok: false, error: "internal_error" };
-  }
-  // An ended event is frozen, like its flow.
-  if (outcome === "ended") return { ok: false, error: "invalid_transition" };
-  // The event expired between the key check and the write.
-  if (outcome !== "updated") return { ok: false, error: "not_authorized" };
-
-  const body: UpdatePartyContentResponse = {};
-  return { ok: true, body };
+      const body: UpdatePartyContentResponse = {};
+      return { ok: true, body };
+    },
+  );
 }

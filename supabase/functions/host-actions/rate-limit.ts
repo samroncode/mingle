@@ -29,6 +29,25 @@ export async function consumeRateLimit(
 }
 
 /**
+ * Whether the rule's limit is already used up, without counting an attempt.
+ * Throws when the counter can't be reached, like consumeRateLimit.
+ */
+export async function rateLimitReached(
+  db: Db,
+  caller: string,
+  rule: RateLimitRule,
+): Promise<boolean> {
+  const { data, error } = await db.rpc("rate_limit_reached", {
+    caller,
+    action: rule.key,
+    max_attempts: rule.maxAttempts,
+    window_seconds: rule.windowSeconds,
+  });
+  if (error) throw new Error(`rate_limit_reached failed: ${error.code}`);
+  return data;
+}
+
+/**
  * Like consumeRateLimit, but counted per user and event: a host's actions on
  * one event don't use up their limit on another. For the actions that run
  * after the admin key check, once the event is known.

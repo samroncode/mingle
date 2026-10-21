@@ -6,15 +6,16 @@ import { z } from "zod";
 import { supportedLanguages } from "../../i18n/language.ts";
 import { moduleIds } from "../../modules/registry.ts";
 import { nicheIds } from "../../niches/ids.ts";
+import { ADMIN_KEY_PATTERN, EVENT_CODE_PATTERN } from "../formats.ts";
 import { PartySchema } from "./party.ts";
 
 /** 6 characters without look-alikes (no 0/O, no 1/I/L), as in the database. */
-export const EventCodeSchema = z
-  .string()
-  .regex(/^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/);
+export const EventCodeSchema = z.string().regex(EVENT_CODE_PATTERN);
 
 /** 32 random bytes, base64url-encoded without padding. */
-export const AdminKeySchema = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
+export const AdminKeySchema = z.string().regex(ADMIN_KEY_PATTERN);
+
+export const ModuleIdSchema = z.enum(moduleIds);
 
 export const CreateEventRequestSchema = z.strictObject({
   action: z.literal("create_event"),
@@ -22,7 +23,7 @@ export const CreateEventRequestSchema = z.strictObject({
   language: z.enum(supportedLanguages),
   /** The activities the host kept switched on. May be empty. */
   enabledModules: z
-    .array(z.enum(moduleIds))
+    .array(ModuleIdSchema)
     .refine((ids) => new Set(ids).size === ids.length, "duplicate module"),
   party: PartySchema,
 });
@@ -66,7 +67,7 @@ export type ClaimHostResponse = z.infer<typeof ClaimHostResponseSchema>;
 export const FlowMoveSchema = z.discriminatedUnion("type", [
   z.strictObject({
     type: z.literal("start_module"),
-    module: z.enum(moduleIds),
+    module: ModuleIdSchema,
   }),
   z.strictObject({ type: z.literal("stop_module") }),
   z.strictObject({ type: z.literal("next_step") }),
@@ -89,7 +90,7 @@ export type SetFlowRequest = z.infer<typeof SetFlowRequestSchema>;
 /** The event's flow (CLAUDE.md principle 1), as stored in `events`. */
 export const FlowStateSchema = z.strictObject({
   status: z.enum(["lobby", "live", "ended"]),
-  currentModule: z.enum(moduleIds).nullable(),
+  currentModule: ModuleIdSchema.nullable(),
   currentStep: z.number().int().nonnegative(),
   phase: z.enum(["idle", "open", "revealed"]),
 });

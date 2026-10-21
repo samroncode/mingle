@@ -1,5 +1,4 @@
-// 32 random bytes, base64url-encoded without padding.
-const ADMIN_KEY_PATTERN = /^[A-Za-z0-9_-]{43}$/;
+import { ADMIN_KEY_PATTERN } from "./formats";
 
 /** Reads the admin key from a URL fragment such as `#key=…`. */
 export function readAdminKey(hash: string): string | undefined {

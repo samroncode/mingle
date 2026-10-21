@@ -1,17 +1,20 @@
 // Event codes and admin keys. Never log a key: only its hash is stored.
+import {
+  EVENT_CODE_ALPHABET,
+  EVENT_CODE_LENGTH,
+} from "../../../src/lib/formats.ts";
 
-const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 // The largest multiple of the alphabet size below 256. Bytes at or above it
 // are skipped, so every character is equally likely.
-const CODE_BYTE_LIMIT = 256 - (256 % CODE_ALPHABET.length);
+const CODE_BYTE_LIMIT = 256 - (256 % EVENT_CODE_ALPHABET.length);
 
-/** A random 6-character event code from the alphabet without look-alikes. */
+/** A random event code from the alphabet without look-alikes. */
 export function generateEventCode(): string {
   let code = "";
-  while (code.length < 6) {
+  while (code.length < EVENT_CODE_LENGTH) {
     for (const byte of crypto.getRandomValues(new Uint8Array(16))) {
-      if (byte < CODE_BYTE_LIMIT && code.length < 6) {
-        code += CODE_ALPHABET[byte % CODE_ALPHABET.length];
+      if (byte < CODE_BYTE_LIMIT && code.length < EVENT_CODE_LENGTH) {
+        code += EVENT_CODE_ALPHABET[byte % EVENT_CODE_ALPHABET.length];
       }
     }
   }

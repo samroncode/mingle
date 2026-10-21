@@ -19,6 +19,18 @@ const statusByError: Record<HostActionErrorCode, number> = {
 export type ActionResult =
   { ok: true; body: unknown } | { ok: false; error: HostActionErrorCode };
 
+/**
+ * A database call failed: logs which one and its error code (never request
+ * data) and answers `internal_error`.
+ */
+export function databaseFailed(
+  operation: string,
+  error: { code: string },
+): ActionResult {
+  console.error(`${operation} failed`, error.code);
+  return { ok: false, error: "internal_error" };
+}
+
 export function jsonResponse(
   status: number,
   body: unknown,

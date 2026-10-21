@@ -5,29 +5,27 @@ import type {
   ClaimHostRequest,
   ClaimHostResponse,
 } from "../../../src/lib/schemas/host-actions.ts";
-import { authorizeHost } from "./admin-key.ts";
+import { asHost } from "./as-host.ts";
 import type { Db } from "./db.ts";
-import type { ActionResult } from "./http.ts";
+import { type ActionResult, databaseFailed } from "./http.ts";
 
-export async function claimHost(
+export function claimHost(
   db: Db,
   caller: string,
   request: ClaimHostRequest,
 ): Promise<ActionResult> {
-  const auth = await authorizeHost(db, caller, request.code, request.key);
-  if (!auth.ok) return auth;
+  // Only the key check's own limit: claiming is rare and changes nothing
+  // anyone else sees.
+  return asHost(db, caller, request, null, async (eventId) => {
+    const { data: claimed, error } = await db.rpc("claim_host", {
+      caller,
+      target_event_id: eventId,
+    });
+    if (error) return databaseFailed("claim_host", error);
+    // The event expired between the key check and the claim.
+    if (!claimed) return { ok: false, error: "not_authorized" };
 
-  const { data: claimed, error } = await db.rpc("claim_host", {
-    caller,
-    target_event_id: auth.eventId,
+    const body: ClaimHostResponse = {};
+    return { ok: true, body };
   });
-  if (error) {
-    console.error("claim_host failed", error.code);
-    return { ok: false, error: "internal_error" };
-  }
-  // The event expired between the key check and the claim.
-  if (!claimed) return { ok: false, error: "not_authorized" };
-
-  const body: ClaimHostResponse = {};
-  return { ok: true, body };
 }

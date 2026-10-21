@@ -5,7 +5,11 @@
 // all answer the same `not_authorized`, so nobody without the key learns
 // whether a code exists. Never log the key or its hash.
 import type { Db } from "./db.ts";
-import { consumeRateLimit, type RateLimitRule } from "./rate-limit.ts";
+import {
+  consumeRateLimit,
+  type RateLimitRule,
+  rateLimitReached,
+} from "./rate-limit.ts";
 import { hashAdminKey } from "./secrets.ts";
 
 /**
@@ -33,7 +37,7 @@ export async function authorizeHost(
   code: string,
   key: string,
 ): Promise<HostAuthorization> {
-  if (await failureLimitReached(db, caller)) {
+  if (await rateLimitReached(db, caller, adminKeyFailureRateLimit)) {
     return { ok: false, error: "rate_limited" };
   }
 
@@ -46,17 +50,6 @@ export async function authorizeHost(
 
   await consumeRateLimit(db, caller, adminKeyFailureRateLimit);
   return { ok: false, error: "not_authorized" };
-}
-
-async function failureLimitReached(db: Db, caller: string): Promise<boolean> {
-  const { data, error } = await db.rpc("rate_limit_reached", {
-    caller,
-    action: adminKeyFailureRateLimit.key,
-    max_attempts: adminKeyFailureRateLimit.maxAttempts,
-    window_seconds: adminKeyFailureRateLimit.windowSeconds,
-  });
-  if (error) throw new Error(`rate_limit_reached failed: ${error.code}`);
-  return data;
 }
 
 /** The event and its key hash, or null for an unknown or expired code. */
