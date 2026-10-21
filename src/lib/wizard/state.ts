@@ -102,11 +102,15 @@ function withParty(draft: WizardDraft, part: Partial<PartyForm>): WizardDraft {
   return { ...draft, party: { ...draft.party, ...part } };
 }
 
-/** Drops what the host typed on a step, so it is left out of the request. */
+/**
+ * Puts a step back to its default. Most steps become empty and are left out
+ * of the request; the welcome step goes back to the niche's ready text, so a
+ * host who skips everything still gets a good TV.
+ */
 function clearStep(draft: WizardDraft): WizardDraft {
   switch (draft.step) {
     case "welcome":
-      return withParty(draft, { welcome: "", welcomeEdited: true });
+      return followWelcome(withParty(draft, { welcomeEdited: false }));
     case "menu":
       return withParty(draft, { menu: [] });
     case "schedule":

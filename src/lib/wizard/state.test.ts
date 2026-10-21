@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { niches } from "@/niches";
+import { getNiche, niches } from "@/niches";
 import { CreateEventRequestSchema } from "@/lib/schemas/host-actions";
 import {
   initialDraft,
@@ -200,6 +200,17 @@ describe("skipping", () => {
     expect(isSkippable("niche")).toBe(false);
     expect(isSkippable("language")).toBe(false);
     expect(stepOrder.slice(2).every(isSkippable)).toBe(true);
+  });
+
+  it("puts the welcome text back to the niche's ready text", () => {
+    const draft = run(
+      initialDraft("en"),
+      { type: "go_to", step: "welcome" },
+      { type: "set_welcome", text: "Half-typed" },
+      { type: "skip" },
+      { type: "set_language", language: "sv" },
+    );
+    expect(draft.party.welcome).toBe(getNiche(draft.niche).welcome.sv);
   });
 
   it("clears invalid content on the step and moves on", () => {
