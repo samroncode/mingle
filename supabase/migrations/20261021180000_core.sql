@@ -228,6 +228,72 @@ $$;
 
 revoke execute on function private.find_event_by_code(text) from public;
 
+-- Throttling against code guessing. Every join attempt with an unknown or
+-- expired code counts as a failure for the caller, shared by join_event and
+-- join_tv. After JOIN_FAILURE_LIMIT failures within JOIN_FAILURE_WINDOW, both
+-- RPCs answer `rate_limited` to that user, even for a valid code, until the
+-- window has passed. Supabase also limits anonymous sign-ins per IP, which caps
+-- how many fresh users an attacker can create.
+
+-- JOIN_FAILURE_LIMIT
+create function private.join_failure_limit()
+returns integer
+language sql
+immutable
+set search_path = ''
+as $$ select 10 $$;
+
+-- JOIN_FAILURE_WINDOW
+create function private.join_failure_window()
+returns interval
+language sql
+immutable
+set search_path = ''
+as $$ select interval '1 minute' $$;
+
+create function private.join_is_throttled(caller uuid)
+returns boolean
+language sql
+stable
+set search_path = ''
+as $$
+  select exists (
+    select 1
+    from private.rate_limits r
+    where r.user_id = caller
+      and r.action = 'join'
+      and r.count >= private.join_failure_limit()
+      and r.window_start > pg_catalog.now() - private.join_failure_window()
+  );
+$$;
+
+-- Counts one failure. A failure after the window has passed starts a new one.
+create function private.record_join_failure(caller uuid)
+returns void
+language sql
+volatile
+set search_path = ''
+as $$
+  insert into private.rate_limits as r (user_id, action, window_start, count)
+  values (caller, 'join', pg_catalog.now(), 1)
+  on conflict (user_id, action) do update set
+    window_start = case
+      when r.window_start <= pg_catalog.now() - private.join_failure_window()
+        then pg_catalog.now()
+      else r.window_start
+    end,
+    count = case
+      when r.window_start <= pg_catalog.now() - private.join_failure_window()
+        then 1
+      else r.count + 1
+    end;
+$$;
+
+revoke execute on function private.join_failure_limit() from public;
+revoke execute on function private.join_failure_window() from public;
+revoke execute on function private.join_is_throttled(uuid) from public;
+revoke execute on function private.record_join_failure(uuid) from public;
+
 -- Joins the event with this code as a guest. Calling again from the same
 -- session returns the same event id and changes nothing, so a guest keeps
 -- their name and a host or TV can't turn into a guest.
@@ -248,8 +314,13 @@ begin
     raise exception 'not_authenticated' using errcode = '42501';
   end if;
 
+  if private.join_is_throttled(caller) then
+    return row(null, 'rate_limited')::public.join_result;
+  end if;
+
   target := private.find_event_by_code(join_event.code);
   if target.id is null then
+    perform private.record_join_failure(caller);
     return row(null, 'not_found')::public.join_result;
   end if;
   if target.status = 'ended' then
@@ -302,8 +373,13 @@ begin
     raise exception 'not_authenticated' using errcode = '42501';
   end if;
 
+  if private.join_is_throttled(caller) then
+    return row(null, 'rate_limited')::public.join_result;
+  end if;
+
   target := private.find_event_by_code(join_tv.code);
   if target.id is null then
+    perform private.record_join_failure(caller);
     return row(null, 'not_found')::public.join_result;
   end if;
   if target.status = 'ended' then
