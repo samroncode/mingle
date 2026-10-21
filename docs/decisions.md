@@ -12,6 +12,22 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: What the setup wizard covers (#29)
+
+**Decision:**
+- The setup wizard comes next, after the backend core. The order of the later steps (activities, cleanup, AI) is still open.
+- The wizard offers all three niches. Team event and Bachelor/bachelorette get their configs now (name, description, placeholder theme, default activities); their activity content comes with each activity.
+- The wizard asks for niche, language, activities, welcome text, menu, schedule, wifi and music link, in short phone steps with Back and Next, then a summary and Create. Every step after language can be skipped. It doesn't ask for guest names, a vibe or themes: guests type their own name when they join, and vibe and themes would only steer AI or content picking, so they come back with those plans if needed. Picking quiz questions, award categories and hot takes is added to the wizard by each activity's spec.
+- Each niche ships a ready welcome text in Swedish and English, filled in and editable. Menu, schedule, wifi and music start empty.
+- The language step starts on the host's current UI language. A host may switch every activity off; the TV then shows only the party screen.
+- Unfinished wizard input is kept in this browser and cleared after Create. Nothing reaches the server before Create. A failed create shows a plain message and keeps the input.
+- The last screen shows the code, the host link with Copy and Share (the phone's share menu), a warning that the link can't be shown again, the TV address, and a button into the control panel. It shows no QR code; the TV shows the join QR code.
+- The browser that created an event remembers its host link. The start page lists these under "Your events", each with a way back into the control panel and a Forget button, and drops them after the event's 30-day expiry. Anyone holding the unlocked device can open the control panel, which was accepted.
+- The wizard spec builds only the door into the control panel: opening the host link claims the host role and shows the code, TV address and host link; a wrong or expired link shows an error. Running activities and editing the party screen come with the control panel spec.
+- `@playwright/test` is added as a dev dependency. One test clicks through the wizard at phone size with the `host-actions` answer faked, so it runs in cloud sessions without Docker.
+
+**Why:** Every later step needs a way to create an event, and the backend for it already exists, so the wizard is small and safe. Steps keep each screen short on a phone. Asking for things nothing uses yet would only slow the host down. The host link is the only way back into an event, so the wizard makes it hard to lose: a clear warning, Share, and a copy on the device. Faking the server in the browser test keeps it fast and runnable anywhere; `host-actions` itself is already tested over HTTP.
+
 ## 2026-10-22: How a live event view handles a failed refetch and a non-member (#23)
 
 **Decision:**
