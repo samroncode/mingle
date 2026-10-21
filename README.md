@@ -6,7 +6,7 @@ Set up an interactive party evening in a few minutes. A host creates an event, p
 
 ## Why
 
-Every afterwork, team event or bachelor party ends up with entertainment built from scratch: quiz questions in a doc, votes by show of hands, nothing on the TV. Generic quiz tools need content written up front. Mingle gives the host niche-specific, AI-assisted (always host-approved) content suggestions and one place to run the whole evening.
+Every afterwork, team event or bachelor party ends up with entertainment built from scratch: quiz questions in a doc, votes by show of hands, nothing on the TV. Generic quiz tools need content written up front. Mingle gives the host ready-made, niche-specific content and one place to run the whole evening.
 
 ## How it works
 
@@ -26,7 +26,7 @@ There are three views, all served by one app:
    - **Awards**: "most likely to…" voting on guest names
    - **Hot takes**: agree/disagree polls
 
-AI suggestions for activity content are generated on request. Nothing is shown to guests or on the TV until the host has reviewed and approved it.
+Each niche comes with built-in quiz questions, award categories and hot takes in Swedish and English. The host picks from them and adds their own. AI suggestions are an optional bonus: nothing they produce is shown to guests or on the TV until the host has reviewed and approved it.
 
 ## Tech stack
 
@@ -34,7 +34,7 @@ AI suggestions for activity content are generated on request. Nothing is shown t
 - Tailwind CSS v4 and shadcn/ui
 - React Router
 - Supabase: Postgres, Realtime, Storage, Edge Functions, anonymous sign-in
-- Claude API, called only from a Supabase Edge Function
+- Optional AI suggestions, called only from a Supabase Edge Function
 - Zod for validation, react-i18next for Swedish and English
 - Vitest and Playwright for testing, ESLint and Prettier for code quality
 - Hosted on Vercel (frontend) and Supabase (backend)

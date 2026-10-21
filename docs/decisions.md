@@ -12,6 +12,16 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: AI suggestions are an optional bonus; niches ship built-in content
+
+**Decision:**
+- Mingle works fully without AI. Each niche ships built-in content in Swedish and English: quiz questions, award categories and hot takes. The host picks from it and adds their own.
+- The built-in content is written with Claude Code and reviewed by the owner before it's merged, so it is approved content under principle 6.
+- AI suggestions are a bonus on top. When no AI key is configured, the app hides them.
+- The AI provider is chosen when AI gets its own plan: the Claude API, or a free tier such as Gemini's (check its data terms first). Whichever it is, it's called only from the `ai-suggest` Edge Function, its output is validated and stored as drafts until the host approves, and prompts never include guest names or other personal data.
+
+**Why:** Running Mingle should cost nothing at small scale. The free plans of Supabase and Vercel cover hosting, and AI is the only part that always costs money (estimated on this date at about 2 cents per party on Claude Haiku 5.5 and about 70 cents on Claude Opus 5.5). Built-in content is free, instant and has no rate limits, and it's reviewed once instead of at every party, which matters because AI-written trivia can get facts wrong. Free AI tiers can change their quotas without notice and may use prompts to train models, so the app mustn't depend on them. Keeping personal data out of prompts makes the provider choice a question of quality and cost only. Keeping AI as the main source of content was rejected because of the running cost and the hard dependency on one paid API.
+
 ## 2026-10-21: Database specs are built on the desktop, one database ticket at a time
 
 **Decision:** Specs that touch `supabase/` can be planned in any session, but `/implement-spec` for them runs on the desktop, where Docker runs the local Supabase stack. Tickets that touch `supabase/` are built one at a time; other tickets still run in parallel. The `implementer` and `merger` also run `format:check`, and `test:db` when the change touches `supabase/`. These specs get `/security-review` after `/diff-review`, their security-critical tickets run the `implementer` on Opus, and the security rules from the design go into ticket acceptance criteria. "Database rules" in `CLAUDE.md` is written now, before the backend core is built, so implementers and `/diff-review` check against it from the first ticket.
