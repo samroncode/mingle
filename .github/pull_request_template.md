@@ -1,6 +1,6 @@
 ## What and why
 
-<!-- What this PR changes and why. Link the issue or plan in docs/plans/ if there is one. -->
+<!-- What this PR changes and why. Link the spec or ticket issue if there is one. -->
 
 ## How to test
 
