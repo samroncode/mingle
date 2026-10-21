@@ -93,6 +93,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      claim_host: {
+        Args: { caller: string; target_event_id: string };
+        Returns: boolean;
+      };
       consume_rate_limit: {
         Args: {
           action: string;
@@ -113,6 +117,13 @@ export type Database = {
           party: Json;
         };
         Returns: string;
+      };
+      event_admin_key_hash: {
+        Args: { code: string };
+        Returns: {
+          admin_key_hash: string;
+          event_id: string;
+        }[];
       };
       is_host: { Args: { target_event_id: string }; Returns: boolean };
       is_member: { Args: { target_event_id: string }; Returns: boolean };
@@ -135,6 +146,15 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      rate_limit_reached: {
+        Args: {
+          action: string;
+          caller: string;
+          max_attempts: number;
+          window_seconds: number;
+        };
+        Returns: boolean;
       };
     };
     Enums: {

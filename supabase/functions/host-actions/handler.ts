@@ -8,6 +8,7 @@ import {
 } from "../../../src/lib/schemas/host-actions.ts";
 import { authenticate } from "./auth.ts";
 import { readJsonBody } from "./body.ts";
+import { claimHost } from "./claim-host.ts";
 import { corsHeaders } from "./cors.ts";
 import { createEvent, createEventRateLimit } from "./create-event.ts";
 import type { Db } from "./db.ts";
@@ -75,5 +76,7 @@ async function runAction(
       }
       return createEvent(db, caller, request);
     }
+    case "claim_host":
+      return claimHost(db, caller, request);
   }
 }

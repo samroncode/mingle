@@ -1,6 +1,9 @@
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import type { z } from "zod";
 import {
+  type ClaimHostRequest,
+  type ClaimHostResponse,
+  ClaimHostResponseSchema,
   type CreateEventRequest,
   type CreateEventResponse,
   CreateEventResponseSchema,
@@ -77,5 +80,19 @@ export async function createEvent(
   return toHostActionResult(
     CreateEventResponseSchema,
     await invokeHostActions({ action: "create_event", ...input }),
+  );
+}
+
+/**
+ * Makes the current session a host of the event, from the code and key in
+ * the host link. A wrong key and an unknown code both fail with
+ * `not_authorized`.
+ */
+export async function claimHost(
+  input: Omit<ClaimHostRequest, "action">,
+): Promise<HostActionResult<ClaimHostResponse>> {
+  return toHostActionResult(
+    ClaimHostResponseSchema,
+    await invokeHostActions({ action: "claim_host", ...input }),
   );
 }

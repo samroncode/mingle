@@ -5,6 +5,7 @@ import type { HostActionErrorCode } from "../../../src/lib/schemas/host-actions.
 const statusByError: Record<HostActionErrorCode, number> = {
   invalid_request: 400,
   not_authenticated: 401,
+  not_authorized: 403,
   origin_not_allowed: 403,
   method_not_allowed: 405,
   payload_too_large: 413,

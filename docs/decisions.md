@@ -12,6 +12,17 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: How the admin key check and `claim_host` work (#18)
+
+**Decision:**
+- Every host action except `create_event` starts with `authorizeHost(db, caller, code, key)` in `supabase/functions/host-actions/admin-key.ts`, which answers the event id or `not_authorized`/`rate_limited`. Request schemas spread `hostLinkFields` (`code`, `key`) from `src/lib/schemas/host-actions.ts`.
+- The stored hash comes from a service-role-only RPC, `event_admin_key_hash(code)`, which finds no row for an unknown or expired code. The function hashes the received key and compares the two hex hashes in constant time in TypeScript. An unknown code is compared against a dummy hash, so both paths do the same work.
+- A wrong key, a key for another event, an unknown code and an expired event all answer `403 {"error":"not_authorized"}`.
+- Only failed key checks are counted, as `admin_key_failure` in `private.rate_limits`: 10 per user per 10 minutes. Before checking a key, the read-only RPC `rate_limit_reached` asks whether the caller is over the limit; if so, even the right key answers `rate_limited` until the window has passed. Parallel requests can each pass that check before a failure is counted, which gives a burst a few extra guesses at a 256-bit key and was accepted.
+- `claim_host(caller, target_event_id)` upserts the member row as `host`. A guest or TV of the event becomes host in their existing row, and a guest's display name is cleared (hosts have none), which frees the name for other guests. It answers `{}`.
+
+**Why:** Postgres has no constant-time text comparison, and the key never reaches SQL, so the comparison happens in the function. Counting only failures means a host who reopens the link many times is never locked out. Refusing the right key while over the limit means a guesser learns nothing from an attempt made over the limit.
+
 ## 2026-10-21: How `host-actions` and `create_event` work (#17)
 
 **Decision:**

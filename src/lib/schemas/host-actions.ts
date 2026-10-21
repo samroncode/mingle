@@ -37,9 +37,32 @@ export const CreateEventResponseSchema = z.strictObject({
 
 export type CreateEventResponse = z.infer<typeof CreateEventResponseSchema>;
 
+/**
+ * The fields every action except `create_event` carries: the event's code and
+ * admin key from the host link. Spread into each action's schema.
+ */
+export const hostLinkFields = {
+  code: EventCodeSchema,
+  key: AdminKeySchema,
+};
+
+/** Makes the caller's session a host of the event (a new device, a lost session). */
+export const ClaimHostRequestSchema = z.strictObject({
+  action: z.literal("claim_host"),
+  ...hostLinkFields,
+});
+
+export type ClaimHostRequest = z.infer<typeof ClaimHostRequestSchema>;
+
+/** Empty: the caller can now read the event as its host. */
+export const ClaimHostResponseSchema = z.strictObject({});
+
+export type ClaimHostResponse = z.infer<typeof ClaimHostResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
+  ClaimHostRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -52,6 +75,8 @@ export type HostActionName = HostActionRequest["action"];
 export const hostActionErrorCodes = [
   "invalid_request",
   "not_authenticated",
+  /** A wrong key, a key for another event, or an unknown or expired code. */
+  "not_authorized",
   "origin_not_allowed",
   "method_not_allowed",
   "payload_too_large",

@@ -26,6 +26,7 @@ describe("toHostActionResult", () => {
   it.each([
     "invalid_request",
     "not_authenticated",
+    "not_authorized",
     "origin_not_allowed",
     "payload_too_large",
     "rate_limited",
