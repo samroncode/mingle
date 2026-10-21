@@ -395,6 +395,8 @@ deno_version = 2
 # check would refuse CORS preflights, which carry no Authorization header.
 [functions.host-actions]
 verify_jwt = false
+# The shared import map; without it a hosted deploy can't resolve npm imports.
+import_map = "./functions/deno.json"
 
 [analytics]
 enabled = true
