@@ -524,3 +524,32 @@ I never had to stop the agent in the middle of an action. Plan mode and the "one
 - Vercel isn't connected, and there is no CI.
 
 Everything is in PR [samroncode/mingle#3](https://github.com/samroncode/mingle/pull/3).
+
+
+
+
+# Implementation log: Part B
+
+### part 1 Granska kodbasen mot de arkitekturprinciper jag definierat i CLAUDE.md. Var bryter koden mot principerna? Var är den i linje med dem? Ge konkreta filreferenser.
+#	Princip	Status
+1	Databasen är sanningskällan	Inte byggd än
+2	Bara värden ändrar flödet	Inte byggd än
+3	All dataåtkomst i src/api/	Följs, men lint-skyddet har hål
+4	Nischer är data	Följs, men lint kontrollerar det inte
+5	Självständiga moduler	Inte byggd än, bara en lista med modul-id:n
+6	AI-svar räknas som opålitliga	Inte byggd än
+7	All UI-text via i18n	Följs, men lint kontrollerar det inte och eventets språk används inte än
+8	Teman via CSS-variabler	Följs, men inget tema används än
+9	Små filer och funktioner	Följs
+10	Strikt TypeScript	Följs; databastyperna är en handskriven platshållare
+
+
+https://claude.ai/code/session_01EH2pYYdEukmUkF6cggTuez
+
+### part 2 Gå igenom kodbasen och leta efter: hårdkodade hemligheter eller uppgifter, saknad inputvalidering, injection-risker (SQL, kommando, path traversal), känsliga data i loggar, och osäkra standardvärden. Lista varje fynd med filnamn och radnummer.
+https://claude.ai/code/session_01JCTJSzb7ZUuNVsDBCqpZGR
+
+
+
+### part 3 Identifiera: funktioner som gör mer än en sak, otydlig namngivning (variabler, funktioner, klasser), saknad felhantering för externa anrop, och kod som är svår att läsa utan kommentarer. Lista de fem allvarligaste problemen.
+https://claude.ai/code/session_019zqFfdwcMbRE34ivu43PLg
