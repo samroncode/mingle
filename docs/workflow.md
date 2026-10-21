@@ -15,7 +15,7 @@ GitHub connects all three. Every task ends as a PR, and `main` only changes when
 ## A task from the phone
 
 1. In the Claude app, open **Code** and start a new session on `samroncode/mingle`.
-2. Describe the task. For anything larger, ask for a plan first; it is written to `docs/plans/`.
+2. Describe the task. For anything larger, run `/grill-with-docs`, then `/to-spec` and `/to-tickets`; the spec and its tickets become GitHub issues. Build them with `/implement-spec`.
 3. Claude works on a branch, pushes it and opens a PR.
 4. Review the diff in the app or on GitHub. Leave comments in the session or on the PR.
 5. Merge on GitHub with **Squash and merge**.
@@ -32,6 +32,7 @@ Once Vercel is connected, every PR gets a preview deployment with its own URL, s
 - **One session per task.** When the PR is merged, archive the session.
 - **Decisions go in the repo.** If something is decided in a chat, make sure it ends up in `docs/decisions.md` (or `CLAUDE.md` if it changes a rule).
 - **Ideas go in `IDEAS.md`**, not into the current task.
+- **Opus in the main session** (`/model opus`). It plans with you and orchestrates; the subagents pick cheaper models themselves.
 
 ## What is set up
 
@@ -39,6 +40,7 @@ Once Vercel is connected, every PR gets a preview deployment with its own URL, s
 - A cloud environment named "Default" on claude.ai/code.
 - Desktop app: new sessions connect to Remote Control.
 - GitHub CLI (`gh`) signed in on the desktop, so local sessions can open PRs.
+- Agent skills copied from [mattpocock/skills](https://github.com/mattpocock/skills) into `.claude/skills/`. To update them, copy the folders again and redo the mingle edits listed in `docs/decisions.md` (2026-10-21).
 - The app foundation (see `docs/plans/foundation.md`). `npm ci` installs everything. The checks are `npm run typecheck`, `npm run lint`, `npm run test` and `npm run build`.
 
 Still to do by the repo owner, now that the app is scaffolded:

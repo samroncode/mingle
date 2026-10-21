@@ -66,7 +66,7 @@ Then open http://localhost:5173. The app also starts without `.env`. The Supabas
 - [IDEAS.md](IDEAS.md): parking lot for ideas that are not part of v1
 - [docs/workflow.md](docs/workflow.md): how work moves between the desktop, the phone and GitHub
 - [docs/decisions.md](docs/decisions.md): log of product and architecture decisions
-- [docs/plans/](docs/plans/): plans for larger changes, written before building
+- [docs/plans/](docs/plans/): earlier plans, kept as a record (larger changes are now specs on GitHub Issues)
 - [implementation.md](implementation.md): step-by-step log of building the foundation with Claude Code in plan mode
 
 ## Privacy

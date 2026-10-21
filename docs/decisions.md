@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: Agent workflow built on Matt Pocock's skills
+
+**Decision:** Larger changes go grill, spec, tickets, implement, using skills copied from [mattpocock/skills](https://github.com/mattpocock/skills) (commit `5beb35b`) into `.claude/skills/`. Specs and tickets are GitHub issues and replace plans in `docs/plans/`. The main session orchestrates (Opus recommended); the `implementer` subagent runs on Sonnet and `Explore` on Haiku. Mingle's edits to the copies: `code-review` is renamed `diff-review`, decisions go to this file instead of `docs/adr/`, and the setup is written by hand in `docs/agents/`, so `setup-matt-pocock-skills` isn't included.
+
+**Why:** The skills already cover planning with the owner, ticket breakdown and per-ticket subagents, so only the model choice is ours. They're copied instead of installed as a plugin because cloud sessions don't load plugins. `code-review` clashes with Claude Code's built-in skill of the same name. GitHub Issues fits that GitHub is the only thing every device shares. A custom planner subagent was rejected because subagents can't ask the owner questions.
+
 ## 2026-10-20: The host's session is bound to the event (open question C)
 
 **Decision:** The host signs in anonymously like guests and the TV. When `host-actions` verifies the admin key (`create_event` or `claim_host`), it records that session as `host` in `members`. RLS then lets the host read everything in their event, including drafts and individual answers, directly and through realtime. Every host write still goes through `host-actions` with the admin key, as `CLAUDE.md` principle 2 requires.

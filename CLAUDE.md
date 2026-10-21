@@ -142,14 +142,32 @@ Work on this repo happens in several places: Claude Code on the desktop, cloud s
 - PRs are squash-merged, so the PR title becomes the commit message on `main`. Write it as a short imperative sentence.
 - Only the repo owner merges. Do not merge PRs, force-push, or delete branches unless asked.
 
-### Plans and decisions
-- For larger changes, write the plan to `docs/plans/<short-name>.md` and get it approved (in chat or on the PR) before building.
+### Specs and decisions
+- Larger changes go through the flow in "Agent skills" below. Get the spec and tickets approved before building.
 - When a product or architecture decision is made, add it to `docs/decisions.md` in the same PR.
 - If a decision changes a rule in this file, update this file in the same PR.
 
 ### Cloud sessions
 - Cloud sessions clone from GitHub. Work that is not pushed does not exist there, so push before handing work off.
 - Secrets come from the cloud environment's variables, or a local `.env` on the desktop. List every variable in `.env.example` without real values. This repo is public.
+
+## Agent skills
+
+Skills copied from mattpocock/skills live in `.claude/skills/`. The main session talks to the owner and orchestrates; subagents search and build.
+
+1. `/grill-with-docs`: interview the owner until the change is clear.
+2. `/to-spec`, then `/to-tickets`: the spec becomes a GitHub issue and the tickets its sub-issues.
+3. `/implement-spec` builds a whole spec with one `implementer` subagent per ticket and one PR. `/implement` builds a single ticket in the main session.
+
+Tickets that touch `src/i18n/*.json` or `src/modules/registry.ts` collide when built in parallel, so give them a blocking edge.
+
+### Issue tracker
+
+GitHub Issues, through `gh`. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single context: `GLOSSARY.md` and `docs/decisions.md`. See `docs/agents/domain.md`.
 
 ## Design
 
