@@ -1,6 +1,6 @@
 # Plan: Foundation
 
-**Status:** Approved 2026-10-15. Built one step at a time; progress is logged in [`implementation.md`](../../implementation.md).
+**Status:** Approved 2026-10-15. Built one step at a time; progress is logged in [`implementation.md`](../implementation.md).
 
 ## Goal
 

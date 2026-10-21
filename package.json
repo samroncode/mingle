@@ -6,6 +6,7 @@
   "engines": {
     "node": ">=22.22.0"
   },
+  "prettier": {},
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

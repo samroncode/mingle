@@ -36,7 +36,7 @@ In scope:
 
 Out of scope for v1 (do not build unless asked):
 - Competitions and leaderboard (planned for v1.1)
-- Everything in `IDEAS.md` — it is a parking lot, not a backlog. Do not build from it unless asked.
+- Everything in `docs/IDEAS.md` — it is a parking lot, not a backlog. Do not build from it unless asked.
 - Photo slideshow (stretch goal after v1 is complete)
 - Host accounts or login
 - Spotify (or other music service) API integration — music is a pasted link only
@@ -102,7 +102,13 @@ src/
 supabase/
   migrations/   # SQL schema + RLS policies
   functions/    # edge functions: host-actions, ai-suggest, cleanup
+  tests/        # *.db.test.ts against the local stack (npm run test:db)
+e2e/            # Playwright tests (npm run test:e2e), Supabase faked
+scripts/        # small Node scripts used by npm scripts
+docs/           # decisions, workflow, Supabase guide, glossary, ideas, plans and logs
 ```
+
+Everything else at the root is config that tools look for there (`package.json`, `tsconfig*.json`, `vite.config.ts`, `playwright.config.ts`, `eslint.config.js`, `index.html`, `vercel.json`, `components.json`, dotfiles), plus `README.md` and this file.
 
 ## Data rules
 
@@ -159,6 +165,7 @@ Work on this repo happens in several places: Claude Code on the desktop, cloud s
 ### Specs and decisions
 - Larger changes go through the flow in "Agent skills" below. Get the spec and tickets approved before building.
 - When a product or architecture decision is made, add it to `docs/decisions.md` in the same PR.
+- New docs go in `docs/`. The repo root is for files that tools look for there, plus `README.md` and `CLAUDE.md`.
 - If a decision changes a rule in this file, update this file in the same PR.
 
 ### Cloud sessions
@@ -190,7 +197,7 @@ GitHub Issues, through `gh api` (REST only; cloud sessions block GraphQL). See `
 
 ### Domain docs
 
-Single context: `GLOSSARY.md` and `docs/decisions.md`. See `docs/agents/domain.md`.
+Single context: `docs/GLOSSARY.md` and `docs/decisions.md`. See `docs/agents/domain.md`.
 
 ## Design
 

@@ -64,12 +64,12 @@ Then open http://localhost:5173. The app also starts without `.env`. The Supabas
 ## Project documents
 
 - [CLAUDE.md](CLAUDE.md): scope for v1, architecture principles, folder structure and working rules
-- [IDEAS.md](IDEAS.md): parking lot for ideas that are not part of v1
+- [docs/IDEAS.md](docs/IDEAS.md): parking lot for ideas that are not part of v1
 - [docs/workflow.md](docs/workflow.md): how work moves between the desktop, the phone and GitHub
 - [docs/supabase.md](docs/supabase.md): how Mingle uses Supabase, and how to run it locally with Docker
 - [docs/decisions.md](docs/decisions.md): log of product and architecture decisions
 - [docs/plans/](docs/plans/): earlier plans, kept as a record (larger changes are now specs on GitHub Issues)
-- [implementation.md](implementation.md): step-by-step log of building the foundation with Claude Code in plan mode
+- [docs/implementation.md](docs/implementation.md): step-by-step log of building the foundation with Claude Code in plan mode
 
 ## Privacy
 

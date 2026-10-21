@@ -10,7 +10,7 @@ This plan was written before the agent workflow existed. The grilling session th
 2. **One spec or two.** One spec is built as one PR. Two specs (database and join RPCs first, then `host-actions` and realtime) let the owner review the migration and RLS before the rest is built, and keep each PR smaller.
 3. **Step 7, the module interface.** A `ModuleDefinition` type with no module behind it is a guess at an interface (`codebase-design`: one adapter means a hypothetical seam). Proposed: move it to the first module's spec.
 4. **Test seams.** `/to-spec` confirms them with the owner, and implementers may only test there. Proposed: the Supabase client signed in as each role (RLS and RPCs), `host-actions` over HTTP, and `src/api/` (realtime and the wrappers). The SQL check that every table has RLS on reads the database catalog directly; the spec should mark it as an intended guardrail.
-5. **Glossary terms** for `GLOSSARY.md`: "module" vs "activity" (`CLAUDE.md` uses both for quiz, awards and hot takes, and `codebase-design` uses "module" for any piece of code), `status` vs `phase` vs `step`, member and role, claim, code, admin key and host link, draft and approved, answer vs vote, reveal.
+5. **Glossary terms** for `docs/GLOSSARY.md`: "module" vs "activity" (`CLAUDE.md` uses both for quiz, awards and hot takes, and `codebase-design` uses "module" for any piece of code), `status` vs `phase` vs `step`, member and role, claim, code, admin key and host link, draft and approved, answer vs vote, reveal.
 6. **The Supabase CLI** is a new dependency. Approving the spec must approve it explicitly, since implementers can't ask. *(Done: it was approved with this plan and installed in Step 1. `deno`, for typechecking the functions, was approved on 2026-10-21; see `docs/decisions.md`.)*
 
 The tickets will be vertical slices instead of the layer-by-layer steps below. For example: tooling and the schema spike (done in Step 1), the function typecheck (Step 4b), host creates an event, guest joins, TV joins, host claims on a new device, host moves the flow and members see it live, party content, admin key parsing, docs. The spike's result must be written into the spec before the tickets that use shared schemas start.
@@ -33,7 +33,7 @@ Build the backend that every v1 feature depends on: the database schema and RLS,
 
 ## Approach
 
-Follows `CLAUDE.md` (principles 1–3, 6, 7 and the data rules), the risks in the Step 1 analysis in [`implementation.md`](../../implementation.md), and [`docs/decisions.md`](../decisions.md). Three decisions were made in chat on 2026-10-20 and are recorded in `docs/decisions.md`:
+Follows `CLAUDE.md` (principles 1–3, 6, 7 and the data rules), the risks in the Step 1 analysis in [`implementation.md`](../implementation.md), and [`docs/decisions.md`](../decisions.md). Three decisions were made in chat on 2026-10-20 and are recorded in `docs/decisions.md`:
 
 - **Open question C is decided:** the host's session is bound to the event (see "Identity and roles").
 - **DB tests** run against a local Supabase stack with Vitest.

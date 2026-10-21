@@ -12,6 +12,16 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: Loose docs live in docs/, tool config stays at the root
+
+**Decision:**
+- `GLOSSARY.md`, `IDEAS.md` and `implementation.md` moved from the repo root into `docs/`. The copied skills in `.claude/skills/` point at `docs/GLOSSARY.md`.
+- The empty Prettier config moved from `.prettierrc.json` into a `"prettier": {}` key in `package.json`.
+- Everything else at the root stays, because the tools look for it there: `package.json` and the lockfile, the `tsconfig` files, `vite.config.ts`, `playwright.config.ts`, `eslint.config.js`, `index.html`, `vercel.json`, `components.json` (shadcn), the dotfiles, `README.md` and `CLAUDE.md`.
+- New docs go in `docs/`, not the root.
+
+**Why:** The root was hard to scan on GitHub. Moving tool config into a subfolder would need custom paths in several tools and break their defaults, so only docs and the empty config were moved. The Prettier key is kept, rather than deleted, so an editor's own Prettier settings can't override the project's defaults.
+
 ## 2026-10-21: Details settled while building the setup wizard (#29)
 
 **Decision:**
