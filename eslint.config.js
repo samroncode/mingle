@@ -6,6 +6,8 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
+const functionsGlob = "supabase/functions/**/*.ts";
+
 const supabaseOnlyInApiMessage =
   "Supabase is only accessed inside src/api/ (CLAUDE.md principle 3). Import a function from src/api/ instead.";
 
@@ -13,6 +15,7 @@ export default defineConfig([
   globalIgnores(["dist", "coverage"]),
   {
     files: ["**/*.{ts,tsx}"],
+    ignores: [functionsGlob],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommendedTypeChecked,
@@ -36,9 +39,20 @@ export default defineConfig([
     },
   },
   {
+    // Edge Functions run on Deno, not in the browser. They aren't part of the
+    // app's tsconfig (Deno typechecks them when served), so lint without type
+    // information and with Deno's globals.
+    files: [functionsGlob],
+    extends: [js.configs.recommended, tseslint.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2023,
+      globals: globals.denoBuiltin,
+    },
+  },
+  {
     // Guardrail: the Supabase client and SDK never leave the data layer.
     files: ["**/*.{ts,tsx}"],
-    ignores: ["src/api/**"],
+    ignores: ["src/api/**", functionsGlob],
     rules: {
       "no-restricted-imports": [
         "error",

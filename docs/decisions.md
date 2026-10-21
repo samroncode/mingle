@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: Edge Function code is typechecked with `deno check`
+
+**Decision:** Add the `deno` npm package as a dev dependency and a `typecheck:functions` script that runs `deno check` on `supabase/functions/`. It is added before `host-actions` is built (in the backend core spec, ahead of the `host-actions` tickets), not in the Step 1 tooling PR.
+
+**Why:** The Step 1 spike showed that `supabase functions serve` only strips types, and the app's `tsc -b` doesn't cover `supabase/functions/`, so function code was only linted. The rejected alternatives were relying on lint plus integration tests, and running `tsc` on the functions, which doesn't understand `npm:` specifiers or Deno types without extra setup.
+
 ## 2026-10-21: AI suggestions are an optional bonus; niches ship built-in content
 
 **Decision:**

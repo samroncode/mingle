@@ -1,6 +1,6 @@
 # Plan: Backend core
 
-**Status:** Draft. Nothing in this plan is built yet. It becomes a spec through `/grill-with-docs`, `/to-spec` and `/to-tickets` on GitHub; start with "Before the spec" below.
+**Status:** Draft. Only Step 1 (tooling and the schema spike) is built; see "Step 1 result" under Steps. The rest becomes a spec through `/grill-with-docs`, `/to-spec` and `/to-tickets` on GitHub; start with "Before the spec" below.
 
 ## Before the spec
 
@@ -11,9 +11,9 @@ This plan was written before the agent workflow existed. The grilling session th
 3. **Step 7, the module interface.** A `ModuleDefinition` type with no module behind it is a guess at an interface (`codebase-design`: one adapter means a hypothetical seam). Proposed: move it to the first module's spec.
 4. **Test seams.** `/to-spec` confirms them with the owner, and implementers may only test there. Proposed: the Supabase client signed in as each role (RLS and RPCs), `host-actions` over HTTP, and `src/api/` (realtime and the wrappers). The SQL check that every table has RLS on reads the database catalog directly; the spec should mark it as an intended guardrail.
 5. **Glossary terms** for `GLOSSARY.md`: "module" vs "activity" (`CLAUDE.md` uses both for quiz, awards and hot takes, and `codebase-design` uses "module" for any piece of code), `status` vs `phase` vs `step`, member and role, claim, code, admin key and host link, draft and approved, answer vs vote, reveal.
-6. **The Supabase CLI** is a new dependency. Approving the spec must approve it explicitly, since implementers can't ask.
+6. **The Supabase CLI** is a new dependency. Approving the spec must approve it explicitly, since implementers can't ask. *(Done: it was approved with this plan and installed in Step 1. `deno`, for typechecking the functions, was approved on 2026-10-21; see `docs/decisions.md`.)*
 
-The tickets will be vertical slices instead of the layer-by-layer steps below. For example: tooling and the schema spike (blocks everything), host creates an event, guest joins, TV joins, host claims on a new device, host moves the flow and members see it live, party content, admin key parsing, docs. The spike's result must be written into the spec before the tickets that use shared schemas start.
+The tickets will be vertical slices instead of the layer-by-layer steps below. For example: tooling and the schema spike (done in Step 1), the function typecheck (Step 4b), host creates an event, guest joins, TV joins, host claims on a new device, host moves the flow and members see it live, party content, admin key parsing, docs. The spike's result must be written into the spec before the tickets that use shared schemas start.
 
 These security rules must become ticket acceptance criteria, because the spec template leaves out details like these:
 
@@ -203,6 +203,7 @@ Only the type is added here. `registry.ts` keeps its ids until the first module 
 | Addition | Type | Why |
 |---|---|---|
 | `supabase` (CLI) | dev, **new dependency, needs approval** | Local stack in Docker, migrations, `gen types`, `functions serve`. It was deliberately left out of the foundation until a feature needed it. |
+| `deno` | dev, new dependency, approved 2026-10-21 | `deno check` for `supabase/functions/`, which nothing else typechecks (Step 1 result). Added in Step 4b. |
 
 - **`supabase/config.toml`:** created by `supabase init` and committed. Anonymous sign-ins are on, and API schemas are `public` only, so `private` isn't exposed.
 - **Scripts:**
@@ -214,7 +215,7 @@ Only the type is added here. `registry.ts` keeps its ids until the first module 
 - **Function code:** the function code under `supabase/functions/` is Deno.
   - It gets its own `deno.json`.
   - It's excluded from the app's `tsconfig`, and linted with a separate ESLint block that doesn't use the browser globals.
-  - Its typecheck happens when it's served. Step 1 confirms this setup.
+  - ~~Its typecheck happens when it's served.~~ Step 1 showed it doesn't (see "Step 1 result"). It's typechecked by `npm run typecheck:functions` (`deno check`), added in Step 4b.
 - **`.env.example`:** gets a commented section listing the function secrets (`ALLOWED_ORIGINS`). It also notes that the Supabase URL and service-role key are injected by the platform and must never get a `VITE_` prefix.
 
 ## Steps
@@ -228,6 +229,12 @@ Each step ends with: checks pass → commit → push → wait for the owner's go
    - Spike: a throwaway function imports a schema from `src/lib/schemas/`, and is served and called locally.
    - Set up the ESLint and tsconfig split for function code.
    - *Verify:* `db:start` brings up the stack, the spike function answers, and the standard check passes. The spike is removed before the commit. Its result, and the fallback if it was needed, are recorded in this plan.
+   - **Step 1 result (2026-10-21):**
+     - **The default works for `serve`.** A throwaway function imported a Zod schema from `src/lib/schemas/` by relative path (`../../../src/lib/schemas/…ts`). `supabase functions serve` (edge runtime 1.77.4, Deno 2.1.4) bundled it and answered 200 for a valid body and 400 for an invalid one. The fallback (`_shared/` with an `@shared` alias) is **not** needed.
+     - **One import map for all functions:** `supabase/functions/deno.json` maps `zod` to `npm:zod`. It is what resolves the bare `zod` import inside `src/lib/schemas/` too. With a bogus mapping the worker failed to boot, and without the file it failed with `Relative import path "zod" not prefixed…`. So the app (`node_modules`) and the functions (`npm:`) each resolve their own copy; keep the version ranges in `package.json` and `deno.json` in step.
+     - **`deploy` is not verified.** It needs a linked project (owner to-do). Verify it in Step 5 when `host-actions` is first deployed; if bundling fails there, switch to the fallback.
+     - **`serve` does not typecheck.** A deliberate type error in the function still served 200. The edge runtime only strips types, and the app's `tsc -b` doesn't cover `supabase/functions/`. Today the function code is only linted. Decided 2026-10-21: add `deno check` in Step 4b (see `docs/decisions.md`).
+     - **Other notes:** `config.toml` sets `project_id = "mingle"` (otherwise it defaults to the folder name, which differs per worktree), and the local auth `site_url` is the Vite dev server (`http://localhost:5173`). `db:types` runs Prettier on the generated file so `format:check` stays green. `test:db` passes with no test files until Step 3 adds them.
 2. **Migration 1: schema, helpers, publication.**
    - Create `supabase/migrations/<timestamp>_core.sql` and run `db:types`.
    - *Verify:* `db:reset` applies it cleanly, and the generated types compile. Every table in `public` has RLS on (a SQL check in the test suite).
@@ -238,6 +245,8 @@ Each step ends with: checks pass → commit → push → wait for the owner's go
 4. **Join RPCs.**
    - Add `join_event` and `join_tv` with throttling, plus tests.
    - The tests cover a bad code, an ended event, a taken name, idempotent rejoin and the rate limit.
+   - **4b. Function typecheck.** Add `deno` as a dev dependency and `typecheck:functions` (`deno check` on `supabase/functions/`), and add it to the standard check.
+     - *Verify:* a deliberate type error in a function fails the script.
 5. **`host-actions`.**
    - Write the shared request schemas and the four actions, with integration tests through `supabase functions serve`.
    - The tests cover a wrong key, a key for another event, an unknown code (same error as a wrong key), an invalid transition, a disabled module, an oversized body and CORS.
