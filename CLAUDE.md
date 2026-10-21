@@ -163,7 +163,7 @@ Tickets that touch `src/i18n/*.json` or `src/modules/registry.ts` collide when b
 
 ### Issue tracker
 
-GitHub Issues, through `gh`. See `docs/agents/issue-tracker.md`.
+GitHub Issues, through `gh api` (REST only; cloud sessions block GraphQL). See `docs/agents/issue-tracker.md`.
 
 ### Domain docs
 
