@@ -49,7 +49,7 @@ Database code needs the local Supabase stack, which runs in Docker on the deskto
 - GitHub CLI (`gh`) signed in on the desktop, so local sessions can open PRs.
 - Agent skills copied from [mattpocock/skills](https://github.com/mattpocock/skills) into `.claude/skills/`. To update them, copy the folders again and redo the mingle edits listed in `docs/decisions.md` (2026-10-21).
 - `.claude/settings.json` pre-approves the routine check, database and git commands, and always asks before a command touches the hosted Supabase project.
-- The app foundation (see `docs/plans/foundation.md`). `npm ci` installs everything. The checks are `npm run typecheck`, `npm run lint`, `npm run test` and `npm run build`.
+- The app foundation (see `docs/plans/foundation.md`). `npm ci` installs everything. The checks are `npm run typecheck`, `npm run typecheck:functions`, `npm run lint`, `npm run test` and `npm run build`.
 
 Still to do by the repo owner, now that the app is scaffolded:
 
