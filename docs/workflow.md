@@ -15,7 +15,7 @@ GitHub connects all three. Every task ends as a PR, and `main` only changes when
 ## A task from the phone
 
 1. In the Claude app, open **Code** and start a new session on `samroncode/mingle`.
-2. Describe the task. For anything larger, ask for a plan first; it is written to `docs/plans/`.
+2. Describe the task. For anything larger, run `/grill-with-docs`, then `/to-spec` and `/to-tickets`; the spec and its tickets become GitHub issues. Build them with `/implement-spec`. A spec that touches the database is built at the desk (see "Database work").
 3. Claude works on a branch, pushes it and opens a PR.
 4. Review the diff in the app or on GitHub. Leave comments in the session or on the PR.
 5. Merge on GitHub with **Squash and merge**.
@@ -27,11 +27,19 @@ Until the repo is connected to Vercel, review the diff and the "How to test" sec
 
 Once Vercel is connected, every PR gets a preview deployment with its own URL, so a PR can be tried on the phone before it is merged.
 
+## Database work
+
+Database code needs the local Supabase stack, which runs in Docker on the desktop. Setup and commands are in [`supabase.md`](supabase.md).
+
+- **Plan from anywhere.** `/grill-with-docs`, `/to-spec` and `/to-tickets` need no Docker, so they work from the phone.
+- **Build at the desk.** Start `/implement-spec` in a local desktop session, with Docker Desktop running and the session in Auto mode.
+
 ## Keeping things together
 
 - **One session per task.** When the PR is merged, archive the session.
 - **Decisions go in the repo.** If something is decided in a chat, make sure it ends up in `docs/decisions.md` (or `CLAUDE.md` if it changes a rule).
 - **Ideas go in `IDEAS.md`**, not into the current task.
+- **Opus in the main session** (`/model opus`). It plans with you and orchestrates; the subagents pick cheaper models themselves.
 
 ## What is set up
 
@@ -39,9 +47,12 @@ Once Vercel is connected, every PR gets a preview deployment with its own URL, s
 - A cloud environment named "Default" on claude.ai/code.
 - Desktop app: new sessions connect to Remote Control.
 - GitHub CLI (`gh`) signed in on the desktop, so local sessions can open PRs.
+- Agent skills copied from [mattpocock/skills](https://github.com/mattpocock/skills) into `.claude/skills/`. To update them, copy the folders again and redo the mingle edits listed in `docs/decisions.md` (2026-10-21).
+- `.claude/settings.json` pre-approves the routine check, database and git commands, and always asks before a command touches the hosted Supabase project.
 - The app foundation (see `docs/plans/foundation.md`). `npm ci` installs everything. The checks are `npm run typecheck`, `npm run lint`, `npm run test` and `npm run build`.
 
 Still to do by the repo owner, now that the app is scaffolded:
 
+- On the desktop, install a working Docker Desktop (see [`supabase.md`](supabase.md)) before the backend core is built.
 - In the cloud environment, add the setup script `npm ci` and the variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
 - Connect the repo to Vercel for preview deployments (framework Vite, build command `npm run build`, output folder `dist`). `vercel.json` already handles deep links.

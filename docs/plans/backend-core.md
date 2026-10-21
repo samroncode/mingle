@@ -1,6 +1,31 @@
 # Plan: Backend core
 
-**Status:** Approved. Step 1 is done (see "Step 1 result"); Steps 2–8 are not built yet.
+**Status:** Draft. Only Step 1 (tooling and the schema spike) is built; see "Step 1 result" under Steps. The rest becomes a spec through `/grill-with-docs`, `/to-spec` and `/to-tickets` on GitHub; start with "Before the spec" below.
+
+## Before the spec
+
+This plan was written before the agent workflow existed. The grilling session that turns it into a spec should settle these first:
+
+1. **The open questions** at the end of this plan. "TV as a member" changes the schema, so it must be settled before tickets. E can stay a constant, and CAPTCHA can be left out of this spec.
+2. **One spec or two.** One spec is built as one PR. Two specs (database and join RPCs first, then `host-actions` and realtime) let the owner review the migration and RLS before the rest is built, and keep each PR smaller.
+3. **Step 7, the module interface.** A `ModuleDefinition` type with no module behind it is a guess at an interface (`codebase-design`: one adapter means a hypothetical seam). Proposed: move it to the first module's spec.
+4. **Test seams.** `/to-spec` confirms them with the owner, and implementers may only test there. Proposed: the Supabase client signed in as each role (RLS and RPCs), `host-actions` over HTTP, and `src/api/` (realtime and the wrappers). The SQL check that every table has RLS on reads the database catalog directly; the spec should mark it as an intended guardrail.
+5. **Glossary terms** for `GLOSSARY.md`: "module" vs "activity" (`CLAUDE.md` uses both for quiz, awards and hot takes, and `codebase-design` uses "module" for any piece of code), `status` vs `phase` vs `step`, member and role, claim, code, admin key and host link, draft and approved, answer vs vote, reveal.
+6. **The Supabase CLI** is a new dependency. Approving the spec must approve it explicitly, since implementers can't ask. *(Done: it was approved with this plan and installed in Step 1. `deno`, for typechecking the functions, was approved on 2026-10-21; see `docs/decisions.md`.)*
+
+The tickets will be vertical slices instead of the layer-by-layer steps below. For example: tooling and the schema spike (done in Step 1), the function typecheck (Step 4b), host creates an event, guest joins, TV joins, host claims on a new device, host moves the flow and members see it live, party content, admin key parsing, docs. The spike's result must be written into the spec before the tickets that use shared schemas start.
+
+These security rules must become ticket acceptance criteria, because the spec template leaves out details like these:
+
+- The admin key is compared in constant time, never logged, and returned only by `create_event`.
+- A wrong key and an unknown code both return `not_authorized`.
+- Non-members learn nothing, not even whether a code exists.
+- `security definer` functions have a fixed `search_path`, and `private` isn't exposed through the Data API.
+- Join attempts and host actions are rate-limited, request bodies are size-capped, and CORS allows only `ALLOWED_ORIGINS`.
+- Errors are codes, never free text.
+- A guest can't change the role or event on their member row.
+
+The "wait for the owner's go-ahead" after each step no longer applies: the owner approves the spec, the tickets and the PR. The demos under "Verification" become the PR's "How to test". Parts of Step 8 are already done: "Database rules" in `CLAUDE.md`, and [`docs/supabase.md`](../supabase.md).
 
 ## Goal
 
@@ -8,7 +33,7 @@ Build the backend that every v1 feature depends on: the database schema and RLS,
 
 ## Approach
 
-Follows `CLAUDE.md` (principles 1–3, 6, 7 and the data rules), the risks in the Step 1 analysis in [`implementation.md`](../../implementation.md), and [`docs/decisions.md`](../decisions.md). Three decisions were made in chat on 2026-10-20 and are recorded in `docs/decisions.md` in this PR:
+Follows `CLAUDE.md` (principles 1–3, 6, 7 and the data rules), the risks in the Step 1 analysis in [`implementation.md`](../../implementation.md), and [`docs/decisions.md`](../decisions.md). Three decisions were made in chat on 2026-10-20 and are recorded in `docs/decisions.md`:
 
 - **Open question C is decided:** the host's session is bound to the event (see "Identity and roles").
 - **DB tests** run against a local Supabase stack with Vitest.

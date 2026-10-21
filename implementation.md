@@ -76,7 +76,8 @@ I reviewed the gaps (section 5 of the analysis) and decided:
 
 Decisions A, B, D, F, G and H were added to `docs/decisions.md`, and `CLAUDE.md` was updated where they change a rule.
 
-**My comments:** _(fill in)_
+**My comments:** Min orginalprompt finns att läsa där uppe, Jag tycker den gjorde ett bra jobb, det var i Opus5.5, jag fick ta en massa beslut om saker med implementationen
+Kunde inte svara på alla så de ser man nedan i open questions
 
 ### Open questions
 
@@ -87,7 +88,7 @@ Decisions A, B, D, F, G and H were added to `docs/decisions.md`, and `CLAUDE.md`
 
 ## Step 2: Plan
 
-### Prompt
+### Prompt Denna är en kombination av genererad och skrivit dit saker själv.
 
 > Create a plan for building the foundation. Scope: project setup (Vite, React, TS strict, Tailwind v4, shadcn/ui, React Router), empty views for all routes in CLAUDE.md, src/api/ with a Supabase client, i18n with sv/en, one example niche configuration, theme tokens, and Vitest with a first test. No features, and no database schema beyond what the client needs to start. List which files are created or changed, what each step does, in what order, and how each step is verified. Do not implement anything. I want to see the plan first. Follow docs/decisions.md and the Step 1 analysis in implementation.md, and list every dependency not already in CLAUDE.md so I can approve it.
 
@@ -122,7 +123,7 @@ Approved as written, with no changes. I accepted the combined i18n + Vitest step
 
 Before implementation started, I asked why we couldn't use the newer TypeScript 7. The agent explained that TypeScript 7 is the same language with a faster compiler written in Go. It doesn't work yet with typescript-eslint's type-aware rules, which catch unhandled Supabase calls. The choice was TypeScript 7 without those rules, or TypeScript 6 and upgrade later. I chose to stay on 6. The decision is logged in `docs/decisions.md`.
 
-**My comments:** _(fill in)_
+**My comments:** Inte mycket att tillägga, jag fattade inte det med typescript men bedömde att jag litate på AI:n om varför vi inte skulle ha det.
 
 ## Step 4: Implementation, one step at a time
 
@@ -166,7 +167,7 @@ Each sub-step follows [`docs/plans/foundation.md`](docs/plans/foundation.md). Ev
 
 **Stopped or changed:** nothing.
 
-**My comments:** _(fill in)_
+**My comments:** Generellt så flöt implementationen på bra.
 
 ### 4.2 ESLint + Prettier, with the `src/api/` guardrail
 
@@ -237,7 +238,7 @@ Each sub-step follows [`docs/plans/foundation.md`](docs/plans/foundation.md). Ev
 
 **Stopped or changed:** nothing stopped. No changes to the plan.
 
-**My comments:** _(fill in)_
+**My comments:** 
 
 ### 4.4 Tailwind v4 + shadcn/ui + theme tokens
 
@@ -442,7 +443,7 @@ The Vercel rewrite itself can only be tested on the first preview deploy, and Ve
 
 **Stopped or changed:** nothing.
 
-**My comments:** _(fill in)_
+**My comments:** MYCKET scaffolding av en massa saker som gjordes, paket som installerades. Men smoketester såg ut att lira, känns som de skapade rimliga tester med
 
 ---
 
@@ -523,3 +524,32 @@ I never had to stop the agent in the middle of an action. Plan mode and the "one
 - Vercel isn't connected, and there is no CI.
 
 Everything is in PR [samroncode/mingle#3](https://github.com/samroncode/mingle/pull/3).
+
+
+
+
+# Implementation log: Part B
+
+### part 1 Granska kodbasen mot de arkitekturprinciper jag definierat i CLAUDE.md. Var bryter koden mot principerna? Var är den i linje med dem? Ge konkreta filreferenser.
+#	Princip	Status
+1	Databasen är sanningskällan	Inte byggd än
+2	Bara värden ändrar flödet	Inte byggd än
+3	All dataåtkomst i src/api/	Följs, men lint-skyddet har hål
+4	Nischer är data	Följs, men lint kontrollerar det inte
+5	Självständiga moduler	Inte byggd än, bara en lista med modul-id:n
+6	AI-svar räknas som opålitliga	Inte byggd än
+7	All UI-text via i18n	Följs, men lint kontrollerar det inte och eventets språk används inte än
+8	Teman via CSS-variabler	Följs, men inget tema används än
+9	Små filer och funktioner	Följs
+10	Strikt TypeScript	Följs; databastyperna är en handskriven platshållare
+
+
+https://claude.ai/code/session_01EH2pYYdEukmUkF6cggTuez
+
+### part 2 Gå igenom kodbasen och leta efter: hårdkodade hemligheter eller uppgifter, saknad inputvalidering, injection-risker (SQL, kommando, path traversal), känsliga data i loggar, och osäkra standardvärden. Lista varje fynd med filnamn och radnummer.
+https://claude.ai/code/session_01JCTJSzb7ZUuNVsDBCqpZGR
+
+
+
+### part 3 Identifiera: funktioner som gör mer än en sak, otydlig namngivning (variabler, funktioner, klasser), saknad felhantering för externa anrop, och kod som är svår att läsa utan kommentarer. Lista de fem allvarligaste problemen.
+https://claude.ai/code/session_019zqFfdwcMbRE34ivu43PLg

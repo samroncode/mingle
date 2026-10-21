@@ -1,6 +1,6 @@
 ## What and why
 
-<!-- What this PR changes and why. Link the issue or plan in docs/plans/ if there is one. -->
+<!-- What this PR changes and why. Link the spec or ticket issue if there is one. -->
 
 ## How to test
 
@@ -11,8 +11,9 @@
 <!-- Mark what was run. Note anything that failed or was skipped, and why. -->
 
 - [ ] Typecheck
-- [ ] Lint
+- [ ] Lint and format
 - [ ] Tests
+- [ ] DB tests (`npm run test:db`, desktop only; skip if `supabase/` is unchanged)
 
 ## Decisions and open questions
 
