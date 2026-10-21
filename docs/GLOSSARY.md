@@ -60,6 +60,10 @@ _Avoid_: Create flow, onboarding
 What the TV shows when no activity is running: welcome message, join QR code, menu, schedule and the guests who have joined.
 _Avoid_: Idle screen, home screen
 
+**Join panel**:
+The part of the party screen that never rotates away: the join QR code, the code, the join address and how many guests have joined.
+_Avoid_: Join box, sidebar
+
 **Expiry**:
 The moment an event stops existing for its members, 30 days after it was created.
 _Avoid_: Retention, TTL

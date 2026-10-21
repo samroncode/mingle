@@ -12,6 +12,20 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-21: What the party screen and guest join cover (#40)
+
+**Decision:**
+- The spec builds three things: the TV party screen (`/tv/:code`), guests joining and their "You're in" page (`/p/:code`), and a "Join with code" box on the start page. Activities, the summary page, and the host editing the party screen or removing guests during the evening are left out. Removing a guest needs a database change and comes with the control panel spec.
+- The TV joins as the TV by itself. A panel on the right always shows the join QR code, the code, the join address and the number of guests. The left side rotates every 12 seconds between welcome, menu, schedule, wifi (QR code plus network name and password in text), music (QR code) and the guests who have joined, skipping parts the host left out. A single part just stays. Many guest names shrink to fit instead of scrolling.
+- When a guest joins, the TV shows "Welcome, <name>!" for a few seconds. The guests already there when the TV loads are not greeted.
+- The TV asks the browser to keep the screen awake. Until an activity exists, a running activity also shows the party screen; each activity's spec hands the left side to its own TV view.
+- A guest types only a display name; the code comes from the QR link. After joining they see "You're in" with a way to rename, and the welcome, menu, schedule, wifi with a Copy button for the password, and an "Open music" button. A returning guest on the same phone skips the name step. A phone that is already the host or TV sees a short note instead of the name form. An ended event shows a thank-you on both TV and phone.
+- The guest page finds out whether the phone is already a member by reading the event with that code. RLS only returns an event to its members, so this needs no database change.
+- `qrcode.react` is added as a dependency to draw the QR codes in the browser.
+- The look isn't final. The spec uses shadcn/ui defaults with the niche's theme tokens so a design can be applied later.
+
+**Why:** The TV and guest pages were placeholders, and every activity needs both. Keeping the join panel fixed means a guest can join at any moment, while the rotation keeps the screen alive. Wifi details in text help phones that can't scan wifi codes. Leaving guest removal out keeps the spec free of database changes, so it can be built in a cloud session. `qrcode.react` is small, has no dependencies and draws everything locally; writing a QR encoder ourselves would be a lot of code for no gain.
+
 ## 2026-10-21: Loose docs live in docs/, tool config stays at the root
 
 **Decision:**
