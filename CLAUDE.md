@@ -140,7 +140,7 @@ These apply to everything under `supabase/`. How Supabase works in this project,
 ## Working agreement
 
 - Before larger changes, propose a short plan and wait for approval.
-- After changes: run typecheck, lint and tests, and report the result.
+- After changes: run typecheck (`npm run typecheck` and `npm run typecheck:functions`), lint and tests, and report the result.
 - Write a migration for every schema change. Never edit the database by hand.
 - When unsure about a product decision, ask instead of guessing.
 
