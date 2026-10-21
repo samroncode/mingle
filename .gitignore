@@ -40,6 +40,9 @@ supabase/functions/.env
 # Vercel
 .vercel/
 
+# Claude Code worktrees
+.claude/worktrees/
+
 # Caches
 .cache/
 .eslintcache
