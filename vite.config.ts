@@ -33,7 +33,7 @@ export default defineConfig({
         test: {
           name: "db",
           include: ["**/*.db.test.ts"],
-          exclude: ["node_modules/**"],
+          exclude: ["node_modules/**", ".claude/**"],
           // The db tests share one local database, so run files one at a time.
           fileParallelism: false,
         },
