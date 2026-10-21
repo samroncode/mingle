@@ -3,7 +3,12 @@
     "name": "Mingle"
   },
   "common": {
-    "code": "Kod: {{code}}"
+    "code": "Kod: {{code}}",
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "copy": "Kopiera",
+    "copied": "Kopierad",
+    "share": "Dela"
   },
   "language": {
     "label": "Språk",
@@ -39,6 +44,63 @@
     "error": {
       "title": "Något gick fel",
       "reload": "Ladda om sidan"
+    },
+    "landing": {
+      "intro": "Skapa en festkväll på några minuter: quiz, utmärkelser och heta åsikter på storbilden, spelade från allas mobiler.",
+      "create": "Skapa ett event"
+    }
+  },
+  "modules": {
+    "quiz": {
+      "name": "Quiz",
+      "description": "Frågor som gästerna svarar på i mobilen."
+    },
+    "awards": {
+      "name": "Utmärkelser",
+      "description": "Rösta på vem som är mest benägen att...?"
+    },
+    "hottakes": {
+      "name": "Het åsikt",
+      "description": "Håll med eller håll inte med om djärva påståenden."
+    }
+  },
+  "links": {
+    "codeLabel": "Eventkod",
+    "hostLabel": "Värdlänk",
+    "tvLabel": "TV-adress",
+    "copyHost": "Kopiera värdlänken",
+    "copyTv": "Kopiera TV-adressen"
+  },
+  "errors": {
+    "create": {
+      "network_error": "Det gick inte att nå servern. Kontrollera uppkopplingen och försök igen.",
+      "rate_limited": "För många försök. Vänta en minut och försök igen.",
+      "invalid_request": "Något i dina val stämmer inte. Kontrollera dem och försök igen.",
+      "internal_error": "Något gick fel. Försök igen."
+    }
+  },
+  "wizard": {
+    "progress": "Steg {{current}} av {{total}}",
+    "steps": {
+      "niche": "Vad för slags kväll?",
+      "language": "Språk",
+      "activities": "Aktiviteter",
+      "summary": "Sammanfattning"
+    },
+    "activities": {
+      "noneHint": "Inga aktiviteter: TV:n visar bara partyskärmen."
+    },
+    "summary": {
+      "noActivities": "Inga",
+      "edit": "Ändra",
+      "change": "Ändra {{step}}"
+    },
+    "create": "Skapa event",
+    "creating": "Skapar...",
+    "done": {
+      "title": "Ditt event är klart",
+      "warning": "Spara värdlänken nu. Den kan inte visas igen och är det enda sättet att komma tillbaka till kontrollpanelen.",
+      "openPanel": "Öppna kontrollpanelen"
     }
   }
 }

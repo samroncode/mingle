@@ -21,7 +21,8 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local --schema public > src/api/database.types.ts && prettier --write src/api/database.types.ts",
-    "typecheck:functions": "node scripts/typecheck-functions.mjs"
+    "typecheck:functions": "node scripts/typecheck-functions.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",

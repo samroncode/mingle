@@ -3,7 +3,12 @@
     "name": "Mingle"
   },
   "common": {
-    "code": "Code: {{code}}"
+    "code": "Code: {{code}}",
+    "back": "Back",
+    "next": "Next",
+    "copy": "Copy",
+    "copied": "Copied",
+    "share": "Share"
   },
   "language": {
     "label": "Language",
@@ -39,6 +44,63 @@
     "error": {
       "title": "Something went wrong",
       "reload": "Reload the page"
+    },
+    "landing": {
+      "intro": "Set up a party evening in minutes: quiz, awards and hot takes on the big screen, played from everyone's phone.",
+      "create": "Create an event"
+    }
+  },
+  "modules": {
+    "quiz": {
+      "name": "Quiz",
+      "description": "Questions the guests answer on their phones."
+    },
+    "awards": {
+      "name": "Awards",
+      "description": "Vote on who is most likely to...?"
+    },
+    "hottakes": {
+      "name": "Hot takes",
+      "description": "Agree or disagree with bold statements."
+    }
+  },
+  "links": {
+    "codeLabel": "Event code",
+    "hostLabel": "Host link",
+    "tvLabel": "TV address",
+    "copyHost": "Copy host link",
+    "copyTv": "Copy TV address"
+  },
+  "errors": {
+    "create": {
+      "network_error": "Couldn't reach the server. Check your connection and try again.",
+      "rate_limited": "Too many tries. Wait a minute and try again.",
+      "invalid_request": "Something in your choices isn't valid. Check them and try again.",
+      "internal_error": "Something went wrong. Try again."
+    }
+  },
+  "wizard": {
+    "progress": "Step {{current}} of {{total}}",
+    "steps": {
+      "niche": "What kind of evening?",
+      "language": "Language",
+      "activities": "Activities",
+      "summary": "Summary"
+    },
+    "activities": {
+      "noneHint": "No activities: the TV will only show the party screen."
+    },
+    "summary": {
+      "noActivities": "None",
+      "edit": "Change",
+      "change": "Change {{step}}"
+    },
+    "create": "Create event",
+    "creating": "Creating...",
+    "done": {
+      "title": "Your event is ready",
+      "warning": "Save the host link now. It can't be shown again, and it is the only way back into the control panel.",
+      "openPanel": "Open the control panel"
     }
   }
 }
