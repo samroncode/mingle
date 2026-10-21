@@ -150,5 +150,15 @@
       "wifi": "Ange ett wifi-namn på högst 32 tecken. Lösenordet får vara högst 63.",
       "musicUrl": "Musiklänken måste vara en giltig https-länk."
     }
+  },
+  "hostDoor": {
+    "opening": "Öppnar kontrollpanelen…",
+    "badLink": "Den här länken fungerar inte",
+    "badLinkHint": "Kontrollera att du kopierade hela värdlänken. Event raderas 30 dagar efter att de skapades.",
+    "home": "Gå till startsidan",
+    "rate_limited": "För många försök. Vänta en minut och försök igen.",
+    "network_error": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
+    "internal_error": "Något gick fel. Försök igen.",
+    "retry": "Försök igen"
   }
 }
