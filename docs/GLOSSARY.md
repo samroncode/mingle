@@ -85,7 +85,7 @@ _Avoid_: Round, slide, item
 Where the current step is: idle (not open yet), open (guests can answer) or revealed (results are shown).
 
 **Reveal**:
-Showing the results of a step to everyone. Before a reveal, only the host sees individual answers.
+Showing the results of a step to everyone. Before a reveal, only the host sees individual quiz answers. Award votes stay secret from everyone, the host included; only totals are shown.
 
 ## Content
 
@@ -114,11 +114,27 @@ The option that gives a point. Only the host sees it before the reveal.
 _Avoid_: Solution, correct option
 
 **Played**:
-A question that has been revealed. Played questions can't be changed, and a restarted quiz continues after them.
+A question or award category that has been revealed. Played steps can't be changed, and a restarted activity continues after them.
 
 **Score**:
 A guest's points in the quiz: one per right answer on played questions.
 _Avoid_: Points total, result
+
+**Awards**:
+The activity where guests vote for another guest in "Most likely to…" categories, and the winner of each is revealed on the TV.
+_Avoid_: Nominations, superlatives
+
+**Category**:
+One step of awards: a short text such as "Most likely to reply-all by mistake".
+_Avoid_: Award (for the step), title
+
+**Candidate**:
+A guest with a display name who can be voted for in a category. Every guest except the voter.
+_Avoid_: Nominee
+
+**Winner**:
+The guest or guests with the most votes in a revealed category. A tie gives several winners.
+_Avoid_: Champion
 
 **Answer**:
 A guest's response to a quiz question or a hot take.
