@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";
-import { Button } from "@/components/ui/button";
 import { NicheTheme } from "@/components/NicheTheme";
 import { Button } from "@/components/ui/button";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
