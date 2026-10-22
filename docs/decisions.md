@@ -45,6 +45,20 @@ Entry format:
 
 **Why:** It costs nothing and limits the damage of any script injection. The admin key is already safe in the URL fragment; `no-referrer` is a second guard.
 
+## 2026-10-22: How expired events are cleaned up (#83)
+
+**Decision:**
+- When an event's 30 days are up, cleanup deletes all of it: the event, its members and their display names, its admin key hash, and every quiz, award and hot take row. Nothing is kept, not even counts.
+- The same run deletes the event's rate-limit counters and any counter whose window started more than a day ago, and anonymous logins that belong to no event and haven't signed in or refreshed a session for 30 days.
+- Every foreign key to `public.events` is `on delete cascade`. A catalog test fails if one isn't, so tables added by later specs are covered.
+- Cleanup is one server-only database function, `private.cleanup_expired()`, run in one transaction by `pg_cron` every night at 03:00 UTC. It returns how many rows it deleted, which the run history in the Supabase dashboard shows. No client role can run it. There is no `cleanup` Edge Function.
+- Codes of deleted events go into the server-only `private.retired_codes` (code only) and `create_event` treats them as taken, so a code is never reused.
+- A deleted event looks like an unknown code: guest, TV, summary and host pages reuse their existing "wrong code or expired" notes and error codes. A phone whose login was removed signs in again without an error.
+- No backups or undo.
+- Everything is database-only or frontend-only, so it can be built in a cloud session, at any time.
+
+**Why:** Deleting everything keeps the 30-day promise and stores no personal data longer than needed. pg_cron is free on Supabase, runs inside the database without a secret key or HTTP call, and can be tested with the database tests, which an Edge Function couldn't in a cloud session. A nightly run is enough because expired events are already hidden the moment they expire. Never reusing a code costs one tiny table and rules out an old QR code or TV address landing in a stranger's party. Removing unused anonymous logins stops `auth.users` from growing forever (`docs/implementation.md`, item 10). A separate "this event was deleted" note was rejected: an unknown and a deleted code would need to be told apart, which adds a check for no gain.
+
 ## 2026-10-22: What the control panel covers, and how removing a guest works (#75)
 
 **Decision:**

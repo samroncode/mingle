@@ -76,6 +76,14 @@ _Avoid_: Join box, sidebar
 The moment an event stops existing for its members, 30 days after it was created.
 _Avoid_: Retention, TTL
 
+**Cleanup**:
+The nightly job that deletes every expired event and everything that belongs to it, plus counters and logins nothing uses any more.
+_Avoid_: Purge, garbage collection
+
+**Retired code**:
+The code of a deleted event. It's remembered so that no new event ever gets it.
+_Avoid_: Used code, burned code
+
 ## Flow
 
 **Activity**:
