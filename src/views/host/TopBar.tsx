@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { EventRow, MemberRow } from "@/api/events";
 import { setFlow } from "@/api/host-actions";
 import { Button } from "@/components/ui/button";
+import { useHostAction } from "@/hooks/useHostAction";
 import { countGuests } from "@/partyscreen/guests";
-import { hostPanelErrorKey, tvNow } from "@/lib/host-panel";
+import { tvNow } from "@/lib/host-panel";
 import { moduleDefinitions } from "@/modules/definitions";
 import { isModuleId } from "@/modules/registry";
 import type { ModuleDefinition } from "@/modules/types";
@@ -58,21 +58,17 @@ function TvNow({ event }: { event: EventRow }) {
 /** Always-visible bar: code, guests, what the TV shows and Stop. */
 export function TopBar({ event, members, hostKey }: TopBarProps) {
   const { t } = useTranslation();
-  const [error, setError] = useState<string>();
-  const [busy, setBusy] = useState(false);
+  const { busy, error, run } = useHostAction();
   const running = !!event.current_module && event.status !== "ended";
 
-  async function stop() {
-    setBusy(true);
-    setError(undefined);
-    const result = await setFlow({
-      code: event.code,
-      key: hostKey,
-      move: { type: "stop_module" },
-    });
-    setBusy(false);
-    if (!result.ok) setError(t(hostPanelErrorKey(result.error)));
-  }
+  const stop = () =>
+    run(() =>
+      setFlow({
+        code: event.code,
+        key: hostKey,
+        move: { type: "stop_module" },
+      }),
+    );
 
   return (
     <div

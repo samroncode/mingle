@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { setFlow } from "@/api/host-actions";
 import { Button } from "@/components/ui/button";
-import { hostPanelErrorKey } from "@/lib/host-panel";
+import { useHostAction } from "@/hooks/useHostAction";
 
 interface EndEventProps {
   code: string;
@@ -14,20 +14,13 @@ interface EndEventProps {
 export function EndEvent({ code, hostKey, onEnded }: EndEventProps) {
   const { t } = useTranslation();
   const [confirming, setConfirming] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string>();
+  const { busy, error, run } = useHostAction();
 
   async function end() {
-    setBusy(true);
-    setError(undefined);
-    const result = await setFlow({
-      code,
-      key: hostKey,
-      move: { type: "end_event" },
-    });
-    setBusy(false);
-    if (result.ok) return onEnded();
-    setError(t(hostPanelErrorKey(result.error)));
+    const result = await run(() =>
+      setFlow({ code, key: hostKey, move: { type: "end_event" } }),
+    );
+    if (result.ok) onEnded();
   }
 
   return (
