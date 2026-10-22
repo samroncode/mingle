@@ -1,3 +1,4 @@
+import { teamAwards } from "./awards/team";
 import { teamQuiz } from "./quiz/team";
 import type { NicheConfig } from "./types";
 
@@ -17,6 +18,7 @@ export const team: NicheConfig = {
     en: "Welcome, and thanks for being here! Tonight is about having fun together. Grab a seat, get your phone ready and join in.",
   },
   quiz: teamQuiz,
+  awards: teamAwards,
   promptHints:
     "Team event with colleagues from the same workplace. Keep it friendly and inclusive, work-appropriate, and never put an individual on the spot.",
 };

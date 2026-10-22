@@ -1,3 +1,4 @@
+import { awAwards } from "./awards/aw";
 import { awQuiz } from "./quiz/aw";
 import type { NicheConfig } from "./types";
 
@@ -17,6 +18,7 @@ export const aw: NicheConfig = {
     en: "Welcome! Grab a drink, settle in and enjoy the evening. We have games and votes coming up, so keep your phone handy.",
   },
   quiz: awQuiz,
+  awards: awAwards,
   promptHints:
     "Relaxed after-work with colleagues. Keep it light and inclusive, and avoid anything that could embarrass someone in front of their manager.",
 };

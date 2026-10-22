@@ -3,6 +3,7 @@ import en from "@/i18n/en.json";
 import sv from "@/i18n/sv.json";
 import indexCss from "@/index.css?raw";
 import { supportedLanguages } from "@/i18n/language";
+import { AwardCategorySchema, awardsLimits } from "@/lib/schemas/awards";
 import { PartySchema } from "@/lib/schemas/party";
 import { QuizQuestionSchema, quizLimits } from "@/lib/schemas/quiz";
 import { nicheIds } from "./ids";
@@ -126,6 +127,36 @@ describe.each(Object.values(niches))("niche $id quiz", (niche) => {
         niche.quiz.filter((question) => question.correct === position).length,
     );
     for (const count of counts) expect(count).toBeGreaterThanOrEqual(4);
+  });
+});
+
+describe.each(Object.values(niches))("niche $id awards", (niche) => {
+  it("has 20 categories, within the awards limit", () => {
+    expect(niche.awards).toHaveLength(20);
+    expect(niche.awards.length).toBeLessThanOrEqual(awardsLimits.categories);
+  });
+
+  it("has ids that are unique and start with the niche id", () => {
+    const ids = niche.awards.map((award) => award.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const id of ids) expect(id.startsWith(`${niche.id}-`), id).toBe(true);
+  });
+
+  it.each(supportedLanguages)(
+    "has every category in %s, passing the shared category schema",
+    (language) => {
+      for (const award of niche.awards) {
+        const result = AwardCategorySchema.safeParse({
+          text: award.texts[language],
+        });
+        expect(result.error, award.id).toBeUndefined();
+      }
+    },
+  );
+
+  it.each(supportedLanguages)("has no duplicate texts in %s", (language) => {
+    const texts = niche.awards.map((award) => award.texts[language]);
+    expect(new Set(texts.map((t) => t.toLowerCase())).size).toBe(texts.length);
   });
 });
 
