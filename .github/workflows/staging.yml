@@ -1,0 +1,56 @@
+# Manual staging buttons: try a branch on staging, or reset staging to main.
+name: Staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch whose migrations and functions go to staging
+        required: true
+        default: main
+        type: string
+      reset:
+        description: Reset staging to main instead (wipes staging data; the branch is ignored)
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+# Shares the deploy group so staging is never changed by two runs at once.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_STAGING_DB_PASSWORD }}
+      PROJECT_REF: ${{ secrets.SUPABASE_STAGING_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          ref: ${{ inputs.reset && 'main' || inputs.branch }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: package.json
+          cache: npm
+      - run: npm ci
+
+      - name: Link staging
+        run: npx supabase link --project-ref "$PROJECT_REF"
+
+      - name: Reset the staging database to main
+        if: ${{ inputs.reset }}
+        run: npx supabase db reset --linked --yes
+
+      - name: Push migrations to staging
+        if: ${{ !inputs.reset }}
+        run: npx supabase db push
+
+      - name: Deploy functions to staging
+        run: npx supabase functions deploy

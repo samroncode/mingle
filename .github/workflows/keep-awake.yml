@@ -1,0 +1,32 @@
+# Free Supabase projects sleep after a week without activity. This reads one row
+# from each project every day and fails the run if either does not answer.
+# GitHub switches scheduled workflows off after 60 days without repo activity;
+# re-enable it from the Actions tab if that happens.
+name: Keep awake
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [live, staging]
+    env:
+      SUPABASE_URL: ${{ matrix.target == 'live' && secrets.LIVE_SUPABASE_URL || secrets.STAGING_SUPABASE_URL }}
+      SUPABASE_KEY: ${{ matrix.target == 'live' && secrets.LIVE_SUPABASE_PUBLISHABLE_KEY || secrets.STAGING_SUPABASE_PUBLISHABLE_KEY }}
+    steps:
+      - name: Read one row from ${{ matrix.target }}
+        run: |
+          echo "::add-mask::$SUPABASE_URL"
+          curl --fail --silent --show-error --max-time 30 --output /dev/null \
+            --header "apikey: $SUPABASE_KEY" \
+            "$SUPABASE_URL/rest/v1/events?select=id&limit=1"
