@@ -32,6 +32,12 @@ const createEvent = {
   party,
 };
 
+const question = (n: number, correct = 0) => ({
+  text: `Fråga ${n}?`,
+  options: ["a", "b", "c", "d"].map((o) => `${o}${n}`),
+  correct,
+});
+
 /** The events the user can read, which are the ones they are a member of. */
 async function eventsOf(user: User) {
   const { data, error } = await user.client.from("events").select();
@@ -117,6 +123,109 @@ describe("create_event", () => {
   });
 });
 
+describe("quiz questions", () => {
+  /** The questions and keys of the event, read as the service role. */
+  async function storedQuiz(code: string) {
+    const service = serviceClient();
+    const { data: event } = await service
+      .from("events")
+      .select("id")
+      .eq("code", code)
+      .single();
+    const { data: questions } = await service
+      .from("quiz_questions")
+      .select("id, position, text, options, status, revealed_at, answer_count")
+      .eq("event_id", event?.id ?? "")
+      .order("position");
+    const { data: keys } = await service
+      .from("quiz_answer_keys")
+      .select("question_id, correct")
+      .in(
+        "question_id",
+        (questions ?? []).map((row) => row.id),
+      );
+    return { questions: questions ?? [], keys: keys ?? [] };
+  }
+
+  it("stores the questions in order, approved, with their keys", async () => {
+    const host = await anonymousUser();
+    const quiz = [question(1, 2), question(2, 0), question(3, 3)];
+    const response = await callHostActions(
+      { ...createEvent, quiz },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+    const { code } = response.body as { code: string };
+
+    const { questions, keys } = await storedQuiz(code);
+    expect(questions.map((row) => row.position)).toEqual([0, 1, 2]);
+    expect(questions.map((row) => row.text)).toEqual(quiz.map((q) => q.text));
+    expect(questions.map((row) => row.options)).toEqual(
+      quiz.map((q) => q.options),
+    );
+    for (const row of questions) {
+      expect(row).toMatchObject({
+        status: "approved",
+        revealed_at: null,
+        answer_count: 0,
+      });
+    }
+    const correctByPosition = questions.map(
+      (row) => keys.find((key) => key.question_id === row.id)?.correct,
+    );
+    expect(correctByPosition).toEqual([2, 0, 3]);
+  });
+
+  it("lets the host read what was stored, through the app's own client", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...createEvent, quiz: [question(1), question(2)] },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+
+    const { data } = await host.client
+      .from("quiz_questions")
+      .select("position, text")
+      .order("position");
+    expect(data).toEqual([
+      { position: 0, text: "Fråga 1?" },
+      { position: 1, text: "Fråga 2?" },
+    ]);
+  });
+
+  it("accepts exactly 30 questions", async () => {
+    const host = await anonymousUser();
+    const quiz = Array.from({ length: 30 }, (_, i) => question(i));
+    const response = await callHostActions(
+      { ...createEvent, quiz },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+    const { code } = response.body as { code: string };
+    expect((await storedQuiz(code)).questions).toHaveLength(30);
+  });
+
+  it("stores no questions when none are sent, or an empty list", async () => {
+    const host = await anonymousUser();
+    for (const body of [createEvent, { ...createEvent, quiz: [] }]) {
+      const response = await callHostActions(body, { user: host });
+      expect(response.status).toBe(200);
+      const { code } = response.body as { code: string };
+      expect((await storedQuiz(code)).questions).toEqual([]);
+    }
+  });
+
+  it("allows an empty list with the quiz switched off", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...createEvent, enabledModules: [], quiz: [] },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+  });
+});
+
 describe("invalid requests", () => {
   const invalid: [string, unknown][] = [
     ["an unknown action", { ...createEvent, action: "drop_tables" }],
@@ -147,6 +256,36 @@ describe("invalid requests", () => {
       { ...createEvent, party: { musicUrl: "javascript:alert(1)" } },
     ],
     ["a JSON array", [createEvent]],
+    [
+      "more than 30 quiz questions",
+      {
+        ...createEvent,
+        quiz: Array.from({ length: 31 }, (_, i) => question(i)),
+      },
+    ],
+    [
+      "a quiz question with three options",
+      {
+        ...createEvent,
+        quiz: [{ ...question(1), options: ["a", "b", "c"] }],
+      },
+    ],
+    [
+      "a quiz question with an empty text",
+      { ...createEvent, quiz: [{ ...question(1), text: " " }] },
+    ],
+    [
+      "a quiz question with a right option of 4",
+      { ...createEvent, quiz: [question(1, 4)] },
+    ],
+    [
+      "a quiz question with an unknown field",
+      { ...createEvent, quiz: [{ ...question(1), status: "draft" }] },
+    ],
+    [
+      "quiz questions with the quiz switched off",
+      { ...createEvent, enabledModules: ["hottakes"], quiz: [question(1)] },
+    ],
   ];
 
   it.each(invalid)("refuses %s with invalid_request", async (_, body) => {

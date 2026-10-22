@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { supportedLanguages, type Language } from "@/i18n/language";
+import { toQuizQuestions } from "@/lib/wizard/quiz";
 import { toParty, type WizardDraft, type WizardStep } from "@/lib/wizard/state";
 import { moduleIds, type ModuleId } from "@/modules/registry";
 import { niches, type NicheId } from "@/niches";
@@ -162,6 +163,18 @@ export function SummaryStep({
               .map((id) => t(`modules.${id}.name`))
               .join(", "),
     },
+    ...(draft.enabledModules.includes("quiz")
+      ? [
+          {
+            step: "quiz" as const,
+            label: t("wizard.steps.quiz"),
+            value: t("wizard.summary.quizQuestions", {
+              count: toQuizQuestions(draft.niche, draft.language, draft.quiz)
+                .length,
+            }),
+          },
+        ]
+      : []),
     ...partyRows(draft, t),
   ] as const;
 

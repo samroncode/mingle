@@ -190,3 +190,53 @@ export async function seedCast(fields: EventInsert = {}): Promise<Cast> {
   ]);
   return { event, otherEvent, host, guestA, guestB, tv, nonMember, otherHost };
 }
+
+export type QuizQuestionFields = {
+  text?: string;
+  options?: string[];
+  correct?: number;
+  status?: "draft" | "approved";
+  /** Sets the revealed time, so the question counts as played. */
+  revealed?: boolean;
+};
+
+/** Inserts a quiz question and its answer key with the service role. */
+export async function seedQuizQuestion(
+  eventId: string,
+  position: number,
+  fields: QuizQuestionFields = {},
+): Promise<string> {
+  const service = serviceClient();
+  const { data, error } = await service
+    .from("quiz_questions")
+    .insert({
+      event_id: eventId,
+      position,
+      text: fields.text ?? `Question ${position + 1}?`,
+      options: fields.options ?? ["Ett", "Två", "Tre", "Fyra"],
+      status: fields.status ?? "approved",
+      revealed_at: fields.revealed ? new Date().toISOString() : null,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  const key = await service
+    .from("quiz_answer_keys")
+    .insert({ question_id: data.id, correct: fields.correct ?? 1 });
+  if (key.error) throw key.error;
+  return data.id;
+}
+
+/** Sets an event's flow state with the service role, as host-actions does. */
+export async function setEventFlow(
+  eventId: string,
+  flow: Partial<
+    Pick<EventRow, "status" | "current_module" | "current_step" | "phase">
+  >,
+): Promise<void> {
+  const { error } = await serviceClient()
+    .from("events")
+    .update(flow)
+    .eq("id", eventId);
+  if (error) throw error;
+}

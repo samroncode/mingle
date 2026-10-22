@@ -4,12 +4,22 @@ import { PartySchema, type Party } from "@/lib/schemas/party";
 import type { ModuleId } from "@/modules/registry";
 import { getNiche, type NicheId } from "@/niches";
 import { nicheIds } from "@/niches/ids";
+import {
+  emptyQuiz,
+  invalidOwnKeys,
+  quizReducer,
+  resetBuiltinQuiz,
+  toQuizQuestions,
+  type QuizAction,
+  type QuizDraft,
+} from "./quiz";
 
 /** The setup wizard's steps, in order. */
 export const stepOrder = [
   "niche",
   "language",
   "activities",
+  "quiz",
   "welcome",
   "menu",
   "schedule",
@@ -21,6 +31,16 @@ export type WizardStep = (typeof stepOrder)[number];
 /** Steps the host can skip: every step after language. */
 export function isSkippable(step: WizardStep): boolean {
   return stepOrder.indexOf(step) > stepOrder.indexOf("language");
+}
+
+/**
+ * The steps this draft goes through, in order: the quiz step only appears
+ * while the quiz is switched on.
+ */
+export function stepsFor(draft: WizardDraft): WizardStep[] {
+  return stepOrder.filter(
+    (step) => step !== "quiz" || draft.enabledModules.includes("quiz"),
+  );
 }
 
 export interface ScheduleLine {
@@ -49,6 +69,7 @@ export interface WizardDraft {
   niche: NicheId;
   language: Language;
   enabledModules: ModuleId[];
+  quiz: QuizDraft;
   party: PartyForm;
 }
 
@@ -59,6 +80,7 @@ export type WizardAction =
   | { type: "select_niche"; niche: NicheId }
   | { type: "set_language"; language: Language }
   | { type: "toggle_module"; module: ModuleId }
+  | { type: "quiz"; action: QuizAction }
   | { type: "skip" }
   | { type: "set_welcome"; text: string }
   | { type: "set_menu"; menu: string[] }
@@ -87,6 +109,7 @@ export function initialDraft(language: Language): WizardDraft {
     niche: firstNiche,
     language,
     enabledModules: [...getNiche(firstNiche).defaultModules],
+    quiz: emptyQuiz,
     party: emptyParty(firstNiche, language),
   };
 }
@@ -126,10 +149,17 @@ function clearStep(draft: WizardDraft): WizardDraft {
   }
 }
 
-function moveStep(step: WizardStep, offset: number): WizardStep {
-  const index = stepOrder.indexOf(step) + offset;
-  const clamped = Math.min(Math.max(index, 0), stepOrder.length - 1);
-  return stepOrder[clamped] ?? step;
+function moveStep(draft: WizardDraft, offset: number): WizardStep {
+  const steps = stepsFor(draft);
+  // A step that is switched off (the quiz) counts as the one before it.
+  const current = Math.max(
+    steps.findIndex(
+      (step) => stepOrder.indexOf(step) >= stepOrder.indexOf(draft.step),
+    ),
+    0,
+  );
+  const clamped = Math.min(Math.max(current + offset, 0), steps.length - 1);
+  return steps[clamped] ?? draft.step;
 }
 
 export function wizardReducer(
@@ -138,9 +168,9 @@ export function wizardReducer(
 ): WizardDraft {
   switch (action.type) {
     case "next":
-      return { ...draft, step: moveStep(draft.step, 1) };
+      return { ...draft, step: moveStep(draft, 1) };
     case "back":
-      return { ...draft, step: moveStep(draft.step, -1) };
+      return { ...draft, step: moveStep(draft, -1) };
     case "go_to":
       return { ...draft, step: action.step };
     case "select_niche":
@@ -148,6 +178,10 @@ export function wizardReducer(
         ...draft,
         niche: action.niche,
         enabledModules: [...getNiche(action.niche).defaultModules],
+        quiz:
+          action.niche === draft.niche
+            ? draft.quiz
+            : resetBuiltinQuiz(draft.quiz),
       });
     case "set_language":
       return followWelcome({ ...draft, language: action.language });
@@ -158,8 +192,12 @@ export function wizardReducer(
           ? draft.enabledModules.filter((id) => id !== action.module)
           : [...draft.enabledModules, action.module],
       };
-    case "skip":
-      return { ...clearStep(draft), step: moveStep(draft.step, 1) };
+    case "quiz":
+      return { ...draft, quiz: quizReducer(draft.quiz, action.action) };
+    case "skip": {
+      const cleared = clearStep(draft);
+      return { ...cleared, step: moveStep(cleared, 1) };
+    }
     case "set_welcome":
       return withParty(draft, { welcome: action.text, welcomeEdited: true });
     case "set_menu":
@@ -234,16 +272,45 @@ export function firstInvalidStep(form: PartyForm): WizardStep | undefined {
   return stepOrder.find((step) => steps.has(step));
 }
 
+/** Whether the quiz step has questions that break the shared schema. */
+export function quizIsInvalid(draft: WizardDraft): boolean {
+  return (
+    draft.enabledModules.includes("quiz") &&
+    invalidOwnKeys(draft.quiz).length > 0
+  );
+}
+
+/**
+ * The first step, in step order, that holds something invalid, or undefined
+ * when everything is valid. Create sends the host there instead of sending.
+ */
+export function firstInvalidDraftStep(
+  draft: WizardDraft,
+): WizardStep | undefined {
+  const partyStep = firstInvalidStep(draft.party);
+  if (!quizIsInvalid(draft)) return partyStep;
+  if (!partyStep) return "quiz";
+  return stepOrder.indexOf("quiz") < stepOrder.indexOf(partyStep)
+    ? "quiz"
+    : partyStep;
+}
+
 /** The input for `createEvent`: the `create_event` request without its action. */
 export function toCreateInput(
   draft: WizardDraft,
 ): Omit<CreateEventRequest, "action"> {
-  return {
+  const input: Omit<CreateEventRequest, "action"> = {
     niche: draft.niche,
     language: draft.language,
     enabledModules: draft.enabledModules,
     party: toParty(draft.party),
   };
+  // Questions only go with the quiz switched on, and only once there are some.
+  if (draft.enabledModules.includes("quiz")) {
+    const quiz = toQuizQuestions(draft.niche, draft.language, draft.quiz);
+    if (quiz.length > 0) input.quiz = quiz;
+  }
+  return input;
 }
 
 /** The full request body, in the shape the `create_event` schema checks. */

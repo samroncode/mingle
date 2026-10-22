@@ -259,3 +259,58 @@ export async function fakeEvent(page: Page, options: FakeEventOptions) {
   await fakeRealtime(page);
   return sent;
 }
+
+/** A quiz question as the host's read returns it, with its key embedded. */
+export interface FakeQuizRow {
+  id: string;
+  position: number;
+  text: string;
+  options: string[];
+  correct: number;
+}
+
+interface FakeHostPanelOptions {
+  code: string;
+  enabledModules: EventRow["enabled_modules"];
+  quiz?: FakeQuizRow[];
+}
+
+/**
+ * Fakes the reads the control panel makes once the host link is claimed: the
+ * event lookup by code, the snapshot, the quiz questions with their keys and
+ * the realtime socket. Pair it with `fakeSupabase` for sign-in and the claim.
+ */
+export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
+  const event = eventRow({
+    code: options.code,
+    enabled_modules: options.enabledModules,
+  });
+  const host = memberRow({ role: "host" });
+
+  await page.route(`${supabase}/rest/v1/**`, (route) => {
+    if (answerPreflight(route)) return;
+    const url = route.request().url();
+    // Before the event lookups: `event_id=eq.` also contains `id=eq.`.
+    if (url.includes("/rest/v1/quiz_questions")) {
+      return json(
+        route,
+        200,
+        (options.quiz ?? []).map(({ correct, ...row }) => ({
+          ...row,
+          quiz_answer_keys: { correct },
+        })),
+      );
+    }
+    if (url.includes("code=eq.")) {
+      return json(route, 200, [
+        { id: fakeEventId, members: [{ user_id: "u1", role: "host" }] },
+      ]);
+    }
+    if (url.includes("id=eq.")) {
+      return json(route, 200, [{ ...event, members: [host] }]);
+    }
+    return json(route, 404, { error: "unexpected request" });
+  });
+
+  await fakeRealtime(page);
+}

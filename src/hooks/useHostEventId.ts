@@ -14,8 +14,9 @@ export function useHostEventId(code: string | undefined, enabled: boolean) {
     let stale = false;
     void (async () => {
       try {
-        const userId = await ensureAnonymousSession();
-        const result = await findMyMembership(code, userId);
+        const session = await ensureAnonymousSession();
+        if (!session.ok) return;
+        const result = await findMyMembership(code, session.value);
         if (!stale && result.ok && result.value.isMember) {
           setFound({ code, id: result.value.eventId });
         }

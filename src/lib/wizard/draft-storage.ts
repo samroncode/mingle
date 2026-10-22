@@ -1,8 +1,10 @@
 import { z } from "zod";
 import { supportedLanguages } from "@/i18n/language";
 import { partyLimits } from "@/lib/schemas/party";
+import { quizLimits } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
 import { nicheIds } from "@/niches/ids";
+import { emptyQuiz } from "./quiz";
 import { stepOrder, type WizardDraft } from "./state";
 
 const storageKey = "mingle.wizard-draft";
@@ -13,11 +15,30 @@ const storageKey = "mingle.wizard-draft";
 const typedText = z.string().max(5000);
 const maxLines = partyLimits.lines;
 
+// A question being typed may be unfinished, so its parts can be empty.
+const QuizItemSchema = z.discriminatedUnion("kind", [
+  z.strictObject({ kind: z.literal("builtin"), id: z.string().max(100) }),
+  z.strictObject({
+    kind: z.literal("own"),
+    key: z.string().max(100),
+    text: typedText,
+    options: z.tuple([typedText, typedText, typedText, typedText]),
+    correct: z.number().int().min(0).max(3),
+  }),
+]);
+
 const DraftSchema = z.strictObject({
   step: z.enum(stepOrder),
   niche: z.enum(nicheIds),
   language: z.enum(supportedLanguages),
   enabledModules: z.array(z.enum(moduleIds)).max(moduleIds.length),
+  // Drafts saved before the quiz step existed have none.
+  quiz: z
+    .strictObject({
+      seeded: z.boolean(),
+      items: z.array(QuizItemSchema).max(quizLimits.questions),
+    })
+    .default(emptyQuiz),
   party: z.strictObject({
     welcome: typedText,
     welcomeEdited: z.boolean(),

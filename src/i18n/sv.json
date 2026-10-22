@@ -95,7 +95,13 @@
   "modules": {
     "quiz": {
       "name": "Quiz",
-      "description": "Frågor som gästerna svarar på i mobilen."
+      "description": "Frågor som gästerna svarar på i mobilen.",
+      "host": {
+        "title": "Quizfrågor",
+        "empty": "Det finns inga frågor i quizet än.",
+        "rightAnswer": "Rätt svar",
+        "loadFailed": "Kunde inte hämta frågorna. Ladda om sidan och försök igen."
+      }
     },
     "awards": {
       "name": "Utmärkelser",
@@ -128,6 +134,7 @@
       "niche": "Vad för slags kväll?",
       "language": "Språk",
       "activities": "Aktiviteter",
+      "quiz": "Quizfrågor",
       "welcome": "Välkomsttext",
       "menu": "Meny",
       "schedule": "Program",
@@ -141,7 +148,9 @@
       "noActivities": "Inga",
       "edit": "Ändra",
       "change": "Ändra {{step}}",
-      "skipped": "Hoppades över"
+      "skipped": "Hoppades över",
+      "quizQuestions_one": "{{count}} fråga",
+      "quizQuestions_other": "{{count}} frågor"
     },
     "create": "Skapa event",
     "creating": "Skapar...",
@@ -185,6 +194,27 @@
       "schedule": "Varje programrad behöver en tid som 19:00 och en titel på högst 80 tecken (högst 20 rader).",
       "wifi": "Ange ett wifi-namn på högst 32 tecken. Lösenordet får vara högst 63.",
       "musicUrl": "Musiklänken måste vara en giltig https-länk."
+    },
+    "quiz": {
+      "count": "{{count}} av {{max}} frågor valda",
+      "empty": "Inga frågor valda. Lägg till en färdig fråga nedan eller skriv en egen.",
+      "addOwn": "Lägg till egen fråga",
+      "full": "Quizet är fullt ({{max}} frågor). Ta bort en fråga för att lägga till en ny.",
+      "more": "Fler färdiga frågor",
+      "add": "Lägg till",
+      "addQuestion": "Lägg till frågan: {{text}}",
+      "rightAnswer": "Rätt svar: {{answer}}",
+      "moveUp": "Flytta fråga {{n}} uppåt",
+      "moveDown": "Flytta fråga {{n}} nedåt",
+      "remove": "Ta bort fråga {{n}}",
+      "questionText": "Text för fråga {{n}}",
+      "questionPlaceholder": "Din fråga",
+      "option": "Svarsalternativ {{letter}} för fråga {{n}}",
+      "markRight": "Alternativ {{letter}} är rätt svar på fråga {{n}}",
+      "ownHint": "Skriv fyra alternativ och markera det rätta.",
+      "errors": {
+        "incomplete": "Fråga {{n}} behöver en fråga och fyra alternativ."
+      }
     }
   },
   "captcha": {

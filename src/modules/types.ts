@@ -1,5 +1,6 @@
-import type { ComponentType } from "react";
+import type { ComponentType, Dispatch } from "react";
 import type { EventRow, MemberRow } from "@/api/events";
+import type { WizardAction, WizardDraft } from "@/lib/wizard/state";
 import type { ModuleId } from "./registry";
 
 /**
@@ -14,6 +15,12 @@ export interface ModuleViewProps {
 /** The guest view also knows which member is looking at their phone. */
 export interface ModuleGuestViewProps extends ModuleViewProps {
   userId: string;
+}
+
+/** What an activity's setup wizard step gets: the draft and how to change it. */
+export interface ModuleWizardStepProps {
+  draft: WizardDraft;
+  dispatch: Dispatch<WizardAction>;
 }
 
 /** The control panel section also learns whether Start is allowed. */
@@ -41,5 +48,5 @@ export interface ModuleDefinition {
    */
   useProgress?: (event: EventRow) => string | undefined;
   /** An extra setup wizard step, for activities that need one. */
-  WizardStep?: ComponentType;
+  WizardStep?: ComponentType<ModuleWizardStepProps>;
 }
