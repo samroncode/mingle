@@ -5,7 +5,6 @@
 import { describe, expect, it } from "vitest";
 import {
   anonymousUser,
-  randomCode,
   seedCast,
   seedQuizQuestion,
   serviceClient,
@@ -15,10 +14,16 @@ import {
   type User,
 } from "./helpers";
 import { callHostActions } from "./functions";
+import {
+  moves,
+  otherKey,
+  setFlow,
+  unusedCode,
+  type HostLink,
+  type Move,
+} from "./host-helpers";
 
-type HostLink = { code: string; key: string };
 type Host = HostLink & { user: User; eventId: string };
-type Move = { type: string; module?: string };
 
 const options = ["Ett", "Två", "Tre", "Fyra"];
 
@@ -47,21 +52,6 @@ async function createQuiz(count: number): Promise<Host> {
     `select id from public.events where code = '${link.code}'`,
   );
   return { ...link, user, eventId };
-}
-
-function setFlow(host: Host, move: Move, link: HostLink = host) {
-  return callHostActions(
-    { action: "set_flow", code: link.code, key: link.key, move },
-    { user: host.user },
-  );
-}
-
-/** Makes the moves in order, each of which must be allowed. */
-async function moves(host: Host, ...list: Move[]): Promise<void> {
-  for (const move of list) {
-    const response = await setFlow(host, move);
-    expect(response.status, JSON.stringify(move)).toBe(200);
-  }
 }
 
 const startQuiz: Move = { type: "start_module", module: "quiz" };
@@ -447,20 +437,3 @@ describe("quiz_progress", () => {
     expect(await progressOf(cast.guestA.client, cast.event.id)).toEqual([]);
   });
 });
-
-/** A valid-looking key that differs from `key`. */
-function otherKey(key: string): string {
-  return (key.startsWith("A") ? "B" : "A") + key.slice(1);
-}
-
-/** A code no event has. */
-function unusedCode(): string {
-  for (;;) {
-    const code = randomCode();
-    if (
-      sql(`select 1 from public.events where code = '${code}'`).length === 0
-    ) {
-      return code;
-    }
-  }
-}

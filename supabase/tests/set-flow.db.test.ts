@@ -2,18 +2,18 @@
 // HTTP through `supabase functions serve`; the results are read back as a
 // member of the event.
 import { describe, expect, it } from "vitest";
-import {
-  anonymousUser,
-  randomCode,
-  signedOutClient,
-  sql,
-  type User,
-} from "./helpers";
+import { anonymousUser, signedOutClient, sql, type User } from "./helpers";
 import { callHostActions } from "./functions";
+import {
+  moves,
+  otherKey,
+  setFlow,
+  unusedCode,
+  type HostLink,
+  type Move,
+} from "./host-helpers";
 
-type HostLink = { code: string; key: string };
 type Host = HostLink & { user: User };
-type Move = { type: string; module?: string };
 
 const threeQuestions = [1, 2, 3].map((n) => ({
   text: `Question ${n}?`,
@@ -40,13 +40,6 @@ async function createEvent(
   );
   expect(response.status).toBe(200);
   return { ...(response.body as HostLink), user };
-}
-
-function setFlow(host: Host, move: Move, link: HostLink = host) {
-  return callHostActions(
-    { action: "set_flow", code: link.code, key: link.key, move },
-    { user: host.user },
-  );
 }
 
 /** The event's flow columns, as its host reads them. */
@@ -531,29 +524,4 @@ function live(module: string, step: number, phase: string) {
 
 function start(module: string): Move {
   return { type: "start_module", module };
-}
-
-/** Makes the moves in order, each of which must be allowed. */
-async function moves(host: Host, ...list: Move[]): Promise<void> {
-  for (const move of list) {
-    const response = await setFlow(host, move);
-    expect(response.status).toBe(200);
-  }
-}
-
-/** A valid-looking key that differs from `key`. */
-function otherKey(key: string): string {
-  return (key.startsWith("A") ? "B" : "A") + key.slice(1);
-}
-
-/** A code no event has. */
-function unusedCode(): string {
-  for (;;) {
-    const code = randomCode();
-    if (
-      sql(`select 1 from public.events where code = '${code}'`).length === 0
-    ) {
-      return code;
-    }
-  }
 }
