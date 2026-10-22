@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { supportedLanguages } from "@/i18n/language";
+import { AwardCategorySchema } from "@/lib/schemas/awards";
 import { PartySchema } from "@/lib/schemas/party";
 import { QuizQuestionTextSchema } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
@@ -44,6 +45,19 @@ export const QuizContentSchema = z.strictObject({
 
 export type QuizContent = z.infer<typeof QuizContentSchema>;
 
+/**
+ * A ready-made award category: the same "Most likely to…" category in every
+ * supported language. The text is built-in content in the event language,
+ * copied into the event when the host picks it. The id is stable, so a saved
+ * wizard draft can refer to the category.
+ */
+export const AwardContentSchema = z.strictObject({
+  id: z.string().regex(/^[a-z]+-[a-z0-9-]+$/),
+  texts: z.record(z.enum(supportedLanguages), AwardCategorySchema.shape.text),
+});
+
+export type AwardContent = z.infer<typeof AwardContentSchema>;
+
 export const NicheConfigSchema = z.strictObject({
   id: z.string().regex(/^[a-z]+$/),
   /** i18n keys, never literal text, so the copy exists in sv and en. */
@@ -63,6 +77,8 @@ export const NicheConfigSchema = z.strictObject({
   ),
   /** Ready-made quiz questions the host picks from. */
   quiz: z.array(QuizContentSchema),
+  /** Ready-made award categories the host picks from. */
+  awards: z.array(AwardContentSchema),
   /** Guidance for AI suggestions. English, never shown in the UI. */
   promptHints: z.string().min(1),
 });
