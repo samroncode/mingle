@@ -187,6 +187,10 @@
       "musicUrl": "The music link must be a valid https link."
     }
   },
+  "captcha": {
+    "failed": "We couldn't check that you're a real person. Try again.",
+    "retry": "Try again"
+  },
   "hostDoor": {
     "opening": "Opening the control panel…",
     "badLink": "This link doesn't work",
@@ -195,6 +199,7 @@
     "rate_limited": "Too many tries. Wait a minute and try again.",
     "network_error": "Couldn't reach the server. Check your connection and try again.",
     "internal_error": "Something went wrong. Try again.",
+    "captcha_failed": "We couldn't check that you're a real person. Try again.",
     "retry": "Try again"
   },
   "myEvents": {
@@ -235,6 +240,10 @@
     "not_found": {
       "title": "We can't find this event",
       "body": "The code is wrong, or the event has expired. Events are deleted 30 days after they're created."
+    },
+    "captcha_failed": {
+      "title": "We couldn't check your device",
+      "body": "The security check didn't go through. Try again."
     },
     "error": {
       "title": "Couldn't reach the event",

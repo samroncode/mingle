@@ -25,6 +25,8 @@ export default defineConfig({
     env: {
       VITE_SUPABASE_URL: "http://localhost:54399",
       VITE_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_e2e_fake",
+      // A site key turns the CAPTCHA on; fakeSupabase fakes Cloudflare's side.
+      VITE_TURNSTILE_SITE_KEY: "e2e-site-key",
     },
   },
 });

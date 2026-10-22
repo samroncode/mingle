@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { claimHost } from "@/api/host-actions";
-import { trySession } from "@/api/session";
+import { ensureAnonymousSession } from "@/api/session";
 import type { HostDoorError, HostLinkParts } from "@/lib/host-door";
 
 export type ClaimState =
@@ -9,8 +9,13 @@ export type ClaimState =
   | { status: "error"; error: HostDoorError };
 
 async function claim(link: HostLinkParts): Promise<ClaimState> {
-  if (!(await trySession())) {
-    return { status: "error", error: "network_error" };
+  const session = await ensureAnonymousSession();
+  if (!session.ok) {
+    return {
+      status: "error",
+      error:
+        session.error === "captcha_failed" ? "captcha_failed" : "network_error",
+    };
   }
   const result = await claimHost(link);
   return result.ok

@@ -1,35 +1,51 @@
 import { useEffect, useState } from "react";
-import type { JoinErrorCode } from "@/api/errors";
 import { joinAsTv } from "@/api/events";
-import { trySession } from "@/api/session";
+import { ensureAnonymousSession } from "@/api/session";
+import type { JoinErrorCode } from "@/api/errors";
 
 export type TvJoinState =
   | { status: "joining" }
   | { status: "joined"; eventId: string }
-  | { status: "error"; error: JoinErrorCode };
+  | { status: "error"; error: JoinErrorCode | "captcha_failed" };
 
-/** Signs in anonymously if needed and joins the event with this code as its TV. */
-export function useTvJoin(code: string | undefined): TvJoinState {
-  const [result, setResult] = useState<{ code: string; state: TvJoinState }>();
+/**
+ * Signs in anonymously if needed and joins the event with this code as its
+ * TV. `retry` runs the sign-in again, for a failed CAPTCHA.
+ */
+export function useTvJoin(code: string | undefined) {
+  const [attempt, setAttempt] = useState(0);
+  const [result, setResult] = useState<{ id: string; state: TvJoinState }>();
+  const id = code ? `${code}:${attempt}` : undefined;
 
   useEffect(() => {
-    if (!code) return;
+    if (!code || !id) return;
     let cancelled = false;
     async function join(target: string): Promise<TvJoinState> {
-      if (!(await trySession())) return { status: "error", error: "unknown" };
+      const session = await ensureAnonymousSession();
+      if (!session.ok) {
+        return {
+          status: "error",
+          error:
+            session.error === "captcha_failed" ? "captcha_failed" : "unknown",
+        };
+      }
       const joined = await joinAsTv(target);
       return joined.ok
         ? { status: "joined", eventId: joined.value }
         : { status: "error", error: joined.error };
     }
     void join(code).then((state) => {
-      if (!cancelled) setResult({ code, state });
+      if (!cancelled) setResult({ id, state });
     });
     return () => {
       cancelled = true;
     };
-  }, [code]);
+  }, [code, id]);
 
-  if (!code) return { status: "error", error: "not_found" };
-  return result?.code === code ? result.state : { status: "joining" };
+  const state: TvJoinState = !code
+    ? { status: "error", error: "not_found" }
+    : result && result.id === id
+      ? result.state
+      : { status: "joining" };
+  return { state, retry: () => setAttempt((previous) => previous + 1) };
 }
