@@ -213,7 +213,12 @@ begin
       new_event_id,
       (q.ordinality - 1)::integer,
       q.value ->> 'text',
-      array(select pg_catalog.jsonb_array_elements_text(q.value -> 'options'))
+      array(
+        select o.value
+        from pg_catalog.jsonb_array_elements_text(q.value -> 'options')
+          with ordinality as o(value, ordinality)
+        order by o.ordinality
+      )
     from pg_catalog.jsonb_array_elements(create_event.quiz)
       with ordinality as q(value, ordinality)
     returning id, position
