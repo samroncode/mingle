@@ -57,7 +57,7 @@ describe("hostPanelErrorKey", () => {
     expect(hostPanelErrorKey("module_finished")).toBe(
       "hostPanel.errors.module_finished",
     );
-    expect(hostPanelErrorKey("invalid_request")).toBe(
+    expect(hostPanelErrorKey("internal_error")).toBe(
       "hostPanel.errors.internal_error",
     );
   });
