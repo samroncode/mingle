@@ -318,6 +318,8 @@ function answerQuiz(route: Route, quiz: FakeQuiz): boolean {
 interface FakeHostPanelOptions {
   code: string;
   enabledModules: EventRow["enabled_modules"];
+  status?: EventRow["status"];
+  party?: EventRow["party"];
   quiz?: FakeQuizRow[];
   /** How many questions count as played. */
   played?: number;
@@ -335,6 +337,8 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
     code: options.code,
     enabled_modules: options.enabledModules,
     ...options.flow,
+    ...(options.status && { status: options.status }),
+    ...(options.party && { party: options.party }),
   });
   const host = memberRow({ role: "host" });
 

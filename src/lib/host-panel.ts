@@ -56,7 +56,12 @@ export function hostPanelErrorKey(error: HostActionError) {
     case "module_disabled":
     case "module_empty":
     case "module_finished":
+    case "invalid_request":
       return `hostPanel.errors.${error}` as const;
+    case "not_authenticated":
+      return "hostPanel.errors.not_authorized" as const;
+    case "payload_too_large":
+      return "hostPanel.errors.invalid_request" as const;
     default:
       return "hostPanel.errors.internal_error" as const;
   }

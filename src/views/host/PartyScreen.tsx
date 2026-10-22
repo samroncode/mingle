@@ -1,0 +1,148 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import type { EventRow } from "@/api/events";
+import { updatePartyContent } from "@/api/host-actions";
+import { Button } from "@/components/ui/button";
+import { hostPanelErrorKey } from "@/lib/host-panel";
+import { partyToForm, savePartyEdit } from "@/lib/party-edit";
+import { readParty } from "@/lib/party";
+import type { Party } from "@/lib/schemas/party";
+import type { PartyField, PartyForm } from "@/lib/wizard/state";
+import {
+  MenuStep,
+  ScheduleStep,
+  WelcomeStep,
+  WifiStep,
+} from "@/views/create/party-steps";
+
+interface PartyScreenProps {
+  event: EventRow;
+  hostKey: string;
+}
+
+function Part({ title, children }: { title: string; children: string }) {
+  return (
+    <div>
+      <dt className="text-sm font-medium">{title}</dt>
+      <dd className="whitespace-pre-line text-sm text-muted-foreground">
+        {children}
+      </dd>
+    </div>
+  );
+}
+
+/** What the TV's party screen holds now. */
+function PartyView({ party }: { party: Party }) {
+  const { t } = useTranslation();
+  const none = t("hostPanel.party.none");
+  return (
+    <dl className="space-y-2">
+      <Part title={t("wizard.steps.welcome")}>{party.welcome ?? none}</Part>
+      <Part title={t("wizard.steps.menu")}>
+        {party.menu?.join("\n") ?? none}
+      </Part>
+      <Part title={t("wizard.steps.schedule")}>
+        {party.schedule?.map((l) => `${l.time} ${l.title}`).join("\n") ?? none}
+      </Part>
+      <Part title={t("wizard.wifi.ssid")}>{party.wifi?.ssid ?? none}</Part>
+      <Part title={t("wizard.music.label")}>{party.musicUrl ?? none}</Part>
+    </dl>
+  );
+}
+
+function PartyEditor({
+  event,
+  hostKey,
+  onDone,
+}: PartyScreenProps & { onDone: () => void }) {
+  const { t } = useTranslation();
+  const [form, setForm] = useState<PartyForm>(() =>
+    partyToForm(readParty(event.party)),
+  );
+  const [invalid, setInvalid] = useState<PartyField[]>([]);
+  const [error, setError] = useState<string>();
+  const [busy, setBusy] = useState(false);
+  const change = (part: Partial<PartyForm>) =>
+    setForm((current) => ({ ...current, ...part }));
+  const only = (...fields: PartyField[]) =>
+    invalid.filter((field) => fields.includes(field));
+
+  async function save() {
+    setBusy(true);
+    setError(undefined);
+    const result = await savePartyEdit(
+      form,
+      { code: event.code, key: hostKey },
+      updatePartyContent,
+    );
+    setBusy(false);
+    if (result.ok) return onDone();
+    if ("invalid" in result) return setInvalid(result.invalid);
+    setInvalid([]);
+    setError(t(hostPanelErrorKey(result.error)));
+  }
+
+  return (
+    <div className="space-y-4">
+      <WelcomeStep
+        value={form.welcome}
+        invalid={only("welcome")}
+        onChange={(welcome) => change({ welcome })}
+      />
+      <MenuStep
+        menu={form.menu}
+        invalid={only("menu")}
+        onChange={(menu) => change({ menu })}
+      />
+      <ScheduleStep
+        schedule={form.schedule}
+        invalid={only("schedule")}
+        onChange={(schedule) => change({ schedule })}
+      />
+      <WifiStep
+        party={form}
+        invalid={only("wifi", "musicUrl")}
+        onWifiChange={(wifiSsid, wifiPassword) =>
+          change({ wifiSsid, wifiPassword })
+        }
+        onMusicChange={(musicUrl) => change({ musicUrl })}
+      />
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      )}
+      <div className="flex gap-2">
+        <Button size="lg" disabled={busy} onClick={() => void save()}>
+          {t("hostPanel.party.save")}
+        </Button>
+        <Button size="lg" variant="outline" disabled={busy} onClick={onDone}>
+          {t("hostPanel.party.cancel")}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/** The party screen section: what the TV holds, with Edit. */
+export function PartyScreen(props: PartyScreenProps) {
+  const { t } = useTranslation();
+  const [editing, setEditing] = useState(false);
+  return (
+    <section data-testid="party-screen" className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="font-semibold">{t("hostPanel.partyScreen")}</h2>
+        {!editing && (
+          <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
+            {t("hostPanel.party.edit")}
+          </Button>
+        )}
+      </div>
+      {editing ? (
+        <PartyEditor {...props} onDone={() => setEditing(false)} />
+      ) : (
+        <PartyView party={readParty(props.event.party)} />
+      )}
+    </section>
+  );
+}

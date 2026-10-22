@@ -314,7 +314,19 @@
     "stopFirst": "Stoppa {{name}} först",
     "switchedOff": "Avstängda ({{count}})",
     "partyScreen": "Festskärm",
+    "party": {
+      "edit": "Redigera",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "none": "Ej angivet"
+    },
     "guestsTitle": "Gäster",
+    "end": {
+      "title": "Avsluta kvällen",
+      "confirm": "Gäster kan inte gå med eller svara längre. Det går inte att ångra.",
+      "action": "Avsluta nu",
+      "cancel": "Avbryt"
+    },
     "event": "Event",
     "tv": {
       "party": "Festskärm",
@@ -334,6 +346,7 @@
       "rate_limited": "För många försök. Vänta en minut och försök igen.",
       "network_error": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
       "not_authorized": "Den här enheten får inte styra kvällen. Öppna värdlänken igen.",
+      "invalid_request": "Något av innehållet är inte giltigt. Kontrollera fälten och försök igen.",
       "invalid_transition": "Det går inte just nu.",
       "module_disabled": "Den här aktiviteten är avstängd för kvällen.",
       "module_empty": "Det finns inget att spela än. Lägg till frågor först.",

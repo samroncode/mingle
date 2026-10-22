@@ -314,7 +314,19 @@
     "stopFirst": "Stop the {{name}} first",
     "switchedOff": "Switched off ({{count}})",
     "partyScreen": "Party screen",
+    "party": {
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "none": "Not set"
+    },
     "guestsTitle": "Guests",
+    "end": {
+      "title": "End the evening",
+      "confirm": "Guests can't join or answer any more. This can't be undone.",
+      "action": "End it now",
+      "cancel": "Cancel"
+    },
     "event": "Event",
     "tv": {
       "party": "Party screen",
@@ -334,6 +346,7 @@
       "rate_limited": "Too many tries. Wait a minute and try again.",
       "network_error": "Couldn't reach the server. Check your connection and try again.",
       "not_authorized": "This device isn't allowed to run the evening. Open the host link again.",
+      "invalid_request": "Some of the content isn't valid. Check the fields and try again.",
       "invalid_transition": "That can't be done right now.",
       "module_disabled": "This activity is switched off for the evening.",
       "module_empty": "There is nothing to play yet. Add some questions first.",
