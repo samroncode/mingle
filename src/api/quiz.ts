@@ -187,6 +187,7 @@ export function subscribeToQuizChanges(
     clearTimeout(timer);
     timer = setTimeout(onChange, CHANGE_DELAY_MS);
   };
+  // A random suffix: two views of one event must not share a channel.
   const channel = client
     .channel(`quiz:${eventId}:${Math.random().toString(36).slice(2)}`)
     .on(

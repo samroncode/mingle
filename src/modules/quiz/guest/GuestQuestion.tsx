@@ -30,14 +30,18 @@ export function GuestQuestion({
   correct,
 }: GuestQuestionProps) {
   const { t } = useTranslation();
-  const [chosen, setChosen] = useState<number | null>(null);
+  // undefined until the stored answer is read, so a reload right after the
+  // reveal never flashes "wrong" for a guest who was right.
+  const [chosen, setChosen] = useState<number | null | undefined>();
   const [error, setError] = useState<string>();
 
   useEffect(() => {
     let stale = false;
     void getMyQuizAnswer(question.id, userId).then((result) => {
       // A tap made before this arrived wins over the stored answer.
-      if (!stale && result.ok) setChosen((current) => current ?? result.value);
+      if (stale) return;
+      const stored = result.ok ? result.value : null;
+      setChosen((current) => current ?? stored);
     });
     return () => {
       stale = true;
@@ -68,19 +72,21 @@ export function GuestQuestion({
       {correct === null ? (
         <AnswerButtons
           options={question.options}
-          chosen={chosen}
+          chosen={chosen ?? null}
           onChoose={(index) => void choose(index)}
         />
       ) : (
         <>
           <QuizOptions options={question.options} correct={correct} />
-          <p data-testid="quiz-result" className="text-lg font-semibold">
-            {chosen === correct
-              ? t("modules.quiz.guest.right")
-              : t("modules.quiz.guest.answerWas", {
-                  letter: optionLetters[correct],
-                })}
-          </p>
+          {chosen !== undefined && (
+            <p data-testid="quiz-result" className="text-lg font-semibold">
+              {chosen === correct
+                ? t("modules.quiz.guest.right")
+                : t("modules.quiz.guest.answerWas", {
+                    letter: optionLetters[correct],
+                  })}
+            </p>
+          )}
         </>
       )}
       {error && (
