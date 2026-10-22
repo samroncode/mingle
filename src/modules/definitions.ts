@@ -1,6 +1,7 @@
 import { QuizGuest } from "./quiz/guest/QuizGuest";
 import { QuizHost } from "./quiz/host/QuizHost";
 import { QuizTv } from "./quiz/tv/QuizTv";
+import { useQuizProgressText } from "./quiz/useQuizProgressText";
 import { QuizStep } from "./quiz/wizard/QuizStep";
 import type { ModuleDefinition } from "./types";
 import type { ModuleId } from "./registry";
@@ -17,6 +18,7 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Tv: QuizTv,
     Guest: QuizGuest,
     Host: QuizHost,
+    useProgress: useQuizProgressText,
     WizardStep: QuizStep,
   },
 };

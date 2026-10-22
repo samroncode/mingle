@@ -13,6 +13,28 @@ export interface QuizQuestionView {
   correct: number | null;
 }
 
+/** How far the quiz has come: approved questions, and how many are played. */
+export interface QuizProgress {
+  total: number;
+  played: number;
+}
+
+/**
+ * The quiz's progress, for any member of the event. A non-member, an unknown
+ * id and an expired event all get `not_found`.
+ */
+export async function getQuizProgress(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<QuizProgress, "not_found" | "unknown">> {
+  const { data, error } = await client.rpc("quiz_progress", {
+    target_event_id: eventId,
+  });
+  if (error) return fail("unknown");
+  const row = data[0];
+  return row ? ok({ total: row.total, played: row.played }) : fail("not_found");
+}
+
 /**
  * The event's quiz questions in order, with their right options. A host
  * reads all of them; anyone else only gets what RLS lets them read, which

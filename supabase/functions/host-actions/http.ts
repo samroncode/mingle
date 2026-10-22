@@ -12,6 +12,8 @@ const statusByError: Record<HostActionErrorCode, number> = {
   rate_limited: 429,
   invalid_transition: 409,
   module_disabled: 409,
+  module_empty: 409,
+  module_finished: 409,
   internal_error: 500,
 };
 

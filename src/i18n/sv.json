@@ -101,6 +101,24 @@
         "empty": "Det finns inga frågor i quizet än.",
         "rightAnswer": "Rätt svar",
         "loadFailed": "Kunde inte hämta frågorna. Ladda om sidan och försök igen."
+      },
+      "counter": "Fråga {{number}} av {{total}}",
+      "progress": "fråga {{number}} av {{total}}",
+      "results": "Det var sista frågan! Resultatet kommer.",
+      "run": {
+        "start": "Starta quizet",
+        "open": "Visa frågan",
+        "reveal": "Visa svaret",
+        "next": "Nästa fråga",
+        "results": "Visa resultatet",
+        "finished": "Alla frågor är spelade."
+      },
+      "tv": {
+        "ready": "Gör er redo!"
+      },
+      "guest": {
+        "coming": "Nästa fråga kommer",
+        "answerWas": "Rätt svar var {{letter}}"
       }
     },
     "awards": {
@@ -330,6 +348,9 @@
       "not_authorized": "Den här enheten får inte styra kvällen. Öppna värdlänken igen.",
       "invalid_request": "Något av innehållet är inte giltigt. Kontrollera fälten och försök igen.",
       "invalid_transition": "Det går inte just nu.",
+      "module_disabled": "Den här aktiviteten är avstängd för kvällen.",
+      "module_empty": "Det finns inget att spela än. Lägg till frågor först.",
+      "module_finished": "Den här är redan spelad till slut och kan inte starta igen.",
       "internal_error": "Något gick fel. Försök igen."
     }
   }

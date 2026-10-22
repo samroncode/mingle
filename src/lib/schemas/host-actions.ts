@@ -163,6 +163,10 @@ export const hostActionErrorCodes = [
   "invalid_transition",
   /** start_module for an activity the host turned off. */
   "module_disabled",
+  /** start_module for an activity with no steps, such as a quiz without questions. */
+  "module_empty",
+  /** start_module for an activity whose steps have all been played. */
+  "module_finished",
   "internal_error",
 ] as const;
 

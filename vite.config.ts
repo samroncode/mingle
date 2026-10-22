@@ -24,7 +24,11 @@ export default defineConfig({
         extends: true,
         test: {
           name: "unit",
-          include: ["src/**/*.test.{ts,tsx}"],
+          // Plus the Edge Functions' pure logic, such as the flow machine.
+          include: [
+            "src/**/*.test.{ts,tsx}",
+            "supabase/functions/**/*.test.ts",
+          ],
           exclude: ["**/*.db.test.ts"],
         },
       },

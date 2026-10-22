@@ -53,6 +53,9 @@ export function hostPanelErrorKey(error: HostActionError) {
     case "network_error":
     case "not_authorized":
     case "invalid_transition":
+    case "module_disabled":
+    case "module_empty":
+    case "module_finished":
     case "invalid_request":
       return `hostPanel.errors.${error}` as const;
     case "not_authenticated":
