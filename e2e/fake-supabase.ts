@@ -133,7 +133,7 @@ export async function fakeTv(page: Page, options: TvFakeOptions) {
     return json(route, 200, options.join ?? { event_id: "e1", error: null });
   });
   await page.route(
-    /\/rest\/v1\/(quiz_questions|rpc\/quiz_progress)/,
+    /\/rest\/v1\/(quiz_questions|quiz_answers|rpc\/quiz_(progress|votes))/,
     (route) => {
       if (answerPreflight(route)) return;
       if (!answerQuiz(route, options.quiz ?? { rows: [] })) {
@@ -279,6 +279,8 @@ export interface FakeQuizRow {
   options: string[];
   /** The right option, or null where the reader can't see the key yet. */
   correct: number | null;
+  /** How many guests have answered; defaults to 0. */
+  answerCount?: number;
 }
 
 /** The quiz a fake serves: the readable questions and the progress counts. */
@@ -287,6 +289,10 @@ export interface FakeQuiz {
   /** Defaults to the number of rows. */
   total?: number;
   played?: number;
+  /** The ids of the guests who have answered (the host reads them). */
+  answeredBy?: string[];
+  /** Votes per option once the question is revealed (A to D). */
+  votes?: number[];
 }
 
 /**
@@ -295,6 +301,22 @@ export interface FakeQuiz {
  */
 function answerQuiz(route: Route, quiz: FakeQuiz): boolean {
   const url = route.request().url();
+  if (url.includes("/rest/v1/rpc/quiz_votes")) {
+    void json(
+      route,
+      200,
+      (quiz.votes ?? []).map((votes, option) => ({ option, votes })),
+    );
+    return true;
+  }
+  if (url.includes("/rest/v1/quiz_answers")) {
+    void json(
+      route,
+      200,
+      (quiz.answeredBy ?? []).map((user_id) => ({ user_id })),
+    );
+    return true;
+  }
   if (url.includes("/rest/v1/rpc/quiz_progress")) {
     void json(route, 200, [
       { total: quiz.total ?? quiz.rows.length, played: quiz.played ?? 0 },
@@ -305,8 +327,9 @@ function answerQuiz(route: Route, quiz: FakeQuiz): boolean {
     void json(
       route,
       200,
-      quiz.rows.map(({ correct, ...row }) => ({
+      quiz.rows.map(({ correct, answerCount, ...row }) => ({
         ...row,
+        answer_count: answerCount ?? 0,
         quiz_answer_keys: correct === null ? null : { correct },
       })),
     );
@@ -323,6 +346,10 @@ interface FakeHostPanelOptions {
   quiz?: FakeQuizRow[];
   /** How many questions count as played. */
   played?: number;
+  /** Who has answered the question on show, by user id. */
+  answeredBy?: string[];
+  /** The guests of the event, on top of the host. */
+  guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
   flow?: Partial<EventRow>;
 }
@@ -346,7 +373,11 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
     if (answerPreflight(route)) return;
     const url = route.request().url();
     // Before the event lookups: `event_id=eq.` also contains `id=eq.`.
-    const quiz = { rows: options.quiz ?? [], played: options.played };
+    const quiz = {
+      rows: options.quiz ?? [],
+      played: options.played,
+      answeredBy: options.answeredBy,
+    };
     if (answerQuiz(route, quiz)) return;
     if (url.includes("code=eq.")) {
       return json(route, 200, [
@@ -354,7 +385,9 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
       ]);
     }
     if (url.includes("id=eq.")) {
-      return json(route, 200, [{ ...event, members: [host] }]);
+      return json(route, 200, [
+        { ...event, members: [host, ...(options.guests ?? [])] },
+      ]);
     }
     return json(route, 404, { error: "unexpected request" });
   });

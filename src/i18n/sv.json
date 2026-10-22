@@ -103,6 +103,7 @@
         "loadFailed": "Kunde inte hämta frågorna. Ladda om sidan och försök igen."
       },
       "counter": "Fråga {{number}} av {{total}}",
+      "answered": "{{count}} av {{total}} har svarat",
       "progress": "fråga {{number}} av {{total}}",
       "results": "Det var sista frågan! Resultatet kommer.",
       "run": {
@@ -118,7 +119,12 @@
       },
       "guest": {
         "coming": "Nästa fråga kommer",
-        "answerWas": "Rätt svar var {{letter}}"
+        "answerWas": "Rätt svar var {{letter}}",
+        "right": "Rätt! +1",
+        "errors": {
+          "question_closed": "För sent, svaret är avslöjat.",
+          "unknown": "Ditt svar kom inte fram. Försök igen."
+        }
       }
     },
     "awards": {

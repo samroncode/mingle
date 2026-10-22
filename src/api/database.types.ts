@@ -112,6 +112,46 @@ export type Database = {
           },
         ];
       };
+      quiz_answers: {
+        Row: {
+          chosen: number;
+          event_id: string;
+          question_id: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          chosen: number;
+          event_id: string;
+          question_id: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          chosen?: number;
+          event_id?: string;
+          question_id?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "quiz_answers_event_id_user_id_fkey";
+            columns: ["event_id", "user_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+          {
+            foreignKeyName: "quiz_answers_question_id_event_id_fkey";
+            columns: ["question_id", "event_id"];
+            isOneToOne: false;
+            referencedRelation: "quiz_questions";
+            referencedColumns: ["id", "event_id"];
+          },
+        ];
+      };
       quiz_questions: {
         Row: {
           answer_count: number;
@@ -159,6 +199,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      can_answer_quiz_question: {
+        Args: { target_event_id: string; target_question_id: string };
+        Returns: boolean;
+      };
       can_read_quiz_key: {
         Args: { target_question_id: string };
         Returns: boolean;
@@ -232,6 +276,13 @@ export type Database = {
         Returns: {
           played: number;
           total: number;
+        }[];
+      };
+      quiz_votes: {
+        Args: { target_question_id: string };
+        Returns: {
+          option: number;
+          votes: number;
         }[];
       };
       rate_limit_reached: {

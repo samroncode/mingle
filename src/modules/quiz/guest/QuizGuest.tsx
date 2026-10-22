@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { useQuizRun } from "@/hooks/useQuizRun";
 import type { ModuleGuestViewProps } from "../../types";
-import { QuizOptions } from "../QuizOptions";
-import { optionLetters, quizScreen } from "../screen";
+import { quizScreen } from "../screen";
+import { GuestQuestion } from "./GuestQuestion";
 
-/** The guest page while the quiz runs. Answering comes in a later ticket. */
-export function QuizGuest({ event }: ModuleGuestViewProps) {
+/** The guest page while the quiz runs: answer, then see the result. */
+export function QuizGuest({ event, userId }: ModuleGuestViewProps) {
   const { t } = useTranslation();
   const run = useQuizRun(event);
   const screen = quizScreen(event, run.progress, run.questions);
@@ -25,27 +25,15 @@ export function QuizGuest({ event }: ModuleGuestViewProps) {
         </p>
       )}
       {(screen.kind === "open" || screen.kind === "revealed") && (
-        <>
-          <p className="text-sm text-muted-foreground">
-            {t("modules.quiz.counter", {
-              number: screen.number,
-              total: screen.total,
-            })}
-          </p>
-          <h2 className="text-xl font-semibold">{screen.question.text}</h2>
-          <QuizOptions
-            options={screen.question.options}
-            correct={screen.kind === "revealed" ? screen.correct : null}
-            itemClassName="text-lg"
-          />
-          {screen.kind === "revealed" && (
-            <p className="text-lg font-semibold">
-              {t("modules.quiz.guest.answerWas", {
-                letter: optionLetters[screen.correct],
-              })}
-            </p>
-          )}
-        </>
+        <GuestQuestion
+          key={screen.question.id}
+          eventId={event.id}
+          userId={userId}
+          question={screen.question}
+          number={screen.number}
+          total={screen.total}
+          correct={screen.kind === "revealed" ? screen.correct : null}
+        />
       )}
       {screen.kind === "results" && (
         <p className="text-2xl font-semibold">{t("modules.quiz.results")}</p>

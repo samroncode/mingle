@@ -1,14 +1,21 @@
 import { useTranslation } from "react-i18next";
 import { useQuizRun } from "@/hooks/useQuizRun";
+import { useQuizVotes } from "@/hooks/useQuizVotes";
 import type { ModuleViewProps } from "../../types";
 import { QuizOptions } from "../QuizOptions";
 import { quizScreen } from "../screen";
 
 /** The left side of the TV while the quiz runs. */
-export function QuizTv({ event }: ModuleViewProps) {
+export function QuizTv({ event, members }: ModuleViewProps) {
   const { t } = useTranslation();
   const run = useQuizRun(event);
   const screen = quizScreen(event, run.progress, run.questions);
+  const shown =
+    screen.kind === "open" || screen.kind === "revealed"
+      ? screen.question
+      : undefined;
+  const votes = useQuizVotes(shown?.id, screen.kind === "revealed");
+  const guests = members.filter((m) => m.role === "guest").length;
 
   return (
     <section
@@ -42,8 +49,17 @@ export function QuizTv({ event }: ModuleViewProps) {
           <QuizOptions
             options={screen.question.options}
             correct={screen.kind === "revealed" ? screen.correct : null}
+            votes={votes}
             itemClassName="text-4xl py-6"
           />
+          {screen.kind === "open" && (
+            <p data-testid="quiz-answered" className="text-4xl">
+              {t("modules.quiz.answered", {
+                count: screen.question.answerCount,
+                total: guests,
+              })}
+            </p>
+          )}
         </>
       )}
       {screen.kind === "results" && (
