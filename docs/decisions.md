@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: How the host runs the quiz (#54)
+
+**Decision:** A question is played once it is revealed; a database trigger sets `revealed_at` in the same write as the flow change. The quiz starts at the first unplayed question, answers `module_empty` with no questions and `module_finished` when all are played. After the last question `next_step` moves to a results step (step = number of questions), where only `stop_module` works. `host-actions` reads per-activity step bounds from `step-bounds.ts` before the flow write. Edge Function unit tests (`supabase/functions/**/*.test.ts`) now run in the unit project.
+
+**Why:** The reveal must never leave a question unmarked, and a finished quiz must stay finished. Step bounds are read outside the flow write's transaction, so `update_quiz` (later ticket) must keep that in mind.
+
 ## 2026-10-22: Quiz questions in the event and the wizard (#53)
 
 **Decision:**
