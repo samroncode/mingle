@@ -24,6 +24,8 @@ async function createEvent(): Promise<Host> {
       language: "sv",
       enabledModules: ["quiz", "awards", "hottakes"],
       party: {},
+      // The quiz can only start with questions.
+      quiz: [{ text: "Ok?", options: ["a", "b", "c", "d"], correct: 0 }],
     },
     { user },
   );
