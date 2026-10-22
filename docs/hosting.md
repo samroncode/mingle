@@ -90,6 +90,9 @@ The repo is public; GitHub does not give secrets to workflows from forks.
 
 ### 5. First deploy
 
+The Deploy and Keep awake workflows are skipped until you switch them on, so they do not fail (and send you mail) before everything above exists.
+
+0. Repo → Settings → Secrets and variables → Actions → **Variables** tab → New repository variable. Name `HOSTING_ENABLED`, value `true`. This is a variable, not a secret. Turn it off again (delete it or set it to anything else) to pause both workflows.
 1. GitHub → Actions → **Staging** → Run workflow with **reset** ticked. It should go green.
 2. Actions → **Deploy** → Run workflow on `main`. It should go green, and Vercel should show a new Production deployment.
 3. Actions → **Keep awake** → Run workflow. Both targets should go green.

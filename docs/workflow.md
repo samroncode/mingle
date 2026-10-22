@@ -60,4 +60,4 @@ Still to do by the repo owner:
 
 - On the desktop, install a working Docker Desktop (see [`supabase.md`](supabase.md)) before the backend core is built.
 - In the cloud environment, add the setup script `npm ci` and the variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
-- Put Mingle online by following the launch checklist in [`hosting.md`](hosting.md).
+- Put Mingle online by following the launch checklist in [`hosting.md`](hosting.md). Until you set the repository variable `HOSTING_ENABLED=true` (step 5 there), the Deploy and Keep awake workflows are skipped on purpose.

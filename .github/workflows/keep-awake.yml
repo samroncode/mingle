@@ -14,6 +14,8 @@ permissions:
 
 jobs:
   ping:
+    # Skipped (not failed) until the repository variable HOSTING_ENABLED is "true"; see docs/hosting.md.
+    if: ${{ vars.HOSTING_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
