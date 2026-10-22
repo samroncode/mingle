@@ -1,9 +1,9 @@
 {
   "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
+    { "path": "./src" },
     { "path": "./tsconfig.node.json" },
-    { "path": "./tsconfig.db.json" }
+    { "path": "./supabase/tests" }
   ],
   "compilerOptions": {
     "paths": {

@@ -23,7 +23,7 @@
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local --schema public > src/api/database.types.ts && prettier --write src/api/database.types.ts",
     "typecheck:functions": "node scripts/typecheck-functions.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

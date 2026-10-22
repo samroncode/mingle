@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
 
 // Cloud sessions ship a preinstalled Chromium; on a desktop, run
@@ -11,13 +12,14 @@ const executablePath =
 const port = 5174;
 
 export default defineConfig({
-  testDir: "e2e",
+  testDir: ".",
   use: {
     ...devices["Pixel 7"],
     baseURL: `http://localhost:${port}`,
     launchOptions: { executablePath },
   },
   webServer: {
+    cwd: path.resolve(import.meta.dirname, ".."),
     command: `npm run dev -- --port ${port} --strictPort`,
     url: `http://localhost:${port}`,
     reuseExistingServer: !process.env.CI,

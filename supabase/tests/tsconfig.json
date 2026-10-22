@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.db.tsbuildinfo",
+    "tsBuildInfoFile": "../../node_modules/.tmp/tsconfig.db.tsbuildinfo",
     "target": "es2023",
     "lib": ["ES2023", "DOM"],
     "types": ["node", "vite/client"],
@@ -15,7 +15,7 @@
     "noEmit": true,
 
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["../../src/*"]
     },
 
     /* Type checking */
@@ -26,5 +26,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["supabase/tests", "supabase/functions/**/*.test.ts", "src/api"]
+  "include": [".", "../functions/**/*.test.ts", "../../src/api"]
 }
