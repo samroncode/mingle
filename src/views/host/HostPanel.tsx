@@ -1,3 +1,4 @@
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { EventLinks } from "@/components/EventLinks";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
@@ -5,6 +6,7 @@ import { useEventState } from "@/hooks/useEventState";
 import { useHostEventId } from "@/hooks/useHostEventId";
 import type { HostLinkParts } from "@/lib/host-door";
 import { Activities } from "./Activities";
+import { EndEvent } from "./EndEvent";
 import { PartyScreen } from "./PartyScreen";
 import { TopBar } from "./TopBar";
 
@@ -16,11 +18,30 @@ function Placeholder({ title }: { title: string }) {
   );
 }
 
+function EventSection({
+  link,
+  children,
+}: {
+  link: HostLinkParts;
+  children?: ReactNode;
+}) {
+  const { t } = useTranslation();
+  return (
+    <section className="space-y-2">
+      <h2 className="font-semibold">{t("hostPanel.event")}</h2>
+      <EventLinks code={link.code} hostKey={link.key} hideHostLink />
+      {children}
+    </section>
+  );
+}
+
 function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
   const { t } = useTranslation();
   const state = useEventState(eventId);
   useEventLanguage(state.event?.language);
   const { event, members } = state;
+  // Right after End, until the snapshot catches up.
+  const [endedHere, setEndedHere] = useState(false);
 
   if (!event) {
     return (
@@ -36,6 +57,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
       </p>
     );
   }
+  const ended = event.status === "ended" || endedHere;
   return (
     <>
       <TopBar event={event} members={members} hostKey={link.key} />
@@ -44,15 +66,22 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
           {t("hostPanel.offline")}
         </p>
       )}
-      {event.status === "ended" ? (
+      {ended ? (
         <p className="font-medium">{t("hostPanel.ended")}</p>
       ) : (
         <Activities event={event} members={members} hostKey={link.key} />
       )}
-      {event.status !== "ended" && (
-        <PartyScreen event={event} hostKey={link.key} />
-      )}
+      {!ended && <PartyScreen event={event} hostKey={link.key} />}
       <Placeholder title={t("hostPanel.guestsTitle")} />
+      <EventSection link={link}>
+        {!ended && (
+          <EndEvent
+            code={event.code}
+            hostKey={link.key}
+            onEnded={() => setEndedHere(true)}
+          />
+        )}
+      </EventSection>
     </>
   );
 }
@@ -68,10 +97,7 @@ export function HostPanel({ link }: { link: HostLinkParts }) {
       ) : (
         <p className="text-muted-foreground">{t("hostPanel.loading")}</p>
       )}
-      <section className="space-y-2">
-        <h2 className="font-semibold">{t("hostPanel.event")}</h2>
-        <EventLinks code={link.code} hostKey={link.key} hideHostLink />
-      </section>
+      {!eventId && <EventSection link={link} />}
     </div>
   );
 }
