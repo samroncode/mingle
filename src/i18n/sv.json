@@ -296,6 +296,12 @@
     "stopFirst": "Stoppa {{name}} först",
     "switchedOff": "Avstängda ({{count}})",
     "partyScreen": "Festskärm",
+    "party": {
+      "edit": "Redigera",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "none": "Ej angivet"
+    },
     "guestsTitle": "Gäster",
     "event": "Event",
     "tv": {
@@ -316,6 +322,7 @@
       "rate_limited": "För många försök. Vänta en minut och försök igen.",
       "network_error": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
       "not_authorized": "Den här enheten får inte styra kvällen. Öppna värdlänken igen.",
+      "invalid_request": "Något av innehållet är inte giltigt. Kontrollera fälten och försök igen.",
       "invalid_transition": "Det går inte just nu.",
       "internal_error": "Något gick fel. Försök igen."
     }

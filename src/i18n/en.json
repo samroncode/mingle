@@ -296,6 +296,12 @@
     "stopFirst": "Stop the {{name}} first",
     "switchedOff": "Switched off ({{count}})",
     "partyScreen": "Party screen",
+    "party": {
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "none": "Not set"
+    },
     "guestsTitle": "Guests",
     "event": "Event",
     "tv": {
@@ -316,6 +322,7 @@
       "rate_limited": "Too many tries. Wait a minute and try again.",
       "network_error": "Couldn't reach the server. Check your connection and try again.",
       "not_authorized": "This device isn't allowed to run the evening. Open the host link again.",
+      "invalid_request": "Some of the content isn't valid. Check the fields and try again.",
       "invalid_transition": "That can't be done right now.",
       "internal_error": "Something went wrong. Try again."
     }
