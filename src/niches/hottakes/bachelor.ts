@@ -3,10 +3,10 @@ import type { HotTakeContent } from "../types";
 /** Ready-made hot takes for the bachelor niche, in both languages. */
 export const bachelorHotTakes: HotTakeContent[] = [
   {
-    id: "bachelor-pineapple",
+    id: "bachelor-pizza",
     texts: {
-      sv: "Ananas hör hemma på pizza",
-      en: "Pineapple belongs on pizza",
+      sv: "Pizza är den perfekta festmaten",
+      en: "Pizza is the perfect party food",
     },
   },
   {
@@ -94,10 +94,10 @@ export const bachelorHotTakes: HotTakeContent[] = [
     },
   },
   {
-    id: "bachelor-old-stories",
+    id: "bachelor-old-memories",
     texts: {
-      sv: "Gamla pinsamma historier är det roligaste att dra",
-      en: "Old embarrassing stories are the funniest ones to tell",
+      sv: "Det bästa med en fest är att prata om gamla minnen",
+      en: "The best part of a party is reminiscing about old times",
     },
   },
   {
