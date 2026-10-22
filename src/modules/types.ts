@@ -1,5 +1,6 @@
-import type { ComponentType } from "react";
+import type { ComponentType, Dispatch } from "react";
 import type { EventRow, MemberRow } from "@/api/events";
+import type { WizardAction, WizardDraft } from "@/lib/wizard/state";
 import type { ModuleId } from "./registry";
 
 /**
@@ -16,6 +17,12 @@ export interface ModuleGuestViewProps extends ModuleViewProps {
   userId: string;
 }
 
+/** What an activity's setup wizard step gets: the draft and how to change it. */
+export interface ModuleWizardStepProps {
+  draft: WizardDraft;
+  dispatch: Dispatch<WizardAction>;
+}
+
 /** One activity (module in code): its id, name and the views it plugs in. */
 export interface ModuleDefinition {
   id: ModuleId;
@@ -28,5 +35,5 @@ export interface ModuleDefinition {
   /** The activity's section in the control panel. */
   Host: ComponentType<ModuleViewProps>;
   /** An extra setup wizard step, for activities that need one. */
-  WizardStep?: ComponentType;
+  WizardStep?: ComponentType<ModuleWizardStepProps>;
 }

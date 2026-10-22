@@ -12,6 +12,17 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: Quiz questions in the event and the wizard (#53)
+
+**Decision:**
+- Quiz questions live in `quiz_questions` (position from 0, text, four options, `draft`/`approved`, revealed time, answer count) and the right options in `quiz_answer_keys`, deleted with their question. Clients only read them: the host reads all of an event's questions and keys, other members read an approved question only while the quiz shows it (that position, phase open or revealed) or after it was revealed, and a key only after its reveal. Drafts are never shown to guests or the TV.
+- `create_event` takes an optional `quiz` list and stores the questions and keys in the same transaction as the event. The RPC got a new `quiz` argument, so the migration drops the old signature and creates the new one. Questions with the quiz switched off, more than 30, or an invalid question answer `invalid_request`; an empty list is fine either way.
+- The wizard's quiz step lists the picked questions (move, remove) with the niche's other ready-made questions to add below, plus a form for the host's own questions. The draft keeps built-in ids, so they follow the event language. Changing the niche drops the old niche's ready-made picks and keeps the host's own questions; the random pick of ten is made again when the step is next reached. An unfinished own question blocks Next and Create, which sends the host back to the step.
+- The module definition's optional `WizardStep` now gets the draft and a dispatch function, so the quiz step lives in `src/modules/quiz/wizard/` and the wizard has no quiz-specific code.
+- Until the control panel spec, the panel loads the event after claiming the host link and shows each switched-on activity's section. The quiz section lists the questions with the right answer marked, read-only and loaded once.
+
+**Why:** Keeping keys in their own table makes "no peeking before the reveal" a plain row rule. Storing built-in ids in the draft, not text, means switching language never leaves a question in the wrong language. Keeping the host's own questions on a niche change loses no typed work; keeping the old niche's picks would mix in questions that no longer exist.
+
 ## 2026-10-22: How Mingle runs online (#88)
 
 **Decision:**

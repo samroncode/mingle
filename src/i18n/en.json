@@ -95,7 +95,13 @@
   "modules": {
     "quiz": {
       "name": "Quiz",
-      "description": "Questions the guests answer on their phones."
+      "description": "Questions the guests answer on their phones.",
+      "host": {
+        "title": "Quiz questions",
+        "empty": "There are no questions in this quiz yet.",
+        "rightAnswer": "Right answer",
+        "loadFailed": "Couldn't load the questions. Reload to try again."
+      }
     },
     "awards": {
       "name": "Awards",
@@ -128,6 +134,7 @@
       "niche": "What kind of evening?",
       "language": "Language",
       "activities": "Activities",
+      "quiz": "Quiz questions",
       "welcome": "Welcome text",
       "menu": "Menu",
       "schedule": "Schedule",
@@ -141,7 +148,9 @@
       "noActivities": "None",
       "edit": "Change",
       "change": "Change {{step}}",
-      "skipped": "Skipped"
+      "skipped": "Skipped",
+      "quizQuestions_one": "{{count}} question",
+      "quizQuestions_other": "{{count}} questions"
     },
     "create": "Create event",
     "creating": "Creating...",
@@ -185,6 +194,27 @@
       "schedule": "Each schedule line needs a time like 19:00 and a title of up to 80 characters (20 lines at most).",
       "wifi": "Enter a wifi name of up to 32 characters. The password can be up to 63.",
       "musicUrl": "The music link must be a valid https link."
+    },
+    "quiz": {
+      "count": "{{count}} of {{max}} questions picked",
+      "empty": "No questions picked. Add a ready-made one below or write your own.",
+      "addOwn": "Add your own question",
+      "full": "The quiz is full ({{max}} questions). Remove one to add another.",
+      "more": "More ready-made questions",
+      "add": "Add",
+      "addQuestion": "Add the question: {{text}}",
+      "rightAnswer": "Right answer: {{answer}}",
+      "moveUp": "Move question {{n}} up",
+      "moveDown": "Move question {{n}} down",
+      "remove": "Remove question {{n}}",
+      "questionText": "Text of question {{n}}",
+      "questionPlaceholder": "Your question",
+      "option": "Option {{letter}} of question {{n}}",
+      "markRight": "Option {{letter}} is the right answer to question {{n}}",
+      "ownHint": "Write four options and tick the right one.",
+      "errors": {
+        "incomplete": "Question {{n}} needs a question and four options."
+      }
     }
   },
   "hostDoor": {

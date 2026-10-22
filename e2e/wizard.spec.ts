@@ -25,6 +25,13 @@ test("creates an event through the wizard", async ({ page }) => {
   await page.getByRole("switch", { name: "Awards" }).click();
   await page.getByRole("button", { name: "Next" }).click();
 
+  // The quiz step starts with ten of the niche's questions; skip the edits.
+  await expect(
+    page.getByRole("heading", { name: "Quiz questions" }),
+  ).toBeVisible();
+  await expect(page.getByText("10 of 30 questions picked")).toBeVisible();
+  await page.getByRole("button", { name: "Next" }).click();
+
   // Welcome text is prefilled in the event language (Swedish); edit it.
   const welcome = page.getByLabel("Shown on the TV when guests arrive");
   await expect(welcome).not.toHaveValue("");
@@ -94,6 +101,7 @@ test("creates an event through the wizard", async ({ page }) => {
       language: "sv",
       enabledModules: ["quiz", "hottakes"],
       party,
+      quiz: expect.any(Array),
     },
     {
       action: "create_event",
@@ -101,6 +109,7 @@ test("creates an event through the wizard", async ({ page }) => {
       language: "sv",
       enabledModules: ["quiz", "hottakes"],
       party,
+      quiz: expect.any(Array),
     },
   ]);
 
@@ -147,7 +156,7 @@ test("remembers the created event under Your events", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Your events")).toBeHidden();
   await page.getByRole("link", { name: "Create an event" }).click();
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 8; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
       .first()
@@ -174,7 +183,7 @@ test("stops adding menu lines at the party screen's limit", async ({
   page,
 }) => {
   await page.goto("/new");
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     await page.getByRole("button", { name: "Next" }).click();
   }
   const add = page.getByRole("button", { name: "Add a line" });

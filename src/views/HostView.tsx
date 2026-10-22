@@ -3,7 +3,9 @@ import { Link, useLocation, useParams } from "react-router";
 import { EventLinks } from "@/components/EventLinks";
 import { Button } from "@/components/ui/button";
 import { useClaimHost } from "@/hooks/useClaimHost";
+import { useHostEventId } from "@/hooks/useHostEventId";
 import { hostDoorErrorKey, readHostLink } from "@/lib/host-door";
+import { ModuleSections } from "./host/ModuleSections";
 
 /** Shown when the host link is bad or the claim was refused. */
 function BadLink() {
@@ -26,6 +28,7 @@ export function HostView() {
   const { hash } = useLocation();
   const link = readHostLink(params.code, hash);
   const { state, retry } = useClaimHost(link);
+  const eventId = useHostEventId(link?.code, state.status === "ready");
 
   if (state.status === "error") {
     const message = hostDoorErrorKey(state.error);
@@ -49,6 +52,7 @@ export function HostView() {
       ) : (
         <EventLinks code={link.code} hostKey={link.key} hideHostLink />
       )}
+      {eventId && <ModuleSections eventId={eventId} />}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { moduleIds } from "../../modules/registry.ts";
 import { nicheIds } from "../../niches/ids.ts";
 import { ADMIN_KEY_PATTERN, EVENT_CODE_PATTERN } from "../formats.ts";
 import { PartySchema } from "./party.ts";
+import { QuizQuestionsSchema } from "./quiz.ts";
 
 /** 6 characters without look-alikes (no 0/O, no 1/I/L), as in the database. */
 export const EventCodeSchema = z.string().regex(EVENT_CODE_PATTERN);
@@ -17,16 +18,24 @@ export const AdminKeySchema = z.string().regex(ADMIN_KEY_PATTERN);
 
 export const ModuleIdSchema = z.enum(moduleIds);
 
-export const CreateEventRequestSchema = z.strictObject({
-  action: z.literal("create_event"),
-  niche: z.enum(nicheIds),
-  language: z.enum(supportedLanguages),
-  /** The activities the host kept switched on. May be empty. */
-  enabledModules: z
-    .array(ModuleIdSchema)
-    .refine((ids) => new Set(ids).size === ids.length, "duplicate module"),
-  party: PartySchema,
-});
+export const CreateEventRequestSchema = z
+  .strictObject({
+    action: z.literal("create_event"),
+    niche: z.enum(nicheIds),
+    language: z.enum(supportedLanguages),
+    /** The activities the host kept switched on. May be empty. */
+    enabledModules: z
+      .array(ModuleIdSchema)
+      .refine((ids) => new Set(ids).size === ids.length, "duplicate module"),
+    party: PartySchema,
+    /** The quiz questions picked in the wizard, in order. Needs the quiz on. */
+    quiz: QuizQuestionsSchema.optional(),
+  })
+  .refine(
+    (request) =>
+      !request.quiz?.length || request.enabledModules.includes("quiz"),
+    { path: ["quiz"], message: "quiz questions need the quiz switched on" },
+  );
 
 export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;
 

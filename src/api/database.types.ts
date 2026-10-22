@@ -88,11 +88,90 @@ export type Database = {
           },
         ];
       };
+      quiz_answer_keys: {
+        Row: {
+          correct: number;
+          question_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          correct: number;
+          question_id: string;
+        };
+        Update: {
+          correct?: number;
+          question_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "quiz_answer_keys_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: true;
+            referencedRelation: "quiz_questions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      quiz_questions: {
+        Row: {
+          answer_count: number;
+          event_id: string;
+          id: string;
+          options: string[];
+          position: number;
+          revealed_at: string | null;
+          status: string;
+          text: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answer_count?: number;
+          event_id: string;
+          id?: string;
+          options: string[];
+          position: number;
+          revealed_at?: string | null;
+          status?: string;
+          text: string;
+        };
+        Update: {
+          answer_count?: number;
+          event_id?: string;
+          id?: string;
+          options?: string[];
+          position?: number;
+          revealed_at?: string | null;
+          status?: string;
+          text?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      can_read_quiz_key: {
+        Args: { target_question_id: string };
+        Returns: boolean;
+      };
+      can_read_quiz_question: {
+        Args: {
+          question_position: number;
+          question_revealed_at: string;
+          question_status: string;
+          target_event_id: string;
+        };
+        Returns: boolean;
+      };
       claim_host: {
         Args: { caller: string; target_event_id: string };
         Returns: boolean;
@@ -115,6 +194,7 @@ export type Database = {
           language: string;
           niche: string;
           party: Json;
+          quiz?: Json;
         };
         Returns: string;
       };
