@@ -8,6 +8,7 @@ const question: QuizQuestionView = {
   text: "Capital of Australia?",
   options: ["Sydney", "Melbourne", "Canberra", "Perth"],
   correct: null,
+  answerCount: 0,
 };
 const progress = { total: 10, played: 2 };
 

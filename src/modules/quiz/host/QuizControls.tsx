@@ -7,12 +7,15 @@ import type { QuizProgress, QuizQuestionView } from "@/api/quiz";
 import { hostPanelErrorKey } from "@/lib/host-panel";
 import type { ModuleHostProps } from "../../types";
 import { hostNextMove } from "../screen";
+import { AnswerStatus } from "./AnswerStatus";
 import { QuestionCard } from "./QuestionList";
 
 interface QuizControlsProps extends ModuleHostProps {
   progress: QuizProgress;
   /** Every question, with its right option (the host reads them all). */
   questions: QuizQuestionView[];
+  /** Changes when the quiz data was read again, to refresh who answered. */
+  version: number;
 }
 
 /** Sends one flow move at a time and keeps its error message. */
@@ -35,11 +38,13 @@ function useMove(code: string, hostKey: string) {
 /** Start, the one button that does the next thing, Stop and the question. */
 export function QuizControls({
   event,
+  members,
   code,
   hostKey,
   startDisabled,
   progress,
   questions,
+  version,
 }: QuizControlsProps) {
   const { t } = useTranslation();
   const { busy, error, send } = useMove(code, hostKey);
@@ -73,6 +78,9 @@ export function QuizControls({
         )
       )}
       {current && next && <QuestionCard question={current} />}
+      {current && next && event.phase !== "idle" && (
+        <AnswerStatus question={current} members={members} version={version} />
+      )}
       <div className="flex flex-wrap gap-2">
         {running ? (
           <>

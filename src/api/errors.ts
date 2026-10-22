@@ -13,6 +13,9 @@ export type JoinErrorCode = (typeof joinResultErrorCodes)[number] | "unknown";
 export type RenameErrorCode =
   "not_found" | "name_taken" | "invalid_name" | "unknown";
 
+/** Why a quiz answer wasn't saved: the question closed, or something else. */
+export type AnswerErrorCode = "question_closed" | "unknown";
+
 export type SnapshotErrorCode = "not_found" | "unknown";
 
 /** A result the UI can branch on without try/catch. */
@@ -44,4 +47,12 @@ export function toRenameErrorCode(error: {
     return "name_taken";
   if (error.code === "23514") return "invalid_name";
   return "unknown";
+}
+
+/**
+ * Maps a Postgres error from answering a quiz question to a typed code.
+ * Row Level Security refuses with 42501 once the question isn't open.
+ */
+export function toAnswerErrorCode(error: { code?: string }): AnswerErrorCode {
+  return error.code === "42501" ? "question_closed" : "unknown";
 }

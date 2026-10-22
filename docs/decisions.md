@@ -12,6 +12,19 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: Guests answer the quiz (#55)
+
+**Decision:**
+
+- `quiz_answers` holds one row per guest and question (chosen option 0-3, updated time). It is deleted with the question, the event and the guest's membership. A guest inserts and updates only their own row, only while the event is live with the quiz on that question's position and the phase `open`; a `security definer` helper (`can_answer_quiz_question`) holds that rule for both policies. Column grants keep question, event and user fixed on update, and nobody deletes through the API. A guest reads their own rows, the host reads all of their event, the TV and non-members read none.
+- The question's `answer_count` is raised by a `security definer` trigger on insert, so changing an answer doesn't count twice. Members read it through the question row. It is not lowered when an answer is deleted with a removed guest; the guest-removal ticket decides how to handle that.
+- `quiz_votes(question_id)` returns the votes per option (always four rows) only for a member of the event and only once the question is revealed; otherwise no rows, so a non-member learns nothing.
+- The data layer saves an answer by trying an update and then an insert. An RLS refusal (`42501`) becomes the error code `question_closed`, shown as "Too late, the answer is revealed."
+- Views follow answers live through a quiz channel on `quiz_questions` and `quiz_answers` (`subscribeToQuizChanges`), refetching at most once per 300 ms. Realtime doesn't send an answer's chosen option to anyone but the host and the guest themselves, because it applies the same RLS.
+- The phone says "Right! +1" or "The answer was B". The score so far is left to the scores ticket.
+
+**Why:** Putting the "open on this question" rule in one function keeps the insert and update policies identical, and a test per refusal makes removing either one fail. A composite foreign key from the answer to its question and event means the database itself keeps an answer's event the same as its question's. Counting with a trigger lets the TV show "7 of 12 answered" without any client reading answers.
+
 ## 2026-10-22: How the host runs the quiz (#54)
 
 **Decision:** A question is played once it is revealed; a database trigger sets `revealed_at` in the same write as the flow change. The quiz starts at the first unplayed question, answers `module_empty` with no questions and `module_finished` when all are played. After the last question `next_step` moves to a results step (step = number of questions), where only `stop_module` works. `host-actions` reads per-activity step bounds from `step-bounds.ts` before the flow write. Edge Function unit tests (`supabase/functions/**/*.test.ts`) now run in the unit project.

@@ -29,6 +29,7 @@ export function QuizHost(props: ModuleHostProps) {
           {...props}
           progress={run.progress}
           questions={run.questions}
+          version={run.version}
         />
       )}
       {!running && run.progress && <QuestionList questions={run.questions} />}

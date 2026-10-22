@@ -93,6 +93,31 @@ test.describe("the control panel", () => {
       });
   });
 
+  test("shows how many have answered and who, never what", async ({ page }) => {
+    await fakeSupabase(page, [() => [200, {}]]);
+    await fakeHostPanel(page, {
+      code,
+      enabledModules: ["quiz"],
+      quiz: [{ ...questions[0], answerCount: 2 }],
+      flow: quizAt(0, "open"),
+      guests: [
+        memberRow({ user_id: "g1", display_name: "Anna" }),
+        memberRow({ user_id: "g2", display_name: "Bertil" }),
+        memberRow({ user_id: "g3", display_name: "Cecilia" }),
+      ],
+      answeredBy: ["g1", "g3"],
+    });
+
+    await page.goto(`/host/${code}#key=${key}`);
+
+    const answered = page.getByTestId("quiz-host").getByTestId("quiz-answered");
+    await expect(answered).toContainText("2 of 3 answered");
+    await expect(answered.getByRole("listitem")).toHaveText([
+      "Anna",
+      "Cecilia",
+    ]);
+  });
+
   test("labels the one button for each phase", async ({ page }) => {
     await fakeSupabase(page, [() => [200, {}]]);
     await fakeHostPanel(page, {
@@ -161,6 +186,48 @@ test.describe("the TV", () => {
       "DPerth",
     ]);
     await expect(quiz.locator("[data-correct]")).toHaveCount(0);
+  });
+
+  test("shows how many of the guests have answered", async ({ page }) => {
+    const guests = Array.from({ length: 12 }, (_, i) =>
+      memberRow({ user_id: `g${i}`, display_name: `Guest ${i}` }),
+    );
+    await fakeSupabase(page, []);
+    await fakeTv(page, {
+      snapshot: {
+        ...snapshot(0, "open"),
+        members: [memberRow({ user_id: "t", role: "tv" }), ...guests],
+      },
+      quiz: { rows: [{ ...questions[0], correct: null, answerCount: 7 }] },
+    });
+
+    await page.goto(`/tv/${code}`);
+
+    await expect(page.getByTestId("quiz-answered")).toHaveText(
+      "7 of 12 answered",
+    );
+  });
+
+  test("shows a bar per option with its votes after the reveal", async ({
+    page,
+  }) => {
+    await fakeSupabase(page, []);
+    await fakeTv(page, {
+      snapshot: snapshot(0, "revealed"),
+      quiz: { rows: [questions[0]], total: 2, played: 1, votes: [1, 0, 5, 2] },
+    });
+
+    await page.goto(`/tv/${code}`);
+
+    const quiz = page.getByTestId("quiz-tv");
+    await expect(quiz.getByTestId("quiz-votes")).toHaveText([
+      "1",
+      "0",
+      "5",
+      "2",
+    ]);
+    await expect(quiz.getByTestId("quiz-bar")).toHaveCount(4);
+    await expect(quiz.getByTestId("quiz-answered")).toHaveCount(0);
   });
 
   test("highlights the right option after the reveal", async ({ page }) => {

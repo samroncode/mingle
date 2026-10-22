@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { toJoinErrorCode, toRenameErrorCode } from "./errors";
+import {
+  toAnswerErrorCode,
+  toJoinErrorCode,
+  toRenameErrorCode,
+} from "./errors";
 
 describe("toJoinErrorCode", () => {
   it.each(["not_found", "ended", "name_taken", "invalid_name", "rate_limited"])(
@@ -39,5 +43,16 @@ describe("toRenameErrorCode", () => {
     expect(toRenameErrorCode({ code: "XX000", message: "boom" })).toBe(
       "unknown",
     );
+  });
+});
+
+describe("toAnswerErrorCode", () => {
+  it("maps a row level security refusal to question_closed", () => {
+    expect(toAnswerErrorCode({ code: "42501" })).toBe("question_closed");
+  });
+
+  it("maps any other error to unknown", () => {
+    expect(toAnswerErrorCode({ code: "23514" })).toBe("unknown");
+    expect(toAnswerErrorCode({})).toBe("unknown");
   });
 });

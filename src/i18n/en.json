@@ -103,6 +103,7 @@
         "loadFailed": "Couldn't load the questions. Reload to try again."
       },
       "counter": "Question {{number}} of {{total}}",
+      "answered": "{{count}} of {{total}} answered",
       "progress": "question {{number}} of {{total}}",
       "results": "That was the last question! The results are coming.",
       "run": {
@@ -118,7 +119,12 @@
       },
       "guest": {
         "coming": "Next question coming",
-        "answerWas": "The answer was {{letter}}"
+        "answerWas": "The answer was {{letter}}",
+        "right": "Right! +1",
+        "errors": {
+          "question_closed": "Too late, the answer is revealed.",
+          "unknown": "Your answer didn't go through. Try again."
+        }
       }
     },
     "awards": {
