@@ -12,6 +12,20 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: What the control panel covers, and how removing a guest works (#75)
+
+**Decision:**
+- The control panel spec builds the panel around the activities: one scrolling page with a top bar (code, guest count, what the TV shows now, Stop), the activity sections that each activity's spec builds, and sections for the party screen, the guests and the event. Running and editing activity content stay in the quiz, awards and hot takes specs. The summary page and AI are left out.
+- Only one activity runs at a time; while one runs, the others' Start buttons are greyed out with a reason.
+- The host can switch activities on and off during the evening. Turning one on gives it the wizard's random pick, saved with that activity's own update action. The running activity can't be turned off; a finished one can, and its results are kept. A new `set_modules` action saves the list.
+- The party screen is edited with the wizard's fields and saved with the existing `update_party_content`; it works while an activity runs. Ending the evening uses the existing `end_event` move behind a confirm.
+- The host sees a live guest list A to Z and can rename a guest (same rules as joining; answers and votes stay theirs) or remove them after a confirm. There is no undo.
+- A removed guest keeps their row with a removed time and counts as no membership, so RLS gives them nothing. Other members don't see the row and the name is free again. The join functions answer a new code, `removed`, so they can't rejoin from that session and their phone says they were removed. Their answers and votes on unrevealed items, and unrevealed votes for them, are deleted in the same transaction. Revealed results stay as shown, but score and winner lists leave them out.
+- New `host-actions`: `rename_guest`, `remove_guest` and `set_modules`, each behind the admin key, rate-limited per user and event, refused after the end, and written through a service-role-only RPC that checks and writes in one statement. Hosts and TVs can't be renamed or removed.
+- Panel layout, party screen editing and ending the evening can be built in a cloud session now. Rename, remove and the activity switches are built on the desktop; removal waits until the quiz, awards and hot takes are merged, because it cleans up their tables.
+
+**Why:** A host needs to fix the wifi, deal with a rude name or a stranger, and end the evening without creating a new event. Keeping the removed row, rather than deleting it, means revealed results don't change under the room and the removal is remembered when the same phone tries to rejoin. Dropping only unrevealed answers stops a removed guest from swaying what's still open without rewriting what was already shown. An undo was rejected as extra state for a rare mistake that the confirm step and rejoining under a new name already cover. Letting the host switch activities on during the evening was the owner's call, so a host can react to the room.
+
 ## 2026-10-22: What hot takes cover, and how answers work (#67)
 
 **Decision:**
