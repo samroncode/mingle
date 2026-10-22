@@ -1,4 +1,5 @@
 import { teamAwards } from "./awards/team";
+import { teamHotTakes } from "./hottakes/team";
 import { teamQuiz } from "./quiz/team";
 import type { NicheConfig } from "./types";
 
@@ -19,6 +20,7 @@ export const team: NicheConfig = {
   },
   quiz: teamQuiz,
   awards: teamAwards,
+  hottakes: teamHotTakes,
   promptHints:
     "Team event with colleagues from the same workplace. Keep it friendly and inclusive, work-appropriate, and never put an individual on the spot.",
 };
