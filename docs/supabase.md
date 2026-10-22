@@ -21,7 +21,7 @@ The browser talks to Supabase with the publishable key, which is public by desig
 There are two copies of the backend:
 
 - **The local stack** runs the same Supabase services in Docker on the desktop. It's for development and for `npm run test:db`. It's disposable: `npm run db:reset` wipes it and rebuilds it from the migrations.
-- **The hosted project** on supabase.com is what the real app uses. It changes only when the owner pushes migrations (`supabase db push`) and deploys functions. Agents never do this; `.claude/settings.json` makes those commands always ask.
+- **The hosted project** on supabase.com is what the real app uses. It changes only through the **Deploy** workflow, which runs migrations and function deploys after the owner merges to `main` (see [`hosting.md`](hosting.md)). A second **staging** project backs PR previews. Agents never push migrations or deploy functions by hand; `.claude/settings.json` makes those commands always ask.
 
 **Migrations** connect the two. They're SQL files in `supabase/migrations/`, committed to git, that build the schema the same way in both places.
 
