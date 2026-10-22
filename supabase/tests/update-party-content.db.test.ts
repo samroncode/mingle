@@ -2,16 +2,10 @@
 // screen's content. Called over HTTP through `supabase functions serve`; the
 // content is read back through the normal client, as members read it.
 import { describe, expect, it } from "vitest";
-import {
-  anonymousUser,
-  randomCode,
-  signedOutClient,
-  sql,
-  type User,
-} from "./helpers";
+import { anonymousUser, signedOutClient, sql, type User } from "./helpers";
 import { callHostActions } from "./functions";
+import { otherKey, unusedCode, type HostLink } from "./host-helpers";
 
-type HostLink = { code: string; key: string };
 type Host = HostLink & { user: User };
 
 const original = {
@@ -379,20 +373,3 @@ describe("the party content outside host-actions", () => {
     expect(await partyAs(host.user, host.code)).toEqual(original);
   });
 });
-
-/** A valid-looking key that differs from `key`. */
-function otherKey(key: string): string {
-  return (key.startsWith("A") ? "B" : "A") + key.slice(1);
-}
-
-/** A code no event has. */
-function unusedCode(): string {
-  for (;;) {
-    const code = randomCode();
-    if (
-      sql(`select 1 from public.events where code = '${code}'`).length === 0
-    ) {
-      return code;
-    }
-  }
-}

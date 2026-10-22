@@ -4,14 +4,12 @@ import { describe, expect, it } from "vitest";
 import {
   anonymousUser,
   anonymousUsers,
-  randomCode,
   signedOutClient,
   sql,
   type User,
 } from "./helpers";
 import { callHostActions } from "./functions";
-
-type HostLink = { code: string; key: string };
+import { otherKey, unusedCode, type HostLink } from "./host-helpers";
 
 /** Creates an event through host-actions, as the wizard does. */
 async function createEvent(host?: User): Promise<HostLink> {
@@ -285,20 +283,3 @@ describe("the database calls behind the key check and claim_host", () => {
     }
   });
 });
-
-/** A valid-looking key that differs from `key`. */
-function otherKey(key: string): string {
-  return (key.startsWith("A") ? "B" : "A") + key.slice(1);
-}
-
-/** A code no event has. */
-function unusedCode(): string {
-  for (;;) {
-    const code = randomCode();
-    if (
-      sql(`select 1 from public.events where code = '${code}'`).length === 0
-    ) {
-      return code;
-    }
-  }
-}
