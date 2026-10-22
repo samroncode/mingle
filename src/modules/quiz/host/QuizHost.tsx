@@ -1,69 +1,37 @@
-import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Card } from "@/components/ui/card";
-import { useQuizQuestions } from "@/hooks/useQuizQuestions";
-import type { ModuleViewProps } from "../../types";
+import { useQuizRun } from "@/hooks/useQuizRun";
+import type { ModuleHostProps } from "../../types";
+import { QuestionList } from "./QuestionList";
+import { QuizControls } from "./QuizControls";
 
-const optionLetters = ["A", "B", "C", "D"] as const;
-
-/** The quiz's questions in order, with the right answer marked. */
-export function QuizHost({ event }: ModuleViewProps) {
+/** The quiz's section in the control panel: run it, and its questions. */
+export function QuizHost(props: ModuleHostProps) {
   const { t } = useTranslation();
-  const state = useQuizQuestions(event.id);
+  const run = useQuizRun(props.event);
+  const running = props.event.current_module === "quiz";
 
   return (
     <section
       data-testid="quiz-host"
       aria-labelledby="quiz-host-title"
-      className="space-y-2"
+      className="space-y-3"
     >
       <h2 id="quiz-host-title" className="text-lg font-semibold">
-        {t("modules.quiz.host.title")}
+        {t("modules.quiz.name")}
       </h2>
-      {state.status === "error" && (
+      {run.failed && (
         <p role="alert" className="text-sm text-destructive">
           {t("modules.quiz.host.loadFailed")}
         </p>
       )}
-      {state.status === "ready" && state.questions.length === 0 && (
-        <p className="text-sm text-muted-foreground">
-          {t("modules.quiz.host.empty")}
-        </p>
+      {run.progress && (
+        <QuizControls
+          {...props}
+          progress={run.progress}
+          questions={run.questions}
+        />
       )}
-      {state.status === "ready" && (
-        <ol className="space-y-2">
-          {state.questions.map((question) => (
-            <li key={question.id}>
-              <Card className="gap-2 p-3">
-                <p className="font-medium">
-                  {question.position + 1}. {question.text}
-                </p>
-                <ul className="space-y-1 text-sm">
-                  {question.options.map((option, index) => {
-                    const right = index === question.correct;
-                    return (
-                      <li
-                        key={index}
-                        className={right ? "font-semibold text-primary" : ""}
-                      >
-                        {optionLetters[index]}. {option}
-                        {right && (
-                          <>
-                            <Check aria-hidden className="ml-1 inline size-4" />
-                            <span className="sr-only">
-                              {t("modules.quiz.host.rightAnswer")}
-                            </span>
-                          </>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </Card>
-            </li>
-          ))}
-        </ol>
-      )}
+      {!running && run.progress && <QuestionList questions={run.questions} />}
     </section>
   );
 }

@@ -101,6 +101,24 @@
         "empty": "There are no questions in this quiz yet.",
         "rightAnswer": "Right answer",
         "loadFailed": "Couldn't load the questions. Reload to try again."
+      },
+      "counter": "Question {{number}} of {{total}}",
+      "progress": "question {{number}} of {{total}}",
+      "results": "That was the last question! The results are coming.",
+      "run": {
+        "start": "Start quiz",
+        "open": "Show question",
+        "reveal": "Reveal",
+        "next": "Next question",
+        "results": "Show results",
+        "finished": "Every question has been played."
+      },
+      "tv": {
+        "ready": "Get ready!"
+      },
+      "guest": {
+        "coming": "Next question coming",
+        "answerWas": "The answer was {{letter}}"
       }
     },
     "awards": {
@@ -317,6 +335,9 @@
       "network_error": "Couldn't reach the server. Check your connection and try again.",
       "not_authorized": "This device isn't allowed to run the evening. Open the host link again.",
       "invalid_transition": "That can't be done right now.",
+      "module_disabled": "This activity is switched off for the evening.",
+      "module_empty": "There is nothing to play yet. Add some questions first.",
+      "module_finished": "This has already been played to the end, so it can't start again.",
       "internal_error": "Something went wrong. Try again."
     }
   }

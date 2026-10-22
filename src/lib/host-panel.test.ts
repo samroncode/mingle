@@ -51,7 +51,13 @@ describe("hostPanelErrorKey", () => {
     expect(hostPanelErrorKey("rate_limited")).toBe(
       "hostPanel.errors.rate_limited",
     );
-    expect(hostPanelErrorKey("module_disabled")).toBe(
+    expect(hostPanelErrorKey("module_empty")).toBe(
+      "hostPanel.errors.module_empty",
+    );
+    expect(hostPanelErrorKey("module_finished")).toBe(
+      "hostPanel.errors.module_finished",
+    );
+    expect(hostPanelErrorKey("invalid_request")).toBe(
       "hostPanel.errors.internal_error",
     );
   });

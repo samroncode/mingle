@@ -1,0 +1,179 @@
+import { expect, test } from "@playwright/test";
+import { eventRow, memberRow } from "./fake-rows.ts";
+import {
+  fakeHostPanel,
+  fakeSupabase,
+  fakeTv,
+  type FakeQuizRow,
+} from "./fake-supabase.ts";
+
+const code = "ABC234";
+const key = "c".repeat(43);
+
+const questions: FakeQuizRow[] = [
+  {
+    id: "q1",
+    position: 0,
+    text: "Capital of Australia?",
+    options: ["Sydney", "Melbourne", "Canberra", "Perth"],
+    correct: 2,
+  },
+  {
+    id: "q2",
+    position: 1,
+    text: "Feta comes from?",
+    options: ["Italy", "Greece", "Turkey", "Spain"],
+    correct: 1,
+  },
+];
+
+function quizAt(current_step: number, phase: string) {
+  return { status: "live", current_module: "quiz", current_step, phase };
+}
+
+test.describe("the control panel", () => {
+  test("starts the quiz and says why a start was refused", async ({ page }) => {
+    const bodies = await fakeSupabase(page, [
+      () => [200, {}],
+      () => [409, { error: "module_finished" }],
+    ]);
+    await fakeHostPanel(page, {
+      code,
+      enabledModules: ["quiz"],
+      quiz: questions,
+      played: 2,
+    });
+
+    await page.goto(`/host/${code}#key=${key}`);
+    const panel = page.getByTestId("quiz-host");
+    await expect(panel).toContainText("Every question has been played.");
+    await panel.getByRole("button", { name: "Start quiz" }).click();
+
+    await expect(panel.getByRole("alert")).toHaveText(
+      "This has already been played to the end, so it can't start again.",
+    );
+    expect(bodies[1]).toEqual({
+      action: "set_flow",
+      code,
+      key,
+      move: { type: "start_module", module: "quiz" },
+    });
+  });
+
+  test("shows the current question with its right answer and the next move", async ({
+    page,
+  }) => {
+    const bodies = await fakeSupabase(page, [
+      () => [200, {}],
+      () => [200, quizAt(2, "idle")],
+    ]);
+    await fakeHostPanel(page, {
+      code,
+      enabledModules: ["quiz"],
+      quiz: questions,
+      played: 2,
+      flow: quizAt(1, "revealed"),
+    });
+
+    await page.goto(`/host/${code}#key=${key}`);
+    const panel = page.getByTestId("quiz-host");
+    await expect(panel.getByTestId("quiz-progress")).toHaveText(
+      "Question 2 of 2",
+    );
+    await expect(panel.getByText("2. Feta comes from?")).toBeVisible();
+    await expect(panel.getByText("B. Greece")).toContainText("Right answer");
+    await expect(panel.getByRole("button", { name: "Stop" })).toBeVisible();
+
+    await panel.getByRole("button", { name: "Show results" }).click();
+
+    await expect
+      .poll(() => bodies[1])
+      .toMatchObject({
+        move: { type: "next_step" },
+      });
+  });
+
+  test("labels the one button for each phase", async ({ page }) => {
+    await fakeSupabase(page, [() => [200, {}]]);
+    await fakeHostPanel(page, {
+      code,
+      enabledModules: ["quiz"],
+      quiz: questions,
+      flow: quizAt(0, "open"),
+    });
+
+    await page.goto(`/host/${code}#key=${key}`);
+
+    await expect(
+      page.getByTestId("quiz-host").getByRole("button", { name: "Reveal" }),
+    ).toBeVisible();
+    await expect(page.getByTestId("tv-now")).toContainText(
+      "Quiz, question 1 of 2, open",
+    );
+  });
+});
+
+test.describe("the TV", () => {
+  test.use({ viewport: { width: 1920, height: 1080 } });
+
+  function snapshot(current_step: number, phase: string) {
+    return {
+      ...eventRow({
+        id: "e1",
+        code,
+        enabled_modules: ["quiz"],
+        ...quizAt(current_step, phase),
+      }),
+      members: [memberRow({ user_id: "t", role: "tv" })],
+    };
+  }
+
+  test("says which question is coming", async ({ page }) => {
+    await fakeSupabase(page, []);
+    await fakeTv(page, {
+      snapshot: snapshot(2, "idle"),
+      quiz: { rows: [], total: 10, played: 2 },
+    });
+
+    await page.goto(`/tv/${code}`);
+
+    const quiz = page.getByTestId("quiz-tv");
+    await expect(quiz).toContainText("Question 3 of 10");
+    await expect(quiz).toContainText("Get ready!");
+    await expect(page.getByTestId("tv-code")).toHaveText(code);
+  });
+
+  test("shows the open question with its options", async ({ page }) => {
+    await fakeSupabase(page, []);
+    await fakeTv(page, {
+      snapshot: snapshot(0, "open"),
+      quiz: { rows: [{ ...questions[0], correct: null }], total: 2 },
+    });
+
+    await page.goto(`/tv/${code}`);
+
+    const quiz = page.getByTestId("quiz-tv");
+    await expect(quiz.getByRole("heading")).toHaveText("Capital of Australia?");
+    await expect(quiz.getByRole("listitem")).toHaveText([
+      "ASydney",
+      "BMelbourne",
+      "CCanberra",
+      "DPerth",
+    ]);
+    await expect(quiz.locator("[data-correct]")).toHaveCount(0);
+  });
+
+  test("highlights the right option after the reveal", async ({ page }) => {
+    await fakeSupabase(page, []);
+    await fakeTv(page, {
+      snapshot: snapshot(0, "revealed"),
+      quiz: { rows: [questions[0]], total: 2, played: 1 },
+    });
+
+    await page.goto(`/tv/${code}`);
+
+    await expect(
+      page.getByTestId("quiz-tv").locator("[data-correct]"),
+    ).toHaveText(/CCanberra/);
+  });
+});
