@@ -55,3 +55,14 @@ export function parseSupabaseEnv(env: Record<string, unknown>): SupabaseEnv {
     publishableKey: result.data.VITE_SUPABASE_PUBLISHABLE_KEY,
   };
 }
+
+/**
+ * The public Cloudflare Turnstile site key, or undefined when none is set
+ * (local, staging and tests), in which case sign-in asks for no CAPTCHA.
+ */
+export function parseTurnstileSiteKey(
+  env: Record<string, unknown>,
+): string | undefined {
+  const key = env.VITE_TURNSTILE_SITE_KEY;
+  return typeof key === "string" && key.trim() !== "" ? key.trim() : undefined;
+}

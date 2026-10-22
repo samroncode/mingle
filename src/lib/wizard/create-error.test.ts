@@ -5,6 +5,7 @@ describe("createErrorKey", () => {
   it("maps known codes to their own message", () => {
     expect(createErrorKey("network_error")).toBe("errors.create.network_error");
     expect(createErrorKey("rate_limited")).toBe("errors.create.rate_limited");
+    expect(createErrorKey("captcha_failed")).toBe("captcha.failed");
     expect(createErrorKey("invalid_request")).toBe(
       "errors.create.invalid_request",
     );

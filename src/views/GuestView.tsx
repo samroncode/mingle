@@ -10,7 +10,7 @@ import { NameForm } from "./guest/NameForm";
 export function GuestView() {
   const { t } = useTranslation();
   const { code = "" } = useParams();
-  const { lookup, userId, joinOutcome, join } = useGuestLookup(code);
+  const { lookup, userId, joinOutcome, join, retry } = useGuestLookup(code);
   const page = pickGuestPageState({ lookup, joinOutcome });
 
   if (page === "in" && typeof lookup === "object" && lookup.isMember) {
@@ -30,6 +30,9 @@ export function GuestView() {
   }
   if (page === "loading" || page === "in") {
     return <p className="text-muted-foreground">{t("guest.loading")}</p>;
+  }
+  if (page === "captcha_failed") {
+    return <GuestMessage kind="captcha_failed" onRetry={retry} />;
   }
   return <GuestMessage kind={page} />;
 }

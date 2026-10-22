@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { NicheTheme } from "@/components/NicheTheme";
+import { Button } from "@/components/ui/button";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
 import { useTvJoin } from "@/hooks/useTvJoin";
@@ -76,7 +77,7 @@ function TvEvent({ eventId }: { eventId: string }) {
 export function TvView() {
   const { t } = useTranslation();
   const { code } = useParams();
-  const join = useTvJoin(code);
+  const { state: join, retry } = useTvJoin(code);
   useWakeLock();
 
   // A TV that opens an ended event first gets `ended` from the join.
@@ -85,7 +86,16 @@ export function TvView() {
     return <TvNotFound />;
   }
   if (join.status === "error") {
-    return <Message alert text={t(tvErrorKey(join.error))} />;
+    return (
+      <div className="space-y-6">
+        <Message alert text={t(tvErrorKey(join.error))} />
+        {join.error === "captcha_failed" && (
+          <Button size="lg" onClick={retry}>
+            {t("captcha.retry")}
+          </Button>
+        )}
+      </div>
+    );
   }
   if (join.status === "joining") return <Message text={t("tv.joining")} />;
   return <TvEvent eventId={join.eventId} />;

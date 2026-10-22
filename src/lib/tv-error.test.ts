@@ -8,6 +8,7 @@ describe("tvErrorKey", () => {
 
   it("says to wait for rate limiting", () => {
     expect(tvErrorKey("rate_limited")).toBe("tv.errors.rate_limited");
+    expect(tvErrorKey("captcha_failed")).toBe("captcha.failed");
   });
 
   it("falls back to a general message for anything else", () => {

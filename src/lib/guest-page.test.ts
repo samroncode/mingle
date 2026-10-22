@@ -82,6 +82,9 @@ describe("pickGuestPageState", () => {
 
   it("shows a connection error when the lookup or the first fetch fails", () => {
     expect(pickGuestPageState({ lookup: "failed" })).toBe("error");
+    expect(pickGuestPageState({ lookup: "captcha_failed" })).toBe(
+      "captcha_failed",
+    );
     const snapshot: GuestSnapshot = {
       status: "error",
       eventStatus: null,

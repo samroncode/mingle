@@ -10,6 +10,7 @@ describe("hostDoorErrorKey", () => {
 
   it("gives rate limits and network errors their own message", () => {
     expect(hostDoorErrorKey("rate_limited")).toBe("hostDoor.rate_limited");
+    expect(hostDoorErrorKey("captcha_failed")).toBe("hostDoor.captcha_failed");
     expect(hostDoorErrorKey("network_error")).toBe("hostDoor.network_error");
   });
 
