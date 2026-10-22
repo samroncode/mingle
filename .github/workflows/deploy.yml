@@ -1,0 +1,56 @@
+# Deploys a merge to main: backend first (live, then staging), then the app on Vercel.
+# Any failing step stops the run before the Vercel hook, so live keeps the old app.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deploy at a time; a running deploy is never cancelled midway.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: package.json
+          cache: npm
+      # The Supabase CLI version comes from package-lock.json.
+      - run: npm ci
+
+      - name: Deploy to live
+        env:
+          PROJECT_REF: ${{ secrets.SUPABASE_LIVE_PROJECT_REF }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_LIVE_DB_PASSWORD }}
+        run: |
+          npx supabase link --project-ref "$PROJECT_REF"
+          npx supabase db push
+          npx supabase functions deploy
+
+      - name: Deploy to staging
+        env:
+          PROJECT_REF: ${{ secrets.SUPABASE_STAGING_PROJECT_REF }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_STAGING_DB_PASSWORD }}
+        run: |
+          npx supabase link --project-ref "$PROJECT_REF"
+          npx supabase db push
+          npx supabase functions deploy
+
+      - name: Publish the app on Vercel
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          echo "::add-mask::$VERCEL_DEPLOY_HOOK_URL"
+          curl --fail --silent --show-error --request POST --output /dev/null "$VERCEL_DEPLOY_HOOK_URL"
