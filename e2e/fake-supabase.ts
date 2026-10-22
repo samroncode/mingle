@@ -272,6 +272,8 @@ export interface FakeQuizRow {
 interface FakeHostPanelOptions {
   code: string;
   enabledModules: EventRow["enabled_modules"];
+  status?: EventRow["status"];
+  party?: EventRow["party"];
   quiz?: FakeQuizRow[];
 }
 
@@ -284,6 +286,8 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
   const event = eventRow({
     code: options.code,
     enabled_modules: options.enabledModules,
+    ...(options.status && { status: options.status }),
+    ...(options.party && { party: options.party }),
   });
   const host = memberRow({ role: "host" });
 

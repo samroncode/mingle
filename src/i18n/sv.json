@@ -303,6 +303,12 @@
       "none": "Ej angivet"
     },
     "guestsTitle": "Gäster",
+    "end": {
+      "title": "Avsluta kvällen",
+      "confirm": "Gäster kan inte gå med eller svara längre. Det går inte att ångra.",
+      "action": "Avsluta nu",
+      "cancel": "Avbryt"
+    },
     "event": "Event",
     "tv": {
       "party": "Festskärm",

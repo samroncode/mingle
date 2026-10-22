@@ -303,6 +303,12 @@
       "none": "Not set"
     },
     "guestsTitle": "Guests",
+    "end": {
+      "title": "End the evening",
+      "confirm": "Guests can't join or answer any more. This can't be undone.",
+      "action": "End it now",
+      "cancel": "Cancel"
+    },
     "event": "Event",
     "tv": {
       "party": "Party screen",
