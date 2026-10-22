@@ -1,3 +1,4 @@
+import { bachelorQuiz } from "./quiz/bachelor";
 import type { NicheConfig } from "./types";
 
 export const bachelor: NicheConfig = {
@@ -15,6 +16,7 @@ export const bachelor: NicheConfig = {
     sv: "Välkomna till kvällen! Nu ska vi fira ordentligt. Skanna koden, skriv ditt namn och gör er redo för skratt och bus.",
     en: "Welcome to the party! Time to celebrate properly. Scan the code, enter your name and get ready for laughs and mischief.",
   },
+  quiz: bachelorQuiz,
   promptHints:
     "Bachelor or bachelorette party with close friends. Playful and teasing but affectionate, never cruel, and nothing that could truly embarrass the guest of honour.",
 };

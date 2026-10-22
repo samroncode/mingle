@@ -14,8 +14,8 @@ export const quizLimits = {
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 
-/** One quiz question: four options and the index (0-3) of the right one. */
-export const QuizQuestionSchema = z.strictObject({
+/** What a question says: its text and four options, in one language. */
+export const QuizQuestionTextSchema = z.strictObject({
   text: text(quizLimits.question),
   options: z.tuple([
     text(quizLimits.option),
@@ -23,8 +23,14 @@ export const QuizQuestionSchema = z.strictObject({
     text(quizLimits.option),
     text(quizLimits.option),
   ]),
+});
+
+/** One quiz question: four options and the index (0-3) of the right one. */
+export const QuizQuestionSchema = QuizQuestionTextSchema.extend({
   correct: z.number().int().min(0).max(3),
 });
+
+export type QuizQuestionText = z.infer<typeof QuizQuestionTextSchema>;
 
 export const QuizQuestionsSchema = z
   .array(QuizQuestionSchema)

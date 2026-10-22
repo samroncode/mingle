@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { supportedLanguages } from "@/i18n/language";
 import { PartySchema } from "@/lib/schemas/party";
+import { QuizQuestionTextSchema } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
 
 /**
@@ -29,6 +30,20 @@ export const themeTokens = [
   "radius",
 ] as const;
 
+/**
+ * A ready-made quiz question: the same question in every supported language,
+ * with one right option shared by all of them. The text is built-in content in
+ * the event language, copied into the event when the host picks it. The id is
+ * stable, so a saved wizard draft can refer to the question.
+ */
+export const QuizContentSchema = z.strictObject({
+  id: z.string().regex(/^[a-z]+-[a-z0-9-]+$/),
+  correct: z.number().int().min(0).max(3),
+  texts: z.record(z.enum(supportedLanguages), QuizQuestionTextSchema),
+});
+
+export type QuizContent = z.infer<typeof QuizContentSchema>;
+
 export const NicheConfigSchema = z.strictObject({
   id: z.string().regex(/^[a-z]+$/),
   /** i18n keys, never literal text, so the copy exists in sv and en. */
@@ -46,6 +61,8 @@ export const NicheConfigSchema = z.strictObject({
     z.enum(supportedLanguages),
     PartySchema.shape.welcome.unwrap(),
   ),
+  /** Ready-made quiz questions the host picks from. */
+  quiz: z.array(QuizContentSchema),
   /** Guidance for AI suggestions. English, never shown in the UI. */
   promptHints: z.string().min(1),
 });
