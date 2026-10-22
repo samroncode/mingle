@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { EventRow } from "@/api/events";
 import { updatePartyContent } from "@/api/host-actions";
 import { Button } from "@/components/ui/button";
-import { hostPanelErrorKey } from "@/lib/host-panel";
+import { useHostAction } from "@/hooks/useHostAction";
 import { partyToForm, savePartyEdit } from "@/lib/party-edit";
 import { readParty } from "@/lib/party";
 import type { Party } from "@/lib/schemas/party";
@@ -60,26 +60,22 @@ function PartyEditor({
     partyToForm(readParty(event.party)),
   );
   const [invalid, setInvalid] = useState<PartyField[]>([]);
-  const [error, setError] = useState<string>();
-  const [busy, setBusy] = useState(false);
+  const { busy, error, run } = useHostAction();
   const change = (part: Partial<PartyForm>) =>
     setForm((current) => ({ ...current, ...part }));
   const only = (...fields: PartyField[]) =>
     invalid.filter((field) => fields.includes(field));
 
   async function save() {
-    setBusy(true);
-    setError(undefined);
-    const result = await savePartyEdit(
-      form,
-      { code: event.code, key: hostKey },
-      updatePartyContent,
+    const result = await run(() =>
+      savePartyEdit(
+        form,
+        { code: event.code, key: hostKey },
+        updatePartyContent,
+      ),
     );
-    setBusy(false);
     if (result.ok) return onDone();
-    if ("invalid" in result) return setInvalid(result.invalid);
-    setInvalid([]);
-    setError(t(hostPanelErrorKey(result.error)));
+    setInvalid("invalid" in result ? result.invalid : []);
   }
 
   return (
