@@ -5,6 +5,7 @@ import { useEventState } from "@/hooks/useEventState";
 import { useHostEventId } from "@/hooks/useHostEventId";
 import type { HostLinkParts } from "@/lib/host-door";
 import { Activities } from "./Activities";
+import { PartyScreen } from "./PartyScreen";
 import { TopBar } from "./TopBar";
 
 function Placeholder({ title }: { title: string }) {
@@ -48,7 +49,9 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
       ) : (
         <Activities event={event} members={members} hostKey={link.key} />
       )}
-      <Placeholder title={t("hostPanel.partyScreen")} />
+      {event.status !== "ended" && (
+        <PartyScreen event={event} hostKey={link.key} />
+      )}
       <Placeholder title={t("hostPanel.guestsTitle")} />
     </>
   );
