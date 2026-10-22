@@ -1,0 +1,62 @@
+import { useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
+import type { JoinErrorCode, RenameErrorCode } from "@/api/errors";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { displayNameMaxLength } from "@/lib/display-name";
+
+interface NameFormProps {
+  label: string;
+  submitLabel: string;
+  initialName?: string;
+  /** Resolves to an error code, or nothing on success. */
+  onSubmit: (
+    name: string,
+  ) => Promise<JoinErrorCode | RenameErrorCode | undefined>;
+}
+
+/** A display-name field with a button; used to join and to rename. */
+export function NameForm({
+  label,
+  submitLabel,
+  initialName = "",
+  onSubmit,
+}: NameFormProps) {
+  const { t } = useTranslation();
+  const [name, setName] = useState(initialName);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<JoinErrorCode | RenameErrorCode>();
+
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError(undefined);
+    const code = await onSubmit(name);
+    setBusy(false);
+    setError(code);
+  }
+
+  return (
+    <form onSubmit={(event) => void submit(event)} className="space-y-3">
+      <label className="block space-y-1">
+        <span className="text-sm font-medium">{label}</span>
+        <Input
+          value={name}
+          maxLength={displayNameMaxLength}
+          autoComplete="off"
+          aria-invalid={error !== undefined}
+          onChange={(event) => setName(event.target.value)}
+        />
+      </label>
+      {error && (
+        <p role="alert" className="text-destructive">
+          {t(`guest.errors.${error}`)}
+        </p>
+      )}
+      <Button type="submit" disabled={busy}>
+        {submitLabel}
+      </Button>
+    </form>
+  );
+}

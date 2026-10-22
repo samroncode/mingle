@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { JoinWithCode } from "@/components/JoinWithCode";
 import { MyEvents } from "@/components/MyEvents";
 import { Button } from "@/components/ui/button";
 
@@ -12,6 +13,7 @@ export function LandingView() {
       <Button asChild size="lg">
         <Link to="/new">{t("views.landing.create")}</Link>
       </Button>
+      <JoinWithCode />
       <MyEvents />
     </div>
   );

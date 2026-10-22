@@ -52,7 +52,44 @@
     },
     "landing": {
       "intro": "Set up a party evening in minutes: quiz, awards and hot takes on the big screen, played from everyone's phone.",
-      "create": "Create an event"
+      "create": "Create an event",
+      "joinTitle": "Join with code",
+      "joinPlaceholder": "Event code",
+      "join": "Join"
+    }
+  },
+  "tv": {
+    "welcomeGuest": "Welcome, {{name}}!",
+    "joining": "Connecting the TV...",
+    "welcome": "Welcome",
+    "menu": "Menu",
+    "schedule": "Tonight",
+    "guests": "Who's here",
+    "wifi": {
+      "title": "Wifi",
+      "qrLabel": "QR code to join the wifi",
+      "network": "Network",
+      "password": "Password"
+    },
+    "music": {
+      "title": "Music",
+      "qrLabel": "QR code to the music",
+      "text": "Scan to add your songs"
+    },
+    "join": {
+      "title": "Join the party",
+      "qrLabel": "QR code to join the party",
+      "guests_one": "{{count}} guest has joined",
+      "guests_other": "{{count}} guests have joined"
+    },
+    "ended": {
+      "title": "Thank you for coming!",
+      "text": "The evening is over."
+    },
+    "errors": {
+      "not_found": "We couldn't find an event with this code. Check the address, or the event may have expired.",
+      "rate_limited": "Too many tries. Wait a minute and reload.",
+      "unknown": "Something went wrong. Reload the page to try again."
     }
   },
   "modules": {
@@ -166,5 +203,46 @@
     "forget": "Forget",
     "forgetLabel": "Forget event {{code}} on this device",
     "hint": "Only remembered on this device. Forgetting does not delete the event."
+  },
+  "guest": {
+    "loading": "Loading…",
+    "nameLabel": "Your name",
+    "join": "Join",
+    "in": "You're in, {{name}}!",
+    "rename": "Change my name",
+    "renameLabel": "New name",
+    "renameSave": "Save",
+    "party": {
+      "menu": "Menu",
+      "schedule": "Schedule",
+      "wifi": "Wifi",
+      "openNetwork": "Open network",
+      "copyPassword": "Copy wifi password",
+      "music": "Open music"
+    },
+    "errors": {
+      "name_taken": "That name is taken. Pick another one.",
+      "invalid_name": "Enter a name of 1 to 30 characters.",
+      "not_found": "We couldn't find that event. Check the code.",
+      "ended": "This event has ended.",
+      "rate_limited": "Too many tries. Wait a minute and try again.",
+      "unknown": "Something went wrong. Try again."
+    },
+    "ended": {
+      "title": "Thanks for coming!",
+      "body": "This event has ended."
+    },
+    "not_found": {
+      "title": "We can't find this event",
+      "body": "The code is wrong, or the event has expired. Events are deleted 30 days after they're created."
+    },
+    "error": {
+      "title": "Couldn't reach the event",
+      "body": "Check your connection and reload the page."
+    },
+    "note": {
+      "title": "You're already in this event",
+      "body": "This device is the host or the TV of the event, so it can't join as a guest. Use another phone to join."
+    }
   }
 }
