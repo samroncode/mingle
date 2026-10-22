@@ -12,6 +12,20 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: What awards cover, and how votes work (#59)
+
+**Decision:**
+- The awards spec builds awards end to end: ready-made categories, picking them in the setup wizard, running them from the control panel, and awards on the TV and the guests' phones. Hot takes get their own spec next. AI suggestions and the summary page are left out.
+- Each niche ships 20 award categories in the "Most likely to…" style, each written in both Swedish and English. They are always kind: nothing about looks, weight, drinking, money or love life. They're written with Claude Code during the build and reviewed by the owner in the PR.
+- The wizard picks 8 of the niche's categories at random. The host can untick, tick, reorder and add their own, up to 20. Picked categories are copied into the event in its language.
+- Only guests vote. Every guest with a display name is a candidate, late joiners included; the host (who has no display name) and the TV aren't. A guest can't vote for themselves. One vote per guest per category, changeable until the reveal. A vote belongs to the guest, not the name.
+- Votes are secret from everyone, the host included. The database lets a guest read only their own votes; the host and the TV read no vote rows. Counts, who has voted (host only, without picks) and results come from database functions, and results only after the reveal.
+- Awards run like the quiz: one button (Show category, Reveal, Next category, Show all winners), no countdown, Stop and resume at the first unrevealed category, unrevealed categories editable while voting isn't open, and finished awards can't be started again. They reuse the quiz's step bounds and the `module_empty` and `module_finished` codes. `create_event` takes the picked categories; a new `update_awards` action replaces the unrevealed ones.
+- The TV shows the winner and their vote count after each reveal, ties shared, with no runners-up and no list of guests with few votes, and every winner at the end. The phone shows a guest how many votes they got, to them only. The control panel shows the full count per guest after a reveal.
+- The ready-made categories can be built in a cloud session. The database and `host-actions` tickets are built on the desktop after the quiz tickets are merged.
+
+**Why:** Running awards the same way as the quiz means the host learns one control. Banning self-votes stops a single vote from winning a category. Hiding who voted for whom even from the host lets guests vote honestly, so the rule lives in RLS rather than the UI. Showing only winners on the TV keeps guests with no votes off the big screen at a work party, while the host still has the full count if they want to read out runners-up. Planning hot takes separately keeps the spec and the review small.
+
 ## 2026-10-22: What the quiz covers, and the module interface (#49)
 
 **Decision:**
