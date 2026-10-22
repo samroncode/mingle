@@ -227,6 +227,13 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      quiz_progress: {
+        Args: { target_event_id: string };
+        Returns: {
+          played: number;
+          total: number;
+        }[];
+      };
       rate_limit_reached: {
         Args: {
           action: string;

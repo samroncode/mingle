@@ -15,6 +15,12 @@ type HostLink = { code: string; key: string };
 type Host = HostLink & { user: User };
 type Move = { type: string; module?: string };
 
+const threeQuestions = [1, 2, 3].map((n) => ({
+  text: `Question ${n}?`,
+  options: ["Ett", "Två", "Tre", "Fyra"],
+  correct: 0,
+}));
+
 /** Creates an event through host-actions, as the wizard does. */
 async function createEvent(
   enabledModules: string[] = ["quiz", "awards", "hottakes"],
@@ -27,6 +33,8 @@ async function createEvent(
       language: "sv",
       enabledModules,
       party: {},
+      // The quiz can only start with questions (see quiz-run.db.test.ts).
+      ...(enabledModules.includes("quiz") ? { quiz: threeQuestions } : {}),
     },
     { user },
   );

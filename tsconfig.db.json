@@ -26,5 +26,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["supabase/tests", "src/api"]
+  "include": ["supabase/tests", "supabase/functions/**/*.test.ts", "src/api"]
 }

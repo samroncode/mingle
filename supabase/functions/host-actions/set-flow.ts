@@ -1,6 +1,7 @@
 // set_flow: the host moves the event's flow (start or stop an activity, next
 // step, open, reveal, end the event). flow.ts decides whether the move is
-// allowed; the write only lands if nothing else moved the event meanwhile.
+// allowed, with the step bounds of the activity it concerns (step-bounds.ts);
+// the write only lands if nothing else moved the event meanwhile.
 import type { ModuleId } from "../../../src/modules/registry.ts";
 import {
   type FlowMove,
@@ -15,6 +16,7 @@ import type { Db } from "./db.ts";
 import { applyMove } from "./flow.ts";
 import { type ActionResult, databaseFailed } from "./http.ts";
 import type { RateLimitRule } from "./rate-limit.ts";
+import { readStepBounds } from "./step-bounds.ts";
 
 /**
  * Flow moves per user per event. A host running a quiz makes a few moves per
@@ -44,7 +46,19 @@ async function moveFlow(
   const current = await readFlow(db, eventId);
   if (current === null) return { ok: false, error: "internal_error" };
 
-  const transition = applyMove(current.state, current.enabledModules, move);
+  const bounds = await readStepBounds(
+    db,
+    eventId,
+    move.type === "start_module" ? move.module : current.state.currentModule,
+  );
+  if (bounds === "error") return { ok: false, error: "internal_error" };
+
+  const transition = applyMove(
+    current.state,
+    current.enabledModules,
+    move,
+    bounds,
+  );
   if (!transition.ok) return transition;
 
   const { data: written, error } = await db.rpc(
