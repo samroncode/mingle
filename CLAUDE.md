@@ -184,7 +184,7 @@ Parallel tickets often both add entries to `src/i18n/*.json` or `src/modules/reg
 
 ### Specs that touch the database
 
-- **Plan anywhere, build on the desktop.** `/grill-with-docs`, `/to-spec` and `/to-tickets` work in any session. `/implement-spec` for a spec with tickets under `supabase/` runs on the desktop, because `npm run test:db` needs Docker (see `docs/supabase.md`).
+- **Plan anywhere, build on the desktop.** `/grill-with-docs`, `/to-spec` and `/to-tickets` work in any session. `/implement-spec` for a spec that changes `supabase/functions/` runs on the desktop, because the Edge Function tests can't run in a cloud session. Database-only tests can run in the cloud after `sudo dockerd &` and `npm run db:start` (see `docs/decisions.md`, 2026-10-22, and `docs/supabase.md`).
 - **One database ticket at a time.** All worktrees share one local Supabase stack, and `db:reset` from one worktree replaces the schema under another. Start the next ticket that touches `supabase/` only after the previous one is merged. Other tickets still run in parallel.
 - **Security rules go in the tickets.** The spec template leaves out details like "a wrong key and an unknown code return the same error". Put each one in the acceptance criteria of the ticket that builds it.
 - **Opus for security-critical tickets.** Run the `implementer` with `model: opus` for tickets that write RLS policies, `security definer` functions or `host-actions`.

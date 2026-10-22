@@ -52,7 +52,44 @@
     },
     "landing": {
       "intro": "Skapa en festkväll på några minuter: quiz, utmärkelser och heta åsikter på storbilden, spelade från allas mobiler.",
-      "create": "Skapa ett event"
+      "create": "Skapa ett event",
+      "joinTitle": "Gå med med kod",
+      "joinPlaceholder": "Eventkod",
+      "join": "Gå med"
+    }
+  },
+  "tv": {
+    "welcomeGuest": "Välkommen, {{name}}!",
+    "joining": "Kopplar ihop TV:n...",
+    "welcome": "Välkommen",
+    "menu": "Meny",
+    "schedule": "Ikväll",
+    "guests": "Vilka är här",
+    "wifi": {
+      "title": "Wifi",
+      "qrLabel": "QR-kod för att ansluta till wifi",
+      "network": "Nätverk",
+      "password": "Lösenord"
+    },
+    "music": {
+      "title": "Musik",
+      "qrLabel": "QR-kod till musiken",
+      "text": "Skanna för att lägga till dina låtar"
+    },
+    "join": {
+      "title": "Var med i festen",
+      "qrLabel": "QR-kod för att gå med i festen",
+      "guests_one": "{{count}} gäst har gått med",
+      "guests_other": "{{count}} gäster har gått med"
+    },
+    "ended": {
+      "title": "Tack för att ni kom!",
+      "text": "Kvällen är slut."
+    },
+    "errors": {
+      "not_found": "Vi hittar ingen fest med den här koden. Kontrollera adressen, eller så har festen gått ut.",
+      "rate_limited": "För många försök. Vänta en minut och ladda om.",
+      "unknown": "Något gick fel. Ladda om sidan för att försöka igen."
     }
   },
   "modules": {
@@ -166,5 +203,46 @@
     "forget": "Glöm",
     "forgetLabel": "Glöm eventet {{code}} på den här enheten",
     "hint": "Kommer bara ihåg på den här enheten. Att glömma tar inte bort eventet."
+  },
+  "guest": {
+    "loading": "Laddar…",
+    "nameLabel": "Ditt namn",
+    "join": "Gå med",
+    "in": "Du är med, {{name}}!",
+    "rename": "Byt namn",
+    "renameLabel": "Nytt namn",
+    "renameSave": "Spara",
+    "party": {
+      "menu": "Meny",
+      "schedule": "Schema",
+      "wifi": "Wifi",
+      "openNetwork": "Öppet nätverk",
+      "copyPassword": "Kopiera wifi-lösenordet",
+      "music": "Öppna musik"
+    },
+    "errors": {
+      "name_taken": "Namnet är upptaget. Välj ett annat.",
+      "invalid_name": "Skriv ett namn på 1 till 30 tecken.",
+      "not_found": "Vi hittar inte det eventet. Kontrollera koden.",
+      "ended": "Eventet är slut.",
+      "rate_limited": "För många försök. Vänta en minut och försök igen.",
+      "unknown": "Något gick fel. Försök igen."
+    },
+    "ended": {
+      "title": "Tack för att du kom!",
+      "body": "Eventet är slut."
+    },
+    "not_found": {
+      "title": "Vi hittar inte eventet",
+      "body": "Koden är fel, eller så har eventet gått ut. Event raderas 30 dagar efter att de skapats."
+    },
+    "error": {
+      "title": "Kunde inte nå eventet",
+      "body": "Kontrollera din anslutning och ladda om sidan."
+    },
+    "note": {
+      "title": "Du är redan med i det här eventet",
+      "body": "Den här enheten är värd eller TV för eventet och kan inte gå med som gäst. Använd en annan telefon för att gå med."
+    }
   }
 }

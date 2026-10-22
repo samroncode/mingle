@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { getNiche, type NicheId } from "@/niches";
+import { getNiche, isNicheId } from "@/niches";
 import { nicheThemeStyle } from "@/niches/theme";
 
 interface NicheThemeProps {
-  niche: NicheId;
+  /** A niche id from the database; an unknown one is left unthemed. */
+  niche: string;
   children: ReactNode;
 }
 
@@ -12,6 +13,7 @@ interface NicheThemeProps {
  * its own background and text color, because `body` reads the `:root` tokens.
  */
 export function NicheTheme({ niche, children }: NicheThemeProps) {
+  if (!isNicheId(niche)) return <>{children}</>;
   return (
     <div
       data-niche={niche}

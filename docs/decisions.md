@@ -12,6 +12,16 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: Details settled while building the party screen and guest join (#40)
+
+**Decision:**
+- QR codes are always drawn black on white, the one place a component sets its own colors. Phone cameras read dark-on-light codes most reliably, whatever the niche theme.
+- Before joining, the guest page can't read the event, because RLS only shows an event to its members. So the name form, and the notes for an unknown code or an ended event, use the device's language and the default look. A wrong or expired code is shown after the guest taps Join. The event's language and theme apply from "You're in" on.
+- The TV's guest count, guest list and welcome pop-up all count only guests who have a display name.
+- Database tests can run in a cloud session: start Docker with `sudo dockerd &`, then `npm run db:start`. The Edge Function tests still fail there, because the local function runtime can't fetch npm packages through the cloud proxy, so `host-actions` changes still need the desktop.
+
+**Why:** A themed QR code that a phone can't scan defeats the join panel. Telling a non-member whether a code exists before they join would let anyone probe codes, which the join RPCs already avoid. Counting the same guests everywhere keeps the TV consistent.
+
 ## 2026-10-21: What the party screen and guest join cover (#40)
 
 **Decision:**

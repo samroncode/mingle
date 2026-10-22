@@ -90,3 +90,40 @@ export async function renameGuest(
   const renamed = data[0]?.display_name;
   return renamed ? ok(renamed) : fail("not_found");
 }
+
+/** The roles a member can have in an event. */
+export type MemberRole = "host" | "guest" | "tv";
+
+/** Whether the caller is in an event, and if so as what. */
+export type MyMembership =
+  { isMember: false } | { isMember: true; eventId: string; role: MemberRole };
+
+function toRole(role: string): MemberRole | undefined {
+  return role === "host" || role === "guest" || role === "tv"
+    ? role
+    : undefined;
+}
+
+/**
+ * Finds the event with this code among the events the caller can read and
+ * says whether the caller is in it. Row Level Security only returns an event
+ * to its members, so a wrong code, an expired event and a code the caller
+ * hasn't joined all answer `isMember: false`. The code is trimmed and
+ * upper-cased like the join functions do.
+ */
+export async function findMyMembership(
+  code: string,
+  userId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<MyMembership, "unknown">> {
+  const { data, error } = await client
+    .from("events")
+    .select("id, members(user_id, role)")
+    .eq("code", code.trim().toUpperCase())
+    .maybeSingle();
+  if (error) return fail("unknown");
+  const mine = data?.members.find((member) => member.user_id === userId);
+  const role = mine ? toRole(mine.role) : undefined;
+  if (!data || !role) return ok({ isMember: false });
+  return ok({ isMember: true, eventId: data.id, role });
+}
