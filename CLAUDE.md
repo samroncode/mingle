@@ -91,14 +91,14 @@ One app serves every event. Events are rows in the database identified by a shor
 src/          # the app, with its own tsconfig.json
   api/          # all Supabase access (queries, mutations, realtime subscriptions); one file per module, e.g. api/quiz.ts
   hooks/        # shared React hooks that call src/api/
-  layouts/      # host, TV and guest page shells
+  app/          # app shell: main.tsx, router, global CSS, layouts/ (host, TV and guest page shells)
   partyscreen/  # TV idle state: welcome, QR codes, menu, schedule, guests
   modules/      # quiz/, awards/, hottakes/ — each with host/, tv/, guest/ parts; registry.ts lists them
   niches/       # aw.ts, team.ts, bachelor.ts — config objects and their built-in content
-  views/        # route-level pages: create, host, tv, guest, summary
+  views/        # route-level pages, one folder each: create, host, tv, guest, landing, summary, shared
   components/   # shared UI (shadcn/ui lives in components/ui)
   i18n/         # sv.json, en.json
-  lib/          # helpers, Zod schemas, wizard state and small browser-storage helpers (no Supabase)
+  lib/          # helpers grouped by area (host/, guest/, tv/, wizard/), Zod schemas (schemas/); no Supabase
 supabase/
   migrations/   # SQL schema + RLS policies
   functions/    # edge functions: host-actions, ai-suggest

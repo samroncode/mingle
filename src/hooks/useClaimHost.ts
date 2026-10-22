@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { claimHost } from "@/api/host-actions";
 import { ensureAnonymousSession } from "@/api/session";
-import type { HostDoorError, HostLinkParts } from "@/lib/host-door";
+import type { HostDoorError, HostLinkParts } from "@/lib/host/host-door";
 
 export type ClaimState =
   | { status: "loading" }

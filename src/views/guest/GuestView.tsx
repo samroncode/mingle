@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
 import { useGuestLookup } from "@/hooks/useGuestLookup";
-import { pickGuestPageState } from "@/lib/guest-page";
-import { GuestIn } from "./guest/GuestIn";
-import { GuestMessage } from "./guest/GuestMessage";
-import { NameForm } from "./guest/NameForm";
+import { pickGuestPageState } from "@/lib/guest/guest-page";
+import { GuestIn } from "./GuestIn";
+import { GuestMessage } from "./GuestMessage";
+import { NameForm } from "./NameForm";
 
 /** Where a guest joins an event and follows it from their phone. */
 export function GuestView() {

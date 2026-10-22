@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { EventRow } from "@/api/events";
-import { useQuizRun } from "@/hooks/useQuizRun";
+import { useQuizRun } from "@/modules/quiz/useQuizRun";
 
 /** "question 3 of 10" for the control panel's top bar, while on a question. */
 export function useQuizProgressText(event: EventRow): string | undefined {

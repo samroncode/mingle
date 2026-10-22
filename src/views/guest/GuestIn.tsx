@@ -5,7 +5,7 @@ import { NicheTheme } from "@/components/NicheTheme";
 import { Button } from "@/components/ui/button";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
-import { pickSnapshotState } from "@/lib/guest-page";
+import { pickSnapshotState } from "@/lib/guest/guest-page";
 import { readParty } from "@/lib/party";
 import { pickScreen } from "@/modules/screen";
 import { GuestMessage } from "./GuestMessage";

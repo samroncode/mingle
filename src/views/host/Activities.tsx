@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { EventRow, MemberRow } from "@/api/events";
-import { orderActivities } from "@/lib/host-panel";
+import { orderActivities } from "@/lib/host/host-panel";
 import { moduleDefinitions } from "@/modules/definitions";
 import { isModuleId, type ModuleId } from "@/modules/registry";
 

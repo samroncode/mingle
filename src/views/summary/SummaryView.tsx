@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
 import { EventCode } from "@/components/EventCode";
 import { useGuestLookup } from "@/hooks/useGuestLookup";
-import { GuestMessage } from "./guest/GuestMessage";
+import { GuestMessage } from "../guest/GuestMessage";
 
 export function SummaryView() {
   const { t } = useTranslation();

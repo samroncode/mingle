@@ -4,7 +4,7 @@ import { EventLinks } from "@/components/EventLinks";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
 import { useHostEventId } from "@/hooks/useHostEventId";
-import type { HostLinkParts } from "@/lib/host-door";
+import type { HostLinkParts } from "@/lib/host/host-door";
 import { Activities } from "./Activities";
 import { EndEvent } from "./EndEvent";
 import { PartyScreen } from "./PartyScreen";

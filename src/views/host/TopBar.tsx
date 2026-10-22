@@ -4,7 +4,7 @@ import { setFlow } from "@/api/host-actions";
 import { Button } from "@/components/ui/button";
 import { useHostAction } from "@/hooks/useHostAction";
 import { countGuests } from "@/partyscreen/guests";
-import { tvNow } from "@/lib/host-panel";
+import { tvNow } from "@/lib/host/host-panel";
 import { moduleDefinitions } from "@/modules/definitions";
 import { isModuleId } from "@/modules/registry";
 import type { ModuleDefinition } from "@/modules/types";

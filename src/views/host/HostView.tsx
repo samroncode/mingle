@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next";
 import { Link, useLocation, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useClaimHost } from "@/hooks/useClaimHost";
-import { hostDoorErrorKey, readHostLink } from "@/lib/host-door";
-import { HostPanel } from "./host/HostPanel";
+import { hostDoorErrorKey, readHostLink } from "@/lib/host/host-door";
+import { HostPanel } from "./HostPanel";
 
 /** Shown when the host link is bad or the claim was refused. */
 function BadLink() {

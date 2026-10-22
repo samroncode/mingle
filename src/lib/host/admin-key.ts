@@ -1,4 +1,4 @@
-import { ADMIN_KEY_PATTERN } from "./formats";
+import { ADMIN_KEY_PATTERN } from "../formats";
 
 /** Reads the admin key from a URL fragment such as `#key=…`. */
 export function readAdminKey(hash: string): string | undefined {

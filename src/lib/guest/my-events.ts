@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { nicheIds } from "@/niches/ids";
-import { AdminKeySchema, EventCodeSchema } from "./schemas/host-actions";
+import { AdminKeySchema, EventCodeSchema } from "../schemas/host-actions";
 
 /** Events are deleted 30 days after they are created. */
 export const EVENT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;

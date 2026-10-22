@@ -6,7 +6,7 @@ import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
 import { useTvJoin } from "@/hooks/useTvJoin";
 import { useWakeLock } from "@/hooks/useWakeLock";
-import { tvErrorKey } from "@/lib/tv-error";
+import { tvErrorKey } from "@/lib/tv/tv-error";
 import { pickScreen } from "@/modules/screen";
 import { PartyScreen } from "@/partyscreen/PartyScreen";
 

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { MemberRow } from "@/api/events";
 import type { QuizQuestionView } from "@/api/quiz";
-import { useQuizAnswerers } from "@/hooks/useQuizAnswerers";
+import { useQuizAnswerers } from "@/modules/quiz/useQuizAnswerers";
 
 interface AnswerStatusProps {
   question: QuizQuestionView;
