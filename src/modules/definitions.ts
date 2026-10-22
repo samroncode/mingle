@@ -1,0 +1,20 @@
+import { QuizGuest } from "./quiz/guest/QuizGuest";
+import { QuizHost } from "./quiz/host/QuizHost";
+import { QuizTv } from "./quiz/tv/QuizTv";
+import type { ModuleDefinition } from "./types";
+import type { ModuleId } from "./registry";
+
+/**
+ * The activities that have views. Kept apart from `registry.ts`, whose id list
+ * is also imported by the Edge Function and so can't pull in React. An
+ * activity without an entry keeps the party screen and the evening's info.
+ */
+export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
+  quiz: {
+    id: "quiz",
+    nameKey: "modules.quiz.name",
+    Tv: QuizTv,
+    Guest: QuizGuest,
+    Host: QuizHost,
+  },
+};
