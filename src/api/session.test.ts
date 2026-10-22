@@ -4,6 +4,8 @@ import { ensureAnonymousSession, type AppClient } from "./session";
 /** A client with just the auth calls the session code makes. */
 function fakeClient(options: {
   session?: boolean;
+  /** Reading the stored session fails: its login no longer exists. */
+  lostLogin?: boolean;
   signInError?: { code?: string };
 }) {
   const signInAnonymously = vi.fn(() =>
@@ -13,6 +15,7 @@ function fakeClient(options: {
         : { data: { user: { id: "new-user" } }, error: null },
     ),
   );
+  const signOut = vi.fn(() => Promise.resolve({ error: null }));
   const client = {
     auth: {
       getSession: () =>
@@ -20,11 +23,15 @@ function fakeClient(options: {
           data: {
             session: options.session ? { user: { id: "old-user" } } : null,
           },
+          error: options.lostLogin
+            ? { message: "Invalid Refresh Token: user not found" }
+            : null,
         }),
+      signOut,
       signInAnonymously,
     },
   } as unknown as AppClient;
-  return { client, signInAnonymously };
+  return { client, signInAnonymously, signOut };
 }
 
 describe("ensureAnonymousSession", () => {
@@ -115,6 +122,18 @@ describe("ensureAnonymousSession", () => {
 
     expect(results[0]).toEqual(results[1]);
     expect(getToken).toHaveBeenCalledTimes(1);
+    expect(signInAnonymously).toHaveBeenCalledTimes(1);
+  });
+
+  it("signs in again when the stored login was deleted and can't refresh", async () => {
+    const { client, signInAnonymously, signOut } = fakeClient({
+      lostLogin: true,
+    });
+
+    const result = await ensureAnonymousSession(client);
+
+    expect(result).toEqual({ ok: true, value: "new-user" });
+    expect(signOut).toHaveBeenCalledWith({ scope: "local" });
     expect(signInAnonymously).toHaveBeenCalledTimes(1);
   });
 });
