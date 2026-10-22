@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { hostLink } from "@/lib/links";
-import { forgetMyEvent, loadMyEvents } from "@/lib/my-events";
+import { forgetMyEvent, loadMyEvents } from "@/lib/guest/my-events";
 
 /** The events created on this device, each with a way back into its control panel. */
 export function MyEvents() {

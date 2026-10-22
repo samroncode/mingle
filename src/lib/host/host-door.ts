@@ -1,6 +1,6 @@
 import type { HostActionError } from "@/api/host-actions";
 import { readAdminKey } from "./admin-key";
-import { EVENT_CODE_PATTERN } from "./formats";
+import { EVENT_CODE_PATTERN } from "../formats";
 
 export interface HostLinkParts {
   code: string;

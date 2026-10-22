@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateEvent } from "@/hooks/useCreateEvent";
 import { isLanguage } from "@/i18n/language";
 import type { CreateEventResponse } from "@/lib/schemas/host-actions";
-import { addMyEvent } from "@/lib/my-events";
+import { addMyEvent } from "@/lib/guest/my-events";
 import { moduleDefinitions } from "@/modules/definitions";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/wizard/draft-storage";
 import { createErrorKey } from "@/lib/wizard/create-error";
@@ -18,19 +18,9 @@ import {
   stepsFor,
   wizardReducer,
 } from "@/lib/wizard/state";
-import { DoneScreen } from "./create/DoneScreen";
-import {
-  MenuStep,
-  ScheduleStep,
-  WelcomeStep,
-  WifiStep,
-} from "./create/party-steps";
-import {
-  ActivitiesStep,
-  LanguageStep,
-  NicheStep,
-  SummaryStep,
-} from "./create/steps";
+import { DoneScreen } from "./DoneScreen";
+import { MenuStep, ScheduleStep, WelcomeStep, WifiStep } from "./party-steps";
+import { ActivitiesStep, LanguageStep, NicheStep, SummaryStep } from "./steps";
 
 export function CreateView() {
   const { t, i18n } = useTranslation();

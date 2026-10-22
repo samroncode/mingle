@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import en from "@/i18n/en.json";
 import sv from "@/i18n/sv.json";
-import indexCss from "@/index.css?raw";
+import indexCss from "@/app/index.css?raw";
 import { supportedLanguages } from "@/i18n/language";
 import { AwardCategorySchema, awardsLimits } from "@/lib/schemas/awards";
 import { HotTakeSchema, hottakesLimits } from "@/lib/schemas/hottakes";
@@ -25,7 +25,7 @@ function translation(locale: unknown, key: string): unknown {
     );
 }
 
-/** Token names declared on `:root` in src/index.css. */
+/** Token names declared on `:root` in src/app/index.css. */
 function rootTokens(css: string): string[] {
   const rootBlock = /:root\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
   return [...rootBlock.matchAll(/--([\w-]+)\s*:/g)].map(
@@ -34,7 +34,7 @@ function rootTokens(css: string): string[] {
 }
 
 describe("theme tokens", () => {
-  it("only allows tokens that exist on :root in src/index.css", () => {
+  it("only allows tokens that exist on :root in src/app/index.css", () => {
     const declared = rootTokens(indexCss);
     for (const token of themeTokens) {
       expect(declared, token).toContain(token);

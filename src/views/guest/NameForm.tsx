@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { JoinErrorCode, RenameErrorCode } from "@/api/errors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { displayNameMaxLength } from "@/lib/display-name";
+import { displayNameMaxLength } from "@/lib/guest/display-name";
 
 interface NameFormProps {
   label: string;

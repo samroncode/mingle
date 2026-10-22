@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { HostActionError } from "@/api/host-actions";
-import { hostPanelErrorKey } from "@/lib/host-panel";
+import { hostPanelErrorKey } from "@/lib/host/host-panel";
 
 /** A finished call: success, or a failure that may carry a host action error. */
 type Finished = { ok: true } | { ok: false; error?: HostActionError };

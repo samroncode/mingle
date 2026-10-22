@@ -66,13 +66,14 @@ Then open http://localhost:5173. The app also starts without `.env`. The Supabas
 ```
 src/            The app (Vite + React + TypeScript), with its own tsconfig.json
   api/          All Supabase access: queries, mutations, realtime
-  views/        Route-level pages: create, host, tv, guest, summary
-  layouts/      Page shells for host, TV and guest
+  app/          App shell: main.tsx, router, global CSS, layouts (host, TV, guest)
+  views/        Route-level pages, one folder each: create, host, tv, guest, landing, summary, shared
   partyscreen/  TV idle state: welcome, QR codes, menu, schedule, guests
   modules/      Activities (quiz, later awards and hot takes), each with host, TV and guest parts
   niches/       One config object per niche: theme, default modules, built-in content
   components/   Shared UI (shadcn/ui in components/ui)
-  hooks/ lib/   Shared hooks, helpers and Zod schemas
+  hooks/        Shared React hooks that call src/api/
+  lib/          Helpers by area (host, guest, tv, wizard), Zod schemas
   i18n/         Swedish and English UI text
 supabase/       The backend
   migrations/   Database schema and Row Level Security policies

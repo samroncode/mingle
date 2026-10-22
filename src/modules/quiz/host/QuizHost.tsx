@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useQuizRun } from "@/hooks/useQuizRun";
+import { useQuizRun } from "@/modules/quiz/useQuizRun";
 import type { ModuleHostProps } from "../../types";
 import { QuestionList } from "./QuestionList";
 import { QuizControls } from "./QuizControls";

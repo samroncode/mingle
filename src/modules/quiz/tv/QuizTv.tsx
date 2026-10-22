@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { useQuizRun } from "@/hooks/useQuizRun";
-import { useQuizVotes } from "@/hooks/useQuizVotes";
+import { useQuizRun } from "@/modules/quiz/useQuizRun";
+import { useQuizVotes } from "@/modules/quiz/useQuizVotes";
 import type { ModuleViewProps } from "../../types";
 import { QuizOptions } from "../QuizOptions";
 import { quizScreen } from "../screen";

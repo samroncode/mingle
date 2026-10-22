@@ -4,7 +4,7 @@ import type { EventRow } from "@/api/events";
 import { updatePartyContent } from "@/api/host-actions";
 import { Button } from "@/components/ui/button";
 import { useHostAction } from "@/hooks/useHostAction";
-import { partyToForm, savePartyEdit } from "@/lib/party-edit";
+import { partyToForm, savePartyEdit } from "@/lib/host/party-edit";
 import { readParty } from "@/lib/party";
 import type { Party } from "@/lib/schemas/party";
 import type { PartyField, PartyForm } from "@/lib/wizard/state";

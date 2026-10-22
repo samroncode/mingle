@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { QrCode } from "@/components/QrCode";
-import { wifiQrText } from "@/lib/wifi-qr";
+import { wifiQrText } from "@/lib/tv/wifi-qr";
 import { NAME_MAX_CH, NAMES_AREA, nameSizeRem } from "./name-size";
 import type { Part } from "./parts";
 

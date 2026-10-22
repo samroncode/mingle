@@ -7,7 +7,7 @@ import { QuizQuestionTextSchema } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
 
 /**
- * The shadcn tokens from `:root` in src/index.css that a niche may override.
+ * The shadcn tokens from `:root` in src/app/index.css that a niche may override.
  * Niches never add tokens of their own, so components only ever use one set.
  */
 export const themeTokens = [

@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useQuizRun } from "@/hooks/useQuizRun";
+import { useQuizRun } from "@/modules/quiz/useQuizRun";
 import type { ModuleGuestViewProps } from "../../types";
 import { quizScreen } from "../screen";
 import { GuestQuestion } from "./GuestQuestion";
