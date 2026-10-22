@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseSupabaseEnv } from "./env";
+import { parseSupabaseEnv, parseTurnstileSiteKey } from "./env";
 
 const validEnv = {
   VITE_SUPABASE_URL: "https://abcdefgh.supabase.co",
@@ -70,5 +70,23 @@ describe("parseSupabaseEnv", () => {
         VITE_SUPABASE_PUBLISHABLE_KEY: jwtWithClaims({ role: "service_role" }),
       }),
     ).toThrow(/secret key/);
+  });
+});
+
+describe("parseTurnstileSiteKey", () => {
+  it("returns the site key", () => {
+    expect(parseTurnstileSiteKey({ VITE_TURNSTILE_SITE_KEY: "0x4AAA" })).toBe(
+      "0x4AAA",
+    );
+  });
+
+  it("is undefined when the key is missing or blank", () => {
+    expect(parseTurnstileSiteKey({})).toBeUndefined();
+    expect(
+      parseTurnstileSiteKey({ VITE_TURNSTILE_SITE_KEY: "" }),
+    ).toBeUndefined();
+    expect(
+      parseTurnstileSiteKey({ VITE_TURNSTILE_SITE_KEY: "  " }),
+    ).toBeUndefined();
   });
 });

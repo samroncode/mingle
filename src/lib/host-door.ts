@@ -22,7 +22,7 @@ export function readHostLink(
 }
 
 /** Why the control panel couldn't open: a bad link, or a claim that failed. */
-export type HostDoorError = HostActionError | "bad_link";
+export type HostDoorError = HostActionError | "bad_link" | "captcha_failed";
 
 /**
  * i18n key for the message shown when the control panel can't open. A bad
@@ -37,6 +37,7 @@ export function hostDoorErrorKey(error: HostDoorError) {
       return "hostDoor.badLink" as const;
     case "rate_limited":
     case "network_error":
+    case "captcha_failed":
       return `hostDoor.${error}` as const;
     default:
       return "hostDoor.internal_error" as const;

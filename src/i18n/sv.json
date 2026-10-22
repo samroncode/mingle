@@ -187,6 +187,10 @@
       "musicUrl": "Musiklänken måste vara en giltig https-länk."
     }
   },
+  "captcha": {
+    "failed": "Vi kunde inte kontrollera att du är en riktig person. Försök igen.",
+    "retry": "Försök igen"
+  },
   "hostDoor": {
     "opening": "Öppnar kontrollpanelen…",
     "badLink": "Den här länken fungerar inte",
@@ -195,6 +199,7 @@
     "rate_limited": "För många försök. Vänta en minut och försök igen.",
     "network_error": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
     "internal_error": "Något gick fel. Försök igen.",
+    "captcha_failed": "Vi kunde inte kontrollera att du är en riktig person. Försök igen.",
     "retry": "Försök igen"
   },
   "myEvents": {
@@ -235,6 +240,10 @@
     "not_found": {
       "title": "Vi hittar inte eventet",
       "body": "Koden är fel, eller så har eventet gått ut. Event raderas 30 dagar efter att de skapats."
+    },
+    "captcha_failed": {
+      "title": "Vi kunde inte kontrollera din enhet",
+      "body": "Säkerhetskontrollen gick inte igenom. Försök igen."
     },
     "error": {
       "title": "Kunde inte nå eventet",

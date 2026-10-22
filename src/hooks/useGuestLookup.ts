@@ -3,17 +3,27 @@ import type { JoinErrorCode } from "@/api/errors";
 import { findMyMembership, joinEvent, type MyMembership } from "@/api/events";
 import { ensureAnonymousSession } from "@/api/session";
 
-export type Lookup = "loading" | "failed" | MyMembership;
+export type Lookup = "loading" | "failed" | "captcha_failed" | MyMembership;
 
-type Found = { code: string; userId: string; value: Lookup };
+type Found = { code: string; attempt: number; userId: string; value: Lookup };
 
-async function lookUp(code: string): Promise<Found> {
+async function lookUp(code: string, attempt: number): Promise<Found> {
+  const session = await ensureAnonymousSession();
+  if (!session.ok) {
+    const value =
+      session.error === "captcha_failed" ? "captcha_failed" : "failed";
+    return { code, attempt, userId: "", value };
+  }
   try {
-    const userId = await ensureAnonymousSession();
-    const result = await findMyMembership(code, userId);
-    return { code, userId, value: result.ok ? result.value : "failed" };
+    const result = await findMyMembership(code, session.value);
+    return {
+      code,
+      attempt,
+      userId: session.value,
+      value: result.ok ? result.value : "failed",
+    };
   } catch {
-    return { code, userId: "", value: "failed" };
+    return { code, attempt, userId: "", value: "failed" };
   }
 }
 
@@ -24,6 +34,7 @@ async function lookUp(code: string): Promise<Found> {
  * flow through `joinOutcome`.
  */
 export function useGuestLookup(code: string) {
+  const [attempt, setAttempt] = useState(0);
   const [found, setFound] = useState<Found>();
   const [outcome, setOutcome] = useState<{
     code: string;
@@ -32,13 +43,13 @@ export function useGuestLookup(code: string) {
 
   useEffect(() => {
     let stale = false;
-    void lookUp(code).then((result) => {
+    void lookUp(code, attempt).then((result) => {
       if (!stale) setFound(result);
     });
     return () => {
       stale = true;
     };
-  }, [code]);
+  }, [code, attempt]);
 
   async function join(name: string): Promise<JoinErrorCode | undefined> {
     // Results are filed under the code they were asked for, so a slow answer
@@ -48,6 +59,7 @@ export function useGuestLookup(code: string) {
     if (result.ok) {
       setFound((previous) => ({
         code: target,
+        attempt,
         userId: previous?.code === target ? previous.userId : "",
         value: { isMember: true, eventId: result.value, role: "guest" },
       }));
@@ -59,11 +71,13 @@ export function useGuestLookup(code: string) {
     return result.error;
   }
 
-  const current = found?.code === code ? found : undefined;
+  const current =
+    found?.code === code && found.attempt === attempt ? found : undefined;
   return {
     lookup: current?.value ?? "loading",
     userId: current?.userId ?? "",
     joinOutcome: outcome?.code === code ? outcome.value : undefined,
     join,
+    retry: () => setAttempt((previous) => previous + 1),
   };
 }

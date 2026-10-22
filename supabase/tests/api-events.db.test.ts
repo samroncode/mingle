@@ -56,10 +56,11 @@ describe("ensureAnonymousSession", () => {
     const first = await ensureAnonymousSession(browserClient(storage));
     const again = await ensureAnonymousSession(browserClient(storage));
 
-    expect(first).not.toBe("");
-    expect(again).toBe(first);
+    expect(first.ok).toBe(true);
+    expect(again).toEqual(first);
     const other = await ensureAnonymousSession(browserClient(memoryStorage()));
-    expect(other).not.toBe(first);
+    expect(other.ok).toBe(true);
+    expect(other).not.toEqual(first);
   });
 });
 
