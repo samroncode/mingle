@@ -60,6 +60,14 @@ _Avoid_: Create flow, onboarding
 What the TV shows when no activity is running: welcome message, join QR code, menu, schedule and the guests who have joined.
 _Avoid_: Idle screen, home screen
 
+**Control panel**:
+The host's page for running the evening, opened from the host link: what the TV shows, the activities, the party screen, the guests and ending the evening.
+_Avoid_: Host panel, admin page, dashboard
+
+**Removed guest**:
+A guest the host has taken out of the event. They no longer count as a member, can't read or do anything in the event and can't rejoin from the same phone.
+_Avoid_: Kicked, banned, blocked
+
 **Join panel**:
 The part of the party screen that never rotates away: the join QR code, the code, the join address and how many guests have joined.
 _Avoid_: Join box, sidebar
