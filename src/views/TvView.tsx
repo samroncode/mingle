@@ -6,6 +6,7 @@ import { useEventState } from "@/hooks/useEventState";
 import { useTvJoin } from "@/hooks/useTvJoin";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { tvErrorKey } from "@/lib/tv-error";
+import { pickScreen } from "@/modules/screen";
 import { PartyScreen } from "@/partyscreen/PartyScreen";
 
 function Message({ text, alert }: { text: string; alert?: boolean }) {
@@ -40,13 +41,17 @@ function TvEvent({ eventId }: { eventId: string }) {
     );
   }
 
-  // An activity that is running also shows the party screen until activities
-  // exist; each activity's spec hands the left side to its own TV component.
+  // A running activity with views takes the left side; the join panel stays.
+  const choice = pickScreen(state.event.current_module);
+  const left =
+    choice.kind === "module" ? (
+      <choice.definition.Tv event={state.event} members={state.members} />
+    ) : undefined;
   const screen =
     state.event.status === "ended" ? (
       <ThankYou />
     ) : (
-      <PartyScreen event={state.event} members={state.members} />
+      <PartyScreen event={state.event} members={state.members} left={left} />
     );
   return <NicheTheme niche={state.event.niche}>{screen}</NicheTheme>;
 }

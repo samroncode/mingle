@@ -7,6 +7,7 @@ import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
 import { pickSnapshotState } from "@/lib/guest-page";
 import { readParty } from "@/lib/party";
+import { pickScreen } from "@/modules/screen";
 import { GuestMessage } from "./GuestMessage";
 import { NameForm } from "./NameForm";
 import { PartyInfo } from "./PartyInfo";
@@ -35,6 +36,7 @@ export function GuestIn({ eventId, userId }: GuestInProps) {
     return <p className="text-muted-foreground">{t("guest.loading")}</p>;
   }
 
+  const choice = pickScreen(state.event.current_module);
   const name = state.members.find((m) => m.user_id === userId)?.display_name;
   const content = (
     <div className="space-y-4">
@@ -60,7 +62,15 @@ export function GuestIn({ eventId, userId }: GuestInProps) {
           {t("guest.rename")}
         </Button>
       )}
-      <PartyInfo party={readParty(state.event.party)} />
+      {choice.kind === "module" ? (
+        <choice.definition.Guest
+          event={state.event}
+          members={state.members}
+          userId={userId}
+        />
+      ) : (
+        <PartyInfo party={readParty(state.event.party)} />
+      )}
     </div>
   );
   return <NicheTheme niche={state.event.niche}>{content}</NicheTheme>;

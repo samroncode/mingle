@@ -4,6 +4,7 @@ import sv from "@/i18n/sv.json";
 import indexCss from "@/index.css?raw";
 import { supportedLanguages } from "@/i18n/language";
 import { PartySchema } from "@/lib/schemas/party";
+import { QuizQuestionSchema, quizLimits } from "@/lib/schemas/quiz";
 import { nicheIds } from "./ids";
 import { isNicheId, niches } from "./index";
 import { nicheThemeStyle } from "./theme";
@@ -78,6 +79,53 @@ describe.each(Object.values(niches))("niche $id content", (niche) => {
 
   it("has English prompt hints", () => {
     expect(niche.promptHints).toMatch(/^[\x20-\x7e]+$/);
+  });
+});
+
+describe.each(Object.values(niches))("niche $id quiz", (niche) => {
+  it("has 30 questions, within the quiz limit", () => {
+    expect(niche.quiz).toHaveLength(30);
+    expect(niche.quiz.length).toBeLessThanOrEqual(quizLimits.questions);
+  });
+
+  it("has ids that are unique and start with the niche id", () => {
+    const ids = niche.quiz.map((question) => question.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const id of ids) expect(id.startsWith(`${niche.id}-`), id).toBe(true);
+  });
+
+  it.each(supportedLanguages)(
+    "has every question in %s, passing the shared question schema",
+    (language) => {
+      for (const question of niche.quiz) {
+        const text = question.texts[language];
+        const result = QuizQuestionSchema.safeParse({
+          ...text,
+          correct: question.correct,
+        });
+        expect(result.error, question.id).toBeUndefined();
+      }
+    },
+  );
+
+  it.each(supportedLanguages)(
+    "has no duplicate options or duplicate questions in %s",
+    (language) => {
+      const texts = niche.quiz.map((question) => question.texts[language]);
+      for (const { options } of texts) {
+        const lowered = options.map((option) => option.toLowerCase());
+        expect(new Set(lowered).size).toBe(options.length);
+      }
+      expect(new Set(texts.map((t) => t.text)).size).toBe(texts.length);
+    },
+  );
+
+  it("spreads the right option over all four positions", () => {
+    const counts = [0, 1, 2, 3].map(
+      (position) =>
+        niche.quiz.filter((question) => question.correct === position).length,
+    );
+    for (const count of counts) expect(count).toBeGreaterThanOrEqual(4);
   });
 });
 
