@@ -101,7 +101,7 @@ src/
   lib/          # helpers, Zod schemas, wizard state and small browser-storage helpers (no Supabase)
 supabase/
   migrations/   # SQL schema + RLS policies
-  functions/    # edge functions: host-actions, ai-suggest, cleanup
+  functions/    # edge functions: host-actions, ai-suggest
   tests/        # *.db.test.ts against the local stack (npm run test:db)
 e2e/            # Playwright tests (npm run test:e2e), Supabase faked
 scripts/        # small Node scripts used by npm scripts
@@ -112,7 +112,8 @@ Everything else at the root is config that tools look for there (`package.json`,
 
 ## Data rules
 
-- Events expire 30 days after they are created and are then deleted (scheduled cleanup function).
+- Events expire 30 days after they are created and are then deleted by the nightly cleanup, a pg_cron job in the database (no Edge Function). Codes of deleted events are never reused.
+- Every foreign key to `public.events` is `on delete cascade`, so cleanup deletes everything that belongs to an event. A catalog test enforces it.
 - Store only display names for guests. No emails, phone numbers or other personal data.
 - Never send guest names or other personal data to an AI provider. Prompts carry only the event's settings and the niche's hints.
 - RLS is enabled on every table. A new table in `public` without policies is a bug. Tables in the `private` schema are server-only: RLS is on and they have no client policies, on purpose (see `docs/decisions.md`).
