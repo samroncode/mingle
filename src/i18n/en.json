@@ -253,5 +253,41 @@
       "title": "You're already in this event",
       "body": "This device is the host or the TV of the event, so it can't join as a guest. Use another phone to join."
     }
+  },
+  "hostPanel": {
+    "loading": "Loading the evening…",
+    "loadFailed": "Couldn't load the evening. Reload the page.",
+    "offline": "Connection lost. Showing the last known state.",
+    "ended": "The evening has ended",
+    "guests_one": "{{count}} guest",
+    "guests_other": "{{count}} guests",
+    "tvNow": "On the TV:",
+    "stop": "Stop",
+    "stopFirst": "Stop the {{name}} first",
+    "switchedOff": "Switched off ({{count}})",
+    "partyScreen": "Party screen",
+    "guestsTitle": "Guests",
+    "event": "Event",
+    "tv": {
+      "party": "Party screen",
+      "ended": "Thank-you screen",
+      "activity": {
+        "idle": "{{name}}, not open yet",
+        "open": "{{name}}, open",
+        "revealed": "{{name}}, results shown"
+      },
+      "withProgress": {
+        "idle": "{{name}}, {{progress}}, not open yet",
+        "open": "{{name}}, {{progress}}, open",
+        "revealed": "{{name}}, {{progress}}, results shown"
+      }
+    },
+    "errors": {
+      "rate_limited": "Too many tries. Wait a minute and try again.",
+      "network_error": "Couldn't reach the server. Check your connection and try again.",
+      "not_authorized": "This device isn't allowed to run the evening. Open the host link again.",
+      "invalid_transition": "That can't be done right now.",
+      "internal_error": "Something went wrong. Try again."
+    }
   }
 }
