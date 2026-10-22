@@ -178,3 +178,21 @@ _Avoid_: Response, submission
 **Vote**:
 A guest's choice of another guest in an award category.
 _Avoid_: Nomination, pick
+
+## Running Mingle online
+
+**Live**:
+The real Mingle that hosts and guests use: the app on Vercel's production address and the Supabase project behind it. Only a merge to `main` changes it.
+_Avoid_: Prod (in user-facing docs), the real site
+
+**Staging**:
+The second Supabase project that preview links talk to. It holds only test data and can be reset at any time.
+_Avoid_: Test database, dev project
+
+**Preview link**:
+The address Vercel gives each PR, so the change can be tried on a phone before it is merged. It talks to staging, never to live.
+_Avoid_: Preview deployment (in user-facing docs), test site
+
+**Deploy**:
+Putting a merged change on live: migrations and Edge Functions first, then the app. Done by the deploy workflow, never by hand from an agent session.
+_Avoid_: Release, publish

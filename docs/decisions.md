@@ -12,6 +12,39 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: How Mingle runs online (#88)
+
+**Decision:**
+- The app runs on Vercel's free Hobby plan at a free `*.vercel.app` address named "mingle" (or the closest free variant). Host links, the TV address and QR codes come from the page's own origin, so the name is not in the code. A custom domain can come later; the old address then redirects so saved host links keep working.
+- There are two Supabase projects: **live** (the existing one, only for real parties) and **staging** (a second free project). Every PR's preview link talks to staging.
+- A merge to `main` deploys through a GitHub Actions workflow: migrations and Edge Functions to live, then to staging, and only then a Vercel deploy hook publishes the app. Vercel's own automatic production deploy is off. If the backend step fails, live keeps the old app. Manual workflow buttons put a branch on staging and reset staging to `main`. A daily job keeps both projects awake.
+- Agents still never deploy by hand. The owner's merge is the go-ahead for the deploy workflow.
+- Required CI checks on PRs are not part of this; the owner will reconsider them later.
+
+**Why:** Vercel and Supabase free plans cost nothing at Mingle's scale. Staging lets a database PR be tried for real on the phone and keeps test data out of real parties; using live for previews was rejected for both reasons. Deploying from a workflow puts the database change before the app code that needs it, so a merge can't break a running party while the owner is away from the desk; deploying by hand was rejected for that gap. Free projects sleep after a quiet week, which would take the live app offline.
+
+## 2026-10-22: Turnstile on every live sign-in, and a higher per-address limit (#88)
+
+**Decision:**
+- On live, every anonymous sign-in passes Cloudflare Turnstile in invisible/managed mode. The widget only exists when `VITE_TURNSTILE_SITE_KEY` is set, so staging, the local stack and the tests have none. It's loaded from Cloudflare's script, with no new npm dependency.
+- Sign-in happens in one place, so every page and the silent re-sign-in after cleanup are covered. A failed check shows a retry message (`captcha_failed`).
+- Live's anonymous sign-ins per internet address go up to 300 an hour.
+- Turnstile is a security check, not tracking or analytics, so it fits the "no analytics or tracking" rule.
+
+**Why:** Guests at a party share one wifi and so one internet address, and Supabase's default of about 30 sign-ins an hour per address would lock out guest 31. The limit can only be raised safely once bots are stopped another way, which is what the CAPTCHA (decided 2026-10-21) does.
+
+## 2026-10-22: Preview addresses are allowed on staging by a narrow wildcard (#88)
+
+**Decision:** `ALLOWED_ORIGINS` keeps exact matches and accepts one wildcard form: a single `*` inside the first host label, such as `https://mingle-*-samroncode.vercel.app`. The `*` matches letters, digits and hyphens only, never a dot. A bare `*` is refused. Live uses exact addresses only.
+
+**Why:** Each preview link has its own address, so exact matches can't list them. Ending in the owner's Vercel team name means other people's Vercel sites don't match. Allowing any origin on staging was rejected because the same code runs on live, where a mistyped secret must not open it up.
+
+## 2026-10-22: Security headers on every page (#88)
+
+**Decision:** `vercel.json` sets a Content Security Policy that allows only the app, Supabase and Turnstile, forbids framing by other sites, and sends no referrer, plus `nosniff` and a Permissions-Policy that turns off camera, microphone and location.
+
+**Why:** It costs nothing and limits the damage of any script injection. The admin key is already safe in the URL fragment; `no-referrer` is a second guard.
+
 ## 2026-10-22: How expired events are cleaned up (#83)
 
 **Decision:**
