@@ -50,14 +50,42 @@ function fakeToken() {
 }
 
 /**
- * Fakes anonymous sign-in and host-actions; returns the bodies host-actions
- * got. Each call takes the next answer; once they run out, it fails with
- * `internal_error`.
+ * Fakes Cloudflare's Turnstile script: the first `failures` checks fail, every
+ * later one gives the token `fake-token`. The dev server runs with a site key
+ * (see playwright.config.ts), so every sign-in goes through this.
+ */
+async function fakeTurnstile(page: Page, failures: number) {
+  await page.addInitScript(`window.turnstileFailures = ${failures};`);
+  await page.route("https://challenges.cloudflare.com/**", (route) =>
+    route.fulfill({
+      contentType: "text/javascript",
+      body: `window.turnstile = {
+        render(container, options) {
+          if (window.turnstileFailures-- > 0) {
+            setTimeout(options["error-callback"], 0);
+          } else {
+            setTimeout(() => options.callback("fake-token"), 0);
+          }
+          return "widget";
+        },
+        remove() {},
+      };`,
+    }),
+  );
+}
+
+/**
+ * Fakes anonymous sign-in, Turnstile and host-actions; returns the bodies
+ * host-actions got. Each call takes the next answer; once they run out, it
+ * fails with `internal_error`. `captchaFailures` makes that many CAPTCHA
+ * checks fail before they pass.
  */
 export async function fakeSupabase(
   page: Page,
   answers: Array<() => [number, unknown]>,
+  { captchaFailures = 0 }: { captchaFailures?: number } = {},
 ) {
+  await fakeTurnstile(page, captchaFailures);
   const bodies: unknown[] = [];
   await page.route(`${supabase}/auth/v1/**`, (route) => {
     if (answerPreflight(route)) return;

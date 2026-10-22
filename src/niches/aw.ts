@@ -1,4 +1,5 @@
 import { awAwards } from "./awards/aw";
+import { awHotTakes } from "./hottakes/aw";
 import { awQuiz } from "./quiz/aw";
 import type { NicheConfig } from "./types";
 
@@ -19,6 +20,7 @@ export const aw: NicheConfig = {
   },
   quiz: awQuiz,
   awards: awAwards,
+  hottakes: awHotTakes,
   promptHints:
     "Relaxed after-work with colleagues. Keep it light and inclusive, and avoid anything that could embarrass someone in front of their manager.",
 };

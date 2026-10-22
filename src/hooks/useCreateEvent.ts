@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { createEvent, type HostActionError } from "@/api/host-actions";
-import { trySession } from "@/api/session";
+import { createEvent } from "@/api/host-actions";
+import { ensureAnonymousSession } from "@/api/session";
 import type { CreateEventResponse } from "@/lib/schemas/host-actions";
+import type { CreateError } from "@/lib/wizard/create-error";
 import { toCreateInput, type WizardDraft } from "@/lib/wizard/state";
 
 /**
@@ -13,14 +14,17 @@ export function useCreateEvent(
   onCreated: (event: CreateEventResponse) => void,
 ) {
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<HostActionError | undefined>();
+  const [error, setError] = useState<CreateError | undefined>();
 
   async function create(draft: WizardDraft) {
     if (busy) return;
     setBusy(true);
     setError(undefined);
-    if (!(await trySession())) {
-      setError("network_error");
+    const session = await ensureAnonymousSession();
+    if (!session.ok) {
+      setError(
+        session.error === "captcha_failed" ? "captcha_failed" : "network_error",
+      );
       setBusy(false);
       return;
     }

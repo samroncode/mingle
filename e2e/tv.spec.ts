@@ -90,4 +90,6 @@ test("an unknown code shows a clear error", async ({ page }) => {
   });
   await page.goto(`/tv/${code}`);
   await expect(page.getByRole("alert")).toContainText("couldn't find an event");
+  await page.getByRole("link", { name: "Go to the start page" }).click();
+  await expect(page).toHaveURL("/");
 });

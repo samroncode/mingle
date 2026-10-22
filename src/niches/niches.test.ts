@@ -4,6 +4,7 @@ import sv from "@/i18n/sv.json";
 import indexCss from "@/index.css?raw";
 import { supportedLanguages } from "@/i18n/language";
 import { AwardCategorySchema, awardsLimits } from "@/lib/schemas/awards";
+import { HotTakeSchema, hottakesLimits } from "@/lib/schemas/hottakes";
 import { PartySchema } from "@/lib/schemas/party";
 import { QuizQuestionSchema, quizLimits } from "@/lib/schemas/quiz";
 import { nicheIds } from "./ids";
@@ -156,6 +157,36 @@ describe.each(Object.values(niches))("niche $id awards", (niche) => {
 
   it.each(supportedLanguages)("has no duplicate texts in %s", (language) => {
     const texts = niche.awards.map((award) => award.texts[language]);
+    expect(new Set(texts.map((t) => t.toLowerCase())).size).toBe(texts.length);
+  });
+});
+
+describe.each(Object.values(niches))("niche $id hot takes", (niche) => {
+  it("has 20 hot takes, within the takes limit", () => {
+    expect(niche.hottakes).toHaveLength(20);
+    expect(niche.hottakes.length).toBeLessThanOrEqual(hottakesLimits.takes);
+  });
+
+  it("has ids that are unique and start with the niche id", () => {
+    const ids = niche.hottakes.map((take) => take.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const id of ids) expect(id.startsWith(`${niche.id}-`), id).toBe(true);
+  });
+
+  it.each(supportedLanguages)(
+    "has every category in %s, passing the shared category schema",
+    (language) => {
+      for (const take of niche.hottakes) {
+        const result = HotTakeSchema.safeParse({
+          text: take.texts[language],
+        });
+        expect(result.error, take.id).toBeUndefined();
+      }
+    },
+  );
+
+  it.each(supportedLanguages)("has no duplicate texts in %s", (language) => {
+    const texts = niche.hottakes.map((take) => take.texts[language]);
     expect(new Set(texts.map((t) => t.toLowerCase())).size).toBe(texts.length);
   });
 });

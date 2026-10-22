@@ -9,10 +9,17 @@ export type GuestSnapshot = {
 };
 
 export type GuestPageState =
-  "loading" | "join" | "in" | "note" | "ended" | "not_found" | "error";
+  | "loading"
+  | "join"
+  | "in"
+  | "note"
+  | "ended"
+  | "not_found"
+  | "error"
+  | "captcha_failed";
 
 interface GuestPageInput {
-  lookup: "loading" | "failed" | MyMembership;
+  lookup: "loading" | "failed" | "captcha_failed" | MyMembership;
   /** The live event; only followed once the caller is a guest. */
   snapshot?: GuestSnapshot;
   /** A join answer that ends the page's flow: only these two do. */
@@ -37,6 +44,7 @@ export function pickGuestPageState({
   if (joinOutcome) return joinOutcome;
   if (lookup === "loading") return "loading";
   if (lookup === "failed") return "error";
+  if (lookup === "captcha_failed") return "captcha_failed";
   if (!lookup.isMember) return "join";
   if (lookup.role !== "guest") return "note";
   // Without a snapshot the guest is in; their page follows the event itself.

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { supportedLanguages } from "@/i18n/language";
 import { AwardCategorySchema } from "@/lib/schemas/awards";
+import { HotTakeSchema } from "@/lib/schemas/hottakes";
 import { PartySchema } from "@/lib/schemas/party";
 import { QuizQuestionTextSchema } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
@@ -58,6 +59,18 @@ export const AwardContentSchema = z.strictObject({
 
 export type AwardContent = z.infer<typeof AwardContentSchema>;
 
+/**
+ * A ready-made hot take: the same statement in every supported language. The
+ * text is built-in content in the event language, copied into the event when
+ * the host picks it. The id is stable, so a saved wizard draft can refer to it.
+ */
+export const HotTakeContentSchema = z.strictObject({
+  id: z.string().regex(/^[a-z]+-[a-z0-9-]+$/),
+  texts: z.record(z.enum(supportedLanguages), HotTakeSchema.shape.text),
+});
+
+export type HotTakeContent = z.infer<typeof HotTakeContentSchema>;
+
 export const NicheConfigSchema = z.strictObject({
   id: z.string().regex(/^[a-z]+$/),
   /** i18n keys, never literal text, so the copy exists in sv and en. */
@@ -79,6 +92,8 @@ export const NicheConfigSchema = z.strictObject({
   quiz: z.array(QuizContentSchema),
   /** Ready-made award categories the host picks from. */
   awards: z.array(AwardContentSchema),
+  /** Ready-made hot takes the host picks from. */
+  hottakes: z.array(HotTakeContentSchema),
   /** Guidance for AI suggestions. English, never shown in the UI. */
   promptHints: z.string().min(1),
 });

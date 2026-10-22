@@ -23,9 +23,14 @@ GitHub connects all three. Every task ends as a PR, and `main` only changes when
 
 ## Testing PRs
 
-Until the repo is connected to Vercel, review the diff and the "How to test" section of the PR, or check out the branch at the desk and run `npm run dev`.
+Every PR gets a Vercel preview deployment with its own address, backed by the **staging** Supabase project, so a PR can be tried on the phone before it is merged. Open it from the PR's checks or the Vercel comment.
 
-Once Vercel is connected, every PR gets a preview deployment with its own URL, so a PR can be tried on the phone before it is merged.
+If the PR changes `supabase/` (migrations or functions), the preview only works once its backend is on staging:
+
+1. GitHub → Actions → **Staging** → Run workflow, choose the PR's branch and leave **reset** unticked.
+2. When you are done, run **Staging** again with **reset** ticked. That wipes staging data and puts it back to `main`.
+
+Live is never touched by a PR. It only changes when the owner merges and the **Deploy** workflow runs. See [`hosting.md`](hosting.md).
 
 ## Database work
 
@@ -51,8 +56,8 @@ Database code needs the local Supabase stack, which runs in Docker on the deskto
 - `.claude/settings.json` pre-approves the routine check, database and git commands, and always asks before a command touches the hosted Supabase project.
 - The app foundation (see `docs/plans/foundation.md`). `npm ci` installs everything. The checks are `npm run typecheck`, `npm run typecheck:functions`, `npm run lint`, `npm run test` and `npm run build`.
 
-Still to do by the repo owner, now that the app is scaffolded:
+Still to do by the repo owner:
 
 - On the desktop, install a working Docker Desktop (see [`supabase.md`](supabase.md)) before the backend core is built.
 - In the cloud environment, add the setup script `npm ci` and the variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
-- Connect the repo to Vercel for preview deployments (framework Vite, build command `npm run build`, output folder `dist`). `vercel.json` already handles deep links.
+- Put Mingle online by following the launch checklist in [`hosting.md`](hosting.md).

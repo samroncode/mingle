@@ -94,3 +94,26 @@ test("parts the host left out are not shown, and an open network says so", async
   await expect(page.getByRole("heading", { name: "Menu" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Open music" })).toHaveCount(0);
 });
+
+test("an unknown or expired code shows the note on the guest and summary pages", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  await fakeEvent(page, { code, joinAnswers: ["not_found"] });
+
+  await page.goto(`/p/${code}`);
+  await page.getByLabel("Your name").fill("Anna");
+  await page.getByRole("button", { name: "Join" }).click();
+  await expect(
+    page.getByRole("heading", { name: "We can't find this event" }),
+  ).toBeVisible();
+  await expect(page.getByText("the event has expired")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Go to the start page" }),
+  ).toBeVisible();
+
+  await page.goto(`/p/${code}/summary`);
+  await expect(
+    page.getByRole("heading", { name: "We can't find this event" }),
+  ).toBeVisible();
+});
