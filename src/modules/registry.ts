@@ -4,3 +4,7 @@
  */
 export const moduleIds = ["quiz", "awards", "hottakes"] as const;
 export type ModuleId = (typeof moduleIds)[number];
+
+export function isModuleId(value: string | null): value is ModuleId {
+  return moduleIds.some((id) => id === value);
+}

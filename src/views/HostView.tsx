@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useParams } from "react-router";
-import { EventLinks } from "@/components/EventLinks";
 import { Button } from "@/components/ui/button";
 import { useClaimHost } from "@/hooks/useClaimHost";
 import { hostDoorErrorKey, readHostLink } from "@/lib/host-door";
+import { HostPanel } from "./host/HostPanel";
 
 /** Shown when the host link is bad or the claim was refused. */
 function BadLink() {
@@ -47,7 +47,7 @@ export function HostView() {
       {state.status === "loading" || !link ? (
         <p className="text-muted-foreground">{t("hostDoor.opening")}</p>
       ) : (
-        <EventLinks code={link.code} hostKey={link.key} hideHostLink />
+        <HostPanel link={link} />
       )}
     </div>
   );

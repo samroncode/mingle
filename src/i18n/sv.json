@@ -244,5 +244,41 @@
       "title": "Du är redan med i det här eventet",
       "body": "Den här enheten är värd eller TV för eventet och kan inte gå med som gäst. Använd en annan telefon för att gå med."
     }
+  },
+  "hostPanel": {
+    "loading": "Laddar kvällen…",
+    "loadFailed": "Kunde inte ladda kvällen. Ladda om sidan.",
+    "offline": "Anslutningen föll bort. Visar senast kända läge.",
+    "ended": "Kvällen är slut",
+    "guests_one": "{{count}} gäst",
+    "guests_other": "{{count}} gäster",
+    "tvNow": "På TV:n:",
+    "stop": "Stoppa",
+    "stopFirst": "Stoppa {{name}} först",
+    "switchedOff": "Avstängda ({{count}})",
+    "partyScreen": "Festskärm",
+    "guestsTitle": "Gäster",
+    "event": "Event",
+    "tv": {
+      "party": "Festskärm",
+      "ended": "Tack-skärm",
+      "activity": {
+        "idle": "{{name}}, inte öppen än",
+        "open": "{{name}}, öppen",
+        "revealed": "{{name}}, resultat visas"
+      },
+      "withProgress": {
+        "idle": "{{name}}, {{progress}}, inte öppen än",
+        "open": "{{name}}, {{progress}}, öppen",
+        "revealed": "{{name}}, {{progress}}, resultat visas"
+      }
+    },
+    "errors": {
+      "rate_limited": "För många försök. Vänta en minut och försök igen.",
+      "network_error": "Kunde inte nå servern. Kontrollera anslutningen och försök igen.",
+      "not_authorized": "Den här enheten får inte styra kvällen. Öppna värdlänken igen.",
+      "invalid_transition": "Det går inte just nu.",
+      "internal_error": "Något gick fel. Försök igen."
+    }
   }
 }
