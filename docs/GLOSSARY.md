@@ -85,7 +85,7 @@ _Avoid_: Round, slide, item
 Where the current step is: idle (not open yet), open (guests can answer) or revealed (results are shown).
 
 **Reveal**:
-Showing the results of a step to everyone. Before a reveal, only the host sees individual quiz answers. Award votes stay secret from everyone, the host included; only totals are shown.
+Showing the results of a step to everyone. Before a reveal, only the host sees individual quiz answers. Award votes and hot take answers stay secret from everyone, the host included; only totals are shown.
 
 ## Content
 
@@ -114,7 +114,7 @@ The option that gives a point. Only the host sees it before the reveal.
 _Avoid_: Solution, correct option
 
 **Played**:
-A question or award category that has been revealed. Played steps can't be changed, and a restarted activity continues after them.
+A question, award category or hot take that has been revealed. Played steps can't be changed, and a restarted activity continues after them.
 
 **Score**:
 A guest's points in the quiz: one per right answer on played questions.
@@ -136,8 +136,27 @@ _Avoid_: Nominee
 The guest or guests with the most votes in a revealed category. A tie gives several winners.
 _Avoid_: Champion
 
+**Hot takes**:
+The activity where guests agree or disagree with short statements, and the split is revealed on the TV.
+_Avoid_: Polls, opinions
+
+**Hot take**:
+One step of hot takes: a short statement of opinion such as "Pineapple belongs on pizza".
+_Avoid_: Poll, question, statement (in code)
+
+**Split**:
+How a revealed hot take's answers divide between Agree and Disagree, shown as a percentage and count for each.
+_Avoid_: Result, distribution
+
+**Majority**:
+The side of a hot take that got more answers. An exact 50/50 has no majority.
+
+**Most divisive**:
+The hot take whose split came closest to 50/50, shown at the end of hot takes.
+_Avoid_: Most controversial
+
 **Answer**:
-A guest's response to a quiz question or a hot take.
+A guest's response to a quiz question, or Agree or Disagree on a hot take.
 _Avoid_: Response, submission
 
 **Vote**:
