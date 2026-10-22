@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: Three more root files move into their folders
+
+**Decision:** `tsconfig.app.json` moved to `src/tsconfig.json`, `tsconfig.db.json` to `supabase/tests/tsconfig.json`, and `playwright.config.ts` to `e2e/playwright.config.ts` (`npm run test:e2e` passes `-c`). This updates the 2026-10-21 entry "Loose docs live in docs/": the root keeps `tsconfig.json`, `tsconfig.node.json`, `vite.config.ts` and the other tool config. The README has a "What's where" section.
+
+**Why:** TypeScript project references, ESLint's project service and Playwright's `-c` flag all accept a config in a subfolder with no custom tool setup, so the root gets shorter at no cost. The tools that need their config at the root still have it there.
+
 ## 2026-10-22: Guests answer the quiz (#55)
 
 **Decision:**

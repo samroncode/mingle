@@ -61,6 +61,46 @@ Then open http://localhost:5173. The app also starts without `.env`. The Supabas
 | `npm run test` | Runs the Vitest tests once (`npm run test:watch` keeps them running) |
 | `npm run test:e2e` | Runs the Playwright browser tests at phone size, with Supabase faked (no Docker). On a desktop, run `npx playwright install chromium` once first |
 
+## What's where
+
+```
+src/            The app (Vite + React + TypeScript), with its own tsconfig.json
+  api/          All Supabase access: queries, mutations, realtime
+  views/        Route-level pages: create, host, tv, guest, summary
+  layouts/      Page shells for host, TV and guest
+  partyscreen/  TV idle state: welcome, QR codes, menu, schedule, guests
+  modules/      Activities (quiz, later awards and hot takes), each with host, TV and guest parts
+  niches/       One config object per niche: theme, default modules, built-in content
+  components/   Shared UI (shadcn/ui in components/ui)
+  hooks/ lib/   Shared hooks, helpers and Zod schemas
+  i18n/         Swedish and English UI text
+supabase/       The backend
+  migrations/   Database schema and Row Level Security policies
+  functions/    Edge Functions (host-actions)
+  tests/        Database tests against the local stack, with their own tsconfig.json
+e2e/            Playwright browser tests and playwright.config.ts, Supabase faked
+scripts/        Small Node scripts used by npm scripts
+docs/           Decisions, workflow, guides, plans and ideas
+.github/        PR template and the deploy workflows
+```
+
+Everything else at the root is config that tools look for there: `package.json`, `tsconfig.json` and `tsconfig.node.json`, `vite.config.ts`, `eslint.config.js`, `index.html`, `vercel.json`, `components.json` and dotfiles.
+
+### Architecture in short
+
+```
+Host phone ──► Edge Function (host-actions) ──► Postgres ──► Realtime ──┬─► TV
+ (admin key)       checks the key, changes       source of     pushes     └─► Guest phones
+                   the event's state             truth         changes        (write only their own
+                                                                             answers, via RLS)
+```
+
+- The database holds the event's state (`current_module`, `current_step`, `status`). TV and guest views subscribe and render it; no client holds authoritative state.
+- Only the host changes the event flow, always through an Edge Function that verifies the admin key. Guests sign in anonymously and can only write their own answers and votes, enforced by Row Level Security.
+- Components never import the Supabase client. Everything goes through `src/api/`.
+- Niches are config objects and activities are self-contained modules, so adding one means adding a folder, not editing components.
+- AI suggestions are optional, run only in an Edge Function, and stay drafts until the host approves them.
+
 ## Project documents
 
 - [CLAUDE.md](CLAUDE.md): scope for v1, architecture principles, folder structure and working rules

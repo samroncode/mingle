@@ -88,7 +88,7 @@ One app serves every event. Events are rows in the database identified by a shor
 ## Folder structure
 
 ```
-src/
+src/          # the app, with its own tsconfig.json
   api/          # all Supabase access (queries, mutations, realtime subscriptions); one file per module, e.g. api/quiz.ts
   hooks/        # shared React hooks that call src/api/
   layouts/      # host, TV and guest page shells
@@ -102,13 +102,13 @@ src/
 supabase/
   migrations/   # SQL schema + RLS policies
   functions/    # edge functions: host-actions, ai-suggest
-  tests/        # *.db.test.ts against the local stack (npm run test:db)
-e2e/            # Playwright tests (npm run test:e2e), Supabase faked
+  tests/        # *.db.test.ts against the local stack (npm run test:db), with its own tsconfig.json
+e2e/            # Playwright tests and playwright.config.ts (npm run test:e2e), Supabase faked
 scripts/        # small Node scripts used by npm scripts
 docs/           # decisions, workflow, Supabase guide, glossary, ideas, plans and logs
 ```
 
-Everything else at the root is config that tools look for there (`package.json`, `tsconfig*.json`, `vite.config.ts`, `playwright.config.ts`, `eslint.config.js`, `index.html`, `vercel.json`, `components.json`, dotfiles), plus `README.md` and this file.
+Everything else at the root is config that tools look for there (`package.json`, `tsconfig.json`, `tsconfig.node.json`, `vite.config.ts`, `eslint.config.js`, `index.html`, `vercel.json`, `components.json`, dotfiles), plus `README.md` and this file.
 
 ## Data rules
 
