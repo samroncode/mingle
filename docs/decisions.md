@@ -12,6 +12,23 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: What the quiz covers, and the module interface (#49)
+
+**Decision:**
+- The quiz spec builds the quiz end to end: ready-made questions, picking them in the setup wizard, running the quiz from the control panel, and the quiz on the TV and the guests' phones. It also defines the shared module interface that awards and hot takes will follow. AI suggestions, the summary page, and editing the party screen, removing guests or ending the event from the control panel are left out.
+- Each niche ships 30 quiz questions, each written in both Swedish and English (the same question translated), with four options and one right answer. They are timeless and light, suit the niche, and nothing in them dates or could embarrass anyone. They're written with Claude Code during the build and reviewed by the owner in the PR.
+- The wizard picks 10 of the niche's questions at random. The host can untick, tick, reorder and add their own, up to 30 in a quiz. Picked questions are copied into the event in its language.
+- One point per right answer, no speed bonus. Only guests play; the host sees the right answer and has no score. Late guests join at the current question, and missed questions count as 0. A score belongs to the guest, not the name, so renaming keeps it.
+- No countdown. The host reveals when ready; guests can change their answer until then. One button in the control panel does the next thing: Show question, Reveal, Next question, and Show results after the last.
+- Stop takes the TV back to the party screen. Starting the quiz again continues at the first unplayed question with the scores kept. A question counts as played once it's revealed. The host can edit unplayed questions while no question is open or revealed; played questions are locked. A finished quiz can't be started again in that event.
+- While the quiz runs, it takes the left side of the TV and the join panel stays on the right. The TV shows "Question 3 of 10, get ready", then the question with options A to D and "7 of 12 answered", then the right answer with a bar per option, and at the end the top 3 (ties share a place). The phone shows the question with four big buttons, then right or wrong and the score so far, and at the end the guest's own score and place. The control panel shows the full list. There are no standings between questions.
+- The right answers live in their own table that guests and the TV can read only after the reveal, and a question can be read only once it's shown. The TV shows how many have answered through a count the database keeps on the question, without seeing any answers.
+- Module interface: the registry lists each activity's id, name, TV view, guest view, control panel section and optional wizard step. The TV and guest page show the running activity's view, or the party screen when the activity has no definition yet. On the server the flow state machine stays generic and takes per-activity step bounds (first unplayed step, number of steps, finished).
+- New `host-actions` error codes: `module_empty` (starting a quiz with no questions) and `module_finished` (starting a finished quiz). `create_event` takes the picked questions; a new `update_quiz` action replaces the unplayed ones.
+- The spec changes `host-actions`, so it's built on the desktop.
+
+**Why:** A quiz can't be tried without a way to run it, so the spec covers every screen it needs instead of waiting for the control panel spec. Speed bonuses reward fast thumbs over knowing the answer and would need the server to time every answer. A countdown would need the database to close answers at an exact time, while a party quiz is paced by the room. Resuming lets a host split the quiz around dinner, where starting over would throw away answers by mistake. Showing only the top 3 keeps the bottom of the list off the TV at a work party. Keeping the right answers in a separate table makes "no peeking from devtools" a plain RLS rule instead of column tricks. Defining the module interface with a real module avoids guessing at it (decision 2026-10-21).
+
 ## 2026-10-22: Details settled while building the party screen and guest join (#40)
 
 **Decision:**

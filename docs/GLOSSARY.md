@@ -98,6 +98,28 @@ Content no host has approved yet, such as an AI suggestion. Only hosts can see d
 **Approved**:
 Content a host has accepted. Only approved content reaches guests and the TV.
 
+**Quiz**:
+The activity where guests answer multiple-choice questions and get a point for each right answer.
+
+**Question**:
+One step of the quiz: a text and four options, one of them the right answer.
+_Avoid_: Item, card
+
+**Option**:
+One of the four answers a guest can pick for a question, shown as A to D.
+_Avoid_: Choice, alternative
+
+**Right answer**:
+The option that gives a point. Only the host sees it before the reveal.
+_Avoid_: Solution, correct option
+
+**Played**:
+A question that has been revealed. Played questions can't be changed, and a restarted quiz continues after them.
+
+**Score**:
+A guest's points in the quiz: one per right answer on played questions.
+_Avoid_: Points total, result
+
 **Answer**:
 A guest's response to a quiz question or a hot take.
 _Avoid_: Response, submission
