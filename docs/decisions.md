@@ -12,6 +12,20 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-22: What hot takes cover, and how answers work (#67)
+
+**Decision:**
+- The hot takes spec builds hot takes end to end: ready-made hot takes, picking them in the setup wizard, running them from the control panel, and hot takes on the TV and the guests' phones. AI suggestions and the summary page are left out.
+- Each niche ships 20 hot takes: short statements of opinion (up to 120 characters) that guests agree or disagree with, each written in both Swedish and English. They split the room but stay light: no politics, religion, looks or anything aimed at a person in the room. They're written with Claude Code during the build and reviewed by the owner in the PR.
+- The wizard picks 8 of the niche's hot takes at random. The host can untick, tick, reorder and add their own, up to 20, and edit the list from the control panel before starting and, for unplayed hot takes, during the evening. Picked hot takes are copied into the event in its language.
+- Guests answer Agree or Disagree, with no neutral option. Only guests answer, late joiners included. One answer per guest per hot take, changeable until the reveal. An answer belongs to the guest, not the name.
+- Answers are secret from everyone, the host included, like award votes. The database lets a guest read only their own answers; the host and the TV read no answer rows. The answer count lives on the hot take, and the splits and end highlights come from database functions, only after the reveal.
+- Hot takes run like awards: one button (Show hot take, Reveal, Next hot take, Show summary), no countdown, Stop and resume at the first unrevealed hot take, unrevealed hot takes editable while none is open or revealed, and finished hot takes can't be started again. They reuse the step bounds pattern and the `module_empty` and `module_finished` codes. `create_event` takes the picked hot takes; a new `update_hottakes` action replaces the unrevealed ones.
+- The TV shows the split after each reveal as Agree and Disagree bars with percentage and count, "The room is split evenly" for an exact 50/50, and at the end the most divisive and the most agreed hot take (ties to the earlier one, hot takes without answers left out). The phone shows a guest whether they were with the majority, to them only, and at the end how many times they sided with the majority.
+- The ready-made hot takes can be built in a cloud session. The database and `host-actions` tickets are built on the desktop after the awards tickets are merged.
+
+**Why:** Running hot takes the same way as the quiz and awards means the host learns one control and the build reuses what's there. Without a neutral button everyone has to pick a side, which is the point of a hot take. Keeping answers secret even from the host lets guests answer honestly, which a show of hands doesn't. Showing highlights instead of a full list at the end gives the room something to talk about without a wall of numbers. Letting the host edit the list from the control panel was the owner's call, so a host can react to the room during the evening.
+
 ## 2026-10-22: What awards cover, and how votes work (#59)
 
 **Decision:**
