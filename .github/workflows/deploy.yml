@@ -1,4 +1,6 @@
-# Deploys a merge to main: backend first (live, then staging), then the app on Vercel.
+# Deploys main: backend first (live, then staging), then the app on Vercel.
+# Releases are manual for now: run it with "Run workflow" (Actions -> Deploy) on main.
+# Set the repository variable DEPLOY_ON_MERGE to "true" to also deploy on every merge to main.
 # Any failing step stops the run before the Vercel hook, so live keeps the old app.
 name: Deploy
 
@@ -18,7 +20,12 @@ concurrency:
 jobs:
   deploy:
     # Skipped (not failed) until the repository variable HOSTING_ENABLED is "true"; see docs/hosting.md.
-    if: ${{ vars.HOSTING_ENABLED == 'true' }}
+    # A merge only deploys when DEPLOY_ON_MERGE is "true"; the manual button always can, but only on main.
+    if: >-
+      ${{ vars.HOSTING_ENABLED == 'true' && (
+        (github.event_name == 'push' && vars.DEPLOY_ON_MERGE == 'true') ||
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      ) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
