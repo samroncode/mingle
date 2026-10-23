@@ -1,8 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { useQuizRun } from "@/modules/quiz/useQuizRun";
+import { useQuizScores } from "@/modules/quiz/useQuizScores";
 import { useQuizVotes } from "@/modules/quiz/useQuizVotes";
 import type { ModuleViewProps } from "../../types";
 import { QuizOptions } from "../QuizOptions";
+import { ScoreList } from "../ScoreList";
 import { quizScreen } from "../screen";
 
 /** The left side of the TV while the quiz runs. */
@@ -15,6 +17,13 @@ export function QuizTv({ event, members }: ModuleViewProps) {
       ? screen.question
       : undefined;
   const votes = useQuizVotes(shown?.id, screen.kind === "revealed");
+  // The top 3 places exist only once the quiz is finished; there are no
+  // standings between questions.
+  const scores = useQuizScores(
+    event.id,
+    screen.kind === "results",
+    run.version,
+  );
   const guests = members.filter((m) => m.role === "guest").length;
 
   return (
@@ -63,7 +72,14 @@ export function QuizTv({ event, members }: ModuleViewProps) {
         </>
       )}
       {screen.kind === "results" && (
-        <p className="text-6xl font-semibold">{t("modules.quiz.results")}</p>
+        <>
+          <h2 className="text-6xl font-semibold">
+            {t("modules.quiz.scores.title")}
+          </h2>
+          {scores && (
+            <ScoreList scores={scores} itemClassName="py-6 text-5xl" />
+          )}
+        </>
       )}
     </section>
   );

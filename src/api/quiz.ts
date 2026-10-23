@@ -168,6 +168,39 @@ export async function getQuizVotes(
   return ok(votes);
 }
 
+/** One guest's score in the quiz, with the place ties share (1, 1, 3). */
+export interface QuizScore {
+  userId: string;
+  displayName: string;
+  /** One point per right answer on played questions. */
+  score: number;
+  place: number;
+}
+
+/**
+ * The guests' scores, best first, as the viewer may read them: the host gets
+ * every guest, a guest their own row and (once the quiz is finished) the top
+ * 3 places, the TV the top 3 places once finished. Scores of questions that
+ * aren't played yet are never counted.
+ */
+export async function getQuizScores(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<QuizScore[], "unknown">> {
+  const { data, error } = await client.rpc("quiz_scores", {
+    target_event_id: eventId,
+  });
+  if (error) return fail("unknown");
+  return ok(
+    data.map((row) => ({
+      userId: row.user_id,
+      displayName: row.display_name,
+      score: row.score,
+      place: row.place,
+    })),
+  );
+}
+
 /** Answers arrive in bursts; one refetch per this long is enough. */
 const CHANGE_DELAY_MS = 300;
 

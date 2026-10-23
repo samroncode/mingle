@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-23: Quiz scores are computed in one database function
+
+**Decision:** `public.quiz_scores(event)` counts one point per right answer on revealed, approved questions for every current guest, and ranks them with competition places (1, 1, 3). The host gets every guest at any time. A guest gets their own row at any time and the top 3 places once the quiz is finished (it has questions and all are played). The TV gets the top 3 places once finished. Non-members get nothing. Scores are keyed by member, so a rename keeps them, and a guest who joined late has 0 for what they missed. The app has the same ranking as `competitionPlaces` in `src/lib/quiz/places.ts`; both are tested against the cases in `places.cases.ts`.
+
+**Why:** No client may read other guests' answers or the right answers of unplayed questions, so the count has to run as `security definer`. One function with the role rules inside it keeps "no standings between questions" in the database instead of in the views. The top 3 places can be more than 3 rows when guests tie; that is the intended reading of "top 3 places".
+
 ## 2026-10-22: Three more root files move into their folders
 
 **Decision:** `tsconfig.app.json` moved to `src/tsconfig.json`, `tsconfig.db.json` to `supabase/tests/tsconfig.json`, and `playwright.config.ts` to `e2e/playwright.config.ts` (`npm run test:e2e` passes `-c`). This updates the 2026-10-21 entry "Loose docs live in docs/": the root keeps `tsconfig.json`, `tsconfig.node.json`, `vite.config.ts` and the other tool config. The README has a "What's where" section.

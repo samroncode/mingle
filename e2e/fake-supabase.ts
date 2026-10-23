@@ -133,7 +133,7 @@ export async function fakeTv(page: Page, options: TvFakeOptions) {
     return json(route, 200, options.join ?? { event_id: "e1", error: null });
   });
   await page.route(
-    /\/rest\/v1\/(quiz_questions|quiz_answers|rpc\/quiz_(progress|votes))/,
+    /\/rest\/v1\/(quiz_questions|quiz_answers|rpc\/quiz_(progress|votes|scores))/,
     (route) => {
       if (answerPreflight(route)) return;
       if (!answerQuiz(route, options.quiz ?? { rows: [] })) {
@@ -293,6 +293,8 @@ export interface FakeQuiz {
   answeredBy?: string[];
   /** Votes per option once the question is revealed (A to D). */
   votes?: number[];
+  /** What quiz_scores gives the viewer: name, points and place, best first. */
+  scores?: Array<{ name: string; score: number; place: number }>;
 }
 
 /**
@@ -306,6 +308,19 @@ function answerQuiz(route: Route, quiz: FakeQuiz): boolean {
       route,
       200,
       (quiz.votes ?? []).map((votes, option) => ({ option, votes })),
+    );
+    return true;
+  }
+  if (url.includes("/rest/v1/rpc/quiz_scores")) {
+    void json(
+      route,
+      200,
+      (quiz.scores ?? []).map(({ name, score, place }, i) => ({
+        user_id: `g${i}`,
+        display_name: name,
+        score,
+        place,
+      })),
     );
     return true;
   }
@@ -348,6 +363,8 @@ interface FakeHostPanelOptions {
   played?: number;
   /** Who has answered the question on show, by user id. */
   answeredBy?: string[];
+  /** What quiz_scores gives the host. */
+  scores?: FakeQuiz["scores"];
   /** The guests of the event, on top of the host. */
   guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
@@ -377,6 +394,7 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
       rows: options.quiz ?? [],
       played: options.played,
       answeredBy: options.answeredBy,
+      scores: options.scores,
     };
     if (answerQuiz(route, quiz)) return;
     if (url.includes("code=eq.")) {

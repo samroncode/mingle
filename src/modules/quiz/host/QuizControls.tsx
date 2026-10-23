@@ -67,6 +67,7 @@ export function QuizControls({
         startDisabled={startDisabled}
         startLabelKey="modules.quiz.run.start"
         next={next}
+        stopLabelKey={next ? undefined : "modules.quiz.run.backToParty"}
       />
     </div>
   );

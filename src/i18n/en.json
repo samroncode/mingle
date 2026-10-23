@@ -105,14 +105,15 @@
       "counter": "Question {{number}} of {{total}}",
       "answered": "{{count}} of {{total}} answered",
       "progress": "question {{number}} of {{total}}",
-      "results": "That was the last question! The results are coming.",
+      "results": "That was the last question! Here are the results.",
       "run": {
         "start": "Start quiz",
         "open": "Show question",
         "reveal": "Reveal",
         "next": "Next question",
         "results": "Show results",
-        "finished": "Every question has been played."
+        "finished": "Every question has been played.",
+        "backToParty": "Back to party screen"
       },
       "tv": {
         "ready": "Get ready!"
@@ -124,7 +125,20 @@
         "errors": {
           "question_closed": "Too late, the answer is revealed.",
           "unknown": "Your answer didn't go through. Try again."
-        }
+        },
+        "scoreSoFar_one": "Your score so far: {{count}} point",
+        "scoreSoFar_other": "Your score so far: {{count}} points",
+        "finalPlace": "You finished in place {{place}}",
+        "finalScore_one": "You got {{count}} point",
+        "finalScore_other": "You got {{count}} points"
+      },
+      "scores": {
+        "title": "Results",
+        "all": "All scores",
+        "empty": "No guests have joined yet.",
+        "place": "Place {{place}}",
+        "points_one": "{{count}} point",
+        "points_other": "{{count}} points"
       }
     },
     "awards": {

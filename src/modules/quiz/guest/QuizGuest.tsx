@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useQuizRun } from "@/modules/quiz/useQuizRun";
+import { useQuizScores } from "@/modules/quiz/useQuizScores";
 import type { ModuleGuestViewProps } from "../../types";
 import { quizScreen } from "../screen";
 import { GuestQuestion } from "./GuestQuestion";
@@ -9,6 +10,12 @@ export function QuizGuest({ event, userId }: ModuleGuestViewProps) {
   const { t } = useTranslation();
   const run = useQuizRun(event);
   const screen = quizScreen(event, run.progress, run.questions);
+  const scores = useQuizScores(
+    event.id,
+    screen.kind === "revealed" || screen.kind === "results",
+    run.version,
+  );
+  const mine = scores?.find((row) => row.userId === userId);
 
   return (
     <section
@@ -33,10 +40,25 @@ export function QuizGuest({ event, userId }: ModuleGuestViewProps) {
           number={screen.number}
           total={screen.total}
           correct={screen.kind === "revealed" ? screen.correct : null}
+          score={screen.kind === "revealed" ? mine?.score : undefined}
         />
       )}
       {screen.kind === "results" && (
-        <p className="text-2xl font-semibold">{t("modules.quiz.results")}</p>
+        <>
+          <h2 className="text-2xl font-semibold">
+            {t("modules.quiz.scores.title")}
+          </h2>
+          {mine && (
+            <div data-testid="quiz-final" className="space-y-1">
+              <p className="text-4xl font-bold">
+                {t("modules.quiz.guest.finalPlace", { place: mine.place })}
+              </p>
+              <p className="text-lg">
+                {t("modules.quiz.guest.finalScore", { count: mine.score })}
+              </p>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
