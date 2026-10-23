@@ -13,6 +13,15 @@ import {
   type QuizAction,
   type QuizDraft,
 } from "./quiz";
+import {
+  awardsReducer,
+  emptyAwards,
+  invalidOwnAwardKeys,
+  resetBuiltinAwards,
+  toAwardCategories,
+  type AwardsAction,
+  type AwardsDraft,
+} from "./awards";
 
 /** The setup wizard's steps, in order. */
 export const stepOrder = [
@@ -20,6 +29,7 @@ export const stepOrder = [
   "language",
   "activities",
   "quiz",
+  "awards",
   "welcome",
   "menu",
   "schedule",
@@ -33,14 +43,21 @@ export function isSkippable(step: WizardStep): boolean {
   return stepOrder.indexOf(step) > stepOrder.indexOf("language");
 }
 
+/** The steps that belong to an activity, shown only while it is on. */
+const moduleSteps: Partial<Record<WizardStep, ModuleId>> = {
+  quiz: "quiz",
+  awards: "awards",
+};
+
 /**
- * The steps this draft goes through, in order: the quiz step only appears
- * while the quiz is switched on.
+ * The steps this draft goes through, in order: an activity's step (quiz,
+ * awards) only appears while that activity is switched on.
  */
 export function stepsFor(draft: WizardDraft): WizardStep[] {
-  return stepOrder.filter(
-    (step) => step !== "quiz" || draft.enabledModules.includes("quiz"),
-  );
+  return stepOrder.filter((step) => {
+    const module = moduleSteps[step];
+    return module === undefined || draft.enabledModules.includes(module);
+  });
 }
 
 export interface ScheduleLine {
@@ -70,6 +87,7 @@ export interface WizardDraft {
   language: Language;
   enabledModules: ModuleId[];
   quiz: QuizDraft;
+  awards: AwardsDraft;
   party: PartyForm;
 }
 
@@ -81,6 +99,7 @@ export type WizardAction =
   | { type: "set_language"; language: Language }
   | { type: "toggle_module"; module: ModuleId }
   | { type: "quiz"; action: QuizAction }
+  | { type: "awards"; action: AwardsAction }
   | { type: "skip" }
   | { type: "set_welcome"; text: string }
   | { type: "set_menu"; menu: string[] }
@@ -110,6 +129,7 @@ export function initialDraft(language: Language): WizardDraft {
     language,
     enabledModules: [...getNiche(firstNiche).defaultModules],
     quiz: emptyQuiz,
+    awards: emptyAwards,
     party: emptyParty(firstNiche, language),
   };
 }
@@ -151,7 +171,7 @@ function clearStep(draft: WizardDraft): WizardDraft {
 
 function moveStep(draft: WizardDraft, offset: number): WizardStep {
   const steps = stepsFor(draft);
-  // A step that is switched off (the quiz) counts as the one before it.
+  // A step that is switched off (an activity's) counts as the one before it.
   const current = Math.max(
     steps.findIndex(
       (step) => stepOrder.indexOf(step) >= stepOrder.indexOf(draft.step),
@@ -182,6 +202,10 @@ export function wizardReducer(
           action.niche === draft.niche
             ? draft.quiz
             : resetBuiltinQuiz(draft.quiz),
+        awards:
+          action.niche === draft.niche
+            ? draft.awards
+            : resetBuiltinAwards(draft.awards),
       });
     case "set_language":
       return followWelcome({ ...draft, language: action.language });
@@ -194,6 +218,11 @@ export function wizardReducer(
       };
     case "quiz":
       return { ...draft, quiz: quizReducer(draft.quiz, action.action) };
+    case "awards":
+      return {
+        ...draft,
+        awards: awardsReducer(draft.awards, action.action),
+      };
     case "skip": {
       const cleared = clearStep(draft);
       return { ...cleared, step: moveStep(cleared, 1) };
@@ -280,6 +309,21 @@ export function quizIsInvalid(draft: WizardDraft): boolean {
   );
 }
 
+/** Whether the awards step has categories that break the shared schema. */
+export function awardsIsInvalid(draft: WizardDraft): boolean {
+  return (
+    draft.enabledModules.includes("awards") &&
+    invalidOwnAwardKeys(draft.awards).length > 0
+  );
+}
+
+/** Whether the step holds something invalid; Next is blocked while it does. */
+export function stepIsInvalid(draft: WizardDraft, step: WizardStep): boolean {
+  if (step === "quiz") return quizIsInvalid(draft);
+  if (step === "awards") return awardsIsInvalid(draft);
+  return stepInvalidFields(draft.party, step).length > 0;
+}
+
 /**
  * The first step, in step order, that holds something invalid, or undefined
  * when everything is valid. Create sends the host there instead of sending.
@@ -287,12 +331,7 @@ export function quizIsInvalid(draft: WizardDraft): boolean {
 export function firstInvalidDraftStep(
   draft: WizardDraft,
 ): WizardStep | undefined {
-  const partyStep = firstInvalidStep(draft.party);
-  if (!quizIsInvalid(draft)) return partyStep;
-  if (!partyStep) return "quiz";
-  return stepOrder.indexOf("quiz") < stepOrder.indexOf(partyStep)
-    ? "quiz"
-    : partyStep;
+  return stepOrder.find((step) => stepIsInvalid(draft, step));
 }
 
 /** The input for `createEvent`: the `create_event` request without its action. */
@@ -305,10 +344,15 @@ export function toCreateInput(
     enabledModules: draft.enabledModules,
     party: toParty(draft.party),
   };
-  // Questions only go with the quiz switched on, and only once there are some.
+  // Questions and categories only go with their activity switched on, and
+  // only once there are some.
   if (draft.enabledModules.includes("quiz")) {
     const quiz = toQuizQuestions(draft.niche, draft.language, draft.quiz);
     if (quiz.length > 0) input.quiz = quiz;
+  }
+  if (draft.enabledModules.includes("awards")) {
+    const awards = toAwardCategories(draft.niche, draft.language, draft.awards);
+    if (awards.length > 0) input.awards = awards;
   }
   return input;
 }

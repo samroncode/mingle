@@ -155,7 +155,11 @@
     },
     "awards": {
       "name": "Awards",
-      "description": "Vote on who is most likely to...?"
+      "description": "Vote on who is most likely to...?",
+      "host": {
+        "empty": "There are no categories in these awards yet.",
+        "loadFailed": "Couldn't load the categories. Reload to try again."
+      }
     },
     "hottakes": {
       "name": "Hot takes",
@@ -185,6 +189,7 @@
       "language": "Language",
       "activities": "Activities",
       "quiz": "Quiz questions",
+      "awards": "Award categories",
       "welcome": "Welcome text",
       "menu": "Menu",
       "schedule": "Schedule",
@@ -200,7 +205,9 @@
       "change": "Change {{step}}",
       "skipped": "Skipped",
       "quizQuestions_one": "{{count}} question",
-      "quizQuestions_other": "{{count}} questions"
+      "quizQuestions_other": "{{count}} questions",
+      "awardCategories_one": "{{count}} category",
+      "awardCategories_other": "{{count}} categories"
     },
     "create": "Create event",
     "creating": "Creating...",
@@ -264,6 +271,23 @@
       "ownHint": "Write four options and tick the right one.",
       "errors": {
         "incomplete": "Question {{n}} needs a question and four options."
+      }
+    },
+    "awards": {
+      "count": "{{count}} of {{max}} categories picked",
+      "empty": "No categories picked. Add a ready-made one below or write your own.",
+      "addOwn": "Add your own category",
+      "full": "The awards are full ({{max}} categories). Remove one to add another.",
+      "more": "More ready-made categories",
+      "add": "Add",
+      "addCategory": "Add the category: {{text}}",
+      "moveUp": "Move category {{n}} up",
+      "moveDown": "Move category {{n}} down",
+      "remove": "Remove category {{n}}",
+      "categoryText": "Text of category {{n}}",
+      "categoryPlaceholder": "Most likely to…",
+      "errors": {
+        "empty": "Category {{n}} needs a text of 1 to {{max}} characters."
       }
     }
   },

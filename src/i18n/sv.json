@@ -155,7 +155,11 @@
     },
     "awards": {
       "name": "Utmärkelser",
-      "description": "Rösta på vem som är mest benägen att...?"
+      "description": "Rösta på vem som är mest benägen att...?",
+      "host": {
+        "empty": "Det finns inga kategorier i utmärkelserna än.",
+        "loadFailed": "Kunde inte läsa in kategorierna. Ladda om för att försöka igen."
+      }
     },
     "hottakes": {
       "name": "Het åsikt",
@@ -185,6 +189,7 @@
       "language": "Språk",
       "activities": "Aktiviteter",
       "quiz": "Quizfrågor",
+      "awards": "Kategorier för utmärkelser",
       "welcome": "Välkomsttext",
       "menu": "Meny",
       "schedule": "Program",
@@ -200,7 +205,9 @@
       "change": "Ändra {{step}}",
       "skipped": "Hoppades över",
       "quizQuestions_one": "{{count}} fråga",
-      "quizQuestions_other": "{{count}} frågor"
+      "quizQuestions_other": "{{count}} frågor",
+      "awardCategories_one": "{{count}} kategori",
+      "awardCategories_other": "{{count}} kategorier"
     },
     "create": "Skapa event",
     "creating": "Skapar...",
@@ -264,6 +271,23 @@
       "ownHint": "Skriv fyra alternativ och markera det rätta.",
       "errors": {
         "incomplete": "Fråga {{n}} behöver en fråga och fyra alternativ."
+      }
+    },
+    "awards": {
+      "count": "{{count}} av {{max}} kategorier valda",
+      "empty": "Inga kategorier valda. Lägg till en färdig kategori nedan eller skriv en egen.",
+      "addOwn": "Lägg till egen kategori",
+      "full": "Utmärkelserna är fulla ({{max}} kategorier). Ta bort en kategori för att lägga till en ny.",
+      "more": "Fler färdiga kategorier",
+      "add": "Lägg till",
+      "addCategory": "Lägg till kategorin: {{text}}",
+      "moveUp": "Flytta kategori {{n}} uppåt",
+      "moveDown": "Flytta kategori {{n}} nedåt",
+      "remove": "Ta bort kategori {{n}}",
+      "categoryText": "Text för kategori {{n}}",
+      "categoryPlaceholder": "Mest sannolik att…",
+      "errors": {
+        "empty": "Kategori {{n}} behöver en text på 1 till {{max}} tecken."
       }
     }
   },

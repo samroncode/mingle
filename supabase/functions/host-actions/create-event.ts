@@ -46,6 +46,7 @@ export async function createEvent(
       party: request.party,
       admin_key_hash: adminKeyHash,
       quiz: request.quiz ?? [],
+      awards: request.awards ?? [],
     });
     if (error) return databaseFailed("create_event", error);
     if (eventId !== null) {

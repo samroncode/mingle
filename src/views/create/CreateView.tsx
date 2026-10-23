@@ -7,14 +7,15 @@ import { isLanguage } from "@/i18n/language";
 import type { CreateEventResponse } from "@/lib/schemas/host-actions";
 import { addMyEvent } from "@/lib/guest/my-events";
 import { moduleDefinitions } from "@/modules/definitions";
+import { isModuleId } from "@/modules/registry";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/wizard/draft-storage";
 import { createErrorKey } from "@/lib/wizard/create-error";
 import {
   firstInvalidDraftStep,
   initialDraft,
   isSkippable,
-  quizIsInvalid,
   stepInvalidFields,
+  stepIsInvalid,
   stepsFor,
   wizardReducer,
 } from "@/lib/wizard/state";
@@ -46,12 +47,14 @@ export function CreateView() {
 
   const steps = stepsFor(draft);
   const stepIndex = steps.indexOf(draft.step);
-  const QuizStep = moduleDefinitions.quiz?.WizardStep;
+  // The quiz and awards steps come from their activity's definition.
+  const ModuleStep = isModuleId(draft.step)
+    ? moduleDefinitions[draft.step]?.WizardStep
+    : undefined;
   const isFirst = stepIndex === 0;
   const isLast = draft.step === "summary";
   const invalid = stepInvalidFields(draft.party, draft.step);
-  const blocked =
-    invalid.length > 0 || (draft.step === "quiz" && quizIsInvalid(draft));
+  const blocked = stepIsInvalid(draft, draft.step);
 
   if (created) {
     return (
@@ -96,9 +99,7 @@ export function CreateView() {
             onToggle={(module) => dispatch({ type: "toggle_module", module })}
           />
         )}
-        {draft.step === "quiz" && QuizStep && (
-          <QuizStep draft={draft} dispatch={dispatch} />
-        )}
+        {ModuleStep && <ModuleStep draft={draft} dispatch={dispatch} />}
         {draft.step === "welcome" && (
           <WelcomeStep
             value={draft.party.welcome}

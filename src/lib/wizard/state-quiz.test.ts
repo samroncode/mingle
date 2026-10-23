@@ -42,7 +42,8 @@ describe("the quiz step", () => {
       { type: "go_to", step: "activities" },
       { type: "next" },
     );
-    expect(next.step).toBe("welcome");
+    // The aw niche has awards on too, so their step comes next.
+    expect(next.step).toBe("awards");
     expect(run(next, { type: "back" }).step).toBe("activities");
   });
 
@@ -54,7 +55,7 @@ describe("the quiz step", () => {
       { type: "go_to", step: "quiz" },
       { type: "skip" },
     );
-    expect(draft.step).toBe("welcome");
+    expect(draft.step).toBe("awards");
     expect(draft.quiz.items).toHaveLength(2);
   });
 

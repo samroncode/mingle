@@ -1,3 +1,7 @@
+import { AwardsGuest } from "./awards/guest/AwardsGuest";
+import { AwardsHost } from "./awards/host/AwardsHost";
+import { AwardsTv } from "./awards/tv/AwardsTv";
+import { AwardsStep } from "./awards/wizard/AwardsStep";
 import { QuizGuest } from "./quiz/guest/QuizGuest";
 import { QuizHost } from "./quiz/host/QuizHost";
 import { QuizTv } from "./quiz/tv/QuizTv";
@@ -20,5 +24,13 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Host: QuizHost,
     useProgress: useQuizProgressText,
     WizardStep: QuizStep,
+  },
+  awards: {
+    id: "awards",
+    nameKey: "modules.awards.name",
+    Tv: AwardsTv,
+    Guest: AwardsGuest,
+    Host: AwardsHost,
+    WizardStep: AwardsStep,
   },
 };

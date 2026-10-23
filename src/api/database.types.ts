@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      award_categories: {
+        Row: {
+          event_id: string;
+          id: string;
+          position: number;
+          revealed_at: string | null;
+          status: string;
+          text: string;
+          vote_count: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          event_id: string;
+          id?: string;
+          position: number;
+          revealed_at?: string | null;
+          status?: string;
+          text: string;
+          vote_count?: number;
+        };
+        Update: {
+          event_id?: string;
+          id?: string;
+          position?: number;
+          revealed_at?: string | null;
+          status?: string;
+          text?: string;
+          vote_count?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "award_categories_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       events: {
         Row: {
           code: string;
@@ -203,6 +242,15 @@ export type Database = {
         Args: { target_event_id: string; target_question_id: string };
         Returns: boolean;
       };
+      can_read_award_category: {
+        Args: {
+          category_position: number;
+          category_revealed_at: string;
+          category_status: string;
+          target_event_id: string;
+        };
+        Returns: boolean;
+      };
       can_read_quiz_key: {
         Args: { target_question_id: string };
         Returns: boolean;
@@ -232,6 +280,7 @@ export type Database = {
       create_event: {
         Args: {
           admin_key_hash: string;
+          awards?: Json;
           caller: string;
           code: string;
           enabled_modules: string[];
