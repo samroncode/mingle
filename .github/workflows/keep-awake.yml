@@ -1,5 +1,5 @@
-# Free Supabase projects sleep after a week without activity. This reads one row
-# from each project every day and fails the run if either does not answer.
+# Free Supabase projects sleep after a week without activity. This calls the
+# `ping` function on each project every day and fails the run if either does not answer.
 # GitHub switches scheduled workflows off after 60 days without repo activity;
 # re-enable it from the Actions tab if that happens.
 name: Keep awake
@@ -26,9 +26,12 @@ jobs:
       SUPABASE_URL: ${{ matrix.target == 'live' && secrets.LIVE_SUPABASE_URL || secrets.STAGING_SUPABASE_URL }}
       SUPABASE_KEY: ${{ matrix.target == 'live' && secrets.LIVE_SUPABASE_PUBLISHABLE_KEY || secrets.STAGING_SUPABASE_PUBLISHABLE_KEY }}
     steps:
-      - name: Read one row from ${{ matrix.target }}
+      - name: Ping ${{ matrix.target }}
         run: |
           echo "::add-mask::$SUPABASE_URL"
           curl --fail --silent --show-error --max-time 30 --output /dev/null \
+            --request POST \
             --header "apikey: $SUPABASE_KEY" \
-            "$SUPABASE_URL/rest/v1/events?select=id&limit=1"
+            --header "Content-Type: application/json" \
+            --data '{}' \
+            "$SUPABASE_URL/rest/v1/rpc/ping"

@@ -320,6 +320,7 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      ping: { Args: never; Returns: boolean };
       quiz_progress: {
         Args: { target_event_id: string };
         Returns: {
