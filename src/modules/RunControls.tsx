@@ -24,6 +24,8 @@ interface RunControlsProps {
   startLabelKey: ParseKeys;
   /** The activity's next move, or null when there is none left. */
   next: NextMove | null;
+  /** i18n key of the Stop button's label; "Stop" unless given. */
+  stopLabelKey?: ParseKeys;
 }
 
 /**
@@ -38,6 +40,7 @@ export function RunControls({
   startDisabled,
   startLabelKey,
   next,
+  stopLabelKey = "hostPanel.stop",
 }: RunControlsProps) {
   const { t } = useTranslation();
   const { busy, error, run } = useHostAction();
@@ -66,7 +69,7 @@ export function RunControls({
               disabled={busy}
               onClick={() => send({ type: "stop_module" })}
             >
-              {t("hostPanel.stop")}
+              {t(stopLabelKey)}
             </Button>
           </>
         ) : (

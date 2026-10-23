@@ -278,6 +278,15 @@ export type Database = {
           total: number;
         }[];
       };
+      quiz_scores: {
+        Args: { target_event_id: string };
+        Returns: {
+          display_name: string;
+          place: number;
+          score: number;
+          user_id: string;
+        }[];
+      };
       quiz_votes: {
         Args: { target_question_id: string };
         Returns: {

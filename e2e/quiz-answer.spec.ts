@@ -15,6 +15,15 @@ const question = {
 /** What the fake database holds, which the test changes as the quiz moves. */
 interface QuizWorld {
   phase: "open" | "revealed";
+  /** The quiz step; 2 is the results step, after the last question. */
+  step?: number;
+  /** What quiz_scores gives this guest. */
+  scores?: Array<{
+    user_id: string;
+    display_name: string;
+    score: number;
+    place: number;
+  }>;
   /** The guest's stored answer. */
   chosen: number | null;
   /** The requests that wrote an answer. */
@@ -47,7 +56,7 @@ async function fakeQuiz(page: Page, world: QuizWorld) {
           enabled_modules: ["quiz"],
           status: "live",
           current_module: "quiz",
-          current_step: 0,
+          current_step: world.step ?? 0,
           phase: world.phase,
         }),
         members: [memberRow({ display_name: "Anna" })],
@@ -58,6 +67,9 @@ async function fakeQuiz(page: Page, world: QuizWorld) {
     json(route, 200, [
       { total: 2, played: world.phase === "revealed" ? 1 : 0 },
     ]),
+  );
+  await page.route(`${supabase}/rest/v1/rpc/quiz_scores`, (route) =>
+    json(route, 200, world.scores ?? []),
   );
   await page.route(`${supabase}/rest/v1/quiz_questions*`, (route) =>
     json(route, 200, [
@@ -143,6 +155,35 @@ test("a guest answers, changes the answer and sees the result after the reveal",
 
   await expect(page.getByTestId("quiz-result")).toHaveText("Right! +1");
   await expect(quiz.getByRole("button")).toHaveCount(0);
+});
+
+test("a guest sees their score after a reveal and their place at the end", async ({
+  page,
+}) => {
+  const world: QuizWorld = {
+    phase: "revealed",
+    chosen: 2,
+    writes: [],
+    scores: [{ user_id: "u1", display_name: "Anna", score: 1, place: 1 }],
+  };
+  await fakeSupabase(page, []);
+  await fakeEvent(page, { code, joinedAs: "Anna" });
+  await fakeQuiz(page, world);
+
+  await page.goto(`/p/${code}`);
+  await expect(page.getByTestId("quiz-score")).toHaveText(
+    "Your score so far: 1 point",
+  );
+
+  world.step = 2;
+  world.scores = [{ user_id: "u1", display_name: "Anna", score: 2, place: 3 }];
+  await refetch(page);
+  await expect(page.getByTestId("quiz-final")).toContainText(
+    "You finished in place 3",
+  );
+  await expect(page.getByTestId("quiz-final")).toContainText(
+    "You got 2 points",
+  );
 });
 
 test("a guest who picked wrong is told the right answer", async ({ page }) => {

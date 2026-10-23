@@ -14,6 +14,8 @@ interface GuestQuestionProps {
   total: number;
   /** The right option once revealed; null while the question is open. */
   correct: number | null;
+  /** The guest score so far once revealed; undefined until it is read. */
+  score?: number;
 }
 
 /**
@@ -28,6 +30,7 @@ export function GuestQuestion({
   number,
   total,
   correct,
+  score,
 }: GuestQuestionProps) {
   const { t } = useTranslation();
   // undefined until the stored answer is read, so a reload right after the
@@ -85,6 +88,11 @@ export function GuestQuestion({
                 : t("modules.quiz.guest.answerWas", {
                     letter: optionLetters[correct],
                   })}
+            </p>
+          )}
+          {score !== undefined && (
+            <p data-testid="quiz-score" className="text-muted-foreground">
+              {t("modules.quiz.guest.scoreSoFar", { count: score })}
             </p>
           )}
         </>

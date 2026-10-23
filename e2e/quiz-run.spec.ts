@@ -118,6 +118,36 @@ test.describe("the control panel", () => {
     ]);
   });
 
+  test("shows the full score list and Back to party screen on the results step", async ({
+    page,
+  }) => {
+    await fakeSupabase(page, [() => [200, {}]]);
+    await fakeHostPanel(page, {
+      code,
+      enabledModules: ["quiz"],
+      quiz: questions,
+      played: 2,
+      flow: quizAt(2, "idle"),
+      scores: [
+        { name: "Anna", score: 2, place: 1 },
+        { name: "Dennis", score: 0, place: 2 },
+      ],
+    });
+
+    await page.goto(`/host/${code}#key=${key}`);
+
+    const panel = page.getByTestId("quiz-host");
+    await expect(
+      panel.getByTestId("quiz-scores").getByRole("listitem"),
+    ).toHaveText(["1Anna2 points", "2Dennis0 points"]);
+    await expect(
+      panel.getByRole("button", { name: "Back to party screen" }),
+    ).toBeVisible();
+    await expect(
+      panel.getByRole("button", { name: "Show results" }),
+    ).toHaveCount(0);
+  });
+
   test("labels the one button for each phase", async ({ page }) => {
     await fakeSupabase(page, [() => [200, {}]]);
     await fakeHostPanel(page, {
@@ -228,6 +258,35 @@ test.describe("the TV", () => {
     ]);
     await expect(quiz.getByTestId("quiz-bar")).toHaveCount(4);
     await expect(quiz.getByTestId("quiz-answered")).toHaveCount(0);
+  });
+
+  test("shows the top 3 places with names and points on the results step", async ({
+    page,
+  }) => {
+    await fakeSupabase(page, []);
+    await fakeTv(page, {
+      snapshot: snapshot(2, "revealed"),
+      quiz: {
+        rows: [],
+        total: 2,
+        played: 2,
+        scores: [
+          { name: "Anna", score: 2, place: 1 },
+          { name: "Bertil", score: 2, place: 1 },
+          { name: "Cecilia", score: 1, place: 3 },
+        ],
+      },
+    });
+
+    await page.goto(`/tv/${code}`);
+
+    const quiz = page.getByTestId("quiz-tv");
+    await expect(quiz.getByRole("heading")).toHaveText("Results");
+    await expect(quiz.getByRole("listitem")).toHaveText([
+      "1Anna2 points",
+      "1Bertil2 points",
+      "3Cecilia1 point",
+    ]);
   });
 
   test("highlights the right option after the reveal", async ({ page }) => {

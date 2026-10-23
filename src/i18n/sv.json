@@ -105,14 +105,15 @@
       "counter": "Fråga {{number}} av {{total}}",
       "answered": "{{count}} av {{total}} har svarat",
       "progress": "fråga {{number}} av {{total}}",
-      "results": "Det var sista frågan! Resultatet kommer.",
+      "results": "Det var sista frågan! Här är resultatet.",
       "run": {
         "start": "Starta quizet",
         "open": "Visa frågan",
         "reveal": "Visa svaret",
         "next": "Nästa fråga",
         "results": "Visa resultatet",
-        "finished": "Alla frågor är spelade."
+        "finished": "Alla frågor är spelade.",
+        "backToParty": "Tillbaka till festskärmen"
       },
       "tv": {
         "ready": "Gör er redo!"
@@ -124,7 +125,19 @@
         "errors": {
           "question_closed": "För sent, svaret är avslöjat.",
           "unknown": "Ditt svar kom inte fram. Försök igen."
-        }
+        },
+        "scoreSoFar_one": "Din poäng hittills: {{count}} poäng",
+        "scoreSoFar_other": "Din poäng hittills: {{count}} poäng",
+        "finalPlace": "Du kom på plats {{place}}",
+        "finalScore_one": "Du fick {{count}} poäng",
+        "finalScore_other": "Du fick {{count}} poäng"
+      },
+      "scores": {
+        "title": "Resultat",
+        "all": "Alla poäng",
+        "empty": "Inga gäster har gått med än.",
+        "points_one": "{{count}} poäng",
+        "points_other": "{{count}} poäng"
       }
     },
     "awards": {

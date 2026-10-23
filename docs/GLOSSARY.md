@@ -136,6 +136,10 @@ A question, award category or hot take that has been revealed. Played steps can'
 A guest's points in the quiz: one per right answer on played questions.
 _Avoid_: Points total, result
 
+**Place**:
+A guest's rank by score. Ties share a place and the next place skips ahead (1, 1, 3).
+_Avoid_: Position (that is a question's order), rank
+
 **Awards**:
 The activity where guests vote for another guest in "Most likely to…" categories, and the winner of each is revealed on the TV.
 _Avoid_: Nominations, superlatives
