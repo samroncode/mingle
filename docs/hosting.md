@@ -18,7 +18,7 @@ How Mingle runs online, and the one-time checklist to put it there. Everything i
   - **Automatic deploys later.** To deploy on every merge to `main`, add the repository variable `DEPLOY_ON_MERGE` with value `true` (Settings → Secrets and variables → Actions → Variables). Delete it, or set it to anything else, to go back to manual. No code change is needed either way. The manual button keeps working in both modes.
   - `HOSTING_ENABLED` still has to be `true` for any deploy, manual or automatic.
 - **Staging** (`.github/workflows/staging.yml`, manual): run it with a branch name to put that branch's migrations and functions on staging, so its preview link works. Tick **reset** to wipe staging and put it back to `main` (the branch is ignored).
-- **Keep awake** (`.github/workflows/keep-awake.yml`): once a day it reads one row from both projects so neither goes to sleep.
+- **Keep awake** (`.github/workflows/keep-awake.yml`): once a day it calls the `ping` function (migration `20261023130000_ping.sql`) on both projects so neither goes to sleep. It needs that migration deployed first, so run Deploy before the first Keep awake run.
 - **Preview deploys** of PR branches are made by Vercel itself.
 
 Live only changes through the Deploy workflow, started by the owner (the Run workflow button, or a merge once `DEPLOY_ON_MERGE` is on). Agents never deploy by hand.
