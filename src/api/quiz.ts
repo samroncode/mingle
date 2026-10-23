@@ -19,6 +19,8 @@ export interface QuizQuestionView {
   correct: number | null;
   /** How many guests have answered; changed answers aren't counted twice. */
   answerCount: number;
+  /** Revealed, so it counts as played and can't be changed any more. */
+  played: boolean;
 }
 
 /** How far the quiz has come: approved questions, and how many are played. */
@@ -55,7 +57,7 @@ export async function listQuizQuestions(
   const { data, error } = await client
     .from("quiz_questions")
     .select(
-      "id, position, text, options, answer_count, quiz_answer_keys(correct)",
+      "id, position, text, options, answer_count, revealed_at, quiz_answer_keys(correct)",
     )
     .eq("event_id", eventId)
     .order("position");
@@ -68,6 +70,8 @@ export async function listQuizQuestions(
       options: row.options,
       correct: row.quiz_answer_keys?.correct ?? null,
       answerCount: row.answer_count,
+      // The test fakes may leave the time out.
+      played: Boolean(row.revealed_at),
     })),
   );
 }

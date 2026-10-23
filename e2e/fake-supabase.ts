@@ -281,6 +281,8 @@ export interface FakeQuizRow {
   correct: number | null;
   /** How many guests have answered; defaults to 0. */
   answerCount?: number;
+  /** Revealed, so it counts as played. */
+  played?: boolean;
 }
 
 /** The quiz a fake serves: the readable questions and the progress counts. */
@@ -342,9 +344,10 @@ function answerQuiz(route: Route, quiz: FakeQuiz): boolean {
     void json(
       route,
       200,
-      quiz.rows.map(({ correct, answerCount, ...row }) => ({
+      quiz.rows.map(({ correct, answerCount, played, ...row }) => ({
         ...row,
         answer_count: answerCount ?? 0,
+        revealed_at: played ? "2026-10-23T19:00:00Z" : null,
         quiz_answer_keys: correct === null ? null : { correct },
       })),
     );

@@ -102,6 +102,19 @@
         "rightAnswer": "Right answer",
         "loadFailed": "Couldn't load the questions. Reload to try again."
       },
+      "edit": {
+        "edit": "Edit questions",
+        "save": "Save questions",
+        "cancel": "Cancel",
+        "played": "Played questions",
+        "locked": "Played, can't be changed",
+        "errors": {
+          "incomplete": "Finish or remove the questions marked above, then save again.",
+          "invalid_transition": "Questions can't be changed while a question is on the TV, once the quiz is finished or after the evening has ended.",
+          "module_disabled": "The quiz is switched off for this evening.",
+          "invalid_request": "Check the questions: each needs a question and four options, and the quiz holds at most 30."
+        }
+      },
       "counter": "Question {{number}} of {{total}}",
       "answered": "{{count}} of {{total}} answered",
       "progress": "question {{number}} of {{total}}",

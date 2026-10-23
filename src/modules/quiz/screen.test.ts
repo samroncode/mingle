@@ -9,6 +9,7 @@ const question: QuizQuestionView = {
   options: ["Sydney", "Melbourne", "Canberra", "Perth"],
   correct: null,
   answerCount: 0,
+  played: false,
 };
 const progress = { total: 10, played: 2 };
 
