@@ -226,6 +226,155 @@ describe("quiz questions", () => {
   });
 });
 
+describe("award categories", () => {
+  const withAwards = { ...createEvent, enabledModules: ["awards"] };
+  const category = (n: number) => ({ text: `Mest sannolik att ${n}` });
+
+  /** The categories of the event, read as the service role. */
+  async function storedAwards(code: string) {
+    const service = serviceClient();
+    const { data: event } = await service
+      .from("events")
+      .select("id")
+      .eq("code", code)
+      .single();
+    const { data } = await service
+      .from("award_categories")
+      .select("position, text, status, revealed_at, vote_count")
+      .eq("event_id", event?.id ?? "")
+      .order("position");
+    return data ?? [];
+  }
+
+  it("stores the categories in order, approved, from position 0", async () => {
+    const host = await anonymousUser();
+    const awards = [category(1), category(2), category(3)];
+    const response = await callHostActions(
+      { ...withAwards, awards },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+    const { code } = response.body as { code: string };
+
+    expect(await storedAwards(code)).toEqual(
+      awards.map((a, position) => ({
+        position,
+        text: a.text,
+        status: "approved",
+        revealed_at: null,
+        vote_count: 0,
+      })),
+    );
+  });
+
+  it("stores the texts trimmed", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...withAwards, awards: [{ text: "  Bäst på fika  " }] },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+    const { code } = response.body as { code: string };
+    expect((await storedAwards(code)).map((row) => row.text)).toEqual([
+      "Bäst på fika",
+    ]);
+  });
+
+  it("lets the host read what was stored, through the app's own client", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...withAwards, awards: [category(1), category(2)] },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+
+    const { data } = await host.client
+      .from("award_categories")
+      .select("position, text")
+      .order("position");
+    expect(data).toEqual([
+      { position: 0, text: "Mest sannolik att 1" },
+      { position: 1, text: "Mest sannolik att 2" },
+    ]);
+  });
+
+  it("accepts exactly 20 categories, next to quiz questions", async () => {
+    const host = await anonymousUser();
+    const awards = Array.from({ length: 20 }, (_, i) => category(i));
+    const response = await callHostActions(
+      {
+        ...createEvent,
+        enabledModules: ["quiz", "awards"],
+        quiz: [question(1)],
+        awards,
+      },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+    const { code } = response.body as { code: string };
+    expect(await storedAwards(code)).toHaveLength(20);
+  });
+
+  it("stores no categories when none are sent, or an empty list", async () => {
+    const host = await anonymousUser();
+    for (const body of [withAwards, { ...withAwards, awards: [] }]) {
+      const response = await callHostActions(body, { user: host });
+      expect(response.status).toBe(200);
+      const { code } = response.body as { code: string };
+      expect(await storedAwards(code)).toEqual([]);
+    }
+  });
+
+  it("allows an empty list with awards switched off", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...createEvent, enabledModules: [], awards: [] },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+  });
+
+  const invalid: [string, unknown][] = [
+    [
+      "more than 20 categories",
+      {
+        ...withAwards,
+        awards: Array.from({ length: 21 }, (_, i) => category(i)),
+      },
+    ],
+    [
+      "a category with an empty text",
+      { ...withAwards, awards: [{ text: "" }] },
+    ],
+    [
+      "a category with a blank text",
+      { ...withAwards, awards: [{ text: "  " }] },
+    ],
+    [
+      "a category with a too long text",
+      { ...withAwards, awards: [{ text: "x".repeat(121) }] },
+    ],
+    [
+      "a category with an unknown field",
+      { ...withAwards, awards: [{ ...category(1), status: "draft" }] },
+    ],
+    ["a category that is only a string", { ...withAwards, awards: ["Hi"] }],
+    [
+      "categories with awards switched off",
+      { ...createEvent, enabledModules: ["quiz"], awards: [category(1)] },
+    ],
+  ];
+
+  it.each(invalid)("refuses %s with invalid_request", async (_, body) => {
+    const host = await anonymousUser();
+    const response = await callHostActions(body, { user: host });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ error: "invalid_request" });
+    expect(await eventsOf(host)).toEqual([]);
+  });
+});
+
 describe("invalid requests", () => {
   const invalid: [string, unknown][] = [
     ["an unknown action", { ...createEvent, action: "drop_tables" }],

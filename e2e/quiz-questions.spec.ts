@@ -64,8 +64,8 @@ test("the host edits the picked quiz questions in the wizard", async ({
   );
   await expect(page.getByText("10 of 30 questions picked")).toBeVisible();
 
-  // Skip the rest and create.
-  for (let i = 0; i < 5; i++) {
+  // Skip the rest (awards included) and create.
+  for (let i = 0; i < 6; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
       .first()
@@ -95,11 +95,12 @@ test("the quiz step is left out when the quiz is switched off", async ({
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("switch", { name: "Quiz" }).click();
   await page.getByRole("button", { name: "Next" }).click();
+  // Awards are still on, so their step follows the activities.
   await expect(
-    page.getByRole("heading", { name: "Welcome text" }),
+    page.getByRole("heading", { name: "Award categories" }),
   ).toBeVisible();
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
       .first()

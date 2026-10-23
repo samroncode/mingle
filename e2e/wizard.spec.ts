@@ -156,7 +156,7 @@ test("remembers the created event under Your events", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Your events")).toBeHidden();
   await page.getByRole("link", { name: "Create an event" }).click();
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 9; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
       .first()
@@ -183,8 +183,8 @@ test("stops adding menu lines at the party screen's limit", async ({
   page,
 }) => {
   await page.goto("/new");
-  for (let i = 0; i < 5; i++) {
-    await page.getByRole("button", { name: "Next" }).click();
+  for (let i = 0; i < 6; i++) {
+    await page.getByRole("button", { name: "Next", exact: true }).click();
   }
   const add = page.getByRole("button", { name: "Add a line" });
   for (let i = 0; i < 20; i++) await add.click();

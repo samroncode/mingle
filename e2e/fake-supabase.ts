@@ -368,6 +368,8 @@ interface FakeHostPanelOptions {
   answeredBy?: string[];
   /** What quiz_scores gives the host. */
   scores?: FakeQuiz["scores"];
+  /** The texts of the award categories, in order. */
+  awards?: string[];
   /** The guests of the event, on top of the host. */
   guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
@@ -376,8 +378,9 @@ interface FakeHostPanelOptions {
 
 /**
  * Fakes the reads the control panel makes once the host link is claimed: the
- * event lookup by code, the snapshot, the quiz questions with their keys and
- * the realtime socket. Pair it with `fakeSupabase` for sign-in and the claim.
+ * event lookup by code, the snapshot, the quiz questions with their keys, the
+ * award categories and the realtime socket. Pair it with `fakeSupabase` for
+ * sign-in and the claim.
  */
 export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
   const event = eventRow({
@@ -400,6 +403,19 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
       scores: options.scores,
     };
     if (answerQuiz(route, quiz)) return;
+    if (url.includes("/rest/v1/award_categories")) {
+      return json(
+        route,
+        200,
+        (options.awards ?? []).map((text, position) => ({
+          id: `a${position}`,
+          position,
+          text,
+          vote_count: 0,
+          revealed_at: null,
+        })),
+      );
+    }
     if (url.includes("code=eq.")) {
       return json(route, 200, [
         { id: fakeEventId, members: [{ user_id: "u1", role: "host" }] },

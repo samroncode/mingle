@@ -227,6 +227,34 @@ export async function seedQuizQuestion(
   return data.id;
 }
 
+export type AwardCategoryFields = {
+  text?: string;
+  status?: "draft" | "approved";
+  /** Sets the revealed time, so the category counts as revealed. */
+  revealed?: boolean;
+};
+
+/** Inserts an award category with the service role. */
+export async function seedAwardCategory(
+  eventId: string,
+  position: number,
+  fields: AwardCategoryFields = {},
+): Promise<string> {
+  const { data, error } = await serviceClient()
+    .from("award_categories")
+    .insert({
+      event_id: eventId,
+      position,
+      text: fields.text ?? `Most likely to ${position + 1}`,
+      status: fields.status ?? "approved",
+      revealed_at: fields.revealed ? new Date().toISOString() : null,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id;
+}
+
 /** Sets an event's flow state with the service role, as host-actions does. */
 export async function setEventFlow(
   eventId: string,

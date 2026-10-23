@@ -7,6 +7,7 @@ import { supportedLanguages } from "../../i18n/language.ts";
 import { moduleIds } from "../../modules/registry.ts";
 import { nicheIds } from "../../niches/ids.ts";
 import { ADMIN_KEY_PATTERN, EVENT_CODE_PATTERN } from "../formats.ts";
+import { AwardCategoriesSchema } from "./awards.ts";
 import { PartySchema } from "./party.ts";
 import { QuizQuestionsSchema } from "./quiz.ts";
 
@@ -30,11 +31,18 @@ export const CreateEventRequestSchema = z
     party: PartySchema,
     /** The quiz questions picked in the wizard, in order. Needs the quiz on. */
     quiz: QuizQuestionsSchema.optional(),
+    /** The award categories picked in the wizard, in order. Needs awards on. */
+    awards: AwardCategoriesSchema.optional(),
   })
   .refine(
     (request) =>
       !request.quiz?.length || request.enabledModules.includes("quiz"),
     { path: ["quiz"], message: "quiz questions need the quiz switched on" },
+  )
+  .refine(
+    (request) =>
+      !request.awards?.length || request.enabledModules.includes("awards"),
+    { path: ["awards"], message: "award categories need awards switched on" },
   );
 
 export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;

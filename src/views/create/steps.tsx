@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { supportedLanguages, type Language } from "@/i18n/language";
+import { toAwardCategories } from "@/lib/wizard/awards";
 import { toQuizQuestions } from "@/lib/wizard/quiz";
 import { toParty, type WizardDraft, type WizardStep } from "@/lib/wizard/state";
 import { moduleIds, type ModuleId } from "@/modules/registry";
@@ -171,6 +172,21 @@ export function SummaryStep({
             value: t("wizard.summary.quizQuestions", {
               count: toQuizQuestions(draft.niche, draft.language, draft.quiz)
                 .length,
+            }),
+          },
+        ]
+      : []),
+    ...(draft.enabledModules.includes("awards")
+      ? [
+          {
+            step: "awards" as const,
+            label: t("wizard.steps.awards"),
+            value: t("wizard.summary.awardCategories", {
+              count: toAwardCategories(
+                draft.niche,
+                draft.language,
+                draft.awards,
+              ).length,
             }),
           },
         ]
