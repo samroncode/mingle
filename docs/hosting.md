@@ -68,7 +68,7 @@ Live project (`gbqquufjzugqgyqaqdcu`):
 3. Settings → Environment Variables. Only browser-safe values go here.
    - **Production**: `VITE_SUPABASE_URL` (live), `VITE_SUPABASE_PUBLISHABLE_KEY` (live), `VITE_TURNSTILE_SITE_KEY`.
    - **Preview**: `VITE_SUPABASE_URL` (staging), `VITE_SUPABASE_PUBLISHABLE_KEY` (staging). No Turnstile key.
-4. Settings → Git → turn off automatic production deploys of `main` (Ignored Build Step: `if [ "$VERCEL_ENV" = "production" ]; then exit 0; fi; exit 1`, or the equivalent "disable production branch deployments" setting). Preview deploys stay on.
+4. Automatic production deploys of `main` are already off: `vercel.json` sets `git.deploymentEnabled.main` to `false`, so there is nothing to set up. Leave Settings → Git → Ignored Build Step on **Automatic**. Do not set it to skip production builds, because that also cancels the builds the deploy hook starts. Preview deploys stay on.
 5. Settings → Git → Deploy Hooks → create a hook named `deploy` for branch `main`. Copy its URL.
 6. The team slug for the preview pattern is in your Vercel URL (`vercel.com/<team-slug>`) and in any preview address: `mingle-git-<branch>-<team-slug>.vercel.app`.
 
