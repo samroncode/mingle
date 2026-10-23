@@ -136,7 +136,6 @@
         "title": "Resultat",
         "all": "Alla poäng",
         "empty": "Inga gäster har gått med än.",
-        "place": "Plats {{place}}",
         "points_one": "{{count}} poäng",
         "points_other": "{{count}} poäng"
       }

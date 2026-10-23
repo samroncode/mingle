@@ -136,7 +136,6 @@
         "title": "Results",
         "all": "All scores",
         "empty": "No guests have joined yet.",
-        "place": "Place {{place}}",
         "points_one": "{{count}} point",
         "points_other": "{{count}} points"
       }

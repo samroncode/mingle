@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useQuizRun } from "@/modules/quiz/useQuizRun";
-import type { ModuleHostProps } from "../../types";
 import { useQuizScores } from "@/modules/quiz/useQuizScores";
+import type { ModuleHostProps } from "../../types";
 import { ScoreList } from "../ScoreList";
 import { QuestionList } from "./QuestionList";
 import { QuizControls } from "./QuizControls";
@@ -11,7 +11,8 @@ export function QuizHost(props: ModuleHostProps) {
   const { t } = useTranslation();
   const run = useQuizRun(props.event);
   const running = props.event.current_module === "quiz";
-  // The full list on the results step, and again once the quiz is finished.
+  // The full list once every question is played: on the results step, and
+  // after Back to party screen.
   const finished =
     !!run.progress &&
     run.progress.total > 0 &&
