@@ -186,7 +186,7 @@ _Avoid_: Nomination, pick
 ## Running Mingle online
 
 **Live**:
-The real Mingle that hosts and guests use: the app on Vercel's production address and the Supabase project behind it. Only a merge to `main` changes it.
+The real Mingle that hosts and guests use: the app on Vercel's production address and the Supabase project behind it. Only the Deploy workflow changes it, started by the owner after a merge to `main` (manual for now).
 _Avoid_: Prod (in user-facing docs), the real site
 
 **Staging**:

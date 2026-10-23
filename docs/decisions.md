@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-23: Manual releases, deploy on merge behind a switch
+
+**Decision:** The Deploy workflow no longer runs on every merge to `main`. The owner releases with Actions → Deploy → Run workflow on `main`. Setting the repository variable `DEPLOY_ON_MERGE` to `true` brings back deploy on merge, with no code change. `HOSTING_ENABLED` still gates every deploy.
+
+**Why:** While the app is being built, the owner wants to decide when live changes. Automatic deploys on merge are the intended setup later, so the workflow keeps that path behind a variable instead of removing it.
+
 ## 2026-10-23: Editing unplayed quiz questions (#57)
 
 **Decision:** `update_quiz` sends the whole unplayed list, and `public.update_quiz_questions` (service role only) replaces every question that isn't revealed yet with it, in one transaction that first locks the event row. Played questions keep their text, options, answer key, reveal time and answers, but move up to the first positions in their order, and the new ones follow; while the quiz runs, its step moves to the first unplayed question, where `start_module` would resume. Besides open or revealed questions and an ended event, an edit is also refused with `invalid_transition` once every question is played, and questions for an event with the quiz switched off answer `module_disabled`. Played plus new over 30 answers `invalid_request`. In the control panel, a question that is a copy of one of the niche's ready-made questions in the event language counts as that one again, so it can be unticked and ticked like in the wizard.

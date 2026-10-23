@@ -13,12 +13,15 @@ How Mingle runs online, and the one-time checklist to put it there. Everything i
 
 ## What deploys what
 
-- **Merge to `main`** runs the **Deploy** workflow (`.github/workflows/deploy.yml`): migrations and Edge Functions to live, then to staging, then the Vercel deploy hook publishes the app. A failure at any step stops the run before the Vercel step, so live keeps the old app and the run shows red on GitHub.
+- **Deploy** (`.github/workflows/deploy.yml`) puts `main` online: migrations and Edge Functions to live, then to staging, then the Vercel deploy hook publishes the app. A failure at any step stops the run before the Vercel step, so live keeps the old app and the run shows red on GitHub.
+  - **Releases are manual for now.** Merging to `main` changes nothing online. When you want to release, go to GitHub → Actions → **Deploy** → **Run workflow** on `main`. The button only deploys `main`; picking another branch skips the run.
+  - **Automatic deploys later.** To deploy on every merge to `main`, add the repository variable `DEPLOY_ON_MERGE` with value `true` (Settings → Secrets and variables → Actions → Variables). Delete it, or set it to anything else, to go back to manual. No code change is needed either way. The manual button keeps working in both modes.
+  - `HOSTING_ENABLED` still has to be `true` for any deploy, manual or automatic.
 - **Staging** (`.github/workflows/staging.yml`, manual): run it with a branch name to put that branch's migrations and functions on staging, so its preview link works. Tick **reset** to wipe staging and put it back to `main` (the branch is ignored).
 - **Keep awake** (`.github/workflows/keep-awake.yml`): once a day it reads one row from both projects so neither goes to sleep.
 - **Preview deploys** of PR branches are made by Vercel itself.
 
-Live only changes through the Deploy workflow, after the owner's merge. Agents never deploy by hand.
+Live only changes through the Deploy workflow, started by the owner (the Run workflow button, or a merge once `DEPLOY_ON_MERGE` is on). Agents never deploy by hand.
 
 The Edge Function secret `ALLOWED_ORIGINS` and the Supabase Auth settings are set by hand once (checklist below), not by the workflows.
 
@@ -90,11 +93,11 @@ The repo is public; GitHub does not give secrets to workflows from forks.
 
 ### 5. First deploy
 
-The Deploy and Keep awake workflows are skipped until you switch them on, so they do not fail (and send you mail) before everything above exists.
+The Deploy and Keep awake workflows are skipped until you switch them on, so they do not fail (and send you mail) before everything above exists. Deploy also stays manual: a merge to `main` does not release anything unless you add `DEPLOY_ON_MERGE` (see "What deploys what").
 
-0. Repo → Settings → Secrets and variables → Actions → **Variables** tab → New repository variable. Name `HOSTING_ENABLED`, value `true`. This is a variable, not a secret. Turn it off again (delete it or set it to anything else) to pause both workflows.
+0. Repo → Settings → Secrets and variables → Actions → **Variables** tab → New repository variable. Name `HOSTING_ENABLED`, value `true`. This is a variable, not a secret. Turn it off again (delete it or set it to anything else) to pause both workflows. Do not add `DEPLOY_ON_MERGE` now; add it only when you want every merge to go live.
 1. GitHub → Actions → **Staging** → Run workflow with **reset** ticked. It should go green.
-2. Actions → **Deploy** → Run workflow on `main`. It should go green, and Vercel should show a new Production deployment.
+2. Actions → **Deploy** → **Run workflow** on `main` (this is how every release is done while deploys are manual). It should go green, and Vercel should show a new Production deployment.
 3. Actions → **Keep awake** → Run workflow. Both targets should go green.
 
 ### 6. Phone smoke test
