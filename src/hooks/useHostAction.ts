@@ -1,3 +1,4 @@
+import type { ParseKeys } from "i18next";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { HostActionError } from "@/api/host-actions";
@@ -8,10 +9,13 @@ type Finished = { ok: true } | { ok: false; error?: HostActionError };
 
 /**
  * Runs host actions for the control panel: tracks `busy`, and turns a failed
- * result into a translated `error` line. Returns the result so the caller can
- * react to success or handle its own failures.
+ * result into a translated `error` line, with `errorKey` choosing the message.
+ * Returns the result so the caller can react to success or handle its own
+ * failures.
  */
-export function useHostAction() {
+export function useHostAction(
+  errorKey: (error: HostActionError) => ParseKeys = hostPanelErrorKey,
+) {
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
@@ -22,7 +26,7 @@ export function useHostAction() {
     const result = await call();
     setBusy(false);
     if (!result.ok && result.error) {
-      setError(t(hostPanelErrorKey(result.error)));
+      setError(t(errorKey(result.error)));
     }
     return result;
   }

@@ -16,6 +16,7 @@ import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
 import { setFlow } from "./set-flow.ts";
 import { updatePartyContent } from "./update-party-content.ts";
+import { updateQuiz } from "./update-quiz.ts";
 
 export type HandlerConfig = {
   db: Db;
@@ -80,5 +81,7 @@ async function runAction(
       return setFlow(db, caller, request);
     case "update_party_content":
       return updatePartyContent(db, caller, request);
+    case "update_quiz":
+      return updateQuiz(db, caller, request);
   }
 }

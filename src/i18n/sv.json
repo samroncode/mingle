@@ -102,6 +102,19 @@
         "rightAnswer": "Rätt svar",
         "loadFailed": "Kunde inte hämta frågorna. Ladda om sidan och försök igen."
       },
+      "edit": {
+        "edit": "Ändra frågor",
+        "save": "Spara frågorna",
+        "cancel": "Avbryt",
+        "played": "Spelade frågor",
+        "locked": "Spelad, kan inte ändras",
+        "errors": {
+          "incomplete": "Gör klart eller ta bort frågorna som är markerade ovan och spara igen.",
+          "invalid_transition": "Frågorna kan inte ändras medan en fråga visas på TV:n, när quizet är slutspelat eller när kvällen är slut.",
+          "module_disabled": "Quizet är avstängt för den här kvällen.",
+          "invalid_request": "Kolla frågorna: varje fråga behöver en text och fyra svarsalternativ, och quizet rymmer högst 30."
+        }
+      },
       "counter": "Fråga {{number}} av {{total}}",
       "answered": "{{count}} av {{total}} har svarat",
       "progress": "fråga {{number}} av {{total}}",

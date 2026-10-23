@@ -321,6 +321,10 @@ export type Database = {
         Args: { party: Json; target_event_id: string };
         Returns: string;
       };
+      update_quiz_questions: {
+        Args: { questions: Json; target_event_id: string };
+        Returns: string;
+      };
     };
     Enums: {
       [_ in never]: never;

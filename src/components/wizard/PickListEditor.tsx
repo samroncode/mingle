@@ -27,16 +27,18 @@ export interface AvailableItem {
 /** Move up, move down and remove for one item. */
 function ItemControls({
   index,
+  n,
   count,
   labels,
   dispatch,
 }: {
   index: number;
+  /** The item's number as shown. */
+  n: number;
   count: number;
   labels: PickListLabels;
   dispatch: (action: PickListAction<never>) => void;
 }) {
-  const n = index + 1;
   return (
     <div className="flex shrink-0">
       <Button
@@ -81,6 +83,8 @@ interface PickListEditorProps<O> {
   /** The content of a picked item; null hides an item that no longer exists. */
   renderItem: (item: PickItem<O>, index: number) => ReactNode;
   dispatch: (action: PickListAction<O>) => void;
+  /** The first item's number, when locked items come before the list. */
+  firstNumber?: number;
 }
 
 /**
@@ -97,6 +101,7 @@ export function PickListEditor<O>({
   available,
   renderItem,
   dispatch,
+  firstNumber = 1,
 }: PickListEditorProps<O>) {
   const full = items.length >= limit;
   const moreId = `${id}-more`;
@@ -113,11 +118,12 @@ export function PickListEditor<O>({
           <li key={item.kind === "own" ? item.key : item.id}>
             <Card className="flex-row items-start gap-1 p-3">
               <span className="w-6 shrink-0 pt-0.5 text-sm text-muted-foreground">
-                {index + 1}.
+                {index + firstNumber}.
               </span>
               {renderItem(item, index)}
               <ItemControls
                 index={index}
+                n={index + firstNumber}
                 count={items.length}
                 labels={labels}
                 dispatch={dispatch}

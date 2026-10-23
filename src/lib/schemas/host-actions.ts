@@ -132,12 +132,31 @@ export type UpdatePartyContentResponse = z.infer<
   typeof UpdatePartyContentResponseSchema
 >;
 
+/**
+ * Replaces the quiz questions that aren't played yet with `questions`, in
+ * order, after the played ones. Played and new questions together stay
+ * within the quiz's limit of 30.
+ */
+export const UpdateQuizRequestSchema = z.strictObject({
+  action: z.literal("update_quiz"),
+  ...hostLinkFields,
+  questions: QuizQuestionsSchema,
+});
+
+export type UpdateQuizRequest = z.infer<typeof UpdateQuizRequestSchema>;
+
+/** Empty: the host and members read the new questions on their next read. */
+export const UpdateQuizResponseSchema = z.strictObject({});
+
+export type UpdateQuizResponse = z.infer<typeof UpdateQuizResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
   ClaimHostRequestSchema,
   SetFlowRequestSchema,
   UpdatePartyContentRequestSchema,
+  UpdateQuizRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -158,10 +177,12 @@ export const hostActionErrorCodes = [
   "rate_limited",
   /**
    * A flow move the event's state doesn't allow, including any move after it
-   * ended, and any change to the party content of an ended event.
+   * ended, any change to the party content of an ended event, and a quiz
+   * edit while a question is open or revealed, once the quiz is finished or
+   * once the event has ended.
    */
   "invalid_transition",
-  /** start_module for an activity the host turned off. */
+  /** start_module for an activity the host turned off, or quiz questions for it. */
   "module_disabled",
   /** start_module for an activity with no steps, such as a quiz without questions. */
   "module_empty",

@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-23: Editing unplayed quiz questions (#57)
+
+**Decision:** `update_quiz` sends the whole unplayed list, and `public.update_quiz_questions` (service role only) replaces every question that isn't revealed yet with it, in one transaction that first locks the event row. Played questions keep their text, options, answer key, reveal time and answers, but move up to the first positions in their order, and the new ones follow; while the quiz runs, its step moves to the first unplayed question, where `start_module` would resume. Besides open or revealed questions and an ended event, an edit is also refused with `invalid_transition` once every question is played, and questions for an event with the quiz switched off answer `module_disabled`. Played plus new over 30 answers `invalid_request`. In the control panel, a question that is a copy of one of the niche's ready-made questions in the event language counts as that one again, so it can be unticked and ticked like in the wizard.
+
+**Why:** `next_step` from an idle question skips it unplayed, so played questions can have gaps between them. The flow treats a step as a position and "steps" as the number of questions, so positions have to stay 0, 1, 2, ... after an edit. The lock makes a reveal that lands at the same time either finish first (and the edit is refused) or wait and then find the flow it checked gone. Refusing a finished quiz keeps the spec's rule that a finished quiz can't be started again.
+
 ## 2026-10-23: Quiz scores are computed in one database function
 
 **Decision:** `public.quiz_scores(event)` counts one point per right answer on revealed, approved questions for every current guest, and ranks them with competition places (1, 1, 3). The host gets every guest at any time. A guest gets their own row at any time and the top 3 places once the quiz is finished (it has questions and all are played). The TV gets the top 3 places once finished. Non-members get nothing. Scores are keyed by member, so a rename keeps them, and a guest who joined late has 0 for what they missed. `competitionPlaces` in `src/lib/quiz/places.ts` is the reference ranking in TypeScript; the app shows the places the database returns, and both are tested against the cases in `places.cases.ts` so they can't drift apart.

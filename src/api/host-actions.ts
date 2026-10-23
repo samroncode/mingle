@@ -16,6 +16,9 @@ import {
   type UpdatePartyContentRequest,
   type UpdatePartyContentResponse,
   UpdatePartyContentResponseSchema,
+  type UpdateQuizRequest,
+  type UpdateQuizResponse,
+  UpdateQuizResponseSchema,
 } from "@/lib/schemas/host-actions";
 import { getSupabase } from "./client";
 
@@ -129,5 +132,20 @@ export async function updatePartyContent(
   return toHostActionResult(
     UpdatePartyContentResponseSchema,
     await invokeHostActions({ action: "update_party_content", ...input }),
+  );
+}
+
+/**
+ * Replaces the quiz questions that aren't played yet with `questions`, in
+ * order, after the played ones. Fails with `invalid_transition` while a
+ * question is open or revealed, once the quiz is finished or the event has
+ * ended; with `invalid_request` when played and new questions pass 30.
+ */
+export async function updateQuiz(
+  input: Omit<UpdateQuizRequest, "action">,
+): Promise<HostActionResult<UpdateQuizResponse>> {
+  return toHostActionResult(
+    UpdateQuizResponseSchema,
+    await invokeHostActions({ action: "update_quiz", ...input }),
   );
 }
