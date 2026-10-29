@@ -4,7 +4,9 @@ import { Card } from "@/components/ui/card";
 import type { ModuleHostProps } from "../../types";
 import { RunControls } from "../../RunControls";
 import { answeringGuests, hotTakesNextMove } from "../screen";
+import { SplitBars } from "../SplitBars";
 import { useHotTakes } from "../useHotTakes";
+import { useHotTakeResult } from "../useHotTakeResults";
 import { useHotTakesRun } from "../useHotTakesRun";
 
 /** The hot takes' section in the control panel: run them, and the list. */
@@ -24,6 +26,8 @@ export function HotTakesHost({
   const current = running
     ? run.takes.find((h) => h.position === event.current_step)
     : undefined;
+  const revealed = !!current && event.phase === "revealed";
+  const result = useHotTakeResult(current?.id ?? "", revealed, run.version);
   const finished =
     !!run.progress && total > 0 && run.progress.revealed >= total;
 
@@ -73,6 +77,11 @@ export function HotTakesHost({
                     total: answeringGuests(members),
                   })}
                 </p>
+              )}
+              {revealed && result.status === "ready" && result.value && (
+                <div className="mt-2">
+                  <SplitBars split={result.value} />
+                </div>
               )}
             </Card>
           )}

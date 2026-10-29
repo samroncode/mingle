@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { answerHotTake, getMyHotTakeAnswer } from "@/api/hottakes";
 import type { HotTakeView } from "@/api/hottakes";
+import { guestStanding } from "../split";
+import { SplitBars } from "../SplitBars";
+import { useHotTakeResult } from "../useHotTakeResults";
 import { AnswerButtons } from "./AnswerButtons";
 
 interface GuestTakeProps {
@@ -13,6 +16,8 @@ interface GuestTakeProps {
   total: number;
   /** The reveal closes the answers. */
   revealed: boolean;
+  /** Changes whenever the hot takes are read again. */
+  version: number;
 }
 
 /**
@@ -27,6 +32,7 @@ export function GuestTake({
   number,
   total,
   revealed,
+  version,
 }: GuestTakeProps) {
   const { t } = useTranslation();
   const [chosen, setChosen] = useState<boolean | null>(null);
@@ -43,6 +49,12 @@ export function GuestTake({
       stale = true;
     };
   }, [take.id, userId]);
+
+  const result = useHotTakeResult(take.id, revealed, version);
+  const standing =
+    result.status === "ready" && result.value
+      ? guestStanding(chosen, result.value)
+      : null;
 
   async function choose(agree: boolean) {
     const before = chosen;
@@ -67,6 +79,14 @@ export function GuestTake({
       <h2 className="text-2xl font-semibold">{take.text}</h2>
       {!revealed && (
         <AnswerButtons chosen={chosen} onChoose={(a) => void choose(a)} />
+      )}
+      {revealed && result.status === "ready" && result.value && (
+        <SplitBars split={result.value} />
+      )}
+      {standing && (
+        <p data-testid="hottakes-standing" className="text-lg font-medium">
+          {t(`modules.hottakes.split.${standing}`)}
+        </p>
       )}
       {error && <ErrorLine>{error}</ErrorLine>}
     </>

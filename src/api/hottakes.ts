@@ -131,6 +131,87 @@ export async function getMyHotTakeAnswer(
   return ok(data?.agree ?? null);
 }
 
+/** How a revealed hot take went: the guests who agreed and who didn't. */
+export interface HotTakeSplit {
+  agree: number;
+  disagree: number;
+}
+
+/**
+ * The split of a revealed hot take, for any member. Null before the reveal,
+ * for a draft and for a non-member.
+ */
+export async function getHotTakeResult(
+  hotTakeId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<HotTakeSplit | null, "unknown">> {
+  const { data, error } = await client.rpc("hot_take_result", {
+    target_hot_take_id: hotTakeId,
+  });
+  if (error) return fail("unknown");
+  const row = data[0];
+  return ok(
+    row ? { agree: row.agree_count, disagree: row.disagree_count } : null,
+  );
+}
+
+/** A hot take picked out in the summary, with its split. */
+export interface HotTakeHighlight extends HotTakeSplit {
+  hotTakeId: string;
+  position: number;
+  text: string;
+}
+
+/** The summary's two picks; each is absent when no hot take had answers. */
+export interface HotTakeHighlights {
+  divisive?: HotTakeHighlight;
+  agreed?: HotTakeHighlight;
+}
+
+/** The most divisive and the most agreed revealed hot take, for any member. */
+export async function getHotTakeHighlights(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<HotTakeHighlights, "unknown">> {
+  const { data, error } = await client.rpc("hot_take_highlights", {
+    target_event_id: eventId,
+  });
+  if (error) return fail("unknown");
+  const highlights: HotTakeHighlights = {};
+  for (const row of data) {
+    const highlight: HotTakeHighlight = {
+      hotTakeId: row.hot_take_id,
+      position: row.hot_take_position,
+      text: row.hot_take_text,
+      agree: row.agree_count,
+      disagree: row.disagree_count,
+    };
+    if (row.highlight === "divisive") highlights.divisive = highlight;
+    if (row.highlight === "agreed") highlights.agreed = highlight;
+  }
+  return ok(highlights);
+}
+
+/** How often a guest sided with the majority. */
+export interface HotTakeMajority {
+  sided: number;
+  /** The revealed hot takes they answered that had a majority. */
+  answered: number;
+}
+
+/** The caller's own count, or null when they aren't a guest with a name. */
+export async function getMyHotTakeMajority(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<HotTakeMajority | null, "unknown">> {
+  const { data, error } = await client.rpc("my_hot_take_majority", {
+    target_event_id: eventId,
+  });
+  if (error) return fail("unknown");
+  const row = data[0];
+  return ok(row ? { sided: row.sided, answered: row.answered } : null);
+}
+
 /** Answers arrive in bursts; one refetch per this long is enough. */
 const CHANGE_DELAY_MS = 300;
 

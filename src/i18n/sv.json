@@ -248,6 +248,22 @@
           "question_closed": "För sent, svaren är stängda.",
           "unknown": "Ditt svar kom inte fram. Försök igen."
         }
+      },
+      "split": {
+        "agree": "Håller med",
+        "disagree": "Håller inte med",
+        "share": "{{percent}} % ({{count}})",
+        "even": "Rummet är exakt delat",
+        "none": "Inga svar den här gången",
+        "majority": "Du håller med majoriteten",
+        "minority": "Du tillhör minoriteten"
+      },
+      "summary": {
+        "divisive": "Mest delade åsikter",
+        "agreed": "Mest enighet",
+        "none": "Ingen svarade på någon het åsikt.",
+        "sided_one": "Du höll med majoriteten {{sided}} av {{count}} gång",
+        "sided_other": "Du höll med majoriteten {{sided}} av {{count}} gånger"
       }
     }
   },

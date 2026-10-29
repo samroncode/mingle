@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { ModuleGuestViewProps } from "../../types";
 import { hotTakesScreen } from "../screen";
 import { useHotTakesRun } from "../useHotTakesRun";
+import { GuestSummary } from "./GuestSummary";
 import { GuestTake } from "./GuestTake";
 
 /** The guest page while the hot takes run. */
@@ -33,12 +34,11 @@ export function HotTakesGuest({ event, userId }: ModuleGuestViewProps) {
           number={screen.number}
           total={screen.total}
           revealed={screen.revealed}
+          version={run.version}
         />
       )}
       {screen.kind === "summary" && (
-        <h2 className="text-2xl font-semibold">
-          {t("modules.hottakes.summaryTitle")}
-        </h2>
+        <GuestSummary eventId={event.id} version={run.version} />
       )}
     </section>
   );

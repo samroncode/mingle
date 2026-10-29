@@ -14,9 +14,16 @@ export type HotTakesRunState = {
   takes: HotTakeView[];
   /** The latest read failed; the last data read is kept. */
   failed: boolean;
+  /** Counts the reads, so what hangs on them (the results) can read again. */
+  version: number;
 };
 
-const empty: HotTakesRunState = { progress: null, takes: [], failed: false };
+const empty: HotTakesRunState = {
+  progress: null,
+  takes: [],
+  failed: false,
+  version: 0,
+};
 
 /**
  * Reads the hot takes' progress and the hot takes the viewer can read, again
@@ -43,7 +50,10 @@ export function useHotTakesRun(event: EventRow): HotTakesRunState {
       setLoaded((previous) => {
         const last = previous.eventId === event.id ? previous.state : empty;
         if (!progress.ok || !takes.ok) {
-          return { eventId: event.id, state: { ...last, failed: true } };
+          return {
+            eventId: event.id,
+            state: { ...last, failed: true, version: last.version + 1 },
+          };
         }
         return {
           eventId: event.id,
@@ -51,6 +61,7 @@ export function useHotTakesRun(event: EventRow): HotTakesRunState {
             progress: progress.value,
             takes: takes.value,
             failed: false,
+            version: last.version + 1,
           },
         };
       });
