@@ -472,6 +472,10 @@ export type Database = {
         };
         Returns: boolean;
       };
+      update_award_categories: {
+        Args: { categories: Json; target_event_id: string };
+        Returns: string;
+      };
       update_event_party: {
         Args: { party: Json; target_event_id: string };
         Returns: string;
