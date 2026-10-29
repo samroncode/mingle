@@ -29,11 +29,11 @@ export function GuestWinners({
 
   return (
     <>
-      <h2 className="text-2xl font-semibold">
+      <h2 className="font-display text-3xl font-extrabold">
         {t("modules.awards.winnersTitle")}
       </h2>
       {mine && (
-        <p data-testid="awards-my-awards" className="text-lg">
+        <p data-testid="awards-my-awards" className="text-lg font-medium">
           {t("modules.awards.guest.youWon", { count: mine.awards })}
         </p>
       )}

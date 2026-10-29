@@ -36,10 +36,7 @@ export function QuizControls({
   return (
     <div className="space-y-3">
       {running ? (
-        <p
-          data-testid="quiz-progress"
-          className="text-sm text-muted-foreground"
-        >
+        <p data-testid="quiz-progress" className="text-sm text-ink-muted">
           {next
             ? t("modules.quiz.counter", {
                 number: event.current_step + 1,
@@ -50,7 +47,7 @@ export function QuizControls({
       ) : (
         total > 0 &&
         played >= total && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-ink-muted">
             {t("modules.quiz.run.finished")}
           </p>
         )

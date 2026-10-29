@@ -18,10 +18,12 @@ export function HotTakesGuest({ event, userId }: ModuleGuestViewProps) {
       className="space-y-4"
     >
       {screen.kind === "loading" && (
-        <p className="text-2xl font-semibold">{t("modules.hottakes.name")}</p>
+        <p className="font-display text-3xl font-extrabold">
+          {t("modules.hottakes.name")}
+        </p>
       )}
       {screen.kind === "idle" && (
-        <p className="text-2xl font-semibold">
+        <p className="font-display text-3xl font-extrabold">
           {t("modules.hottakes.guest.coming")}
         </p>
       )}

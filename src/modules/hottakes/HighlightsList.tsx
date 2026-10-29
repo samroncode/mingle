@@ -18,7 +18,10 @@ export function HighlightsList({ highlights, large }: HighlightsListProps) {
   const shown = picks.filter((pick) => pick.take);
   if (shown.length === 0) {
     return (
-      <p data-testid="hottakes-highlights" className={large ? "text-4xl" : ""}>
+      <p
+        data-testid="hottakes-highlights"
+        className={large ? "font-display text-4xl font-bold" : ""}
+      >
         {t("modules.hottakes.summary.none")}
       </p>
     );
@@ -33,16 +36,18 @@ export function HighlightsList({ highlights, large }: HighlightsListProps) {
           <section key={key} data-testid={`hottakes-highlight-${key}`}>
             <h3
               className={cn(
-                "text-ink-muted",
-                large ? "text-3xl" : "text-sm font-medium",
+                "font-bold tracking-wide uppercase",
+                large
+                  ? "text-3xl text-champagne-text"
+                  : "text-sm text-champagne-text",
               )}
             >
               {t(`modules.hottakes.summary.${key}`)}
             </h3>
             <p
               className={cn(
-                "my-2 font-semibold",
-                large ? "text-5xl" : "text-xl",
+                "my-2 font-display font-extrabold",
+                large ? "text-5xl" : "text-2xl",
               )}
             >
               {take.text}

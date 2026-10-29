@@ -22,14 +22,14 @@ export function GuestSummary({ eventId, version }: GuestSummaryProps) {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold">
+      <h2 className="font-display text-3xl font-extrabold">
         {t("modules.hottakes.summaryTitle")}
       </h2>
       {highlights.status === "ready" && (
         <HighlightsList highlights={highlights.value} />
       )}
       {mine && (
-        <p data-testid="hottakes-my-majority" className="text-lg">
+        <p data-testid="hottakes-my-majority" className="text-lg font-medium">
           {t("modules.hottakes.summary.sided", {
             sided: mine.sided,
             count: mine.answered,

@@ -24,10 +24,12 @@ export function QuizGuest({ event, userId }: ModuleGuestViewProps) {
       className="space-y-4"
     >
       {screen.kind === "loading" && (
-        <p className="text-2xl font-semibold">{t("modules.quiz.name")}</p>
+        <p className="font-display text-3xl font-extrabold">
+          {t("modules.quiz.name")}
+        </p>
       )}
       {screen.kind === "idle" && (
-        <p className="text-2xl font-semibold">
+        <p className="font-display text-3xl font-extrabold">
           {t("modules.quiz.guest.coming")}
         </p>
       )}
@@ -45,15 +47,18 @@ export function QuizGuest({ event, userId }: ModuleGuestViewProps) {
       )}
       {screen.kind === "results" && (
         <>
-          <h2 className="text-2xl font-semibold">
+          <h2 className="font-display text-3xl font-extrabold">
             {t("modules.quiz.scores.title")}
           </h2>
           {mine && (
-            <div data-testid="quiz-final" className="space-y-1">
-              <p className="text-4xl font-bold">
+            <div
+              data-testid="quiz-final"
+              className="fun-pop space-y-1 rounded-lg border-[length:var(--border-chunky)] border-edge bg-champagne p-4 text-on-bright shadow-pop-md"
+            >
+              <p className="font-display text-6xl leading-none font-extrabold">
                 {t("modules.quiz.guest.finalPlace", { place: mine.place })}
               </p>
-              <p className="text-lg">
+              <p className="text-lg font-medium">
                 {t("modules.quiz.guest.finalScore", { count: mine.score })}
               </p>
             </div>

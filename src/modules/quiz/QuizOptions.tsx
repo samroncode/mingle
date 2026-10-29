@@ -1,5 +1,7 @@
+import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { optionFills } from "../optionFills";
 import { optionLetters } from "./screen";
 
 interface QuizOptionsProps {
@@ -30,9 +32,10 @@ export function QuizOptions({
             key={index}
             data-correct={right || undefined}
             className={cn(
-              "relative flex items-center gap-3 overflow-hidden rounded-lg border px-4 py-3",
-              correct !== null && !right && "opacity-50",
-              right && "border-primary bg-primary text-primary-foreground",
+              "relative flex items-center gap-3 overflow-hidden rounded-md border-[length:var(--border-chunky)] border-edge px-4 py-3 font-display font-bold text-on-bright shadow-pop-sm",
+              optionFills[index],
+              correct !== null && !right && "opacity-40 shadow-none",
+              right && "shadow-pop-md",
               itemClassName,
             )}
           >
@@ -40,24 +43,33 @@ export function QuizOptions({
               <span
                 data-testid="quiz-bar"
                 aria-hidden
-                className="absolute inset-y-0 left-0 bg-current opacity-20"
+                className="absolute inset-y-0 left-0 bg-paper opacity-50"
                 style={{ width: `${((votes[index] ?? 0) / mostVotes) * 100}%` }}
               />
             )}
-            <span className="relative font-bold">{optionLetters[index]}</span>
+            <span className="relative grid size-[1.6em] shrink-0 place-items-center rounded-sm bg-paper font-extrabold text-on-paper">
+              {optionLetters[index]}
+            </span>
             <span className="relative">{option}</span>
             {votes && (
               <span
                 data-testid="quiz-votes"
-                className="relative ml-auto font-bold"
+                className="relative ml-auto font-extrabold"
               >
                 {votes[index] ?? 0}
               </span>
             )}
             {right && (
-              <span className="sr-only">
-                {t("modules.quiz.host.rightAnswer")}
-              </span>
+              <>
+                <Check
+                  aria-hidden
+                  strokeWidth={3}
+                  className={cn("relative size-[1.2em]", !votes && "ml-auto")}
+                />
+                <span className="sr-only">
+                  {t("modules.quiz.host.rightAnswer")}
+                </span>
+              </>
             )}
           </li>
         );

@@ -6,7 +6,9 @@ import type { AwardCategoryView } from "@/api/awards";
 import type { MemberRow } from "@/api/events";
 import { voteCandidates } from "../candidates";
 import { useAwardWinners, useMyAwardVotes } from "../useAwardResults";
+import { Counter } from "../../Counter";
 import { WinnerText } from "../WinnerText";
+import { WinnerCard } from "../WinnerCard";
 import { VoteButtons } from "./VoteButtons";
 
 interface GuestCategoryProps {
@@ -75,13 +77,13 @@ export function GuestCategory({
 
   return (
     <>
-      <p className="text-sm text-muted-foreground">
-        {t("modules.awards.counter", { number, total })}
-      </p>
-      <h2 className="text-xl font-semibold">{category.text}</h2>
+      <Counter>{t("modules.awards.counter", { number, total })}</Counter>
+      <h2 className="font-display text-3xl leading-tight font-extrabold">
+        {category.text}
+      </h2>
       {!revealed &&
         (candidates.length === 0 ? (
-          <p data-testid="awards-waiting" className="text-lg">
+          <p data-testid="awards-waiting" className="text-lg text-ink-muted">
             {t("modules.awards.guest.waitingForGuests")}
           </p>
         ) : (
@@ -92,16 +94,16 @@ export function GuestCategory({
           />
         ))}
       {revealed && winners.status === "ready" && (
-        <p data-testid="awards-winner" className="text-3xl font-semibold">
+        <WinnerCard testId="awards-winner">
           <WinnerText
             winners={winners.value}
             members={members}
             language={language}
           />
-        </p>
+        </WinnerCard>
       )}
       {revealed && myVotes.status === "ready" && myVotes.value !== null && (
-        <p data-testid="awards-my-votes" className="text-lg">
+        <p data-testid="awards-my-votes" className="text-lg font-medium">
           {t("modules.awards.guest.youGot", { count: myVotes.value })}
         </p>
       )}

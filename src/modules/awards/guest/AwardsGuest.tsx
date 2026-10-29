@@ -18,10 +18,12 @@ export function AwardsGuest({ event, members, userId }: ModuleGuestViewProps) {
       className="space-y-4"
     >
       {screen.kind === "loading" && (
-        <p className="text-2xl font-semibold">{t("modules.awards.name")}</p>
+        <p className="font-display text-3xl font-extrabold">
+          {t("modules.awards.name")}
+        </p>
       )}
       {screen.kind === "idle" && (
-        <p className="text-2xl font-semibold">
+        <p className="font-display text-3xl font-extrabold">
           {t("modules.awards.guest.coming")}
         </p>
       )}

@@ -20,16 +20,19 @@ export function VoteStatus({ category, members, version }: VoteStatusProps) {
 
   return (
     <div data-testid="awards-voted" className="space-y-1">
-      <p className="text-sm font-medium">
+      <p className="text-sm font-bold">
         {t("modules.awards.voted", {
           count: category.voteCount,
           total: guests.length,
         })}
       </p>
       {names.length > 0 && (
-        <ul className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+        <ul className="flex flex-wrap gap-2 text-sm">
           {names.map((name) => (
-            <li key={name} className="rounded-full border px-2 py-0.5">
+            <li
+              key={name}
+              className="rounded-sm border-[length:var(--border-thin)] border-line bg-surface-sunken px-2 py-0.5 text-ink"
+            >
               {name}
             </li>
           ))}
