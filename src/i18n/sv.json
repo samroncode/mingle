@@ -552,7 +552,8 @@
       "internal_error": "Något gick fel. Försök igen.",
       "not_found": "Gästen är inte med på kvällen längre.",
       "name_taken": "Namnet är upptaget. Välj ett annat.",
-      "invalid_name": "Skriv ett namn på 1 till 30 tecken."
+      "invalid_name": "Skriv ett namn på 1 till 30 tecken.",
+      "invalid_sharer": "Ett inköp har en gäst som inte längre är med på kvällen. Kontrollera vilka som delar det."
     },
     "guestList": {
       "empty": "Inga gäster har gått med än.",
@@ -564,6 +565,38 @@
       "removeTitle": "Ta bort {{name}}",
       "removeConfirm": "Ta bort {{name}}? Hen kan inte gå med igen från den här telefonen.",
       "removeAction": "Ta bort"
+    },
+    "costs": {
+      "title": "Gemensamma kostnader",
+      "totals": "{{spent}} utlagt · {{owed}} kvar att betala",
+      "off": "Inte påslaget. Gästerna ser inget om pengar.",
+      "switchOn": "Slå på",
+      "switchOff": "Slå av",
+      "switchOffConfirm": "Slå av gemensamma kostnader? Swish-numret och alla inköp tas bort.",
+      "switchOffAction": "Slå av",
+      "payee": "Gäster betalar till",
+      "payeeHint": "Namnet gästerna ser, till exempel ”Sam”.",
+      "swish": "Ditt Swish-nummer",
+      "swishHint": "Ett svenskt mobilnummer, till exempel 070-123 45 67.",
+      "payeeLine": "Gäster betalar {{name}} på Swish {{number}}",
+      "purchases": "Inköp",
+      "noPurchases": "Inga inköp än.",
+      "purchaseName": "Vad du köpte",
+      "price": "Pris i kr",
+      "sharedBy": "Delas av",
+      "noGuests": "Inga gäster har gått med än.",
+      "noSharer": "Välj minst en gäst.",
+      "addPurchase": "Lägg till inköp",
+      "removePurchase": "Ta bort inköpet",
+      "edit": "Ändra",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "shareLine_one": "Delas av {{count}} gäst, {{share}} var",
+      "shareLine_other": "Delas av {{count}} gäster, {{share}} var",
+      "nobodyShares": "Ingen delar det här längre",
+      "invalid": "Kontrollera fältet.",
+      "checkFields": "Några fält behöver rättas innan du kan spara.",
+      "loadFailed": "Det gick inte att läsa in de gemensamma kostnaderna."
     }
   }
 }

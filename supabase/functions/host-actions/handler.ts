@@ -18,6 +18,7 @@ import { removeGuest } from "./remove-guest.ts";
 import { renameGuest } from "./rename-guest.ts";
 import { setFlow } from "./set-flow.ts";
 import { updateAwards } from "./update-awards.ts";
+import { updateCosts } from "./update-costs.ts";
 import { updateHotTakes } from "./update-hottakes.ts";
 import { updatePartyContent } from "./update-party-content.ts";
 import { updateQuiz } from "./update-quiz.ts";
@@ -95,5 +96,7 @@ async function runAction(
       return renameGuest(db, caller, request);
     case "remove_guest":
       return removeGuest(db, caller, request);
+    case "update_costs":
+      return updateCosts(db, caller, request);
   }
 }

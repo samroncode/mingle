@@ -9,6 +9,7 @@ export const aw: NicheConfig = {
   descriptionKey: "niches.aw.description",
   theme: { id: "garden", overrides: {} },
   defaultModules: ["quiz", "awards", "hottakes"],
+  defaultSharedCosts: false,
   welcome: {
     sv: "Välkomna! Ta en dryck, slå er ner och njut av kvällen. Vi har lekar och omröstningar på gång, så håll telefonen nära till hands.",
     en: "Welcome! Grab a drink, settle in and enjoy the evening. We have games and votes coming up, so keep your phone handy.",

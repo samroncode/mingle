@@ -11,6 +11,7 @@ import { Activities } from "./Activities";
 import { EndEvent } from "./EndEvent";
 import { Guests } from "./Guests";
 import { PartyScreen } from "./PartyScreen";
+import { SharedCosts } from "./SharedCosts";
 import { TopBar } from "./TopBar";
 
 function EventSection({
@@ -73,6 +74,13 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         members={members}
         language={event.language}
         ended={ended}
+      />
+      <SharedCosts
+        eventId={eventId}
+        code={event.code}
+        hostKey={link.key}
+        members={members}
+        language={event.language}
       />
       <EventSection link={link}>
         {!ended && (

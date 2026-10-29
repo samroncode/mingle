@@ -8,6 +8,7 @@ import { moduleIds } from "../../modules/registry.ts";
 import { nicheIds } from "../../niches/ids.ts";
 import { ADMIN_KEY_PATTERN, EVENT_CODE_PATTERN } from "../formats.ts";
 import { AwardCategoriesSchema } from "./awards.ts";
+import { CostsSchema } from "./costs.ts";
 import { HotTakesSchema } from "./hottakes.ts";
 import { PartySchema } from "./party.ts";
 import { QuizQuestionsSchema } from "./quiz.ts";
@@ -241,6 +242,24 @@ export const RemoveGuestResponseSchema = z.strictObject({});
 
 export type RemoveGuestResponse = z.infer<typeof RemoveGuestResponseSchema>;
 
+/**
+ * Replaces the event's shared costs as a whole: the payee name, the Swish
+ * number and the purchases with their sharers. `null` switches shared costs
+ * off and deletes the data. Only the host ever reads it back.
+ */
+export const UpdateCostsRequestSchema = z.strictObject({
+  action: z.literal("update_costs"),
+  ...hostLinkFields,
+  costs: CostsSchema.nullable(),
+});
+
+export type UpdateCostsRequest = z.infer<typeof UpdateCostsRequestSchema>;
+
+/** Empty: the host reads the new costs on their next read. */
+export const UpdateCostsResponseSchema = z.strictObject({});
+
+export type UpdateCostsResponse = z.infer<typeof UpdateCostsResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -252,6 +271,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdateHotTakesRequestSchema,
   RenameGuestRequestSchema,
   RemoveGuestRequestSchema,
+  UpdateCostsRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -290,6 +310,8 @@ export const hostActionErrorCodes = [
   "name_taken",
   /** rename_guest to a name that isn't 1 to 30 characters once cleaned. */
   "invalid_name",
+  /** update_costs with a purchase nobody shares, or a sharer who isn't a current guest. */
+  "invalid_sharer",
   "internal_error",
 ] as const;
 

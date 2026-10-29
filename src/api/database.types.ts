@@ -95,6 +95,110 @@ export type Database = {
           },
         ];
       };
+      cost_purchases: {
+        Row: {
+          event_id: string;
+          id: string;
+          name: string;
+          position: number;
+          price_kr: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          event_id: string;
+          id?: string;
+          name: string;
+          position: number;
+          price_kr: number;
+        };
+        Update: {
+          event_id?: string;
+          id?: string;
+          name?: string;
+          position?: number;
+          price_kr?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "cost_purchases_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      cost_settings: {
+        Row: {
+          bill_sent_at: string | null;
+          event_id: string;
+          payee_name: string;
+          swish_number: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          bill_sent_at?: string | null;
+          event_id: string;
+          payee_name: string;
+          swish_number: string;
+        };
+        Update: {
+          bill_sent_at?: string | null;
+          event_id?: string;
+          payee_name?: string;
+          swish_number?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "cost_settings_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: true;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      cost_sharers: {
+        Row: {
+          event_id: string;
+          purchase_id: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          event_id: string;
+          purchase_id: string;
+          user_id: string;
+        };
+        Update: {
+          event_id?: string;
+          purchase_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "cost_sharers_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "cost_sharers_event_id_user_id_fkey";
+            columns: ["event_id", "user_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+          {
+            foreignKeyName: "cost_sharers_purchase_id_fkey";
+            columns: ["purchase_id"];
+            isOneToOne: false;
+            referencedRelation: "cost_purchases";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       events: {
         Row: {
           code: string;
@@ -553,7 +657,7 @@ export type Database = {
           sided: number;
         }[];
       };
-      ping: { Args: never; Returns: boolean };
+      ping: { Args: Record<PropertyKey, never>; Returns: boolean };
       quiz_progress: {
         Args: { target_event_id: string };
         Returns: {
@@ -614,6 +718,10 @@ export type Database = {
       };
       update_award_categories: {
         Args: { categories: Json; target_event_id: string };
+        Returns: string;
+      };
+      update_costs: {
+        Args: { costs: Json; target_event_id: string };
         Returns: string;
       };
       update_event_party: {

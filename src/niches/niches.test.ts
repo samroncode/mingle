@@ -62,6 +62,10 @@ describe.each(Object.entries(niches))("niche %s", (registryKey, niche) => {
     expect(NicheConfigSchema.safeParse(niche).error).toBeUndefined();
   });
 
+  it("starts with shared costs switched off", () => {
+    expect(niche.defaultSharedCosts).toBe(false);
+  });
+
   it("is registered under its own id", () => {
     expect(niche.id).toBe(registryKey);
   });

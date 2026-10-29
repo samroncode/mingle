@@ -76,6 +76,12 @@ export const NicheConfigSchema = z.strictObject({
   /** Activities that start switched on in the create flow. */
   defaultModules: z.array(z.enum(moduleIds)),
   /**
+   * Whether shared costs (guests pay the host's purchases by Swish) start
+   * switched on in the create flow. Off in every niche: only hosts who spent
+   * money want it.
+   */
+  defaultSharedCosts: z.boolean(),
+  /**
    * Ready welcome text for the party screen, one per supported language. It is
    * built-in content in the event language (not UI text) and the host may edit
    * it, so it must pass the party schema's welcome limit.
