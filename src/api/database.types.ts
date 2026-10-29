@@ -490,11 +490,29 @@ export type Database = {
           event_id: string;
         }[];
       };
+      hot_take_highlights: {
+        Args: { target_event_id: string };
+        Returns: {
+          agree_count: number;
+          disagree_count: number;
+          highlight: string;
+          hot_take_id: string;
+          hot_take_position: number;
+          hot_take_text: string;
+        }[];
+      };
       hot_take_progress: {
         Args: { target_event_id: string };
         Returns: {
           revealed: number;
           total: number;
+        }[];
+      };
+      hot_take_result: {
+        Args: { target_hot_take_id: string };
+        Returns: {
+          agree_count: number;
+          disagree_count: number;
         }[];
       };
       is_host: { Args: { target_event_id: string }; Returns: boolean };
@@ -523,6 +541,13 @@ export type Database = {
         Args: { target_category_id: string };
         Returns: {
           votes: number;
+        }[];
+      };
+      my_hot_take_majority: {
+        Args: { target_event_id: string };
+        Returns: {
+          answered: number;
+          sided: number;
         }[];
       };
       ping: { Args: never; Returns: boolean };

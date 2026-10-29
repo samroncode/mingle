@@ -248,6 +248,22 @@
           "question_closed": "Too late, answers are closed.",
           "unknown": "Your answer didn't go through. Try again."
         }
+      },
+      "split": {
+        "agree": "Agree",
+        "disagree": "Disagree",
+        "share": "{{percent}}% ({{count}})",
+        "even": "The room is split evenly",
+        "none": "No answers this time",
+        "majority": "You're with the majority",
+        "minority": "You're in the minority"
+      },
+      "summary": {
+        "divisive": "Most divisive",
+        "agreed": "Most agreed",
+        "none": "Nobody answered a hot take.",
+        "sided_one": "You sided with the majority {{sided}} of {{count}} time",
+        "sided_other": "You sided with the majority {{sided}} of {{count}} times"
       }
     }
   },

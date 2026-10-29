@@ -1,6 +1,9 @@
 import { useTranslation } from "react-i18next";
 import type { ModuleViewProps } from "../../types";
 import { answeringGuests, hotTakesScreen } from "../screen";
+import { HighlightsList } from "../HighlightsList";
+import { SplitBars } from "../SplitBars";
+import { useHotTakeHighlights, useHotTakeResult } from "../useHotTakeResults";
 import { useHotTakesRun } from "../useHotTakesRun";
 
 /** The left side of the TV while the hot takes run. */
@@ -8,6 +11,18 @@ export function HotTakesTv({ event, members }: ModuleViewProps) {
   const { t } = useTranslation();
   const run = useHotTakesRun(event);
   const screen = hotTakesScreen(event, run.progress, run.takes);
+  const revealedTake =
+    screen.kind === "take" && screen.revealed ? screen.take : undefined;
+  const result = useHotTakeResult(
+    revealedTake?.id ?? "",
+    !!revealedTake,
+    run.version,
+  );
+  const highlights = useHotTakeHighlights(
+    event.id,
+    screen.kind === "summary",
+    run.version,
+  );
 
   return (
     <section
@@ -48,12 +63,20 @@ export function HotTakesTv({ event, members }: ModuleViewProps) {
               })}
             </p>
           )}
+          {screen.revealed && result.status === "ready" && result.value && (
+            <SplitBars split={result.value} large />
+          )}
         </>
       )}
       {screen.kind === "summary" && (
-        <h2 className="text-6xl font-semibold">
-          {t("modules.hottakes.summaryTitle")}
-        </h2>
+        <>
+          <h2 className="text-6xl font-semibold">
+            {t("modules.hottakes.summaryTitle")}
+          </h2>
+          {highlights.status === "ready" && (
+            <HighlightsList highlights={highlights.value} large />
+          )}
+        </>
       )}
     </section>
   );
