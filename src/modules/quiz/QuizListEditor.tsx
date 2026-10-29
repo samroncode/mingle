@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useTranslation } from "react-i18next";
 import { PickListEditor } from "@/components/wizard/PickListEditor";
 import { Input } from "@/components/ui/input";
@@ -90,9 +91,7 @@ function OwnQuestionForm({
         {t("wizard.quiz.ownHint")}
       </p>
       {invalid && (
-        <p role="alert" className="text-sm text-destructive">
-          {t("wizard.quiz.errors.incomplete", { n })}
-        </p>
+        <ErrorLine>{t("wizard.quiz.errors.incomplete", { n })}</ErrorLine>
       )}
     </div>
   );

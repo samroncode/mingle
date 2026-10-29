@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { answerQuizQuestion, getMyQuizAnswer } from "@/api/quiz";
@@ -97,11 +98,7 @@ export function GuestQuestion({
           )}
         </>
       )}
-      {error && (
-        <p role="alert" className="text-sm text-destructive">
-          {error}
-        </p>
-      )}
+      {error && <ErrorLine>{error}</ErrorLine>}
     </>
   );
 }

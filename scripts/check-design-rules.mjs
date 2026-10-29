@@ -1,5 +1,5 @@
 // Fails when src/ breaks the look rules in docs/design.md: hardcoded colors,
-// hardcoded font families and `dark:` classes. The look lives in
+// hardcoded font families, `dark:` classes and fill-colour text. The look lives in
 // src/app/theme.css; the QR code is black on white by necessity.
 import fs from "node:fs";
 import path from "node:path";
@@ -19,6 +19,10 @@ const rules = [
     /font-family\s*:|fontFamily\s*:|font-\[|["'](?:Arial|Helvetica|Inter|Geist)\b/,
   ],
   ["a dark: class", /(?:^|[\s"'`])dark:/],
+  [
+    "text-destructive or text-danger (use ErrorLine / text-danger-text)",
+    /(?<![\w-])text-(?:destructive|danger)(?![\w-])/,
+  ],
 ];
 
 function* sourceFiles(dir) {

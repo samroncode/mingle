@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -40,11 +41,7 @@ export function QuizHost(props: ModuleHostProps) {
       <h2 id="quiz-host-title" className="text-lg font-semibold">
         {t("modules.quiz.name")}
       </h2>
-      {run.failed && (
-        <p role="alert" className="text-sm text-destructive">
-          {t("modules.quiz.host.loadFailed")}
-        </p>
-      )}
+      {run.failed && <ErrorLine>{t("modules.quiz.host.loadFailed")}</ErrorLine>}
       {run.progress && (
         <QuizControls
           {...props}

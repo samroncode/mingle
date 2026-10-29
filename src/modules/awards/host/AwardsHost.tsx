@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import type { ModuleHostProps } from "../../types";
@@ -18,9 +19,7 @@ export function AwardsHost({ event }: ModuleHostProps) {
         {t("modules.awards.name")}
       </h2>
       {state.status === "error" && (
-        <p role="alert" className="text-sm text-destructive">
-          {t("modules.awards.host.loadFailed")}
-        </p>
+        <ErrorLine>{t("modules.awards.host.loadFailed")}</ErrorLine>
       )}
       {state.status === "ready" && state.categories.length === 0 && (
         <p className="text-sm text-muted-foreground">
