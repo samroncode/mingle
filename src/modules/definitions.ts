@@ -6,6 +6,7 @@ import { AwardsStep } from "./awards/wizard/AwardsStep";
 import { HotTakesGuest } from "./hottakes/guest/HotTakesGuest";
 import { HotTakesHost } from "./hottakes/host/HotTakesHost";
 import { HotTakesTv } from "./hottakes/tv/HotTakesTv";
+import { useHotTakesProgressText } from "./hottakes/useHotTakesProgressText";
 import { HotTakesStep } from "./hottakes/wizard/HotTakesStep";
 import { QuizGuest } from "./quiz/guest/QuizGuest";
 import { QuizHost } from "./quiz/host/QuizHost";
@@ -45,6 +46,7 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Tv: HotTakesTv,
     Guest: HotTakesGuest,
     Host: HotTakesHost,
+    useProgress: useHotTakesProgressText,
     WizardStep: HotTakesStep,
   },
 };

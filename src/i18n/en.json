@@ -222,6 +222,25 @@
       "host": {
         "empty": "There are no hot takes yet.",
         "loadFailed": "Couldn't load the hot takes. Reload to try again."
+      },
+      "counter": "Hot take {{number}} of {{total}}",
+      "progress": "hot take {{number}} of {{total}}",
+      "summaryStep": "That was the last hot take! Here is the summary.",
+      "summaryTitle": "Hot takes summary",
+      "run": {
+        "start": "Start hot takes",
+        "open": "Show hot take",
+        "reveal": "Reveal",
+        "next": "Next hot take",
+        "summary": "Show summary",
+        "finished": "Every hot take has been revealed.",
+        "backToParty": "Back to party screen"
+      },
+      "tv": {
+        "ready": "Get ready!"
+      },
+      "guest": {
+        "coming": "Next hot take coming"
       }
     }
   },

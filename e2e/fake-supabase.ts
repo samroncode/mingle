@@ -413,6 +413,11 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
         { total: (options.awards ?? []).length, revealed: 0 },
       ]);
     }
+    if (url.includes("/rest/v1/rpc/hot_take_progress")) {
+      return json(route, 200, [
+        { total: (options.hottakes ?? []).length, revealed: 0 },
+      ]);
+    }
     if (url.includes("/rest/v1/hot_takes")) {
       return json(
         route,

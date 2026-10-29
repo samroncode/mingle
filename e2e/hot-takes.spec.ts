@@ -159,3 +159,55 @@ test("the control panel says when the hot takes have no hot takes", async ({
     "There are no hot takes yet.",
   );
 });
+
+test("the host starts hot takes and sees the error line on a refusal", async ({
+  page,
+}) => {
+  const bodies = await fakeSupabase(page, [
+    () => [200, {}],
+    () => [409, { error: "module_empty" }],
+  ]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: ["hottakes"],
+    hottakes: ["Cats beat dogs"],
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const panel = page.getByTestId("hottakes-host");
+  await panel.getByRole("button", { name: "Start hot takes" }).click();
+
+  await expect(panel.getByRole("alert")).toBeVisible();
+  expect(bodies[1]).toEqual({
+    action: "set_flow",
+    code,
+    key,
+    move: { type: "start_module", module: "hottakes" },
+  });
+});
+
+test("the control panel shows the open hot take and the Reveal button", async ({
+  page,
+}) => {
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: ["hottakes"],
+    hottakes: ["Cats beat dogs", "Pineapple belongs on pizza"],
+    flow: {
+      status: "live",
+      current_module: "hottakes",
+      current_step: 1,
+      phase: "open",
+    },
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const panel = page.getByTestId("hottakes-host");
+  await expect(panel.getByTestId("hottakes-progress")).toHaveText(
+    "Hot take 2 of 2",
+  );
+  await expect(panel.getByText("Pineapple belongs on pizza")).toBeVisible();
+  await expect(panel.getByRole("button", { name: "Reveal" })).toBeVisible();
+  await expect(panel.getByRole("button", { name: "Stop" })).toBeVisible();
+});

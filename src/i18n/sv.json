@@ -222,6 +222,25 @@
       "host": {
         "empty": "Det finns inga heta åsikter än.",
         "loadFailed": "Kunde inte läsa in de heta åsikterna. Ladda om för att försöka igen."
+      },
+      "counter": "Het åsikt {{number}} av {{total}}",
+      "progress": "het åsikt {{number}} av {{total}}",
+      "summaryStep": "Det var sista åsikten! Här är sammanfattningen.",
+      "summaryTitle": "Sammanfattning",
+      "run": {
+        "start": "Starta heta åsikter",
+        "open": "Visa åsikten",
+        "reveal": "Visa resultatet",
+        "next": "Nästa åsikt",
+        "summary": "Visa sammanfattningen",
+        "finished": "Alla åsikter är avslöjade.",
+        "backToParty": "Tillbaka till festskärmen"
+      },
+      "tv": {
+        "ready": "Gör er redo!"
+      },
+      "guest": {
+        "coming": "Nästa åsikt kommer"
       }
     }
   },

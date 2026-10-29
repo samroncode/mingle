@@ -57,9 +57,35 @@ async function awardsBounds(db: Db, eventId: string): Promise<BoundsResult> {
   };
 }
 
+/**
+ * Hot takes: a step is a hot take by position. A hot take is revealed once
+ * its result has been shown, which the database records with the reveal
+ * itself. Only approved hot takes count, the same ones guests and the TV can
+ * see.
+ */
+async function hotTakesBounds(db: Db, eventId: string): Promise<BoundsResult> {
+  const { data, error } = await db
+    .from("hot_takes")
+    .select("position, revealed_at")
+    .eq("event_id", eventId)
+    .eq("status", "approved")
+    .order("position");
+  if (error) {
+    console.error("reading the hot takes bounds failed", error.code);
+    return "error";
+  }
+  const unrevealed = data.find((take) => take.revealed_at === null);
+  return {
+    steps: data.length,
+    firstUnplayed: unrevealed?.position ?? data.length,
+    finished: data.length > 0 && unrevealed === undefined,
+  };
+}
+
 const readers: Partial<Record<ModuleId, BoundsReader>> = {
   quiz: quizBounds,
   awards: awardsBounds,
+  hottakes: hotTakesBounds,
 };
 
 /** The step bounds of `module` in the event; null for an activity without. */

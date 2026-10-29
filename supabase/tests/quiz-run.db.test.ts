@@ -145,12 +145,15 @@ describe("start_module for the quiz", () => {
     });
   });
 
-  it("still starts another activity without questions as before", async () => {
+  it("leaves another activity to its own bounds", async () => {
     const host = await createQuiz(0);
 
-    await moves(host, { type: "start_module", module: "hottakes" });
+    const response = await setFlow(host, {
+      type: "start_module",
+      module: "hottakes",
+    });
 
-    expect((await flowOf(host)).current_module).toBe("hottakes");
+    expect(response.body).toEqual({ error: "module_empty" });
   });
 });
 
