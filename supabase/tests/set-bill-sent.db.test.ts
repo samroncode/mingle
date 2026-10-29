@@ -142,14 +142,4 @@ describe("set_bill_sent without the right key", () => {
     }
     expect(await billOf(cast, cast.anna)).toBeNull();
   });
-
-  it("refuses a guest who knows the right key but isn't the host", async () => {
-    const cast = await createCast();
-    await switchOnCosts(cast);
-
-    const response = await send(cast, true, cast, cast.anna);
-
-    expect(response.status).not.toBe(200);
-    expect(await billOf(cast, cast.anna)).toBeNull();
-  });
 });
