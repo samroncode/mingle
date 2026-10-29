@@ -223,6 +223,19 @@
         "empty": "Det finns inga heta åsikter än.",
         "loadFailed": "Kunde inte läsa in de heta åsikterna. Ladda om för att försöka igen."
       },
+      "edit": {
+        "edit": "Ändra heta åsikter",
+        "save": "Spara heta åsikter",
+        "cancel": "Avbryt",
+        "revealed": "Avslöjade heta åsikter",
+        "locked": "Avslöjad, kan inte ändras",
+        "errors": {
+          "incomplete": "Gör klart eller ta bort de heta åsikterna som är markerade ovan och spara igen.",
+          "invalid_transition": "Heta åsikter kan inte ändras medan en visas på TV:n, när alla är avslöjade eller när kvällen är slut.",
+          "module_disabled": "Heta åsikter är avstängda för den här kvällen.",
+          "invalid_request": "Kolla de heta åsikterna: varje behöver en text, och det får vara högst 20."
+        }
+      },
       "counter": "Het åsikt {{number}} av {{total}}",
       "progress": "het åsikt {{number}} av {{total}}",
       "answered": "{{count}} av {{total}} har svarat",

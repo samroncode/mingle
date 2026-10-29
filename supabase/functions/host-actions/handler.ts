@@ -16,6 +16,7 @@ import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
 import { setFlow } from "./set-flow.ts";
 import { updateAwards } from "./update-awards.ts";
+import { updateHotTakes } from "./update-hottakes.ts";
 import { updatePartyContent } from "./update-party-content.ts";
 import { updateQuiz } from "./update-quiz.ts";
 
@@ -86,5 +87,7 @@ async function runAction(
       return updateQuiz(db, caller, request);
     case "update_awards":
       return updateAwards(db, caller, request);
+    case "update_hottakes":
+      return updateHotTakes(db, caller, request);
   }
 }
