@@ -16,6 +16,7 @@ import {
   type PickListAction,
   type PickListRules,
 } from "./pick-list";
+import { wizardSlice } from "./slice";
 
 /** How many of the niche's categories are picked for the host to start from. */
 export const defaultAwardsSize = 8;
@@ -93,3 +94,11 @@ export function invalidOwnAwardKeys(awards: AwardsDraft): string[] {
       : [],
   );
 }
+
+export const awardsSlice = wizardSlice({
+  empty: emptyAwards,
+  reducer: awardsReducer,
+  resetBuiltin: resetBuiltinAwards,
+  invalidKeys: invalidOwnAwardKeys,
+  toRequest: toAwardCategories,
+});

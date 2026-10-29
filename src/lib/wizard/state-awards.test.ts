@@ -3,7 +3,7 @@ import { CreateEventRequestSchema } from "@/lib/schemas/host-actions";
 import { getNiche } from "@/niches";
 import { loadDraft, saveDraft } from "./draft-storage";
 import {
-  awardsIsInvalid,
+  stepIsInvalid,
   firstInvalidDraftStep,
   initialDraft,
   isSkippable,
@@ -108,7 +108,7 @@ describe("the awards step", () => {
       { type: "awards", action: { type: "add_own", key: "k" } },
       { type: "set_music_url", url: "http://not-https.example" },
     );
-    expect(awardsIsInvalid(draft)).toBe(true);
+    expect(stepIsInvalid(draft, "awards")).toBe(true);
     expect(firstInvalidDraftStep(draft)).toBe("awards");
     expect(firstInvalidDraftStep(awardsOff(draft))).toBe("wifi");
 
@@ -122,7 +122,7 @@ describe("the awards step", () => {
       type: "awards",
       action: { type: "edit_own", key: "k", change: { text: "Best at fika" } },
     });
-    expect(awardsIsInvalid(fixed)).toBe(false);
+    expect(stepIsInvalid(fixed, "awards")).toBe(false);
   });
 });
 
