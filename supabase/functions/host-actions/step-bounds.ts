@@ -33,8 +33,33 @@ async function quizBounds(db: Db, eventId: string): Promise<BoundsResult> {
   };
 }
 
+/**
+ * Awards: a step is a category by position. A category is revealed once its
+ * winner has been shown, which the database records with the reveal itself.
+ * Only approved categories count, the same ones guests and the TV can see.
+ */
+async function awardsBounds(db: Db, eventId: string): Promise<BoundsResult> {
+  const { data, error } = await db
+    .from("award_categories")
+    .select("position, revealed_at")
+    .eq("event_id", eventId)
+    .eq("status", "approved")
+    .order("position");
+  if (error) {
+    console.error("reading the awards bounds failed", error.code);
+    return "error";
+  }
+  const unrevealed = data.find((category) => category.revealed_at === null);
+  return {
+    steps: data.length,
+    firstUnplayed: unrevealed?.position ?? data.length,
+    finished: data.length > 0 && unrevealed === undefined,
+  };
+}
+
 const readers: Partial<Record<ModuleId, BoundsReader>> = {
   quiz: quizBounds,
+  awards: awardsBounds,
 };
 
 /** The step bounds of `module` in the event; null for an activity without. */

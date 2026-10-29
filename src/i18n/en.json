@@ -160,6 +160,25 @@
       "host": {
         "empty": "There are no categories in these awards yet.",
         "loadFailed": "Couldn't load the categories. Reload to try again."
+      },
+      "counter": "Award {{number}} of {{total}}",
+      "progress": "award {{number}} of {{total}}",
+      "winnersStep": "That was the last award! Here are the winners.",
+      "winnersTitle": "The winners",
+      "run": {
+        "start": "Start awards",
+        "open": "Show category",
+        "reveal": "Reveal",
+        "next": "Next category",
+        "winners": "Show all winners",
+        "finished": "Every category has been revealed.",
+        "backToParty": "Back to party screen"
+      },
+      "tv": {
+        "ready": "Get ready!"
+      },
+      "guest": {
+        "coming": "Next award coming"
       }
     },
     "hottakes": {

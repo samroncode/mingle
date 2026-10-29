@@ -160,6 +160,25 @@
       "host": {
         "empty": "Det finns inga kategorier i utmärkelserna än.",
         "loadFailed": "Kunde inte läsa in kategorierna. Ladda om för att försöka igen."
+      },
+      "counter": "Utmärkelse {{number}} av {{total}}",
+      "progress": "utmärkelse {{number}} av {{total}}",
+      "winnersStep": "Det var sista utmärkelsen! Här är vinnarna.",
+      "winnersTitle": "Vinnarna",
+      "run": {
+        "start": "Starta utmärkelserna",
+        "open": "Visa kategorin",
+        "reveal": "Visa vinnaren",
+        "next": "Nästa kategori",
+        "winners": "Visa alla vinnare",
+        "finished": "Alla kategorier är avslöjade.",
+        "backToParty": "Tillbaka till festskärmen"
+      },
+      "tv": {
+        "ready": "Gör er redo!"
+      },
+      "guest": {
+        "coming": "Nästa utmärkelse kommer"
       }
     },
     "hottakes": {

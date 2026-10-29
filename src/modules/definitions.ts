@@ -1,6 +1,7 @@
 import { AwardsGuest } from "./awards/guest/AwardsGuest";
 import { AwardsHost } from "./awards/host/AwardsHost";
 import { AwardsTv } from "./awards/tv/AwardsTv";
+import { useAwardsProgressText } from "./awards/useAwardsProgressText";
 import { AwardsStep } from "./awards/wizard/AwardsStep";
 import { QuizGuest } from "./quiz/guest/QuizGuest";
 import { QuizHost } from "./quiz/host/QuizHost";
@@ -31,6 +32,7 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Tv: AwardsTv,
     Guest: AwardsGuest,
     Host: AwardsHost,
+    useProgress: useAwardsProgressText,
     WizardStep: AwardsStep,
   },
 };

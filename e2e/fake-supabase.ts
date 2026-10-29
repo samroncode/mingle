@@ -406,6 +406,11 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
       scores: options.scores,
     };
     if (answerQuiz(route, quiz)) return;
+    if (url.includes("/rest/v1/rpc/award_progress")) {
+      return json(route, 200, [
+        { total: (options.awards ?? []).length, revealed: 0 },
+      ]);
+    }
     if (url.includes("/rest/v1/award_categories")) {
       return json(
         route,
