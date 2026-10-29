@@ -5,6 +5,8 @@ import { getMyAwardVote, voteForGuest } from "@/api/awards";
 import type { AwardCategoryView } from "@/api/awards";
 import type { MemberRow } from "@/api/events";
 import { voteCandidates } from "../candidates";
+import { useAwardWinners, useMyAwardVotes } from "../useAwardResults";
+import { WinnerText } from "../WinnerText";
 import { VoteButtons } from "./VoteButtons";
 
 interface GuestCategoryProps {
@@ -17,6 +19,8 @@ interface GuestCategoryProps {
   total: number;
   /** The reveal closes the voting. */
   revealed: boolean;
+  /** Counts the awards reads, so the results are read again with them. */
+  version: number;
 }
 
 /**
@@ -33,11 +37,14 @@ export function GuestCategory({
   number,
   total,
   revealed,
+  version,
 }: GuestCategoryProps) {
   const { t } = useTranslation();
   const [chosen, setChosen] = useState<string | null>(null);
   const [error, setError] = useState<string>();
   const candidates = voteCandidates(members, userId, language);
+  const winners = useAwardWinners(category.id, revealed, version);
+  const myVotes = useMyAwardVotes(category.id, revealed, version);
 
   useEffect(() => {
     let stale = false;
@@ -84,6 +91,20 @@ export function GuestCategory({
             onChoose={(id) => void choose(id)}
           />
         ))}
+      {revealed && winners.status === "ready" && (
+        <p data-testid="awards-winner" className="text-3xl font-semibold">
+          <WinnerText
+            winners={winners.value}
+            members={members}
+            language={language}
+          />
+        </p>
+      )}
+      {revealed && myVotes.status === "ready" && myVotes.value !== null && (
+        <p data-testid="awards-my-votes" className="text-lg">
+          {t("modules.awards.guest.youGot", { count: myVotes.value })}
+        </p>
+      )}
       {error && <ErrorLine>{error}</ErrorLine>}
     </>
   );

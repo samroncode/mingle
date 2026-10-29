@@ -292,9 +292,40 @@ export type Database = {
           total: number;
         }[];
       };
+      award_results: {
+        Args: { target_event_id: string };
+        Returns: {
+          category_id: string;
+          category_position: number;
+          category_text: string;
+          user_id: string;
+          votes: number;
+        }[];
+      };
+      award_tally: {
+        Args: { target_category_id: string };
+        Returns: {
+          user_id: string;
+          votes: number;
+        }[];
+      };
       award_voters: {
         Args: { target_category_id: string };
         Returns: {
+          user_id: string;
+        }[];
+      };
+      award_winners: {
+        Args: { target_category_id: string };
+        Returns: {
+          user_id: string;
+          votes: number;
+        }[];
+      };
+      awards_won: {
+        Args: { target_event_id: string };
+        Returns: {
+          awards: number;
           user_id: string;
         }[];
       };
@@ -387,6 +418,12 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      my_award_votes: {
+        Args: { target_category_id: string };
+        Returns: {
+          votes: number;
+        }[];
       };
       ping: { Args: never; Returns: boolean };
       quiz_progress: {

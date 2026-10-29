@@ -150,6 +150,113 @@ export async function listAwardVoters(
   return ok(data.map((row) => row.user_id));
 }
 
+/** A guest who won a category, with the votes they got. */
+export interface AwardWinner {
+  userId: string;
+  votes: number;
+}
+
+/**
+ * The winner or winners of a revealed category, for any member. Several
+ * winners share a tie; an empty list means nobody voted, or the category
+ * isn't revealed yet.
+ */
+export async function getAwardWinners(
+  categoryId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<AwardWinner[], "unknown">> {
+  const { data, error } = await client.rpc("award_winners", {
+    target_category_id: categoryId,
+  });
+  if (error) return fail("unknown");
+  return ok(data.map((row) => ({ userId: row.user_id, votes: row.votes })));
+}
+
+/**
+ * The full count per guest on a revealed category, best first. Only the host
+ * gets any; everyone else gets an empty list.
+ */
+export async function getAwardTally(
+  categoryId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<AwardWinner[], "unknown">> {
+  const { data, error } = await client.rpc("award_tally", {
+    target_category_id: categoryId,
+  });
+  if (error) return fail("unknown");
+  return ok(data.map((row) => ({ userId: row.user_id, votes: row.votes })));
+}
+
+/**
+ * How many votes the caller got on a revealed category, or null when they
+ * aren't a guest with a name (or the category isn't revealed).
+ */
+export async function getMyAwardVotes(
+  categoryId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<number | null, "unknown">> {
+  const { data, error } = await client.rpc("my_award_votes", {
+    target_category_id: categoryId,
+  });
+  if (error) return fail("unknown");
+  return ok(data[0]?.votes ?? null);
+}
+
+/** A revealed category with its winners (none if nobody voted). */
+export interface AwardResult {
+  categoryId: string;
+  position: number;
+  text: string;
+  winners: AwardWinner[];
+}
+
+/** Every revealed category in order with its winners, for any member. */
+export async function listAwardResults(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<AwardResult[], "unknown">> {
+  const { data, error } = await client.rpc("award_results", {
+    target_event_id: eventId,
+  });
+  if (error) return fail("unknown");
+  const results = new Map<string, AwardResult>();
+  for (const row of data) {
+    const result = results.get(row.category_id) ?? {
+      categoryId: row.category_id,
+      position: row.category_position,
+      text: row.category_text,
+      winners: [],
+    };
+    // A category nobody voted on comes as one row without a user.
+    if (row.user_id) {
+      result.winners.push({ userId: row.user_id, votes: row.votes });
+    }
+    results.set(row.category_id, result);
+  }
+  return ok([...results.values()].sort((a, b) => a.position - b.position));
+}
+
+/** How many awards a guest won. */
+export interface AwardsWon {
+  userId: string;
+  awards: number;
+}
+
+/**
+ * The awards won per guest: every guest for the host, only the caller's own
+ * row for a guest.
+ */
+export async function listAwardsWon(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<AwardsWon[], "unknown">> {
+  const { data, error } = await client.rpc("awards_won", {
+    target_event_id: eventId,
+  });
+  if (error) return fail("unknown");
+  return ok(data.map((row) => ({ userId: row.user_id, awards: row.awards })));
+}
+
 /** Votes arrive in bursts; one refetch per this long is enough. */
 const CHANGE_DELAY_MS = 300;
 

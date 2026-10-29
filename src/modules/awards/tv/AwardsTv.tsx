@@ -1,7 +1,10 @@
 import { useTranslation } from "react-i18next";
 import type { ModuleViewProps } from "../../types";
 import { awardsScreen } from "../screen";
+import { useAwardResults, useAwardWinners } from "../useAwardResults";
 import { useAwardsRun } from "../useAwardsRun";
+import { WinnersList } from "../WinnersList";
+import { WinnerText } from "../WinnerText";
 
 /** The left side of the TV while the awards run. */
 export function AwardsTv({ event, members }: ModuleViewProps) {
@@ -9,6 +12,18 @@ export function AwardsTv({ event, members }: ModuleViewProps) {
   const run = useAwardsRun(event);
   const screen = awardsScreen(event, run.progress, run.categories);
   const guests = members.filter((m) => m.role === "guest").length;
+  const revealedCategory =
+    screen.kind === "category" && screen.revealed ? screen.category : undefined;
+  const winners = useAwardWinners(
+    revealedCategory?.id ?? "",
+    !!revealedCategory,
+    run.version,
+  );
+  const results = useAwardResults(
+    event.id,
+    screen.kind === "winners",
+    run.version,
+  );
 
   return (
     <section
@@ -49,12 +64,31 @@ export function AwardsTv({ event, members }: ModuleViewProps) {
               })}
             </p>
           )}
+          {screen.revealed && winners.status === "ready" && (
+            <p data-testid="awards-winner" className="text-7xl font-semibold">
+              <WinnerText
+                winners={winners.value}
+                members={members}
+                language={event.language}
+              />
+            </p>
+          )}
         </>
       )}
       {screen.kind === "winners" && (
-        <h2 className="text-6xl font-semibold">
-          {t("modules.awards.winnersTitle")}
-        </h2>
+        <>
+          <h2 className="text-6xl font-semibold">
+            {t("modules.awards.winnersTitle")}
+          </h2>
+          {results.status === "ready" && (
+            <WinnersList
+              large
+              results={results.value}
+              members={members}
+              language={event.language}
+            />
+          )}
+        </>
       )}
     </section>
   );

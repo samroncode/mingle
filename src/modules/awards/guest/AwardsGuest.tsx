@@ -3,6 +3,7 @@ import type { ModuleGuestViewProps } from "../../types";
 import { awardsScreen } from "../screen";
 import { useAwardsRun } from "../useAwardsRun";
 import { GuestCategory } from "./GuestCategory";
+import { GuestWinners } from "./GuestWinners";
 
 /** The guest page while the awards run. */
 export function AwardsGuest({ event, members, userId }: ModuleGuestViewProps) {
@@ -35,12 +36,17 @@ export function AwardsGuest({ event, members, userId }: ModuleGuestViewProps) {
           number={screen.number}
           total={screen.total}
           revealed={screen.revealed}
+          version={run.version}
         />
       )}
       {screen.kind === "winners" && (
-        <h2 className="text-2xl font-semibold">
-          {t("modules.awards.winnersTitle")}
-        </h2>
+        <GuestWinners
+          eventId={event.id}
+          userId={userId}
+          language={event.language}
+          members={members}
+          version={run.version}
+        />
       )}
     </section>
   );
