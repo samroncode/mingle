@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { EventRow, MemberRow } from "@/api/events";
 import { setFlow } from "@/api/host-actions";
+import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useHostAction } from "@/hooks/useHostAction";
 import { countGuests } from "@/partyscreen/guests";
@@ -73,10 +74,11 @@ export function TopBar({ event, members, hostKey }: TopBarProps) {
   return (
     <div
       data-testid="host-top-bar"
-      className="sticky top-0 z-10 -mx-4 space-y-1 border-b bg-background px-4 py-2"
+      className="sticky top-0 z-10 -mx-4 space-y-1 border-b-[length:var(--border-chunky)] border-edge bg-forest px-4 py-2 text-on-forest"
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="font-mono font-bold tracking-widest">
+        <Logo className="text-xl" />
+        <span className="font-display font-extrabold tracking-widest">
           {event.code}
         </span>
         <span data-testid="guest-count" className="text-sm">
@@ -84,13 +86,13 @@ export function TopBar({ event, members, hostKey }: TopBarProps) {
         </span>
       </div>
       <div className="flex items-center justify-between gap-2">
-        <p data-testid="tv-now" className="text-sm text-muted-foreground">
+        <p data-testid="tv-now" className="text-sm text-on-forest">
           {t("hostPanel.tvNow")} <TvNow event={event} />
         </p>
         {running && (
           <Button
             size="sm"
-            variant="outline"
+            variant="secondary"
             disabled={busy}
             onClick={() => void stop()}
           >
@@ -99,7 +101,7 @@ export function TopBar({ event, members, hostKey }: TopBarProps) {
         )}
       </div>
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm text-danger-text">
           {error}
         </p>
       )}

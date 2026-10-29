@@ -288,3 +288,129 @@
     outline-offset: 3px;
   }
 }
+
+/*
+ * THE FUN DIAL. How much the UI moves is a level: calm, playful (default) or party.
+ * <FunZone level="party"> sets data-fun; the custom properties below inherit, so the
+ * nearest zone wins and a tree with no zone is playful. Components opt in with the
+ * fun-* classes. prefers-reduced-motion turns every level into the calm values.
+ */
+:root,
+[data-fun="playful"] {
+  --fun-lift: -2px;
+  --fun-tilt: 1.5deg;
+  --fun-pop: 220ms;
+  --fun-wiggle: 0deg;
+  --fun-pulse: 1;
+  --fun-pulse-time: 0s;
+  --fun-confetti: 1;
+  --fun-confetti-count: 1;
+}
+
+[data-fun="calm"] {
+  --fun-lift: 0px;
+  --fun-tilt: 0deg;
+  --fun-pop: 120ms;
+  --fun-wiggle: 0deg;
+  --fun-pulse: 1;
+  --fun-pulse-time: 0s;
+  --fun-confetti: 0;
+  --fun-confetti-count: 1;
+}
+
+[data-fun="party"] {
+  --fun-lift: -4px;
+  --fun-tilt: 3deg;
+  --fun-pop: 420ms;
+  --fun-wiggle: 2deg;
+  --fun-pulse: 1.05;
+  --fun-pulse-time: 1.4s;
+  --fun-confetti: 1;
+  --fun-confetti-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  [data-fun] {
+    --fun-lift: 0px;
+    --fun-tilt: 0deg;
+    --fun-pop: 120ms;
+    --fun-wiggle: 0deg;
+    --fun-pulse: 1;
+    --fun-pulse-time: 0s;
+    --fun-confetti: 0;
+    --fun-confetti-count: 1;
+  }
+}
+
+@keyframes fun-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fun-wiggle {
+  0%,
+  100% {
+    transform: rotate(calc(var(--fun-wiggle) * -1));
+  }
+  50% {
+    transform: rotate(var(--fun-wiggle));
+  }
+}
+
+@keyframes fun-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(var(--fun-pulse));
+  }
+}
+
+@keyframes fun-confetti-fall {
+  from {
+    opacity: var(--fun-confetti);
+    transform: translateY(-1em) rotate(0deg);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(6em) rotate(360deg);
+  }
+}
+
+@layer components {
+  .fun-lift:hover:not(:disabled) {
+    transform: translateY(var(--fun-lift));
+  }
+  .fun-pop {
+    animation: fun-pop-in var(--fun-pop) var(--ease-bounce) both;
+  }
+  .fun-tilt {
+    transform: rotate(var(--fun-tilt));
+  }
+  .fun-tilt.-rotate-2 {
+    transform: rotate(calc(var(--fun-tilt) * -1.33));
+  }
+  .fun-tilt.rotate-2 {
+    transform: rotate(calc(var(--fun-tilt) * 1.33));
+  }
+  .fun-wiggle {
+    animation: fun-wiggle 600ms ease-in-out infinite;
+  }
+  .fun-pulse {
+    animation: fun-pulse var(--fun-pulse-time) ease-in-out infinite;
+  }
+  /* A confetti piece: place it, color it with a bg-* token; it falls once or loops. */
+  .fun-confetti {
+    animation: fun-confetti-fall 1.6s var(--ease-out) var(--fun-confetti-count)
+      both;
+    opacity: var(--fun-confetti);
+  }
+}
