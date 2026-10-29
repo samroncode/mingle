@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { HotTakeView } from "@/api/hottakes";
-import { hotTakesNextMove, hotTakesScreen } from "./screen";
+import { answeringGuests, hotTakesNextMove, hotTakesScreen } from "./screen";
 
 const take: HotTakeView = {
   id: "c3",
@@ -100,5 +100,19 @@ describe("hotTakesNextMove", () => {
   it("has nothing to do on the summary step or when hottakes aren't running", () => {
     expect(hotTakesNextMove(flow(8, "idle"), 8)).toBeNull();
     expect(hotTakesNextMove(flow(0, "idle", "quiz"), 8)).toBeNull();
+  });
+});
+
+describe("answeringGuests", () => {
+  it("counts guests with a display name, not the host, the TV or unnamed guests", () => {
+    expect(
+      answeringGuests([
+        { role: "host", display_name: null },
+        { role: "tv", display_name: null },
+        { role: "guest", display_name: "Anna" },
+        { role: "guest", display_name: "Bertil" },
+        { role: "guest", display_name: null },
+      ]),
+    ).toBe(2);
   });
 });

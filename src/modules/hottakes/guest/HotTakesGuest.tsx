@@ -2,9 +2,10 @@ import { useTranslation } from "react-i18next";
 import type { ModuleGuestViewProps } from "../../types";
 import { hotTakesScreen } from "../screen";
 import { useHotTakesRun } from "../useHotTakesRun";
+import { GuestTake } from "./GuestTake";
 
 /** The guest page while the hot takes run. */
-export function HotTakesGuest({ event }: ModuleGuestViewProps) {
+export function HotTakesGuest({ event, userId }: ModuleGuestViewProps) {
   const { t } = useTranslation();
   const run = useHotTakesRun(event);
   const screen = hotTakesScreen(event, run.progress, run.takes);
@@ -24,15 +25,15 @@ export function HotTakesGuest({ event }: ModuleGuestViewProps) {
         </p>
       )}
       {screen.kind === "take" && (
-        <>
-          <p className="text-sm text-muted-foreground">
-            {t("modules.hottakes.counter", {
-              number: screen.number,
-              total: screen.total,
-            })}
-          </p>
-          <h2 className="text-2xl font-semibold">{screen.take.text}</h2>
-        </>
+        <GuestTake
+          key={screen.take.id}
+          eventId={event.id}
+          userId={userId}
+          take={screen.take}
+          number={screen.number}
+          total={screen.total}
+          revealed={screen.revealed}
+        />
       )}
       {screen.kind === "summary" && (
         <h2 className="text-2xl font-semibold">

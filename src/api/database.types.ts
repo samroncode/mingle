@@ -141,6 +141,46 @@ export type Database = {
         };
         Relationships: [];
       };
+      hot_take_answers: {
+        Row: {
+          agree: boolean;
+          event_id: string;
+          guest_id: string;
+          hot_take_id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          agree: boolean;
+          event_id: string;
+          guest_id: string;
+          hot_take_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          agree?: boolean;
+          event_id?: string;
+          guest_id?: string;
+          hot_take_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "hot_take_answers_event_id_guest_id_fkey";
+            columns: ["event_id", "guest_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+          {
+            foreignKeyName: "hot_take_answers_hot_take_id_event_id_fkey";
+            columns: ["hot_take_id", "event_id"];
+            isOneToOne: false;
+            referencedRelation: "hot_takes";
+            referencedColumns: ["id", "event_id"];
+          },
+        ];
+      };
       hot_takes: {
         Row: {
           answer_count: number;
@@ -367,6 +407,10 @@ export type Database = {
           awards: number;
           user_id: string;
         }[];
+      };
+      can_answer_hot_take: {
+        Args: { target_event_id: string; target_hot_take_id: string };
+        Returns: boolean;
       };
       can_answer_quiz_question: {
         Args: { target_event_id: string; target_question_id: string };
