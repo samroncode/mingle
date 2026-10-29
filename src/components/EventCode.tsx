@@ -5,5 +5,5 @@ import { useParams } from "react-router";
 export function EventCode() {
   const { t } = useTranslation();
   const { code } = useParams();
-  return <p className="text-muted-foreground">{t("common.code", { code })}</p>;
+  return <p className="text-on-paper-muted">{t("common.code", { code })}</p>;
 }

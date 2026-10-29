@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
 import { EventCode } from "@/components/EventCode";
+import { Card } from "@/components/ui/card";
+import { Sticker } from "@/components/ui/sticker";
 import { useGuestLookup } from "@/hooks/useGuestLookup";
 import { GuestMessage } from "../guest/GuestMessage";
 
@@ -15,9 +17,14 @@ export function SummaryView() {
     return <GuestMessage kind="not_found" />;
   }
   return (
-    <>
-      <h1 className="text-2xl font-semibold">{t("views.summary.title")}</h1>
+    <Card className="gap-4 p-6">
+      <Sticker color="sage" lean="left" className="self-start">
+        {t("views.summary.sticker")}
+      </Sticker>
+      <h1 className="font-display text-5xl leading-none font-extrabold">
+        {t("views.summary.title")}
+      </h1>
       <EventCode />
-    </>
+    </Card>
   );
 }

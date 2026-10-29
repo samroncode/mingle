@@ -1,5 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { CopyButton } from "@/components/CopyButton";
+import { Button } from "@/components/ui/button";
+import { Card, CardTitle } from "@/components/ui/card";
+import { Sticker } from "@/components/ui/sticker";
 import type { Party } from "@/lib/schemas/party";
 
 interface SectionProps {
@@ -9,10 +12,10 @@ interface SectionProps {
 
 function Section({ title, children }: SectionProps) {
   return (
-    <section className="space-y-1">
-      <h2 className="text-lg font-semibold">{title}</h2>
+    <Card>
+      <CardTitle className="text-2xl">{title}</CardTitle>
       {children}
-    </section>
+    </Card>
   );
 }
 
@@ -21,11 +24,13 @@ export function PartyInfo({ party }: { party: Party }) {
   const { t } = useTranslation();
   const { welcome, menu, schedule, wifi, musicUrl } = party;
   return (
-    <div className="space-y-4">
-      {welcome ? <p className="whitespace-pre-line">{welcome}</p> : null}
+    <div className="space-y-5">
+      {welcome ? (
+        <p className="text-xl leading-snug whitespace-pre-line">{welcome}</p>
+      ) : null}
       {menu?.length ? (
         <Section title={t("guest.party.menu")}>
-          <ul className="list-disc pl-5">
+          <ul className="list-disc space-y-1 pl-5 text-lg">
             {menu.map((line, i) => (
               <li key={i}>{line}</li>
             ))}
@@ -34,10 +39,16 @@ export function PartyInfo({ party }: { party: Party }) {
       ) : null}
       {schedule?.length ? (
         <Section title={t("guest.party.schedule")}>
-          <ul>
+          <ul className="space-y-3">
             {schedule.map((item, i) => (
-              <li key={i}>
-                <span className="font-medium">{item.time}</span> {item.title}
+              <li key={i} className="flex items-center gap-3 text-lg">
+                <Sticker
+                  color="champagne"
+                  lean={i % 2 === 0 ? "left" : "right"}
+                >
+                  {item.time}
+                </Sticker>
+                <span>{item.title}</span>
               </li>
             ))}
           </ul>
@@ -45,31 +56,32 @@ export function PartyInfo({ party }: { party: Party }) {
       ) : null}
       {wifi ? (
         <Section title={t("guest.party.wifi")}>
-          <p>{wifi.ssid}</p>
+          <p className="font-display text-3xl leading-none font-extrabold break-all">
+            {wifi.ssid}
+          </p>
           {wifi.password ? (
-            <div className="flex items-center gap-2">
-              <span>{wifi.password}</span>
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-display text-xl font-bold break-all">
+                {wifi.password}
+              </span>
               <CopyButton
                 text={wifi.password}
                 label={t("guest.party.copyPassword")}
               />
             </div>
           ) : (
-            <p className="text-muted-foreground">
+            <p className="text-on-paper-muted">
               {t("guest.party.openNetwork")}
             </p>
           )}
         </Section>
       ) : null}
       {musicUrl ? (
-        <a
-          href={musicUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block rounded-md border px-4 py-2 font-medium"
-        >
-          {t("guest.party.music")}
-        </a>
+        <Button asChild size="lg" variant="accent">
+          <a href={musicUrl} target="_blank" rel="noopener noreferrer">
+            {t("guest.party.music")}
+          </a>
+        </Button>
       ) : null}
     </div>
   );

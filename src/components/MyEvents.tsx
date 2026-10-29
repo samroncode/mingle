@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { hostLink } from "@/lib/links";
 import { forgetMyEvent, loadMyEvents } from "@/lib/guest/my-events";
 
@@ -18,39 +19,41 @@ export function MyEvents() {
   }
 
   return (
-    <section aria-labelledby="my-events-title" className="space-y-2">
-      <h2 id="my-events-title" className="text-xl font-semibold">
+    <section aria-labelledby="my-events-title" className="space-y-3">
+      <h2 id="my-events-title" className="font-display text-2xl font-extrabold">
         {t("myEvents.title")}
       </h2>
-      <ul className="space-y-2">
+      <ul className="space-y-3">
         {events.map((event) => (
-          <li
-            key={event.code}
-            className="flex items-center gap-2 rounded-lg border p-3"
-          >
-            <div className="min-w-0 flex-1">
-              <p className="font-mono text-lg tracking-widest">{event.code}</p>
-              <p className="text-sm text-muted-foreground">
-                {t(`niches.${event.niche}.name`)}
-              </p>
-            </div>
-            <Button asChild size="sm">
-              <Link to={hostLink("", event.code, event.key)}>
-                {t("myEvents.open")}
-              </Link>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              aria-label={t("myEvents.forgetLabel", { code: event.code })}
-              onClick={() => forget(event.code)}
-            >
-              {t("myEvents.forget")}
-            </Button>
+          <li key={event.code}>
+            <Card className="flex-row items-center gap-2 p-3">
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-2xl font-extrabold tracking-widest">
+                  {event.code}
+                </p>
+                <p className="text-sm text-on-paper-muted">
+                  {t(`niches.${event.niche}.name`)}
+                </p>
+              </div>
+              <Button asChild size="sm">
+                <Link to={hostLink("", event.code, event.key)}>
+                  {t("myEvents.open")}
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-on-paper"
+                aria-label={t("myEvents.forgetLabel", { code: event.code })}
+                onClick={() => forget(event.code)}
+              >
+                {t("myEvents.forget")}
+              </Button>
+            </Card>
           </li>
         ))}
       </ul>
-      <p className="text-sm text-muted-foreground">{t("myEvents.hint")}</p>
+      <p className="text-sm text-ink-muted">{t("myEvents.hint")}</p>
     </section>
   );
 }

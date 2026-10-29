@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
+import { Card } from "@/components/ui/card";
+import { Sticker } from "@/components/ui/sticker";
 import { useGuestLookup } from "@/hooks/useGuestLookup";
 import { pickGuestPageState } from "@/lib/guest/guest-page";
 import { GuestIn } from "./GuestIn";
@@ -18,18 +20,23 @@ export function GuestView() {
   }
   if (page === "join") {
     return (
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">{t("views.guest.title")}</h1>
+      <Card className="gap-5 bg-champagne p-6 text-on-bright">
+        <Sticker color="coral" lean="left" className="self-start">
+          {t("guest.joinSticker")}
+        </Sticker>
+        <h1 className="font-display text-5xl leading-none font-extrabold">
+          {t("views.guest.title")}
+        </h1>
         <NameForm
           label={t("guest.nameLabel")}
           submitLabel={t("guest.join")}
           onSubmit={join}
         />
-      </div>
+      </Card>
     );
   }
   if (page === "loading" || page === "in") {
-    return <p className="text-muted-foreground">{t("guest.loading")}</p>;
+    return <p className="text-lg text-ink-muted">{t("guest.loading")}</p>;
   }
   if (page === "captcha_failed") {
     return <GuestMessage kind="captcha_failed" onRetry={retry} />;

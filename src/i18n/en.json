@@ -40,6 +40,7 @@
       "title": "Join the party"
     },
     "summary": {
+      "sticker": "The night in review",
       "title": "Summary"
     },
     "notFound": {
@@ -314,6 +315,8 @@
     "hint": "Only remembered on this device. Forgetting does not delete the event."
   },
   "guest": {
+    "joinSticker": "New guest",
+    "joinedSticker": "In",
     "loading": "Loading…",
     "nameLabel": "Your name",
     "join": "Join",

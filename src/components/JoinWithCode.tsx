@@ -17,19 +17,22 @@ export function JoinWithCode() {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-2">
-      <h2 className="text-lg font-semibold">{t("views.landing.joinTitle")}</h2>
-      <div className="flex gap-2">
+    <form onSubmit={submit} className="flex flex-col gap-4">
+      <h2 className="font-display text-3xl leading-none font-extrabold">
+        {t("views.landing.joinTitle")}
+      </h2>
+      <div className="flex flex-col gap-4">
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={t("views.landing.joinPlaceholder")}
           aria-label={t("views.landing.joinPlaceholder")}
+          className="font-display text-2xl font-bold tracking-widest uppercase"
           autoCapitalize="characters"
           autoComplete="off"
           spellCheck={false}
         />
-        <Button type="submit" disabled={!code}>
+        <Button type="submit" size="lg" disabled={!code}>
           {t("views.landing.join")}
         </Button>
       </div>
