@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { Card } from "@/components/ui/card";
 import { EventLinks } from "@/components/EventLinks";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
@@ -13,7 +14,7 @@ import { TopBar } from "./TopBar";
 function Placeholder({ title }: { title: string }) {
   return (
     <section className="space-y-1">
-      <h2 className="font-semibold">{title}</h2>
+      <h2 className="font-display text-xl font-bold">{title}</h2>
     </section>
   );
 }
@@ -27,11 +28,11 @@ function EventSection({
 }) {
   const { t } = useTranslation();
   return (
-    <section className="space-y-2">
-      <h2 className="font-semibold">{t("hostPanel.event")}</h2>
+    <Card>
+      <h2 className="font-display text-xl font-bold">{t("hostPanel.event")}</h2>
       <EventLinks code={link.code} hostKey={link.key} hideHostLink />
       {children}
-    </section>
+    </Card>
   );
 }
 
@@ -47,7 +48,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
     return (
       <p
         role={state.status === "error" ? "alert" : undefined}
-        className="text-muted-foreground"
+        className="text-ink-muted"
       >
         {t(
           state.status === "error"
@@ -62,12 +63,14 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
     <>
       <TopBar event={event} members={members} hostKey={link.key} />
       {state.status === "error" && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm font-bold text-danger-text">
           {t("hostPanel.offline")}
         </p>
       )}
       {ended ? (
-        <p className="font-medium">{t("hostPanel.ended")}</p>
+        <p className="rounded-md border-[length:var(--border-chunky)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright shadow-pop-sm">
+          {t("hostPanel.ended")}
+        </p>
       ) : (
         <Activities event={event} members={members} hostKey={link.key} />
       )}
@@ -95,7 +98,7 @@ export function HostPanel({ link }: { link: HostLinkParts }) {
       {eventId ? (
         <Live eventId={eventId} link={link} />
       ) : (
-        <p className="text-muted-foreground">{t("hostPanel.loading")}</p>
+        <p className="text-ink-muted">{t("hostPanel.loading")}</p>
       )}
       {!eventId && <EventSection link={link} />}
     </div>

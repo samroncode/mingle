@@ -42,24 +42,29 @@ export function EventLinks({
   return (
     <div className="space-y-4">
       <section aria-label={t("links.codeLabel")}>
-        <p className="text-sm text-muted-foreground">{t("links.codeLabel")}</p>
+        <p className="text-sm text-on-paper-muted">{t("links.codeLabel")}</p>
         <p
           data-testid="event-code"
-          className="font-mono text-5xl font-bold tracking-widest"
+          className="font-display text-5xl font-extrabold tracking-widest"
         >
           {code}
         </p>
       </section>
       <section className="space-y-2">
-        <h2 className="font-medium">{t("links.hostLabel")}</h2>
+        <h2 className="font-display text-lg font-bold">
+          {t("links.hostLabel")}
+        </h2>
         {hostShown ? (
-          <p data-testid="host-link" className="text-sm break-all">
+          <p
+            data-testid="host-link"
+            className="rounded-md bg-surface-sunken p-3 text-sm break-all text-ink"
+          >
             {host}
           </p>
         ) : (
           <Button
-            variant="link"
-            className="px-0"
+            variant="outline"
+            size="sm"
             onClick={() => setHostShown(true)}
           >
             {t("links.showHost")}
@@ -75,8 +80,11 @@ export function EventLinks({
         </div>
       </section>
       <section className="space-y-2">
-        <h2 className="font-medium">{t("links.tvLabel")}</h2>
-        <p data-testid="tv-address" className="text-sm break-all">
+        <h2 className="font-display text-lg font-bold">{t("links.tvLabel")}</h2>
+        <p
+          data-testid="tv-address"
+          className="rounded-md bg-surface-sunken p-3 text-sm break-all text-ink"
+        >
           {tv}
         </p>
         <CopyButton text={tv} label={t("links.copyTv")} />

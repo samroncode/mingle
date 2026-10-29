@@ -27,7 +27,11 @@ function FieldErrors({ fields }: { fields: readonly PartyField[] }) {
   return (
     <>
       {fields.map((field) => (
-        <p key={field} role="alert" className="text-sm text-destructive">
+        <p
+          key={field}
+          role="alert"
+          className="text-sm font-bold text-danger-text"
+        >
           {t(`wizard.errors.${field}`)}
         </p>
       ))}
@@ -45,12 +49,10 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block space-y-1">
-      <span className="text-sm font-medium">{label}</span>
+    <label className="block space-y-1.5">
+      <span className="font-display text-base font-bold">{label}</span>
       {children}
-      {hint && (
-        <span className="block text-xs text-muted-foreground">{hint}</span>
-      )}
+      {hint && <span className="block text-sm text-ink-muted">{hint}</span>}
     </label>
   );
 }

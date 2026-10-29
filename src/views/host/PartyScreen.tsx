@@ -22,11 +22,9 @@ interface PartyScreenProps {
 
 function Part({ title, children }: { title: string; children: string }) {
   return (
-    <div>
-      <dt className="text-sm font-medium">{title}</dt>
-      <dd className="whitespace-pre-line text-sm text-muted-foreground">
-        {children}
-      </dd>
+    <div className="rounded-md bg-surface-sunken p-3">
+      <dt className="font-display text-sm font-bold text-ink-muted">{title}</dt>
+      <dd className="whitespace-pre-line text-base text-ink">{children}</dd>
     </div>
   );
 }
@@ -104,11 +102,11 @@ function PartyEditor({
         onMusicChange={(musicUrl) => change({ musicUrl })}
       />
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm font-bold text-danger-text">
           {error}
         </p>
       )}
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-3">
         <Button size="lg" disabled={busy} onClick={() => void save()}>
           {t("hostPanel.party.save")}
         </Button>
@@ -125,11 +123,20 @@ export function PartyScreen(props: PartyScreenProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   return (
-    <section data-testid="party-screen" className="space-y-2">
+    <section
+      data-testid="party-screen"
+      className="space-y-3 rounded-lg border-[length:var(--border-chunky)] border-edge bg-surface p-4 shadow-pop-md"
+    >
       <div className="flex items-center justify-between gap-2">
-        <h2 className="font-semibold">{t("hostPanel.partyScreen")}</h2>
+        <h2 className="font-display text-xl font-bold">
+          {t("hostPanel.partyScreen")}
+        </h2>
         {!editing && (
-          <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setEditing(true)}
+          >
             {t("hostPanel.party.edit")}
           </Button>
         )}

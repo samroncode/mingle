@@ -27,7 +27,7 @@ function BuiltinQuestion({
   return (
     <div className="min-w-0 flex-1">
       <p className="font-medium">{text}</p>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm text-on-paper-muted">
         {t("wizard.quiz.rightAnswer", { answer: options[correct] })}
       </p>
     </div>

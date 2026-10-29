@@ -10,8 +10,10 @@ function BadLink() {
   const { t } = useTranslation();
   return (
     <>
-      <h1 className="text-2xl font-semibold">{t("hostDoor.badLink")}</h1>
-      <p className="text-muted-foreground">{t("hostDoor.badLinkHint")}</p>
+      <h1 className="font-display text-3xl font-extrabold">
+        {t("hostDoor.badLink")}
+      </h1>
+      <p className="text-ink-muted">{t("hostDoor.badLinkHint")}</p>
       <Button asChild variant="link" className="px-0">
         <Link to="/">{t("hostDoor.home")}</Link>
       </Button>
@@ -32,8 +34,10 @@ export function HostView() {
     if (message === "hostDoor.badLink") return <BadLink />;
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">{t("views.host.title")}</h1>
-        <p role="alert" className="text-destructive">
+        <h1 className="font-display text-3xl font-extrabold">
+          {t("views.host.title")}
+        </h1>
+        <p role="alert" className="font-bold text-danger-text">
           {t(message)}
         </p>
         <Button onClick={retry}>{t("hostDoor.retry")}</Button>
@@ -43,9 +47,9 @@ export function HostView() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">{t("views.host.title")}</h1>
+      <h1 className="sr-only">{t("views.host.title")}</h1>
       {state.status === "loading" || !link ? (
-        <p className="text-muted-foreground">{t("hostDoor.opening")}</p>
+        <p className="text-ink-muted">{t("hostDoor.opening")}</p>
       ) : (
         <HostPanel link={link} />
       )}

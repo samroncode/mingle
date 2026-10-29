@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { EventRow, MemberRow } from "@/api/events";
+import { Sticker } from "@/components/ui/sticker";
 import { orderActivities } from "@/lib/host/host-panel";
 import { moduleDefinitions } from "@/modules/definitions";
 import { isModuleId, type ModuleId } from "@/modules/registry";
@@ -26,7 +27,15 @@ function Section({
   const name = t(`modules.${id}.name`);
   const blocked = running !== null && running !== id;
   return (
-    <section data-testid={`activity-${id}`} className="space-y-2">
+    <section
+      data-testid={`activity-${id}`}
+      className="space-y-3 rounded-lg border-[length:var(--border-chunky)] border-edge bg-surface-sunken p-4 shadow-pop-md"
+    >
+      {running === id && (
+        <Sticker color="sage" lean="left">
+          {t("hostPanel.running")}
+        </Sticker>
+      )}
       {definition ? (
         <definition.Host
           event={props.event}
@@ -36,10 +45,10 @@ function Section({
           startDisabled={blocked}
         />
       ) : (
-        <h2 className="font-semibold">{name}</h2>
+        <h2 className="font-display text-xl font-bold">{name}</h2>
       )}
       {blocked && (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-ink-muted">
           {t("hostPanel.stopFirst", {
             name: t(`modules.${running}.name`).toLowerCase(),
           })}
@@ -63,7 +72,7 @@ export function Activities(props: ActivitiesProps) {
       ))}
       {disabled.length > 0 && (
         <details data-testid="disabled-activities">
-          <summary className="cursor-pointer text-sm text-muted-foreground">
+          <summary className="min-h-12 cursor-pointer py-3 font-display font-bold text-ink-muted">
             {t("hostPanel.switchedOff", { count: disabled.length })}
           </summary>
           <div className="space-y-4 pt-2">
