@@ -38,7 +38,7 @@ describe("the awards step", () => {
     ).toBe("awards");
     expect(
       run(draft, { type: "go_to", step: "awards" }, { type: "next" }).step,
-    ).toBe("welcome");
+    ).toBe("hottakes");
   });
 
   it("follows the activities step when the quiz is off", () => {
@@ -52,7 +52,7 @@ describe("the awards step", () => {
     const draft = awardsOff(initialDraft("en"));
     expect(stepsFor(draft)).not.toContain("awards");
     const next = run(draft, { type: "go_to", step: "quiz" }, { type: "next" });
-    expect(next.step).toBe("welcome");
+    expect(next.step).toBe("hottakes");
     expect(run(next, { type: "back" }).step).toBe("quiz");
   });
 
@@ -64,7 +64,7 @@ describe("the awards step", () => {
       { type: "go_to", step: "awards" },
       { type: "skip" },
     );
-    expect(draft.step).toBe("welcome");
+    expect(draft.step).toBe("hottakes");
     expect(draft.awards.items).toHaveLength(2);
   });
 

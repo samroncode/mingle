@@ -3,6 +3,10 @@ import { AwardsHost } from "./awards/host/AwardsHost";
 import { AwardsTv } from "./awards/tv/AwardsTv";
 import { useAwardsProgressText } from "./awards/useAwardsProgressText";
 import { AwardsStep } from "./awards/wizard/AwardsStep";
+import { HotTakesGuest } from "./hottakes/guest/HotTakesGuest";
+import { HotTakesHost } from "./hottakes/host/HotTakesHost";
+import { HotTakesTv } from "./hottakes/tv/HotTakesTv";
+import { HotTakesStep } from "./hottakes/wizard/HotTakesStep";
 import { QuizGuest } from "./quiz/guest/QuizGuest";
 import { QuizHost } from "./quiz/host/QuizHost";
 import { QuizTv } from "./quiz/tv/QuizTv";
@@ -34,5 +38,13 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Host: AwardsHost,
     useProgress: useAwardsProgressText,
     WizardStep: AwardsStep,
+  },
+  hottakes: {
+    id: "hottakes",
+    nameKey: "modules.hottakes.name",
+    Tv: HotTakesTv,
+    Guest: HotTakesGuest,
+    Host: HotTakesHost,
+    WizardStep: HotTakesStep,
   },
 };

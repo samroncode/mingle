@@ -218,7 +218,11 @@
     },
     "hottakes": {
       "name": "Hot takes",
-      "description": "Agree or disagree with bold statements."
+      "description": "Agree or disagree with bold statements.",
+      "host": {
+        "empty": "There are no hot takes yet.",
+        "loadFailed": "Couldn't load the hot takes. Reload to try again."
+      }
     }
   },
   "links": {
@@ -245,6 +249,7 @@
       "activities": "Activities",
       "quiz": "Quiz questions",
       "awards": "Award categories",
+      "hottakes": "Hot takes",
       "welcome": "Welcome text",
       "menu": "Menu",
       "schedule": "Schedule",
@@ -262,7 +267,9 @@
       "quizQuestions_one": "{{count}} question",
       "quizQuestions_other": "{{count}} questions",
       "awardCategories_one": "{{count}} category",
-      "awardCategories_other": "{{count}} categories"
+      "awardCategories_other": "{{count}} categories",
+      "hotTakes_one": "{{count}} hot take",
+      "hotTakes_other": "{{count}} hot takes"
     },
     "create": "Create event",
     "creating": "Creating...",
@@ -343,6 +350,23 @@
       "categoryPlaceholder": "Most likely to…",
       "errors": {
         "empty": "Category {{n}} needs a text of 1 to {{max}} characters."
+      }
+    },
+    "hottakes": {
+      "count": "{{count}} of {{max}} hot takes picked",
+      "empty": "No hot takes picked. Add a ready-made one below or write your own.",
+      "addOwn": "Add your own hot take",
+      "full": "The hot takes are full ({{max}}). Remove one to add another.",
+      "more": "More ready-made hot takes",
+      "add": "Add",
+      "addTake": "Add the hot take: {{text}}",
+      "moveUp": "Move hot take {{n}} up",
+      "moveDown": "Move hot take {{n}} down",
+      "remove": "Remove hot take {{n}}",
+      "takeText": "Text of hot take {{n}}",
+      "takePlaceholder": "Pineapple belongs on pizza",
+      "errors": {
+        "empty": "Hot take {{n}} needs a text of 1 to {{max}} characters."
       }
     }
   },

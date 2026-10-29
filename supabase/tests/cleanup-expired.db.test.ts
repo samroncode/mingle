@@ -4,6 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import {
   anonymousUser,
   seedAwardCategory,
+  seedHotTake,
   seedCast,
   seedQuizQuestion,
   signedOutClient,
@@ -89,6 +90,7 @@ describe("private.cleanup_expired", () => {
     for (const e of [event, otherEvent]) {
       await seedQuizQuestion(e.id, 0);
       await seedAwardCategory(e.id, 0);
+      await seedHotTake(e.id, 0);
     }
     sql(
       "insert into private.rate_limits (user_id, action) values " +

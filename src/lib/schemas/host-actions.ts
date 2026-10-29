@@ -8,6 +8,7 @@ import { moduleIds } from "../../modules/registry.ts";
 import { nicheIds } from "../../niches/ids.ts";
 import { ADMIN_KEY_PATTERN, EVENT_CODE_PATTERN } from "../formats.ts";
 import { AwardCategoriesSchema } from "./awards.ts";
+import { HotTakesSchema } from "./hottakes.ts";
 import { PartySchema } from "./party.ts";
 import { QuizQuestionsSchema } from "./quiz.ts";
 
@@ -33,6 +34,8 @@ export const CreateEventRequestSchema = z
     quiz: QuizQuestionsSchema.optional(),
     /** The award categories picked in the wizard, in order. Needs awards on. */
     awards: AwardCategoriesSchema.optional(),
+    /** The hot takes picked in the wizard, in order. Needs hot takes on. */
+    hottakes: HotTakesSchema.optional(),
   })
   .refine(
     (request) =>
@@ -43,6 +46,11 @@ export const CreateEventRequestSchema = z
     (request) =>
       !request.awards?.length || request.enabledModules.includes("awards"),
     { path: ["awards"], message: "award categories need awards switched on" },
+  )
+  .refine(
+    (request) =>
+      !request.hottakes?.length || request.enabledModules.includes("hottakes"),
+    { path: ["hottakes"], message: "hot takes need hot takes switched on" },
   );
 
 export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;

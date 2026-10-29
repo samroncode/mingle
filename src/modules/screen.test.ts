@@ -26,8 +26,8 @@ describe("pickScreen", () => {
     expect(pickScreen("karaoke", definitions)).toEqual({ kind: "party" });
   });
 
-  it("knows the quiz from the real definitions", () => {
+  it("knows the real definitions", () => {
     expect(pickScreen("quiz").kind).toBe("module");
-    expect(pickScreen("hottakes").kind).toBe("party");
+    expect(pickScreen("hottakes").kind).toBe("module");
   });
 });
