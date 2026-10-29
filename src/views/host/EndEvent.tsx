@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { setFlow } from "@/api/host-actions";
@@ -60,11 +61,7 @@ export function EndEvent({ code, hostKey, onEnded }: EndEventProps) {
           {t("hostPanel.end.title")}
         </Button>
       )}
-      {error && (
-        <p role="alert" className="text-sm font-bold text-danger-text">
-          {error}
-        </p>
-      )}
+      {error && <ErrorLine>{error}</ErrorLine>}
     </div>
   );
 }

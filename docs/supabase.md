@@ -1,6 +1,6 @@
 # Supabase in Mingle
 
-How Mingle uses Supabase, and how to run it on the desktop. The rules for writing database code are in "Database rules" in `CLAUDE.md`; the design of the backend is in [`plans/backend-core.md`](plans/backend-core.md).
+How Mingle uses Supabase, and how to run it on the desktop. The rules for writing database code are in "Database rules" in `CLAUDE.md`; the design of the backend is in [`plans/backend-core.md`](archive/plans/backend-core.md).
 
 ## The parts Mingle uses
 
@@ -48,8 +48,6 @@ Common problems:
 
 ## Commands
 
-The first ticket of the backend core adds the Supabase CLI and these scripts. They don't exist yet.
-
 | Script | What it does |
 |---|---|
 | `npm run db:start` | Starts the local stack. The first start downloads several GB of images. |
@@ -62,4 +60,6 @@ While the stack is running, Supabase Studio at http://localhost:54323 shows the 
 
 ## Cloud sessions
 
-Docker itself runs in cloud sessions, but the default network policy blocks the Supabase images. On 2026-10-21 a pull from `public.ecr.aws` was redirected to a CloudFront host that the proxy denied. Broader network access in the environment settings and starting `dockerd` in the setup script might make it work, but that's untested, and the images use several GB of the session's disk. Until that's proven, database tickets are built on the desktop.
+Database tests can run in a cloud session. Start Docker with `sudo dockerd &`, then `npm run db:start`, then `npm run test:db` (see `decisions.md`, 2026-10-22). The first start downloads several GB of images, which use part of the session's disk.
+
+The Edge Function tests still fail there, because the local function runtime can't fetch npm packages through the cloud proxy. Changes to `supabase/functions/` (including `host-actions`) are built and tested on the desktop.

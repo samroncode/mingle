@@ -60,10 +60,22 @@ Host panel and wizard are calm. Guest phones are playful, with a brief party mom
 
 - Every text pair below reaches 4.5:1 in all three themes, checked by `src/app/theme.test.ts`: `ink` and `ink-muted` on `surface` and `surface-sunken`; `ink` on each `-soft` tint; `on-paper` and `on-paper-muted` on `paper`; `on-bright` on coral, blush, champagne, sage and danger; `on-forest` on `forest`; each `-text` color on `surface` and `surface-sunken`.
 - `line-strong` reaches 3:1 on the surfaces.
-- Keyboard focus is a solid 3px `focus` outline, offset 3px.
+- Keyboard focus is a solid 3px `focus` outline, offset 3px. Inside a `bg-paper` card it uses `focus-on-paper` instead (forest in Garden, champagne in Loud, ink in Day), because champagne is faint on cream.
 - Phone tap targets are at least 48px. Color is never the only signal: answers carry a letter, results a word and an icon.
 - Icons are lucide-react, never emoji.
 
 ## No generic look
 
 Do not use: blue-purple gradients, emoji cards, cards with a colored left border, more than three bright fills in a view, a screen with a single text size, or system-default grey-and-white panels. Every UI PR includes a before/after screenshot.
+
+## Checks that keep the rules true
+
+- `npm test` runs `src/app/theme.test.ts`: every text pair above reaches 4.5:1 in all three themes, every text-bearing token a theme declares must be in the pair list (add new ones there), all themes declare the same tokens, `focus` and `line-strong` reach 3:1 on the surfaces, and `focus-on-paper` reaches 3:1 on `paper`.
+- `npm test` also runs `scripts/check-design-rules.mjs` (`npm run check:design`). It fails on hex or `rgb()`/`hsl()`/`oklch()` colors, hardcoded font families and `dark:` classes anywhere in `src/`, except `src/app/theme.css` and the QR code (black on white).
+- `npm run test:e2e` runs `e2e/look.spec.ts`: landing, guest and TV party screens in each niche theme, no horizontal scroll at 412px and 1920x1080, and every button at least 48px high on the phone.
+
+**For the module screens (#130):** add the quiz, awards and hot takes guest, TV and host screens to `e2e/look.spec.ts` (each niche, phone and 1920x1080), and use new color tokens only if the pair list in `src/app/theme.test.ts` gets them too.
+
+## Known gaps
+
+- The host panel is not in the look spec (it needs a host key and several fakes); the TV and guest screens are.

@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,13 +28,7 @@ function FieldErrors({ fields }: { fields: readonly PartyField[] }) {
   return (
     <>
       {fields.map((field) => (
-        <p
-          key={field}
-          role="alert"
-          className="text-sm font-bold text-danger-text"
-        >
-          {t(`wizard.errors.${field}`)}
-        </p>
+        <ErrorLine key={field}>{t(`wizard.errors.${field}`)}</ErrorLine>
       ))}
     </>
   );

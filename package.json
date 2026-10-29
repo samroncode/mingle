@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=22.22.0"
+    "node": ">=24.0.0"
   },
   "prettier": {},
   "scripts": {
@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run --project unit",
+    "test": "vitest run --project unit && npm run check:design",
+    "check:design": "node scripts/check-design-rules.mjs",
     "test:watch": "vitest --project unit",
     "test:db": "vitest run --project db --passWithNoTests",
     "db:start": "supabase start",
@@ -23,6 +24,7 @@
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local --schema public > src/api/database.types.ts && prettier --write src/api/database.types.ts",
     "typecheck:functions": "node scripts/typecheck-functions.mjs",
+    "check:links": "node scripts/check-links.mjs",
     "test:e2e": "playwright test -c e2e/playwright.config.ts"
   },
   "dependencies": {

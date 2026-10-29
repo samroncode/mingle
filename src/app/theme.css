@@ -64,6 +64,7 @@
   --on-bright: #0f2a1f;
   --on-forest: #f6efdc;
   --focus: #e9c97f;
+  --focus-on-paper: #1f4d3a;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #04100a;
   --pop-md: 5px 5px 0 0 #04100a;
@@ -101,6 +102,7 @@
   --on-bright: #0c2018;
   --on-forest: #f1ead8;
   --focus: #e6c27a;
+  --focus-on-paper: #e6c27a;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #ff6f4f;
   --pop-md: 5px 5px 0 0 #ff6f4f;
@@ -138,6 +140,7 @@
   --on-bright: #11301f;
   --on-forest: #f6efdc;
   --focus: #11301f;
+  --focus-on-paper: #11301f;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #11301f;
   --pop-md: 5px 5px 0 0 #11301f;
@@ -286,6 +289,10 @@
   :focus-visible {
     outline: 3px solid var(--focus);
     outline-offset: 3px;
+  }
+  /* Cards are drawn on paper, which can be cream, so their controls get a ring that shows on it. */
+  .bg-paper :focus-visible {
+    outline-color: var(--focus-on-paper);
   }
 }
 

@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useTranslation } from "react-i18next";
 import type { EventRow, MemberRow } from "@/api/events";
 import { setFlow } from "@/api/host-actions";
@@ -100,11 +101,7 @@ export function TopBar({ event, members, hostKey }: TopBarProps) {
           </Button>
         )}
       </div>
-      {error && (
-        <p role="alert" className="text-sm font-bold text-danger-text">
-          {error}
-        </p>
-      )}
+      {error && <ErrorLine>{error}</ErrorLine>}
     </div>
   );
 }

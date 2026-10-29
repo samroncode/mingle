@@ -8,7 +8,7 @@ Build the base of the app with no features and no database schema. When this pla
 
 ## Approach
 
-Follows the Step 1 analysis in `implementation.md` and the 2026-10-15 entries in [`docs/decisions.md`](../decisions.md). The foundation adds guardrails that are cheap now and expensive to retrofit: a lint rule that keeps Supabase inside `src/api/`, typed i18n keys, a niche config validated with Zod, one token layer, and env validation.
+Follows the Step 1 analysis in `implementation.md` and the 2026-10-15 entries in [`docs/decisions.md`](../../decisions.md). The foundation adds guardrails that are cheap now and expensive to retrofit: a lint rule that keeps Supabase inside `src/api/`, typed i18n keys, a niche config validated with Zod, one token layer, and env validation.
 
 Environment when planned: Node 24.16, npm 11.13. Vite 8.3, React 19.3, React Router 8.4, Tailwind 4.3, Zod 4.6, i18next 26 / react-i18next 17, Vitest 5.0, ESLint 10, supabase-js 2.117.
 

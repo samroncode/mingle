@@ -16,6 +16,7 @@ import {
   type PickListAction,
   type PickListRules,
 } from "./pick-list";
+import { wizardSlice } from "./slice";
 
 /** How many of the niche's questions are picked for the host to start from. */
 export const defaultQuizSize = 10;
@@ -101,3 +102,12 @@ export function invalidOwnKeys(quiz: QuizDraft): string[] {
       : [],
   );
 }
+
+export const quizSlice = wizardSlice({
+  empty: emptyQuiz,
+  reducer: quizReducer,
+  resetBuiltin: resetBuiltinQuiz,
+  invalidKeys: invalidOwnKeys,
+  summaryKey: "wizard.summary.quizQuestions",
+  toRequest: toQuizQuestions,
+});

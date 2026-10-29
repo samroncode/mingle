@@ -70,3 +70,42 @@ describe.each(themeIds)("theme %s", (id) => {
     }
   });
 });
+
+describe("token coverage", () => {
+  const garden = themeTokens("garden");
+
+  it("declares the same color tokens in every theme", () => {
+    const names = Object.keys(garden).sort();
+    for (const id of themeIds) {
+      expect(Object.keys(themeTokens(id)).sort(), id).toEqual(names);
+    }
+  });
+
+  it("checks every text-bearing token a theme declares", () => {
+    const checked = new Set(pairs.flat());
+    const textBearing = Object.keys(garden).filter((name) =>
+      /^(ink|on-|.*-text$|.*-soft$)/.test(name),
+    );
+    // Add new text tokens to `pairs` above so the 4.5:1 rule covers them.
+    expect(textBearing.filter((name) => !checked.has(name))).toEqual([]);
+  });
+});
+
+describe.each(themeIds)("theme %s focus ring", (id) => {
+  it("reaches 3:1 on the surfaces", () => {
+    const tokens = themeTokens(id);
+    for (const bg of surfaces) {
+      expect(
+        contrast(tokens.focus ?? "", tokens[bg] ?? ""),
+        bg,
+      ).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it("reaches 3:1 on paper for controls inside cards", () => {
+    const tokens = themeTokens(id);
+    expect(
+      contrast(tokens["focus-on-paper"] ?? "", tokens.paper ?? ""),
+    ).toBeGreaterThanOrEqual(3);
+  });
+});

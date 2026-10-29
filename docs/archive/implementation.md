@@ -96,7 +96,7 @@ Kunde inte svara på alla så de ser man nedan i open questions
 
 ### What the agent produced
 
-The full plan is in [`docs/plans/foundation.md`](plans/foundation.md). In short:
+The full plan is in [`docs/archive/plans/foundation.md`](plans/foundation.md). In short:
 
 - **8 steps, each with its own files and verification:**
   1. Scaffold
@@ -129,7 +129,7 @@ Before implementation started, I asked why we couldn't use the newer TypeScript 
 
 ## Step 4: Implementation, one step at a time
 
-Each sub-step follows [`docs/plans/foundation.md`](plans/foundation.md). Every one was started with this prompt:
+Each sub-step follows [`docs/archive/plans/foundation.md`](plans/foundation.md). Every one was started with this prompt:
 
 > The plan is approved. Implement only step N. Then stop, run the verification for that step, and report the result before going further.
 
@@ -264,7 +264,7 @@ shadcn 4 changed after the plan was written. `init` now asks for a component lib
 4. Checked that `cn` is legitimate (published by shadcn's own account, with no dependencies) before asking.
 5. Stopped and asked me.
 
-I chose: `shadcn` as a **dev** dependency, and keep the Geist font. Recorded in `docs/decisions.md`, with the dependency table updated in `docs/plans/foundation.md`.
+I chose: `shadcn` as a **dev** dependency, and keep the Geist font. Recorded in `docs/decisions.md`, with the dependency table updated in `docs/archive/plans/foundation.md`.
 
 **Found after installing:** `npm audit` went from 0 to **7 high-severity** findings. The agent traced all of them to one advisory (GHSA-vfj7-8cjw-p6xm, `braces` ≤3.0.3, a denial of service through deeply nested glob patterns) that comes in only through the shadcn CLI's `fast-glob`. No patched `braces` release exists. npm's suggested "fix", downgrading shadcn to 1.0.0, makes no sense. The finding is accepted as a dev-only risk and documented in `docs/decisions.md`. It's worth bringing up in the Part B security review.
 

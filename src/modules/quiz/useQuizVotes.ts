@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { getQuizVotes } from "@/api/quiz";
+import { useLoad } from "@/hooks/useLoad";
 
 /**
  * How many guests picked each option of a question, once it is revealed; null
@@ -10,22 +10,10 @@ export function useQuizVotes(
   questionId: string | undefined,
   revealed: boolean,
 ): number[] | null {
-  const [loaded, setLoaded] = useState<{
-    questionId?: string;
-    votes: number[];
-  }>({ votes: [] });
-
-  useEffect(() => {
-    if (!questionId || !revealed) return;
-    let stale = false;
-    void getQuizVotes(questionId).then((result) => {
-      if (stale || !result.ok) return;
-      setLoaded({ questionId, votes: result.value });
-    });
-    return () => {
-      stale = true;
-    };
-  }, [questionId, revealed]);
-
-  return revealed && loaded.questionId === questionId ? loaded.votes : null;
+  const state = useLoad(
+    questionId ?? "",
+    () => getQuizVotes(questionId ?? ""),
+    { enabled: !!questionId && revealed, keepOnError: true },
+  );
+  return revealed && state.status === "ready" ? state.value : null;
 }

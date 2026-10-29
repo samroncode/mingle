@@ -32,6 +32,10 @@ If the PR changes `supabase/` (migrations or functions), the preview only works 
 
 Live is never touched by a PR. It only changes when the owner merges and the **Deploy** workflow runs. See [`hosting.md`](hosting.md).
 
+## Automatic checks
+
+The **Checks** workflow runs on every PR. The `app` job runs typecheck, lint, format check, unit tests, the design check and the Playwright tests. The `database` job runs `npm run test:db` on a fresh local Supabase, but only when the PR changes files under `supabase/`; otherwise it is skipped. The checks are **not required**: they do not block merging and the Deploy workflow does not wait for them. Look at the PR's checks before you squash-merge.
+
 ## Database work
 
 Database code needs the local Supabase stack, which runs in Docker on the desktop. Setup and commands are in [`supabase.md`](supabase.md).
@@ -54,10 +58,10 @@ Database code needs the local Supabase stack, which runs in Docker on the deskto
 - GitHub CLI (`gh`) signed in on the desktop, so local sessions can open PRs.
 - Agent skills copied from [mattpocock/skills](https://github.com/mattpocock/skills) into `.claude/skills/`. To update them, copy the folders again and redo the mingle edits listed in `docs/decisions.md` (2026-10-21).
 - `.claude/settings.json` pre-approves the routine check, database and git commands, and always asks before a command touches the hosted Supabase project.
-- The app foundation (see `docs/plans/foundation.md`). `npm ci` installs everything. The checks are `npm run typecheck`, `npm run typecheck:functions`, `npm run lint`, `npm run test` and `npm run build`.
+- The app foundation (see `docs/archive/plans/foundation.md`). `npm ci` installs everything. The checks are `npm run typecheck`, `npm run typecheck:functions`, `npm run lint`, `npm run test` and `npm run build`.
 
 Still to do by the repo owner:
 
-- On the desktop, install a working Docker Desktop (see [`supabase.md`](supabase.md)) before the backend core is built.
-- In the cloud environment, add the setup script `npm ci` and the variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
+- Cloud sessions cannot run the database tests at the moment, so tickets that change `supabase/` are built on the desktop, where Docker Desktop is installed (see [`supabase.md`](supabase.md)).
+- Keep the cloud environment's setup script (`npm ci`) and variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in place.
 - Put Mingle online by following the launch checklist in [`hosting.md`](hosting.md). Until you set the repository variable `HOSTING_ENABLED=true` (step 5 there), the Deploy and Keep awake workflows are skipped on purpose.

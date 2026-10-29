@@ -25,7 +25,7 @@ These security rules must become ticket acceptance criteria, because the spec te
 - Errors are codes, never free text.
 - A guest can't change the role or event on their member row.
 
-The "wait for the owner's go-ahead" after each step no longer applies: the owner approves the spec, the tickets and the PR. The demos under "Verification" become the PR's "How to test". Parts of Step 8 are already done: "Database rules" in `CLAUDE.md`, and [`docs/supabase.md`](../supabase.md).
+The "wait for the owner's go-ahead" after each step no longer applies: the owner approves the spec, the tickets and the PR. The demos under "Verification" become the PR's "How to test". Parts of Step 8 are already done: "Database rules" in `CLAUDE.md`, and [`docs/supabase.md`](../../supabase.md).
 
 ## Goal
 
@@ -33,7 +33,7 @@ Build the backend that every v1 feature depends on: the database schema and RLS,
 
 ## Approach
 
-Follows `CLAUDE.md` (principles 1–3, 6, 7 and the data rules), the risks in the Step 1 analysis in [`implementation.md`](../implementation.md), and [`docs/decisions.md`](../decisions.md). Three decisions were made in chat on 2026-10-20 and are recorded in `docs/decisions.md`:
+Follows `CLAUDE.md` (principles 1–3, 6, 7 and the data rules), the risks in the Step 1 analysis in [`implementation.md`](../implementation.md), and [`docs/decisions.md`](../../decisions.md). Three decisions were made in chat on 2026-10-20 and are recorded in `docs/decisions.md`:
 
 - **Open question C is decided:** the host's session is bound to the event (see "Identity and roles").
 - **DB tests** run against a local Supabase stack with Vitest.

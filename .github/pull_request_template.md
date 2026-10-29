@@ -2,6 +2,10 @@
 
 <!-- What this PR changes and why. Link the spec or ticket issue if there is one. -->
 
+Closes #
+
+<!-- Use "Closes #123" so the squash merge closes the ticket. Delete the line if there is no ticket. -->
+
 ## How to test
 
 <!-- Steps to check that it works. Prefer steps that can be followed from a phone. -->
