@@ -105,7 +105,7 @@ supabase/
   tests/        # *.db.test.ts against the local stack (npm run test:db), with its own tsconfig.json
 e2e/            # Playwright tests and playwright.config.ts (npm run test:e2e), Supabase faked
 scripts/        # small Node scripts used by npm scripts
-docs/           # decisions, workflow, Supabase guide, glossary, ideas, plans and logs
+docs/           # decisions, workflow, Supabase guide, glossary, ideas, and archive/ (old plans and logs)
 ```
 
 Everything else at the root is config that tools look for there (`package.json`, `tsconfig.json`, `tsconfig.node.json`, `vite.config.ts`, `eslint.config.js`, `index.html`, `vercel.json`, `components.json`, dotfiles), plus `README.md` and this file.

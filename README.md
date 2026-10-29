@@ -109,8 +109,8 @@ Host phone ──► Edge Function (host-actions) ──► Postgres ──► R
 - [docs/workflow.md](docs/workflow.md): how work moves between the desktop, the phone and GitHub
 - [docs/supabase.md](docs/supabase.md): how Mingle uses Supabase, and how to run it locally with Docker
 - [docs/decisions.md](docs/decisions.md): log of product and architecture decisions
-- [docs/plans/](docs/plans/): earlier plans, kept as a record (larger changes are now specs on GitHub Issues)
-- [docs/implementation.md](docs/implementation.md): step-by-step log of building the foundation with Claude Code in plan mode
+- [docs/archive/plans/](docs/archive/plans/): earlier plans, kept as a record (larger changes are now specs on GitHub Issues)
+- [docs/archive/implementation.md](docs/archive/implementation.md): step-by-step log of building the foundation with Claude Code in plan mode
 
 ## Privacy
 
