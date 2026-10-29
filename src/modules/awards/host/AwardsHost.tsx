@@ -1,11 +1,16 @@
 import { ErrorLine } from "@/components/ErrorLine";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { isLanguage } from "@/i18n/language";
+import { canEditAwards } from "@/lib/host/awards-edit";
+import { isNicheId } from "@/niches";
 import type { ModuleHostProps } from "../../types";
 import { RunControls } from "../../RunControls";
 import { awardsNextMove } from "../screen";
-import { useAwardCategories } from "../useAwardCategories";
 import { useAwardsRun } from "../useAwardsRun";
+import { AwardsEdit } from "./AwardsEdit";
 import { Tally } from "./Tally";
 import { VoteStatus } from "./VoteStatus";
 
@@ -19,7 +24,7 @@ export function AwardsHost({
 }: ModuleHostProps) {
   const { t } = useTranslation();
   const run = useAwardsRun(event);
-  const list = useAwardCategories(event.id);
+  const [editing, setEditing] = useState(false);
   const running = event.current_module === "awards";
   const total = run.progress?.total ?? 0;
   const next = awardsNextMove(event, total);
@@ -28,6 +33,14 @@ export function AwardsHost({
     : undefined;
   const finished =
     !!run.progress && total > 0 && run.progress.revealed >= total;
+
+  const niche = isNicheId(event.niche) ? event.niche : undefined;
+  const language = isLanguage(event.language) ? event.language : undefined;
+  const editable =
+    !!run.progress &&
+    !!niche &&
+    !!language &&
+    canEditAwards(event, run.progress);
 
   return (
     <section
@@ -38,7 +51,7 @@ export function AwardsHost({
       <h2 id="awards-host-title" className="text-lg font-semibold">
         {t("modules.awards.name")}
       </h2>
-      {(run.failed || list.status === "error") && (
+      {run.failed && (
         <ErrorLine>{t("modules.awards.host.loadFailed")}</ErrorLine>
       )}
       {run.progress && (
@@ -94,23 +107,45 @@ export function AwardsHost({
           />
         </div>
       )}
-      {list.status === "ready" && list.categories.length === 0 && (
-        <p className="text-sm text-muted-foreground">
-          {t("modules.awards.host.empty")}
-        </p>
-      )}
-      {!running && list.status === "ready" && list.categories.length > 0 && (
-        <ol className="space-y-2">
-          {list.categories.map((category) => (
-            <li key={category.id}>
-              <Card className="p-3">
-                <p className="font-medium">
-                  {category.position + 1}. {category.text}
-                </p>
-              </Card>
-            </li>
-          ))}
-        </ol>
+      {editing && niche && language ? (
+        <AwardsEdit
+          event={event}
+          niche={niche}
+          language={language}
+          hostKey={hostKey}
+          categories={run.categories}
+          onDone={() => setEditing(false)}
+        />
+      ) : (
+        <>
+          {editable && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setEditing(true)}
+            >
+              {t("modules.awards.edit.edit")}
+            </Button>
+          )}
+          {run.progress && run.categories.length === 0 && (
+            <p className="text-sm text-muted-foreground">
+              {t("modules.awards.host.empty")}
+            </p>
+          )}
+          {!running && run.categories.length > 0 && (
+            <ol className="space-y-2">
+              {run.categories.map((category) => (
+                <li key={category.id}>
+                  <Card className="p-3">
+                    <p className="font-medium">
+                      {category.position + 1}. {category.text}
+                    </p>
+                  </Card>
+                </li>
+              ))}
+            </ol>
+          )}
+        </>
       )}
     </section>
   );

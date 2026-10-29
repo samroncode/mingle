@@ -61,32 +61,42 @@ interface AwardsListEditorProps {
   language: Language;
   awards: AwardsDraft;
   dispatch: (action: AwardsAction) => void;
+  /** Revealed categories shown locked before the list; they count in the limit. */
+  lockedCount?: number;
+  /** Ready-made categories not to offer, such as ones already revealed. */
+  hiddenIds?: readonly string[];
 }
 
 /**
- * The awards' category list as the host edits it: the categories in order,
- * ready-made ones to add, and the host's own.
+ * The awards' category list as the host edits it, in the wizard and in the
+ * control panel: the categories in order, ready-made ones to add, and the
+ * host's own.
  */
 export function AwardsListEditor({
   niche,
   language,
   awards,
   dispatch,
+  lockedCount = 0,
+  hiddenIds = [],
 }: AwardsListEditorProps) {
   const { t } = useTranslation();
   const content = getNiche(niche).awards;
   const builtin = new Map(content.map((a) => [a.id, a]));
   const invalidKeys = new Set(invalidOwnAwardKeys(awards));
-  const picked = new Set(
-    awards.items.flatMap((item) => (item.kind === "builtin" ? [item.id] : [])),
-  );
+  const leftOut = new Set([
+    ...hiddenIds,
+    ...awards.items.flatMap((item) =>
+      item.kind === "builtin" ? [item.id] : [],
+    ),
+  ]);
 
   function renderItem(item: AwardsItem, index: number) {
     if (item.kind === "own") {
       return (
         <OwnCategoryForm
           own={item}
-          n={index + 1}
+          n={lockedCount + index + 1}
           invalid={invalidKeys.has(item.key)}
           dispatch={dispatch}
         />
@@ -97,7 +107,7 @@ export function AwardsListEditor({
   }
 
   const available = content
-    .filter((a) => !picked.has(a.id))
+    .filter((a) => !leftOut.has(a.id))
     .map((ready) => ({
       id: ready.id,
       addLabel: t("wizard.awards.addCategory", { text: ready.texts[language] }),
@@ -109,10 +119,11 @@ export function AwardsListEditor({
       id="awards"
       items={awards.items}
       seeded={awards.seeded}
-      limit={awardsLimits.categories}
+      limit={awardsLimits.categories - lockedCount}
+      firstNumber={lockedCount + 1}
       labels={{
         count: t("wizard.awards.count", {
-          count: awards.items.length,
+          count: lockedCount + awards.items.length,
           max: awardsLimits.categories,
         }),
         empty: t("wizard.awards.empty"),

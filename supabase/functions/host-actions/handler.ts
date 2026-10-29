@@ -15,6 +15,7 @@ import { createEvent } from "./create-event.ts";
 import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
 import { setFlow } from "./set-flow.ts";
+import { updateAwards } from "./update-awards.ts";
 import { updatePartyContent } from "./update-party-content.ts";
 import { updateQuiz } from "./update-quiz.ts";
 
@@ -83,5 +84,7 @@ async function runAction(
       return updatePartyContent(db, caller, request);
     case "update_quiz":
       return updateQuiz(db, caller, request);
+    case "update_awards":
+      return updateAwards(db, caller, request);
   }
 }

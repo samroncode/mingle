@@ -158,6 +158,24 @@ export const UpdateQuizResponseSchema = z.strictObject({});
 
 export type UpdateQuizResponse = z.infer<typeof UpdateQuizResponseSchema>;
 
+/**
+ * Replaces the award categories that aren't revealed yet with `categories`,
+ * in order, after the revealed ones. Revealed and new categories together
+ * stay within the awards' limit of 20.
+ */
+export const UpdateAwardsRequestSchema = z.strictObject({
+  action: z.literal("update_awards"),
+  ...hostLinkFields,
+  categories: AwardCategoriesSchema,
+});
+
+export type UpdateAwardsRequest = z.infer<typeof UpdateAwardsRequestSchema>;
+
+/** Empty: the host and members read the new categories on their next read. */
+export const UpdateAwardsResponseSchema = z.strictObject({});
+
+export type UpdateAwardsResponse = z.infer<typeof UpdateAwardsResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -165,6 +183,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   SetFlowRequestSchema,
   UpdatePartyContentRequestSchema,
   UpdateQuizRequestSchema,
+  UpdateAwardsRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -187,10 +206,10 @@ export const hostActionErrorCodes = [
    * A flow move the event's state doesn't allow, including any move after it
    * ended, any change to the party content of an ended event, and a quiz
    * edit while a question is open or revealed, once the quiz is finished or
-   * once the event has ended.
+   * once the event has ended; and the same for an awards edit.
    */
   "invalid_transition",
-  /** start_module for an activity the host turned off, or quiz questions for it. */
+  /** start_module for an activity the host turned off, quiz questions or award categories for it. */
   "module_disabled",
   /** start_module for an activity with no steps, such as a quiz without questions. */
   "module_empty",

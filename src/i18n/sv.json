@@ -166,6 +166,19 @@
           "votes_other": "{{count}} röster"
         }
       },
+      "edit": {
+        "edit": "Ändra kategorier",
+        "save": "Spara kategorier",
+        "cancel": "Avbryt",
+        "revealed": "Avslöjade kategorier",
+        "locked": "Avslöjad, kan inte ändras",
+        "errors": {
+          "incomplete": "Fyll i eller ta bort kategorierna som är markerade ovan och spara igen.",
+          "invalid_transition": "Kategorier kan inte ändras medan en kategori visas på TV:n, när alla kategorier är avslöjade eller när kvällen är slut.",
+          "module_disabled": "Utmärkelserna är avstängda för den här kvällen.",
+          "invalid_request": "Kontrollera kategorierna: alla behöver en text och utmärkelserna rymmer högst 20."
+        }
+      },
       "counter": "Utmärkelse {{number}} av {{total}}",
       "progress": "utmärkelse {{number}} av {{total}}",
       "voted": "{{count}} av {{total}} har röstat",

@@ -1,0 +1,119 @@
+-- Awards spec (#59), ticket #66: the host edits the unrevealed award
+-- categories during the evening.
+--
+-- host-actions validates the categories with the shared awards schema and
+-- writes them with update_award_categories, after the admin key check passed.
+
+-- Replaces the event's unrevealed award categories with `categories`, a JSON
+-- array of `{ text }` in the order chosen, placed after the revealed ones.
+-- Revealed categories keep their text, reveal time and votes. They move up to
+-- the first positions in their order, so the steps stay 0, 1, 2, ...; while
+-- the awards run, their step moves to the first unrevealed category, where
+-- start_module would resume. Votes on a removed category go with it.
+--
+-- Answers, changing nothing:
+--   'not_found'  the event doesn't exist or has expired since the key check
+--   'ended'      the event has ended
+--   'busy'       the awards are on a category that is open or revealed
+--   'finished'   every category has been revealed, so the awards stay finished
+--   'disabled'   categories for an event with the awards switched off
+--   'too_many'   revealed and new categories together are more than 20
+-- and 'updated' once written.
+--
+-- The event row is locked first, so a flow move (open, reveal) that lands
+-- meanwhile waits for this transaction and then finds the flow it read gone;
+-- and this function, waiting for a move, sees the move's result. A category
+-- is never changed after it was shown. Called by host-actions only.
+create function public.update_award_categories(
+  target_event_id uuid,
+  categories jsonb
+)
+returns text
+language plpgsql
+volatile
+security definer
+set search_path = ''
+as $$
+declare
+  target public.events%rowtype;
+  revealed_count integer;
+  unrevealed_count integer;
+  new_position integer := 0;
+  revealed_id uuid;
+begin
+  select e.* into target
+  from public.events e
+  where e.id = update_award_categories.target_event_id
+    and e.expires_at > pg_catalog.now()
+  for update;
+  if not found then
+    return 'not_found';
+  end if;
+  if target.status = 'ended' then
+    return 'ended';
+  end if;
+  if target.current_module = 'awards' and target.phase <> 'idle' then
+    return 'busy';
+  end if;
+
+  select
+    (count(*) filter (where c.revealed_at is not null))::integer,
+    (count(*) filter (where c.revealed_at is null))::integer
+  into revealed_count, unrevealed_count
+  from public.award_categories c
+  where c.event_id = target.id;
+
+  if revealed_count > 0 and unrevealed_count = 0 then
+    return 'finished';
+  end if;
+  if pg_catalog.jsonb_array_length(update_award_categories.categories) > 0
+    and not ('awards' = any (target.enabled_modules)) then
+    return 'disabled';
+  end if;
+  if revealed_count
+    + pg_catalog.jsonb_array_length(update_award_categories.categories) > 20 then
+    return 'too_many';
+  end if;
+
+  delete from public.award_categories c
+  where c.event_id = target.id
+    and c.revealed_at is null;
+
+  -- One row at a time, lowest first: a revealed category only ever moves down
+  -- to a free position, so (event_id, position) stays unique on every row.
+  for revealed_id in
+    select c.id
+    from public.award_categories c
+    where c.event_id = target.id
+    order by c.position
+  loop
+    update public.award_categories c
+    set position = new_position
+    where c.id = revealed_id
+      and c.position <> new_position;
+    new_position := new_position + 1;
+  end loop;
+
+  insert into public.award_categories (event_id, position, text)
+  select
+    target.id,
+    revealed_count + (c.ordinality - 1)::integer,
+    c.value ->> 'text'
+  from pg_catalog.jsonb_array_elements(update_award_categories.categories)
+    with ordinality as c(value, ordinality);
+
+  if target.current_module = 'awards' then
+    update public.events e
+    set current_step = revealed_count
+    where e.id = target.id
+      and e.current_step <> revealed_count;
+  end if;
+
+  return 'updated';
+end;
+$$;
+
+revoke execute on function public.update_award_categories(uuid, jsonb)
+  from public, anon, authenticated;
+grant execute on function public.update_award_categories(uuid, jsonb)
+  to service_role;

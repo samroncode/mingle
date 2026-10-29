@@ -16,6 +16,9 @@ import {
   type UpdatePartyContentRequest,
   type UpdatePartyContentResponse,
   UpdatePartyContentResponseSchema,
+  type UpdateAwardsRequest,
+  type UpdateAwardsResponse,
+  UpdateAwardsResponseSchema,
   type UpdateQuizRequest,
   type UpdateQuizResponse,
   UpdateQuizResponseSchema,
@@ -147,5 +150,20 @@ export async function updateQuiz(
   return toHostActionResult(
     UpdateQuizResponseSchema,
     await invokeHostActions({ action: "update_quiz", ...input }),
+  );
+}
+
+/**
+ * Replaces the award categories that aren't revealed yet with `categories`,
+ * in order, after the revealed ones. Fails with `invalid_transition` while a
+ * category is open or revealed, once every category is revealed or the event
+ * has ended; with `invalid_request` when revealed and new categories pass 20.
+ */
+export async function updateAwards(
+  input: Omit<UpdateAwardsRequest, "action">,
+): Promise<HostActionResult<UpdateAwardsResponse>> {
+  return toHostActionResult(
+    UpdateAwardsResponseSchema,
+    await invokeHostActions({ action: "update_awards", ...input }),
   );
 }
