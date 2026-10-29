@@ -12,6 +12,20 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-29: Visual design is Kalas, kept standalone in the repo
+
+**Decision:** Mingle's look is based on the owner's Kalas design system: forest green and champagne, chunky 2.5px outlines, hard offset shadows, coral, blush and sage pops, tilted stickers.
+- **Fonts:** Bricolage Grotesque for headings, buttons, names, scores and join codes; Figtree for reading text. Both are free and self-hosted through `@fontsource-variable` packages, replacing Geist.
+- **Niches map onto Kalas themes, as data in `src/niches/`:** Afterwork uses Garden party (`garden`), Team event uses One loud color (`loud`), Bachelor/bachelorette uses `garden` with blush as the lead color instead of coral. Champagne day (`day`) is not a niche: it is an optional "bright room" switch for the host, saved per event.
+- **No light/dark switch and no following the device's dark-mode setting.** A party app looks the same on every phone. The themes are the only variants.
+- **Logo:** a wordmark only: "mingle" in lowercase Bricolage ExtraBold, the "i" dot a tilted champagne sticker. The favicon and app icon are a coral rounded square with an outlined, hard-shadowed "m". Drawn as SVG in the repo; a fancier logo can replace it later without touching screens.
+- **Motion uses Kalas's fun dial.** Host panel and wizard: calm. Guest phone: playful, party for a few seconds at a reveal or winner. TV idle party screen: playful, with one gentle loop (the join card). TV reveal or winner: party, then back to playful. `prefers-reduced-motion` turns every level into calm.
+- **Accessibility:** all text pairs 4.5:1 in every theme, checked by a unit test; color is never the only signal (answer letters, a word and an icon on results); phone tap targets at least 48px; TV text at least about 22px; a visible 3px focus ring.
+- **Standalone and easy to change:** the repo does not depend on the Kalas artifact. The tokens, the theme file and the written rules (`docs/design.md`) are copied into the repo. All look and feel lives in one theme file (`src/app/theme.css`) and `docs/design.md`; components use tokens and never hardcoded colors, fonts or sizes. Changing the look means editing the theme file, not components.
+- **Guard against a generic, generated look:** every UI ticket follows Kalas's rules: no blue-purple gradients, no emoji cards, no left-border cards, at most three bright fills per view, big jumps in text size, and a before/after screenshot in the PR.
+
+**Why:** Kalas was made for exactly this: phones plus one TV, adults, quiz and voting. It ships a Vite + Tailwind v4 + shadcn/ui theme, so it replaces the placeholder with little rewriting. The three themes map onto the three niches, so a niche is more than a color swap. Copying the rules into the repo means the look can change later without the artifact, and keeping it in one theme file means a change touches one place. Rejected: a neon nightclub look (hard to read on a TV in a lit room), a minimal Notion-like look (the generic look the owner wants to avoid), and a light/dark switch (two looks to maintain for no party benefit).
+
 ## 2026-10-23: Manual releases, deploy on merge behind a switch
 
 **Decision:** The Deploy workflow no longer runs on every merge to `main`. The owner releases with Actions → Deploy → Run workflow on `main`. Setting the repository variable `DEPLOY_ON_MERGE` to `true` brings back deploy on merge, with no code change. `HOSTING_ENABLED` still gates every deploy.
