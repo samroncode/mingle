@@ -4,7 +4,7 @@ import type { MemberRow } from "@/api/events";
 import { renameGuest } from "@/api/host-actions";
 import { ErrorLine } from "@/components/ErrorLine";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { PanelSection } from "@/components/PanelSection";
 import { Input } from "@/components/ui/input";
 import { useHostAction } from "@/hooks/useHostAction";
 import { sortedGuests, type ListedGuest } from "@/lib/host/guest-list";
@@ -151,10 +151,11 @@ export function Guests({
   const { t } = useTranslation();
   const guests = sortedGuests(members, language);
   return (
-    <Card data-testid="host-guests">
-      <h2 className="font-display text-xl font-bold">
-        {t("hostPanel.guestsTitle")} ({guests.length})
-      </h2>
+    <PanelSection
+      testId="host-guests"
+      title={t("hostPanel.guestsTitle")}
+      summary={t("hostPanel.guests", { count: guests.length })}
+    >
       {guests.length === 0 ? (
         <p className="text-ink-muted">{t("hostPanel.guestList.empty")}</p>
       ) : (
@@ -170,6 +171,6 @@ export function Guests({
           ))}
         </ul>
       )}
-    </Card>
+    </PanelSection>
   );
 }

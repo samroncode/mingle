@@ -1,7 +1,7 @@
 import { ErrorLine } from "@/components/ErrorLine";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Card } from "@/components/ui/card";
+import { PanelSection } from "@/components/PanelSection";
 import { EventLinks } from "@/components/EventLinks";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
@@ -16,18 +16,24 @@ import { TopBar } from "./TopBar";
 
 function EventSection({
   link,
+  defaultOpen,
   children,
 }: {
   link: HostLinkParts;
+  defaultOpen?: boolean;
   children?: ReactNode;
 }) {
   const { t } = useTranslation();
   return (
-    <Card>
-      <h2 className="font-display text-xl font-bold">{t("hostPanel.event")}</h2>
+    <PanelSection
+      testId="event-section"
+      title={t("hostPanel.event")}
+      summary={t("hostPanel.summary.event")}
+      defaultOpen={defaultOpen}
+    >
       <EventLinks code={link.code} hostKey={link.key} hideHostLink />
       {children}
-    </Card>
+    </PanelSection>
   );
 }
 
@@ -106,7 +112,7 @@ export function HostPanel({ link }: { link: HostLinkParts }) {
       ) : (
         <p className="text-ink-muted">{t("hostPanel.loading")}</p>
       )}
-      {!eventId && <EventSection link={link} />}
+      {!eventId && <EventSection link={link} defaultOpen />}
     </div>
   );
 }

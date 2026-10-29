@@ -1,5 +1,6 @@
 import type { HostActionError } from "@/api/host-actions";
 import type { EventRow } from "@/api/events";
+import type { Party } from "@/lib/schemas/party";
 import { moduleIds, type ModuleId } from "@/modules/registry";
 
 /** What the top bar says the TV shows, as an i18n key plus its values. */
@@ -44,6 +45,17 @@ export function orderActivities(
       known.has(id) && enabledModules.indexOf(id) === index,
   );
   return { enabled, disabled: all.filter((id) => !enabled.includes(id)) };
+}
+
+/** How many of the five party-screen parts the host has filled in. */
+export function countPartyParts(party: Party): number {
+  return [
+    party.welcome,
+    party.menu?.length,
+    party.schedule?.length,
+    party.wifi,
+    party.musicUrl,
+  ].filter(Boolean).length;
 }
 
 /** i18n key of the message for a failed host action. */

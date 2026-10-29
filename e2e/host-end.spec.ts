@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "d".repeat(43);
@@ -25,6 +26,8 @@ test("the host edits the wifi password and ends the evening", async ({
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "party-screen");
+  await openSection(page, "event-section");
   await expect(page.getByTestId("event-code")).toHaveText(code);
 
   const party = page.getByTestId("party-screen");
@@ -63,6 +66,7 @@ test("shows the ended state when the panel opens after the end", async ({
   await fakeSupabase(page, [() => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: [], status: "ended" });
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "event-section");
   await expect(page.getByText("The evening has ended")).toBeVisible();
   await expect(page.getByTestId("party-screen")).toHaveCount(0);
   await expect(

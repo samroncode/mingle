@@ -6,6 +6,7 @@ import {
   fakeTv,
   type FakeQuizRow,
 } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "c".repeat(43);
@@ -45,6 +46,7 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
+    await openSection(page, "activity-quiz");
     const panel = page.getByTestId("quiz-host");
     await expect(panel).toContainText("Every question has been played.");
     await panel.getByRole("button", { name: "Start quiz" }).click();
@@ -76,6 +78,7 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
+    await openSection(page, "activity-quiz");
     const panel = page.getByTestId("quiz-host");
     await expect(panel.getByTestId("quiz-progress")).toHaveText(
       "Question 2 of 2",
@@ -109,6 +112,7 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
+    await openSection(page, "activity-quiz");
 
     const answered = page.getByTestId("quiz-host").getByTestId("quiz-answered");
     await expect(answered).toContainText("2 of 3 answered");
@@ -135,6 +139,7 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
+    await openSection(page, "activity-quiz");
 
     const panel = page.getByTestId("quiz-host");
     await expect(
@@ -158,6 +163,7 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
+    await openSection(page, "activity-quiz");
 
     await expect(
       page.getByTestId("quiz-host").getByRole("button", { name: "Reveal" }),

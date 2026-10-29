@@ -45,15 +45,9 @@ export function AwardsHost({
   return (
     <section
       data-testid="awards-host"
-      aria-labelledby="awards-host-title"
+      aria-label={t("modules.awards.name")}
       className="space-y-3"
     >
-      <h2
-        id="awards-host-title"
-        className="font-display text-xl font-extrabold"
-      >
-        {t("modules.awards.name")}
-      </h2>
       {run.failed && (
         <ErrorLine>{t("modules.awards.host.loadFailed")}</ErrorLine>
       )}

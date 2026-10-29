@@ -83,3 +83,7 @@ Do not use: blue-purple gradients, emoji cards, cards with a colored left border
 ## Known gaps
 
 - The host panel, including the module sections, is not in the look spec (it needs a host key and several fakes); the TV and guest screens are.
+
+## Host control panel
+
+The panel is a stack of `PanelSection`s (`src/components/PanelSection.tsx`): paper cards that are shut by default, with a title and one calm summary line on the header. The content is only rendered while the section is open, so long lists cost nothing until asked for. A running activity's section opens by itself (`openWhen`). A new panel section uses `PanelSection`; an activity gets its header summary from `useSummary` in its module definition.

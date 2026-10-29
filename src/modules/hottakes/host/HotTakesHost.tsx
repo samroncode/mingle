@@ -47,15 +47,9 @@ export function HotTakesHost({
   return (
     <section
       data-testid="hottakes-host"
-      aria-labelledby="hottakes-host-title"
+      aria-label={t("modules.hottakes.name")}
       className="space-y-3"
     >
-      <h2
-        id="hottakes-host-title"
-        className="font-display text-xl font-extrabold"
-      >
-        {t("modules.hottakes.name")}
-      </h2>
       {run.failed && (
         <ErrorLine>{t("modules.hottakes.host.loadFailed")}</ErrorLine>
       )}

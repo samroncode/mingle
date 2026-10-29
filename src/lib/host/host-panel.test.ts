@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { hostPanelErrorKey, orderActivities, tvNow } from "./host-panel";
+import {
+  countPartyParts,
+  hostPanelErrorKey,
+  orderActivities,
+  tvNow,
+} from "./host-panel";
 
 const base = { status: "live", current_module: "quiz", phase: "idle" };
 
@@ -65,5 +70,19 @@ describe("hostPanelErrorKey", () => {
     expect(hostPanelErrorKey("internal_error")).toBe(
       "hostPanel.errors.internal_error",
     );
+  });
+});
+
+describe("countPartyParts", () => {
+  it("counts the parts the host filled in", () => {
+    expect(countPartyParts({})).toBe(0);
+    expect(
+      countPartyParts({
+        welcome: "Hi",
+        menu: ["Pizza"],
+        schedule: [],
+        wifi: { ssid: "Net", password: "" },
+      }),
+    ).toBe(3);
   });
 });
