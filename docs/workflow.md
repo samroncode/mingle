@@ -32,6 +32,10 @@ If the PR changes `supabase/` (migrations or functions), the preview only works 
 
 Live is never touched by a PR. It only changes when the owner merges and the **Deploy** workflow runs. See [`hosting.md`](hosting.md).
 
+## Automatic checks
+
+The **Checks** workflow runs on every PR. The `app` job runs typecheck, lint, format check, unit tests, the design check and the Playwright tests. The `database` job runs `npm run test:db` on a fresh local Supabase, but only when the PR changes files under `supabase/`; otherwise it is skipped. The checks are **not required**: they do not block merging and the Deploy workflow does not wait for them. Look at the PR's checks before you squash-merge.
+
 ## Database work
 
 Database code needs the local Supabase stack, which runs in Docker on the desktop. Setup and commands are in [`supabase.md`](supabase.md).
