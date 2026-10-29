@@ -6,10 +6,12 @@ import { RunControls } from "../../RunControls";
 import { awardsNextMove } from "../screen";
 import { useAwardCategories } from "../useAwardCategories";
 import { useAwardsRun } from "../useAwardsRun";
+import { VoteStatus } from "./VoteStatus";
 
 /** The awards' section in the control panel: run them, and the categories. */
 export function AwardsHost({
   event,
+  members,
   code,
   hostKey,
   startDisabled,
@@ -62,6 +64,13 @@ export function AwardsHost({
           {current && next && (
             <Card className="p-3">
               <p className="font-medium">{current.text}</p>
+              {event.phase === "open" && (
+                <VoteStatus
+                  category={current}
+                  members={members}
+                  version={run.version}
+                />
+              )}
             </Card>
           )}
           <RunControls

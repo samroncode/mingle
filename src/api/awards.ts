@@ -1,5 +1,11 @@
 import { getSupabase } from "./client";
-import { fail, ok, type Result } from "./errors";
+import {
+  fail,
+  ok,
+  toAnswerErrorCode,
+  type AnswerErrorCode,
+  type Result,
+} from "./errors";
 import type { AppClient } from "./session";
 
 /** An award category as a member may read it. */
@@ -63,6 +69,85 @@ export async function getAwardProgress(
   return row
     ? ok({ total: row.total, revealed: row.revealed })
     : fail("not_found");
+}
+
+/**
+ * Saves the guest's vote on a category, or changes the one they gave. A
+ * refusal from the database (the category isn't open any more, isn't the
+ * current one, or the pick isn't a guest who can be voted for) is
+ * `question_closed`.
+ */
+export async function voteForGuest(
+  vote: {
+    eventId: string;
+    categoryId: string;
+    voterId: string;
+    /** The user id of the guest voted for. */
+    votedForId: string;
+  },
+  client: AppClient = getSupabase(),
+): Promise<Result<null, AnswerErrorCode>> {
+  const { eventId, categoryId, voterId, votedForId } = vote;
+  const change = () =>
+    client
+      .from("award_votes")
+      .update({ voted_for_id: votedForId })
+      .eq("category_id", categoryId)
+      .eq("voter_id", voterId)
+      .select("voted_for_id");
+
+  const changed = await change();
+  if (changed.error) return fail(toAnswerErrorCode(changed.error));
+  if (changed.data.length > 0) return ok(null);
+
+  // No row to change: either no vote yet, or the category is closed and the
+  // policy hides the row from the update. Insert tells the two apart.
+  const inserted = await client.from("award_votes").insert({
+    category_id: categoryId,
+    event_id: eventId,
+    voter_id: voterId,
+    voted_for_id: votedForId,
+  });
+  if (!inserted.error) return ok(null);
+  if (inserted.error.code === "23505") {
+    // Two taps raced: the other one inserted first, so change it.
+    const retry = await change();
+    if (retry.error) return fail(toAnswerErrorCode(retry.error));
+    return retry.data.length > 0 ? ok(null) : fail("question_closed");
+  }
+  return fail(toAnswerErrorCode(inserted.error));
+}
+
+/** The user id the guest voted for on a category, or null if they haven't voted. */
+export async function getMyAwardVote(
+  categoryId: string,
+  voterId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<string | null, "unknown">> {
+  const { data, error } = await client
+    .from("award_votes")
+    .select("voted_for_id")
+    .eq("category_id", categoryId)
+    .eq("voter_id", voterId)
+    .maybeSingle();
+  if (error) return fail("unknown");
+  return ok(data?.voted_for_id ?? null);
+}
+
+/**
+ * The ids of the guests who have voted on the category the awards show now,
+ * never whom they voted for. Only the host gets any; everyone else gets an
+ * empty list, because no client reads another guest's vote.
+ */
+export async function listAwardVoters(
+  categoryId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<string[], "unknown">> {
+  const { data, error } = await client.rpc("award_voters", {
+    target_category_id: categoryId,
+  });
+  if (error) return fail("unknown");
+  return ok(data.map((row) => row.user_id));
 }
 
 /** Votes arrive in bursts; one refetch per this long is enough. */

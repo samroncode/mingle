@@ -48,6 +48,53 @@ export type Database = {
           },
         ];
       };
+      award_votes: {
+        Row: {
+          category_id: string;
+          event_id: string;
+          updated_at: string;
+          voted_for_id: string;
+          voter_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          category_id: string;
+          event_id: string;
+          updated_at?: string;
+          voted_for_id: string;
+          voter_id: string;
+        };
+        Update: {
+          category_id?: string;
+          event_id?: string;
+          updated_at?: string;
+          voted_for_id?: string;
+          voter_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "award_votes_category_id_event_id_fkey";
+            columns: ["category_id", "event_id"];
+            isOneToOne: false;
+            referencedRelation: "award_categories";
+            referencedColumns: ["id", "event_id"];
+          },
+          {
+            foreignKeyName: "award_votes_event_id_voted_for_id_fkey";
+            columns: ["event_id", "voted_for_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+          {
+            foreignKeyName: "award_votes_event_id_voter_id_fkey";
+            columns: ["event_id", "voter_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+        ];
+      };
       events: {
         Row: {
           code: string;
@@ -245,6 +292,12 @@ export type Database = {
           total: number;
         }[];
       };
+      award_voters: {
+        Args: { target_category_id: string };
+        Returns: {
+          user_id: string;
+        }[];
+      };
       can_answer_quiz_question: {
         Args: { target_event_id: string; target_question_id: string };
         Returns: boolean;
@@ -268,6 +321,14 @@ export type Database = {
           question_revealed_at: string;
           question_status: string;
           target_event_id: string;
+        };
+        Returns: boolean;
+      };
+      can_vote_award: {
+        Args: {
+          target_category_id: string;
+          target_event_id: string;
+          target_guest_id: string;
         };
         Returns: boolean;
       };

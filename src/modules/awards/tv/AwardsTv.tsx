@@ -4,10 +4,11 @@ import { awardsScreen } from "../screen";
 import { useAwardsRun } from "../useAwardsRun";
 
 /** The left side of the TV while the awards run. */
-export function AwardsTv({ event }: ModuleViewProps) {
+export function AwardsTv({ event, members }: ModuleViewProps) {
   const { t } = useTranslation();
   const run = useAwardsRun(event);
   const screen = awardsScreen(event, run.progress, run.categories);
+  const guests = members.filter((m) => m.role === "guest").length;
 
   return (
     <section
@@ -40,6 +41,14 @@ export function AwardsTv({ event }: ModuleViewProps) {
             })}
           </p>
           <h2 className="text-6xl font-semibold">{screen.category.text}</h2>
+          {!screen.revealed && (
+            <p data-testid="awards-voted" className="text-4xl">
+              {t("modules.awards.voted", {
+                count: screen.category.voteCount,
+                total: guests,
+              })}
+            </p>
+          )}
         </>
       )}
       {screen.kind === "winners" && (
