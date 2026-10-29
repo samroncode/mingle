@@ -299,14 +299,14 @@ describe("siding with the majority", () => {
       [cast.guestB, false],
     ]);
     await answers(2, [
-      [cast.guestA, false],
+      [cast.guestA, true],
       [cast.guestB, false],
-      [carl, true],
+      [carl, false],
     ]);
     await reveal(0, 1, 2);
     expect(await majority(cast.guestA)).toEqual([[1, 2]]);
     expect(await majority(cast.guestB)).toEqual([[2, 2]]);
-    expect(await majority(carl)).toEqual([[0, 2]]);
+    expect(await majority(carl)).toEqual([[1, 2]]);
   });
 
   it("is 0 of 0 for a guest who answered nothing", async () => {
