@@ -72,6 +72,26 @@ _Avoid_: Kicked, banned, blocked
 The part of the party screen that never rotates away: the join QR code, the code, the join address and how many guests have joined.
 _Avoid_: Join box, sidebar
 
+**Shared costs**:
+An optional part of an event where the host collects money from guests for what they bought for the party. Off until the host switches it on. Not an activity.
+_Avoid_: Debts, expenses, payments
+
+**Purchase**:
+Something the host bought for the party, with a name, a price in whole kronor and the guests who share it.
+_Avoid_: Expense, receipt, item
+
+**Share**:
+A guest's part of one purchase: the price divided by the guests who share it, rounded up to the whole krona. A guest's bill is the sum of their shares.
+_Avoid_: Debt, split
+
+**Bill**:
+What one guest owes, shown only to that guest after the host has sent it. The host sends and hides it for the whole event.
+_Avoid_: Invoice, debt
+
+**Payment status**:
+Where a guest stands on their bill: Owes, Says paid (the guest tapped "I've paid") or Paid (the host confirmed).
+_Avoid_: Payment state
+
 **Expiry**:
 The moment an event stops existing for its members, 30 days after it was created.
 _Avoid_: Retention, TTL
