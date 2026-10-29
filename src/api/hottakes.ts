@@ -1,5 +1,11 @@
 import { getSupabase } from "./client";
-import { fail, ok, type Result } from "./errors";
+import {
+  fail,
+  ok,
+  toAnswerErrorCode,
+  type AnswerErrorCode,
+  type Result,
+} from "./errors";
 import type { AppClient } from "./session";
 
 /** A hot take as a member may read it. */
@@ -62,6 +68,67 @@ export async function getHotTakeProgress(
   return row
     ? ok({ total: row.total, revealed: row.revealed })
     : fail("not_found");
+}
+
+/**
+ * Saves the guest's answer to a hot take, or changes the one they gave. A
+ * refusal from the database (the hot take isn't open any more, or isn't the
+ * current one) is `question_closed`.
+ */
+export async function answerHotTake(
+  answer: {
+    eventId: string;
+    hotTakeId: string;
+    guestId: string;
+    agree: boolean;
+  },
+  client: AppClient = getSupabase(),
+): Promise<Result<null, AnswerErrorCode>> {
+  const { eventId, hotTakeId, guestId, agree } = answer;
+  const change = () =>
+    client
+      .from("hot_take_answers")
+      .update({ agree })
+      .eq("hot_take_id", hotTakeId)
+      .eq("guest_id", guestId)
+      .select("agree");
+
+  const changed = await change();
+  if (changed.error) return fail(toAnswerErrorCode(changed.error));
+  if (changed.data.length > 0) return ok(null);
+
+  // No row to change: either no answer yet, or the hot take is closed and the
+  // policy hides the row from the update. Insert tells the two apart.
+  const inserted = await client.from("hot_take_answers").insert({
+    hot_take_id: hotTakeId,
+    event_id: eventId,
+    guest_id: guestId,
+    agree,
+  });
+  if (!inserted.error) return ok(null);
+  if (inserted.error.code === "23505") {
+    // Two taps raced: the other one inserted first, so change it.
+    const retry = await change();
+    if (retry.error) return fail(toAnswerErrorCode(retry.error));
+    return retry.data.length > 0 ? ok(null) : fail("question_closed");
+  }
+  return fail(toAnswerErrorCode(inserted.error));
+}
+
+/** The guest's answer to a hot take (true = agree), or null if none yet. */
+export async function getMyHotTakeAnswer(
+  hotTakeId: string,
+  guestId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<boolean | null, "unknown">> {
+  const { data, error } = await client
+    .from("hot_take_answers")
+    .select("agree")
+    .eq("hot_take_id", hotTakeId)
+    .eq("guest_id", guestId)
+    .maybeSingle();
+  if (error) return fail("unknown");
+  return ok(data?.agree ?? null);
 }
 
 /** Answers arrive in bursts; one refetch per this long is enough. */

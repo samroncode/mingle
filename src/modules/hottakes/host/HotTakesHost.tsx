@@ -3,13 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import type { ModuleHostProps } from "../../types";
 import { RunControls } from "../../RunControls";
-import { hotTakesNextMove } from "../screen";
+import { answeringGuests, hotTakesNextMove } from "../screen";
 import { useHotTakes } from "../useHotTakes";
 import { useHotTakesRun } from "../useHotTakesRun";
 
 /** The hot takes' section in the control panel: run them, and the list. */
 export function HotTakesHost({
   event,
+  members,
   code,
   hostKey,
   startDisabled,
@@ -62,6 +63,17 @@ export function HotTakesHost({
           {current && next && (
             <Card className="p-3">
               <p className="font-medium">{current.text}</p>
+              {event.phase === "open" && (
+                <p
+                  data-testid="hottakes-answered"
+                  className="mt-1 text-sm font-medium"
+                >
+                  {t("modules.hottakes.answered", {
+                    count: current.answerCount,
+                    total: answeringGuests(members),
+                  })}
+                </p>
+              )}
             </Card>
           )}
           <RunControls

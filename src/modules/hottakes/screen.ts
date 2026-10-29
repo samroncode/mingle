@@ -1,5 +1,5 @@
 import type { HotTakeProgress, HotTakeView } from "@/api/hottakes";
-import type { EventRow } from "@/api/events";
+import type { EventRow, MemberRow } from "@/api/events";
 
 type HotTakesFlow = Pick<EventRow, "current_module" | "current_step" | "phase">;
 
@@ -81,4 +81,11 @@ export function hotTakesNextMove(
     default:
       return { move: "open", labelKey: "modules.hottakes.run.open" };
   }
+}
+
+/** How many guests can answer: those who have a display name now. */
+export function answeringGuests(
+  members: Array<Pick<MemberRow, "role" | "display_name">>,
+): number {
+  return members.filter((m) => m.role === "guest" && m.display_name).length;
 }

@@ -225,6 +225,7 @@
       },
       "counter": "Het åsikt {{number}} av {{total}}",
       "progress": "het åsikt {{number}} av {{total}}",
+      "answered": "{{count}} av {{total}} har svarat",
       "summaryStep": "Det var sista åsikten! Här är sammanfattningen.",
       "summaryTitle": "Sammanfattning",
       "run": {
@@ -240,7 +241,13 @@
         "ready": "Gör er redo!"
       },
       "guest": {
-        "coming": "Nästa åsikt kommer"
+        "coming": "Nästa åsikt kommer",
+        "agree": "Håller med",
+        "disagree": "Håller inte med",
+        "errors": {
+          "question_closed": "För sent, svaren är stängda.",
+          "unknown": "Ditt svar kom inte fram. Försök igen."
+        }
       }
     }
   },

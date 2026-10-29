@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import type { ModuleViewProps } from "../../types";
-import { hotTakesScreen } from "../screen";
+import { answeringGuests, hotTakesScreen } from "../screen";
 import { useHotTakesRun } from "../useHotTakesRun";
 
 /** The left side of the TV while the hot takes run. */
-export function HotTakesTv({ event }: ModuleViewProps) {
+export function HotTakesTv({ event, members }: ModuleViewProps) {
   const { t } = useTranslation();
   const run = useHotTakesRun(event);
   const screen = hotTakesScreen(event, run.progress, run.takes);
@@ -40,6 +40,14 @@ export function HotTakesTv({ event }: ModuleViewProps) {
             })}
           </p>
           <h2 className="text-6xl font-semibold">{screen.take.text}</h2>
+          {!screen.revealed && (
+            <p data-testid="hottakes-answered" className="text-4xl">
+              {t("modules.hottakes.answered", {
+                count: screen.take.answerCount,
+                total: answeringGuests(members),
+              })}
+            </p>
+          )}
         </>
       )}
       {screen.kind === "summary" && (

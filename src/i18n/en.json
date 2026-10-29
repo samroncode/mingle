@@ -225,6 +225,7 @@
       },
       "counter": "Hot take {{number}} of {{total}}",
       "progress": "hot take {{number}} of {{total}}",
+      "answered": "{{count}} of {{total}} answered",
       "summaryStep": "That was the last hot take! Here is the summary.",
       "summaryTitle": "Hot takes summary",
       "run": {
@@ -240,7 +241,13 @@
         "ready": "Get ready!"
       },
       "guest": {
-        "coming": "Next hot take coming"
+        "coming": "Next hot take coming",
+        "agree": "Agree",
+        "disagree": "Disagree",
+        "errors": {
+          "question_closed": "Too late, answers are closed.",
+          "unknown": "Your answer didn't go through. Try again."
+        }
       }
     }
   },
