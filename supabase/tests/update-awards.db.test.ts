@@ -223,21 +223,26 @@ describe("update_awards after some categories are revealed", () => {
 
   it("keeps the votes on revealed categories, so the winners stay the same", async () => {
     const host = await createAwards(2);
-    const guest = await anonymousUser();
-    await guest.client.rpc("join_event", {
-      code: host.code,
-      display_name: "Anna",
-    });
+    const [anna, bob] = [await anonymousUser(), await anonymousUser()];
+    for (const [guest, name] of [
+      [anna, "Anna"],
+      [bob, "Bob"],
+    ] as const) {
+      await guest.client.rpc("join_event", {
+        code: host.code,
+        display_name: name,
+      });
+    }
     await moves(host, startAwards, open);
     const [categoryId = ""] = sql(
       `select id from public.award_categories ` +
         `where event_id = '${host.eventId}' and position = 0`,
     );
-    const vote = await guest.client.from("award_votes").insert({
+    const vote = await anna.client.from("award_votes").insert({
       category_id: categoryId,
       event_id: host.eventId,
-      voter_id: guest.id,
-      voted_for_id: guest.id,
+      voter_id: anna.id,
+      voted_for_id: bob.id,
     });
     expect(vote.error).toBeNull();
     await moves(host, reveal, next);
@@ -247,7 +252,7 @@ describe("update_awards after some categories are revealed", () => {
     const { data } = await host.user.client.rpc("award_winners", {
       target_category_id: categoryId,
     });
-    expect(data?.map((row) => row.user_id)).toEqual([guest.id]);
+    expect(data?.map((row) => row.user_id)).toEqual([bob.id]);
   });
 
   it("counts the revealed categories in the limit of 20", async () => {
