@@ -58,6 +58,30 @@ Common problems:
 
 While the stack is running, Supabase Studio at http://localhost:54323 shows the tables, the users and a SQL editor.
 
+## Nightly cleanup
+
+Expired events and everything in them are deleted by `private.cleanup_expired()`, which `pg_cron` runs every night at 03:00 UTC under the job name `cleanup-expired-events`. It also deletes old rate-limit counters and anonymous logins that belong to no event and have been unused for 30 days. No client role can run it. The rules are in `decisions.md` (2026-10-22, cleanup of expired events).
+
+**Check the run history.** In the Supabase dashboard, open the SQL editor and run:
+
+```sql
+select start_time, status, return_message
+from cron.job_run_details
+where jobid = (select jobid from cron.job where jobname = 'cleanup-expired-events')
+order by start_time desc
+limit 10;
+```
+
+`return_message` is the first row of the result, and `status` is `succeeded` or `failed`. The counts (`events`, `codes_retired`, `rate_limits`, `users`) are in the function's return value; to see them for a run, run it by hand as below.
+
+**Run it by hand.** Only an admin can, in the dashboard's SQL editor:
+
+```sql
+select private.cleanup_expired();
+```
+
+It returns the counts as JSON. This deletes data for good, with no undo, so only run it when you mean it. Running it twice in a row is safe; the second run returns zeros.
+
 ## Cloud sessions
 
 Database tests can run in a cloud session. Start Docker with `sudo dockerd &`, then `npm run db:start`, then `npm run test:db` (see `decisions.md`, 2026-10-22). The first start downloads several GB of images, which use part of the session's disk.
