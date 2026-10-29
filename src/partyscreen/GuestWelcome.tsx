@@ -8,11 +8,11 @@ export function GuestWelcome({ members }: { members: MemberRow[] }) {
   const welcome = useGuestWelcomes(members);
   if (!welcome) return null;
   return (
-    <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-background/80">
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-surface/80">
       <p
         role="status"
         data-testid="guest-welcome"
-        className="rounded-3xl bg-primary px-12 py-8 text-center text-7xl font-semibold text-primary-foreground shadow-2xl"
+        className="fun-pop -rotate-2 rounded-xl border-[length:var(--border-chunky)] border-edge bg-coral px-(--space-7) py-(--space-6) text-center font-display text-8xl font-extrabold text-on-bright shadow-pop-lg"
       >
         {t("tv.welcomeGuest", { name: welcome.name })}
       </p>

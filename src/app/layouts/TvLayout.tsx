@@ -4,7 +4,10 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 /** Full-screen shell for the shared TV view, read from across the room. */
 export function TvLayout() {
   return (
-    <div data-layout="tv" className="relative min-h-svh p-12 text-2xl">
+    <div
+      data-layout="tv"
+      className="relative min-h-svh p-(--space-6) font-body text-2xl"
+    >
       <header className="absolute top-4 right-4">
         <LanguageSwitcher />
       </header>

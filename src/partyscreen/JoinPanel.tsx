@@ -14,20 +14,22 @@ export function JoinPanel({ code, guestCount }: JoinPanelProps) {
   return (
     <aside
       aria-label={t("tv.join.title")}
-      className="flex flex-col items-center gap-4 rounded-xl bg-card p-8 text-center text-card-foreground"
+      className="tv-float flex flex-col items-center gap-5 self-center rounded-xl border-[length:var(--border-chunky)] border-edge bg-champagne p-(--space-6) text-center text-on-bright shadow-pop-lg"
     >
-      <h2 className="text-3xl font-semibold">{t("tv.join.title")}</h2>
+      <h2 className="font-display text-4xl font-extrabold">
+        {t("tv.join.title")}
+      </h2>
       <QrCode value={address} label={t("tv.join.qrLabel")} size={320} />
       <p
         data-testid="tv-code"
-        className="font-mono text-7xl font-bold tracking-widest"
+        className="font-display text-7xl font-extrabold tracking-widest"
       >
         {code}
       </p>
-      <p data-testid="join-address" className="text-xl break-all">
+      <p data-testid="join-address" className="font-body text-2xl break-all">
         {address}
       </p>
-      <p data-testid="guest-count" className="text-3xl font-medium">
+      <p data-testid="guest-count" className="font-display text-3xl font-bold">
         {t("tv.join.guests", { count: guestCount })}
       </p>
     </aside>

@@ -385,7 +385,37 @@
   }
 }
 
+@keyframes tv-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
 @layer components {
+  /* TV ground: the surface with a soft forest glow, as in Kalas's .ks-backdrop-tv. */
+  .tv-backdrop {
+    background:
+      radial-gradient(
+        ellipse 70% 60% at 30% 25%,
+        color-mix(in srgb, var(--forest) 80%, transparent),
+        transparent 70%
+      ),
+      var(--surface);
+  }
+  /* The one gentle loop on the TV party screen; calm and reduced motion keep it still. */
+  [data-fun="playful"] .tv-float,
+  [data-fun="party"] .tv-float {
+    animation: tv-float 5s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tv-float {
+      animation: none !important;
+    }
+  }
   .fun-lift:hover:not(:disabled) {
     transform: translateY(var(--fun-lift));
   }
