@@ -60,7 +60,13 @@ export function GuestIn({
   const name = state.members.find((m) => m.user_id === userId)?.display_name;
   const content = (
     <div className="space-y-5">
-      <GuestBill eventId={eventId} signal={billSignal} slot={billSlot} />
+      <GuestBill
+        eventId={eventId}
+        code={state.event.code}
+        guestName={name ?? ""}
+        signal={billSignal}
+        slot={billSlot}
+      />
       <header className="space-y-3">
         <Sticker color="sage" lean="left">
           {t("guest.joinedSticker")}

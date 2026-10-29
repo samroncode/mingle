@@ -512,7 +512,10 @@
       "swish": "Swish {{number}}",
       "nothing": "Du delar inga inköp.",
       "total": "Totalt",
-      "updated": "Uppdaterad"
+      "updated": "Uppdaterad",
+      "payWithSwish": "Betala med Swish",
+      "qrLabel": "Swish-QR-kod med ditt belopp",
+      "qrHint": "Eller skanna med Swish på en annan telefon. Du kan ändra beloppet i Swish."
     }
   },
   "hostPanel": {

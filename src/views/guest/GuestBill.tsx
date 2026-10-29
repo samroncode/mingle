@@ -8,6 +8,9 @@ import { BillSheet } from "./BillSheet";
 
 interface GuestBillProps {
   eventId: string;
+  /** The event code and the guest's display name, for the Swish message. */
+  code: string;
+  guestName: string;
   /** Changes whenever the bill may have changed; see useMyBill. */
   signal: number;
   /** Where the icon goes, next to the language switch. */
@@ -19,7 +22,13 @@ interface GuestBillProps {
  * while the guest owes something. It never opens by itself and shows no
  * popup, sound or banner.
  */
-export function GuestBill({ eventId, signal, slot }: GuestBillProps) {
+export function GuestBill({
+  eventId,
+  code,
+  guestName,
+  signal,
+  slot,
+}: GuestBillProps) {
   const { t } = useTranslation();
   // Open, and whether the total had changed since the guest last looked.
   const [open, setOpen] = useState<"plain" | "updated">();
@@ -57,6 +66,8 @@ export function GuestBill({ eventId, signal, slot }: GuestBillProps) {
       {open && (
         <BillSheet
           bill={bill}
+          code={code}
+          guestName={guestName}
           updated={open === "updated"}
           onClose={() => setOpen(undefined)}
         />

@@ -2,13 +2,18 @@ import { X } from "lucide-react";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { QrCode } from "@/components/QrCode";
 import { Button } from "@/components/ui/button";
 import { nationalNumber } from "@/lib/costs/costs-form";
 import { formatKr } from "@/lib/costs/shares";
+import { swishAppLink, swishMessage, swishQrText } from "@/lib/guest/swish";
 import type { MyBill } from "@/lib/schemas/bill";
 
 interface BillSheetProps {
   bill: MyBill;
+  /** The event code and the guest's display name, for the Swish message. */
+  code: string;
+  guestName: string;
   updated: boolean;
   onClose: () => void;
 }
@@ -17,7 +22,13 @@ interface BillSheetProps {
  * The guest's own bill: who to pay, the Swish number, their share of each
  * purchase and the total. Opened only by the guest tapping the receipt icon.
  */
-export function BillSheet({ bill, updated, onClose }: BillSheetProps) {
+export function BillSheet({
+  bill,
+  code,
+  guestName,
+  updated,
+  onClose,
+}: BillSheetProps) {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -27,6 +38,12 @@ export function BillSheet({ bill, updated, onClose }: BillSheetProps) {
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
+
+  const pay = {
+    number: bill.swishNumber,
+    amount: bill.total,
+    message: swishMessage(code, guestName),
+  };
 
   return createPortal(
     <div
@@ -86,6 +103,25 @@ export function BillSheet({ bill, updated, onClose }: BillSheetProps) {
           <span>{t("guest.bill.total")}</span>
           <span>{formatKr(bill.total)}</span>
         </p>
+        {bill.total > 0 && (
+          <div className="space-y-3">
+            <Button asChild className="w-full">
+              <a href={swishAppLink(pay)} data-testid="swish-button">
+                {t("guest.bill.payWithSwish")}
+              </a>
+            </Button>
+            <div className="flex flex-col items-center gap-2">
+              <QrCode
+                value={swishQrText(pay)}
+                label={t("guest.bill.qrLabel")}
+                size={176}
+              />
+              <p className="text-center text-sm text-on-paper-muted">
+                {t("guest.bill.qrHint")}
+              </p>
+            </div>
+          </div>
+        )}
       </section>
     </div>,
     document.body,
