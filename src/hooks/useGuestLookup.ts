@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { JoinErrorCode } from "@/api/errors";
 import { findMyMembership, joinEvent, type MyMembership } from "@/api/events";
 import { ensureAnonymousSession } from "@/api/session";
@@ -30,15 +30,16 @@ async function lookUp(code: string, attempt: number): Promise<Found> {
 /**
  * Makes sure this browser has a session, then finds out whether it is
  * already in the event with this code. `join` joins as a guest and returns
- * the error code on failure; `ended` and `not_found` also end the page's
- * flow through `joinOutcome`.
+ * the error code on failure; `ended`, `not_found` and `removed` also end the
+ * page's flow through `joinOutcome`. `checkRemoved` is for a guest who has
+ * lost access to the event.
  */
 export function useGuestLookup(code: string) {
   const [attempt, setAttempt] = useState(0);
   const [found, setFound] = useState<Found>();
   const [outcome, setOutcome] = useState<{
     code: string;
-    value: "ended" | "not_found";
+    value: "ended" | "not_found" | "removed";
   }>();
 
   useEffect(() => {
@@ -65,11 +66,28 @@ export function useGuestLookup(code: string) {
       }));
       return undefined;
     }
-    if (result.error === "ended" || result.error === "not_found") {
+    if (
+      result.error === "ended" ||
+      result.error === "not_found" ||
+      result.error === "removed"
+    ) {
       setOutcome({ code: target, value: result.error });
     }
     return result.error;
   }
+
+  /**
+   * Asks the join function whether this phone was removed. An empty name
+   * never joins: a member gets their event back, a removed guest gets
+   * `removed`, anyone else `invalid_name` or another error, and only
+   * `removed` changes the page.
+   */
+  const checkRemoved = useCallback(async (): Promise<void> => {
+    const result = await joinEvent(code, "");
+    if (!result.ok && result.error === "removed") {
+      setOutcome({ code, value: "removed" });
+    }
+  }, [code]);
 
   const current =
     found?.code === code && found.attempt === attempt ? found : undefined;
@@ -78,6 +96,7 @@ export function useGuestLookup(code: string) {
     userId: current?.userId ?? "",
     joinOutcome: outcome?.code === code ? outcome.value : undefined,
     join,
+    checkRemoved,
     retry: () => setAttempt((previous) => previous + 1),
   };
 }

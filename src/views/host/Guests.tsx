@@ -8,13 +8,14 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useHostAction } from "@/hooks/useHostAction";
 import { sortedGuests, type ListedGuest } from "@/lib/host/guest-list";
+import { RemoveGuest } from "./RemoveGuest";
 
 interface GuestsProps {
   code: string;
   hostKey: string;
   members: MemberRow[];
   language: string;
-  /** Renaming stops when the evening has ended. */
+  /** Renaming and removing stop when the evening has ended. */
   ended: boolean;
 }
 
@@ -87,6 +88,19 @@ function GuestRow({
 }) {
   const { t } = useTranslation();
   const [renaming, setRenaming] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  if (removing) {
+    return (
+      <li>
+        <RemoveGuest
+          guest={guest}
+          code={code}
+          hostKey={hostKey}
+          onDone={() => setRemoving(false)}
+        />
+      </li>
+    );
+  }
   if (renaming) {
     return (
       <li>
@@ -103,20 +117,30 @@ function GuestRow({
     <li className="flex items-center justify-between gap-2">
       <span className="min-w-0 break-words text-base">{guest.name}</span>
       {!ended && (
-        <Button
-          size="sm"
-          variant="outline"
-          aria-label={`${t("hostPanel.guestList.rename")} ${guest.name}`}
-          onClick={() => setRenaming(true)}
-        >
-          {t("hostPanel.guestList.rename")}
-        </Button>
+        <span className="flex shrink-0 gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            aria-label={`${t("hostPanel.guestList.rename")} ${guest.name}`}
+            onClick={() => setRenaming(true)}
+          >
+            {t("hostPanel.guestList.rename")}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            aria-label={`${t("hostPanel.guestList.remove")} ${guest.name}`}
+            onClick={() => setRemoving(true)}
+          >
+            {t("hostPanel.guestList.remove")}
+          </Button>
+        </span>
       )}
     </li>
   );
 }
 
-/** The guests A to Z with the count, kept live by the members, and Rename. */
+/** The guests A to Z with the count, kept live by the members, Rename and Remove. */
 export function Guests({
   code,
   hostKey,

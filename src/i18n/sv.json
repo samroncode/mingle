@@ -471,7 +471,8 @@
       "not_found": "Vi hittar inte det eventet. Kontrollera koden.",
       "ended": "Eventet är slut.",
       "rate_limited": "För många försök. Vänta en minut och försök igen.",
-      "unknown": "Något gick fel. Försök igen."
+      "unknown": "Något gick fel. Försök igen.",
+      "removed": "Du har tagits bort från eventet."
     },
     "ended": {
       "title": "Tack för att du kom!",
@@ -492,6 +493,10 @@
     "note": {
       "title": "Du är redan med i det här eventet",
       "body": "Den här enheten är värd eller TV för eventet och kan inte gå med som gäst. Använd en annan telefon för att gå med."
+    },
+    "removed": {
+      "title": "Du har tagits bort från eventet",
+      "body": "Värden tog bort dig, så den här telefonen kan inte gå med igen."
     }
   },
   "hostPanel": {
@@ -554,7 +559,11 @@
       "rename": "Byt namn",
       "save": "Spara",
       "cancel": "Avbryt",
-      "nameLabel": "Nytt namn för {{name}}"
+      "nameLabel": "Nytt namn för {{name}}",
+      "remove": "Ta bort",
+      "removeTitle": "Ta bort {{name}}",
+      "removeConfirm": "Ta bort {{name}}? Hen kan inte gå med igen från den här telefonen.",
+      "removeAction": "Ta bort"
     }
   }
 }

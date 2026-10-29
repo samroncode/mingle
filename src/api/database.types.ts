@@ -225,6 +225,7 @@ export type Database = {
           created_at: string;
           display_name: string | null;
           event_id: string;
+          removed_at: string | null;
           role: string;
           user_id: string;
         };
@@ -233,6 +234,7 @@ export type Database = {
           created_at?: string;
           display_name?: string | null;
           event_id: string;
+          removed_at?: string | null;
           role: string;
           user_id: string;
         };
@@ -240,6 +242,7 @@ export type Database = {
           created_at?: string;
           display_name?: string | null;
           event_id?: string;
+          removed_at?: string | null;
           role?: string;
           user_id?: string;
         };
@@ -582,6 +585,10 @@ export type Database = {
           window_seconds: number;
         };
         Returns: boolean;
+      };
+      remove_guest: {
+        Args: { target_event_id: string; target_user_id: string };
+        Returns: string;
       };
       rename_guest: {
         Args: {

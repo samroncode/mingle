@@ -471,7 +471,8 @@
       "not_found": "We couldn't find that event. Check the code.",
       "ended": "This event has ended.",
       "rate_limited": "Too many tries. Wait a minute and try again.",
-      "unknown": "Something went wrong. Try again."
+      "unknown": "Something went wrong. Try again.",
+      "removed": "You've been removed from this event."
     },
     "ended": {
       "title": "Thanks for coming!",
@@ -492,6 +493,10 @@
     "note": {
       "title": "You're already in this event",
       "body": "This device is the host or the TV of the event, so it can't join as a guest. Use another phone to join."
+    },
+    "removed": {
+      "title": "You've been removed from this event",
+      "body": "The host removed you, so this phone can't join again."
     }
   },
   "hostPanel": {
@@ -554,7 +559,11 @@
       "rename": "Rename",
       "save": "Save",
       "cancel": "Cancel",
-      "nameLabel": "New name for {{name}}"
+      "nameLabel": "New name for {{name}}",
+      "remove": "Remove",
+      "removeTitle": "Remove {{name}}",
+      "removeConfirm": "Remove {{name}}? They can't rejoin from this phone.",
+      "removeAction": "Remove"
     }
   }
 }

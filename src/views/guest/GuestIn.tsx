@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { renameGuest } from "@/api/events";
 import { NicheTheme } from "@/components/NicheTheme";
@@ -16,10 +16,12 @@ import { PartyInfo } from "./PartyInfo";
 interface GuestInProps {
   eventId: string;
   userId: string;
+  /** The event can no longer be read: the guest may have been removed. */
+  onAccessLost: () => Promise<void>;
 }
 
 /** The page of a guest who has joined: follows the event live. */
-export function GuestIn({ eventId, userId }: GuestInProps) {
+export function GuestIn({ eventId, userId, onAccessLost }: GuestInProps) {
   const { t } = useTranslation();
   const state = useEventState(eventId);
   const [renaming, setRenaming] = useState(false);
@@ -30,6 +32,10 @@ export function GuestIn({ eventId, userId }: GuestInProps) {
     eventStatus: state.event?.status ?? null,
     error: state.error,
   });
+  const lost = page === "not_found";
+  useEffect(() => {
+    if (lost) void onAccessLost();
+  }, [lost, onAccessLost]);
   if (page === "ended" || page === "not_found" || page === "error") {
     return <GuestMessage kind={page} />;
   }

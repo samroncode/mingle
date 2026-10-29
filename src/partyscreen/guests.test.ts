@@ -5,6 +5,7 @@ import { countGuests, guestNames, newGuests } from "./guests";
 function member(role: string, name: string | null): MemberRow {
   return {
     created_at: "2026-10-22T10:00:00Z",
+    removed_at: null,
     display_name: name,
     event_id: "e1",
     role,

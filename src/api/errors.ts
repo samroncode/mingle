@@ -5,6 +5,7 @@ const joinResultErrorCodes = [
   "name_taken",
   "invalid_name",
   "rate_limited",
+  "removed",
 ] as const;
 
 /** Error codes the data layer returns; the UI maps each to an i18n key. */

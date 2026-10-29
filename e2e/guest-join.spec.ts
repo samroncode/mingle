@@ -35,6 +35,19 @@ test("a taken name shows its message and can be replaced", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("a removed phone is told it can't join again", async ({ page }) => {
+  await fakeSupabase(page, []);
+  await fakeEvent(page, { code, joinAnswers: ["removed"] });
+
+  await page.goto(`/p/${code}`);
+  await page.getByLabel("Your name").fill("Anna");
+  await page.getByRole("button", { name: "Join" }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "You've been removed from this event" }),
+  ).toBeVisible();
+});
+
 test("a guest who is already in goes straight to the page and can rename", async ({
   page,
 }) => {

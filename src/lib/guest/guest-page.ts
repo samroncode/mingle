@@ -15,6 +15,7 @@ export type GuestPageState =
   | "note"
   | "ended"
   | "not_found"
+  | "removed"
   | "error"
   | "captcha_failed";
 
@@ -22,8 +23,8 @@ interface GuestPageInput {
   lookup: "loading" | "failed" | "captcha_failed" | MyMembership;
   /** The live event; only followed once the caller is a guest. */
   snapshot?: GuestSnapshot;
-  /** A join answer that ends the page's flow: only these two do. */
-  joinOutcome?: "ended" | "not_found";
+  /** A join answer that ends the page's flow: only these three do. */
+  joinOutcome?: "ended" | "not_found" | "removed";
 }
 
 /** The state of a guest who is in, from the live event they follow. */

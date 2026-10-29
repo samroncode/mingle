@@ -12,11 +12,18 @@ import { NameForm } from "./NameForm";
 export function GuestView() {
   const { t } = useTranslation();
   const { code = "" } = useParams();
-  const { lookup, userId, joinOutcome, join, retry } = useGuestLookup(code);
+  const { lookup, userId, joinOutcome, join, checkRemoved, retry } =
+    useGuestLookup(code);
   const page = pickGuestPageState({ lookup, joinOutcome });
 
   if (page === "in" && typeof lookup === "object" && lookup.isMember) {
-    return <GuestIn eventId={lookup.eventId} userId={userId} />;
+    return (
+      <GuestIn
+        eventId={lookup.eventId}
+        userId={userId}
+        onAccessLost={checkRemoved}
+      />
+    );
   }
   if (page === "join") {
     return (

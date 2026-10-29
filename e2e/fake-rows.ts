@@ -32,6 +32,7 @@ export function memberRow(overrides: Partial<MemberRow> = {}): MemberRow {
     role: "guest",
     display_name: null,
     created_at: "2026-10-22T10:00:00Z",
+    removed_at: null,
     ...overrides,
   };
 }

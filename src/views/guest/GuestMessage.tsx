@@ -3,7 +3,8 @@ import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-type Kind = "ended" | "not_found" | "error" | "note" | "captcha_failed";
+type Kind =
+  "ended" | "not_found" | "removed" | "error" | "note" | "captcha_failed";
 
 /** A full-page message: thank-you, wrong code, connection error or role note. */
 export function GuestMessage({
