@@ -552,7 +552,8 @@
       "internal_error": "Something went wrong. Try again.",
       "not_found": "That guest isn't part of this evening any more.",
       "name_taken": "That name is taken. Pick another one.",
-      "invalid_name": "Enter a name of 1 to 30 characters."
+      "invalid_name": "Enter a name of 1 to 30 characters.",
+      "invalid_sharer": "That purchase has a guest who isn't part of this evening any more. Check who shares it."
     },
     "guestList": {
       "empty": "No guests have joined yet.",
@@ -564,6 +565,38 @@
       "removeTitle": "Remove {{name}}",
       "removeConfirm": "Remove {{name}}? They can't rejoin from this phone.",
       "removeAction": "Remove"
+    },
+    "costs": {
+      "title": "Shared costs",
+      "totals": "{{spent}} spent · {{owed}} still owed",
+      "off": "Not switched on. Guests see nothing about money.",
+      "switchOn": "Switch on",
+      "switchOff": "Switch off",
+      "switchOffConfirm": "Switch off shared costs? The Swish number and all purchases are deleted.",
+      "switchOffAction": "Switch off",
+      "payee": "Guests pay",
+      "payeeHint": "The name guests see, like “Sam”.",
+      "swish": "Your Swish number",
+      "swishHint": "A Swedish mobile number, like 070-123 45 67.",
+      "payeeLine": "Guests pay {{name}} on Swish {{number}}",
+      "purchases": "Purchases",
+      "noPurchases": "No purchases yet.",
+      "purchaseName": "What you bought",
+      "price": "Price in kr",
+      "sharedBy": "Shared by",
+      "noGuests": "No guests have joined yet.",
+      "noSharer": "Pick at least one guest.",
+      "addPurchase": "Add a purchase",
+      "removePurchase": "Remove this purchase",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "shareLine_one": "Shared by {{count}} guest, {{share}} each",
+      "shareLine_other": "Shared by {{count}} guests, {{share}} each",
+      "nobodyShares": "Nobody shares this any more",
+      "invalid": "Check this field.",
+      "checkFields": "Some fields need fixing before you can save.",
+      "loadFailed": "Couldn't load the shared costs."
     }
   }
 }

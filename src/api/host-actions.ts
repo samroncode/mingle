@@ -16,6 +16,9 @@ import {
   type RenameGuestRequest,
   type RenameGuestResponse,
   RenameGuestResponseSchema,
+  type UpdateCostsRequest,
+  type UpdateCostsResponse,
+  UpdateCostsResponseSchema,
   type SetFlowRequest,
   type SetFlowResponse,
   SetFlowResponseSchema,
@@ -219,5 +222,20 @@ export async function removeGuest(
   return toHostActionResult(
     RemoveGuestResponseSchema,
     await invokeHostActions({ action: "remove_guest", ...input }),
+  );
+}
+
+/**
+ * Replaces the event's shared costs as a whole (payee name, Swish number,
+ * purchases with their sharers), or switches them off with `costs: null`,
+ * which deletes the data. A purchase nobody shares, or a sharer who isn't a
+ * current guest, fails with `invalid_sharer`.
+ */
+export async function updateCosts(
+  input: Omit<UpdateCostsRequest, "action">,
+): Promise<HostActionResult<UpdateCostsResponse>> {
+  return toHostActionResult(
+    UpdateCostsResponseSchema,
+    await invokeHostActions({ action: "update_costs", ...input }),
   );
 }

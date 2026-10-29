@@ -9,6 +9,7 @@ export const team: NicheConfig = {
   descriptionKey: "niches.team.description",
   theme: { id: "loud", overrides: {} },
   defaultModules: ["quiz", "hottakes"],
+  defaultSharedCosts: false,
   welcome: {
     sv: "Välkomna, och tack för att ni är här! Ikväll ska vi ha det trevligt tillsammans. Slå er ner, ta fram telefonen och häng med.",
     en: "Welcome, and thanks for being here! Tonight is about having fun together. Grab a seat, get your phone ready and join in.",

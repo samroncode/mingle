@@ -17,6 +17,7 @@ const statusByError: Record<HostActionErrorCode, number> = {
   not_found: 404,
   name_taken: 409,
   invalid_name: 400,
+  invalid_sharer: 409,
   internal_error: 500,
 };
 

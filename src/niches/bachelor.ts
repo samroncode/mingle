@@ -18,6 +18,7 @@ export const bachelor: NicheConfig = {
     },
   },
   defaultModules: ["quiz", "awards", "hottakes"],
+  defaultSharedCosts: false,
   welcome: {
     sv: "Välkomna till kvällen! Nu ska vi fira ordentligt. Skanna koden, skriv ditt namn och gör er redo för skratt och bus.",
     en: "Welcome to the party! Time to celebrate properly. Scan the code, enter your name and get ready for laughs and mischief.",

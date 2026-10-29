@@ -379,6 +379,18 @@ interface FakeHostPanelOptions {
   guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
   flow?: Partial<EventRow>;
+  /** The shared costs the host reads; none while they are switched off. */
+  costs?: {
+    payeeName: string;
+    /** Stored form, e.g. 46701234567. */
+    swishNumber: string;
+    purchases: Array<{
+      id: string;
+      name: string;
+      price: number;
+      sharers: string[];
+    }>;
+  };
 }
 
 /**
@@ -442,6 +454,44 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
           vote_count: 0,
           revealed_at: null,
         })),
+      );
+    }
+    // Before the event lookups: `event_id=eq.` also contains `id=eq.`.
+    if (url.includes("/rest/v1/cost_settings")) {
+      return json(
+        route,
+        200,
+        options.costs
+          ? [
+              {
+                payee_name: options.costs.payeeName,
+                swish_number: options.costs.swishNumber,
+              },
+            ]
+          : [],
+      );
+    }
+    if (url.includes("/rest/v1/cost_purchases")) {
+      return json(
+        route,
+        200,
+        (options.costs?.purchases ?? []).map(({ id, name, price }) => ({
+          id,
+          name,
+          price_kr: price,
+        })),
+      );
+    }
+    if (url.includes("/rest/v1/cost_sharers")) {
+      return json(
+        route,
+        200,
+        (options.costs?.purchases ?? []).flatMap((purchase) =>
+          purchase.sharers.map((user_id) => ({
+            purchase_id: purchase.id,
+            user_id,
+          })),
+        ),
       );
     }
     if (url.includes("code=eq.")) {
