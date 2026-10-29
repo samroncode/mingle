@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { EventRow, MemberRow } from "@/api/events";
+import { FunZone } from "@/components/FunZone";
 import { countGuests } from "./guests";
 import { GuestWelcome } from "./GuestWelcome";
 import { JoinPanel } from "./JoinPanel";
@@ -17,12 +18,14 @@ interface PartyScreenProps {
 export function PartyScreen({ event, members, left }: PartyScreenProps) {
   const party = readParty(event.party);
   return (
-    <div className="grid min-h-[80svh] grid-cols-[1fr_28rem] gap-12 pt-8">
-      <div data-testid="party-left" className="relative">
-        {left ?? <PartRotation party={party} members={members} />}
-        <GuestWelcome members={members} />
+    <FunZone level="playful">
+      <div className="tv-backdrop -m-(--space-6) grid min-h-svh grid-cols-[1fr_30rem] gap-(--space-7) p-(--space-6)">
+        <div data-testid="party-left" className="relative">
+          {left ?? <PartRotation party={party} members={members} />}
+          <GuestWelcome members={members} />
+        </div>
+        <JoinPanel code={event.code} guestCount={countGuests(members)} />
       </div>
-      <JoinPanel code={event.code} guestCount={countGuests(members)} />
-    </div>
+    </FunZone>
   );
 }
