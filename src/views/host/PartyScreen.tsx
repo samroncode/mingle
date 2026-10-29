@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { EventRow } from "@/api/events";
@@ -101,11 +102,7 @@ function PartyEditor({
         }
         onMusicChange={(musicUrl) => change({ musicUrl })}
       />
-      {error && (
-        <p role="alert" className="text-sm font-bold text-danger-text">
-          {error}
-        </p>
-      )}
+      {error && <ErrorLine>{error}</ErrorLine>}
       <div className="flex flex-col gap-3">
         <Button size="lg" disabled={busy} onClick={() => void save()}>
           {t("hostPanel.party.save")}

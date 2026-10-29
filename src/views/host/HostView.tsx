@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
@@ -37,9 +38,7 @@ export function HostView() {
         <h1 className="font-display text-3xl font-extrabold">
           {t("views.host.title")}
         </h1>
-        <p role="alert" className="font-bold text-danger-text">
-          {t(message)}
-        </p>
+        <ErrorLine>{t(message)}</ErrorLine>
         <Button onClick={retry}>{t("hostDoor.retry")}</Button>
       </div>
     );

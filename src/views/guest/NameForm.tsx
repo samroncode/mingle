@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type { JoinErrorCode, RenameErrorCode } from "@/api/errors";
@@ -52,11 +53,7 @@ export function NameForm({
           onChange={(event) => setName(event.target.value)}
         />
       </label>
-      {error && (
-        <p role="alert" className="font-semibold text-danger">
-          {t(`guest.errors.${error}`)}
-        </p>
-      )}
+      {error && <ErrorLine>{t(`guest.errors.${error}`)}</ErrorLine>}
       <Button type="submit" size="lg" disabled={busy}>
         {submitLabel}
       </Button>

@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
@@ -63,9 +64,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
     <>
       <TopBar event={event} members={members} hostKey={link.key} />
       {state.status === "error" && (
-        <p role="alert" className="text-sm font-bold text-danger-text">
-          {t("hostPanel.offline")}
-        </p>
+        <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
       )}
       {ended ? (
         <p className="rounded-md border-[length:var(--border-chunky)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright shadow-pop-sm">

@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { useEffect, useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NicheTheme } from "@/components/NicheTheme";
@@ -150,11 +151,7 @@ export function CreateView() {
             />
           )}
 
-          {error && (
-            <p role="alert" className="text-sm font-bold text-danger-text">
-              {t(createErrorKey(error))}
-            </p>
-          )}
+          {error && <ErrorLine>{t(createErrorKey(error))}</ErrorLine>}
         </div>
 
         <div className="sticky bottom-0 -mx-4 flex gap-3 border-t-[length:var(--border-thin)] border-line bg-surface px-4 py-3">

@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import { Lock } from "lucide-react";
 import { useReducer, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -84,9 +85,9 @@ export function QuizEdit({
         hiddenIds={start.hiddenIds}
       />
       {(error ?? incomplete) && (
-        <p role="alert" className="text-sm text-destructive">
+        <ErrorLine>
           {error ?? t("modules.quiz.edit.errors.incomplete")}
-        </p>
+        </ErrorLine>
       )}
       <div className="flex gap-2">
         <Button size="lg" disabled={busy} onClick={() => void save()}>

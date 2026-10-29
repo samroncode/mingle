@@ -1,3 +1,4 @@
+import { ErrorLine } from "@/components/ErrorLine";
 import type { ParseKeys } from "i18next";
 import { useTranslation } from "react-i18next";
 import { setFlow } from "@/api/host-actions";
@@ -82,11 +83,7 @@ export function RunControls({
           </Button>
         )}
       </div>
-      {error && (
-        <p role="alert" className="text-sm text-destructive">
-          {error}
-        </p>
-      )}
+      {error && <ErrorLine>{error}</ErrorLine>}
     </>
   );
 }
