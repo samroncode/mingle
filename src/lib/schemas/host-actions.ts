@@ -184,6 +184,26 @@ export const UpdateAwardsResponseSchema = z.strictObject({});
 
 export type UpdateAwardsResponse = z.infer<typeof UpdateAwardsResponseSchema>;
 
+/**
+ * Replaces the hot takes that aren't revealed yet with `takes`, in order,
+ * after the revealed ones. Revealed and new hot takes together stay within
+ * the limit of 20.
+ */
+export const UpdateHotTakesRequestSchema = z.strictObject({
+  action: z.literal("update_hottakes"),
+  ...hostLinkFields,
+  takes: HotTakesSchema,
+});
+
+export type UpdateHotTakesRequest = z.infer<typeof UpdateHotTakesRequestSchema>;
+
+/** Empty: the host and members read the new hot takes on their next read. */
+export const UpdateHotTakesResponseSchema = z.strictObject({});
+
+export type UpdateHotTakesResponse = z.infer<
+  typeof UpdateHotTakesResponseSchema
+>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -192,6 +212,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdatePartyContentRequestSchema,
   UpdateQuizRequestSchema,
   UpdateAwardsRequestSchema,
+  UpdateHotTakesRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -214,10 +235,10 @@ export const hostActionErrorCodes = [
    * A flow move the event's state doesn't allow, including any move after it
    * ended, any change to the party content of an ended event, and a quiz
    * edit while a question is open or revealed, once the quiz is finished or
-   * once the event has ended; and the same for an awards edit.
+   * once the event has ended; and the same for an awards or hot takes edit.
    */
   "invalid_transition",
-  /** start_module for an activity the host turned off, quiz questions or award categories for it. */
+  /** start_module for an activity the host turned off, quiz questions, award categories or hot takes for it. */
   "module_disabled",
   /** start_module for an activity with no steps, such as a quiz without questions. */
   "module_empty",

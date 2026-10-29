@@ -19,6 +19,9 @@ import {
   type UpdateAwardsRequest,
   type UpdateAwardsResponse,
   UpdateAwardsResponseSchema,
+  type UpdateHotTakesRequest,
+  type UpdateHotTakesResponse,
+  UpdateHotTakesResponseSchema,
   type UpdateQuizRequest,
   type UpdateQuizResponse,
   UpdateQuizResponseSchema,
@@ -165,5 +168,20 @@ export async function updateAwards(
   return toHostActionResult(
     UpdateAwardsResponseSchema,
     await invokeHostActions({ action: "update_awards", ...input }),
+  );
+}
+
+/**
+ * Replaces the hot takes that aren't revealed yet with `takes`, in order,
+ * after the revealed ones. Fails with `invalid_transition` while a hot take
+ * is open or revealed, once every hot take is revealed or the event has
+ * ended; with `invalid_request` when revealed and new hot takes pass 20.
+ */
+export async function updateHotTakes(
+  input: Omit<UpdateHotTakesRequest, "action">,
+): Promise<HostActionResult<UpdateHotTakesResponse>> {
+  return toHostActionResult(
+    UpdateHotTakesResponseSchema,
+    await invokeHostActions({ action: "update_hottakes", ...input }),
   );
 }
