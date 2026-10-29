@@ -9,15 +9,17 @@ interface NicheThemeProps {
 }
 
 /**
- * Applies a niche's token overrides to everything inside it. The wrapper paints
+ * Applies a niche's theme and token overrides to everything inside it. The wrapper paints
  * its own background and text color, because `body` reads the `:root` tokens.
  */
 export function NicheTheme({ niche, children }: NicheThemeProps) {
   if (!isNicheId(niche)) return <>{children}</>;
+  const { theme } = getNiche(niche);
   return (
     <div
       data-niche={niche}
-      style={nicheThemeStyle(getNiche(niche).theme)}
+      data-theme={theme.id}
+      style={nicheThemeStyle(theme)}
       className="bg-background text-foreground"
     >
       {children}

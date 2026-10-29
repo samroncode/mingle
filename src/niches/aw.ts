@@ -7,12 +7,7 @@ export const aw: NicheConfig = {
   id: "aw",
   nameKey: "niches.aw.name",
   descriptionKey: "niches.aw.description",
-  // Placeholder values until the visual design exists.
-  theme: {
-    primary: "oklch(0.6 0.16 45)",
-    "primary-foreground": "oklch(0.985 0 0)",
-    radius: "0.75rem",
-  },
+  theme: { id: "garden", overrides: {} },
   defaultModules: ["quiz", "awards", "hottakes"],
   welcome: {
     sv: "Välkomna! Ta en dryck, slå er ner och njut av kvällen. Vi har lekar och omröstningar på gång, så håll telefonen nära till hands.",

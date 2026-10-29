@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import en from "@/i18n/en.json";
 import sv from "@/i18n/sv.json";
-import indexCss from "@/app/index.css?raw";
+import themeCss from "@/app/theme.css?raw";
 import { supportedLanguages } from "@/i18n/language";
 import { AwardCategorySchema, awardsLimits } from "@/lib/schemas/awards";
 import { HotTakeSchema, hottakesLimits } from "@/lib/schemas/hottakes";
@@ -25,7 +25,7 @@ function translation(locale: unknown, key: string): unknown {
     );
 }
 
-/** Token names declared on `:root` in src/app/index.css. */
+/** Token names declared on `:root` in src/app/theme.css. */
 function rootTokens(css: string): string[] {
   const rootBlock = /:root\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
   return [...rootBlock.matchAll(/--([\w-]+)\s*:/g)].map(
@@ -34,11 +34,26 @@ function rootTokens(css: string): string[] {
 }
 
 describe("theme tokens", () => {
-  it("only allows tokens that exist on :root in src/app/index.css", () => {
-    const declared = rootTokens(indexCss);
+  it("only allows tokens that exist on :root in src/app/theme.css", () => {
+    const declared = rootTokens(themeCss);
     for (const token of themeTokens) {
       expect(declared, token).toContain(token);
     }
+  });
+});
+
+describe("niche themes", () => {
+  it("maps each niche onto its Kalas theme", () => {
+    expect(niches.aw.theme.id).toBe("garden");
+    expect(niches.team.theme.id).toBe("loud");
+    expect(niches.bachelor.theme.id).toBe("garden");
+  });
+
+  it("lets bachelor lead with blush through a token override", () => {
+    expect(nicheThemeStyle(niches.bachelor.theme)).toMatchObject({
+      "--primary": "var(--blush)",
+    });
+    expect(nicheThemeStyle(niches.aw.theme)).toEqual({});
   });
 });
 
@@ -195,7 +210,7 @@ describe("NicheConfigSchema", () => {
   it("rejects a token that shadcn does not define", () => {
     const result = NicheConfigSchema.safeParse({
       ...niches.aw,
-      theme: { "brand-pink": "pink" },
+      theme: { id: "garden", overrides: { "brand-pink": "pink" } },
     });
     expect(result.success).toBe(false);
   });
@@ -219,9 +234,14 @@ describe("NicheConfigSchema", () => {
 
 describe("nicheThemeStyle", () => {
   it("maps tokens to CSS custom properties", () => {
-    expect(nicheThemeStyle({ primary: "red", radius: "1rem" })).toEqual({
+    expect(
+      nicheThemeStyle({
+        id: "garden",
+        overrides: { primary: "red", "primary-foreground": "white" },
+      }),
+    ).toEqual({
       "--primary": "red",
-      "--radius": "1rem",
+      "--primary-foreground": "white",
     });
   });
 });

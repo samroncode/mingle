@@ -7,11 +7,15 @@ export const bachelor: NicheConfig = {
   id: "bachelor",
   nameKey: "niches.bachelor.name",
   descriptionKey: "niches.bachelor.description",
-  // Placeholder values until the visual design exists.
+  // Blush leads instead of coral.
   theme: {
-    primary: "oklch(0.62 0.2 340)",
-    "primary-foreground": "oklch(0.985 0 0)",
-    radius: "1rem",
+    id: "garden",
+    overrides: {
+      primary: "var(--blush)",
+      "primary-foreground": "var(--on-bright)",
+      "sidebar-primary": "var(--blush)",
+      "sidebar-primary-foreground": "var(--on-bright)",
+    },
   },
   defaultModules: ["quiz", "awards", "hottakes"],
   welcome: {

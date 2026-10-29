@@ -16,7 +16,7 @@ export default defineConfig({
     unstubGlobals: true,
     unstubEnvs: true,
     // Vitest stubs CSS as empty by default; the niche tests read the real tokens.
-    css: { include: [/src\/app\/index\.css/] },
+    css: { include: [/src\/app\/(index|theme)\.css/] },
     // `npm run test` runs `unit` and needs no Docker. `npm run test:db` runs
     // `db` against the local Supabase stack (`npm run db:start`).
     projects: [
