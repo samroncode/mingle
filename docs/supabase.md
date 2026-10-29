@@ -1,6 +1,6 @@
 # Supabase in Mingle
 
-How Mingle uses Supabase, and how to run it on the desktop. The rules for writing database code are in "Database rules" in `CLAUDE.md`; the design of the backend is in [`plans/backend-core.md`](plans/backend-core.md).
+How Mingle uses Supabase, and how to run it on the desktop. The rules for writing database code are in "Database rules" in `CLAUDE.md`; the design of the backend is in [`plans/backend-core.md`](archive/plans/backend-core.md).
 
 ## The parts Mingle uses
 

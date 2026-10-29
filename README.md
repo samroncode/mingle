@@ -26,7 +26,7 @@ Then open http://localhost:5173. The app also starts without filling in `.env`.
 ## Learn more
 
 - [CLAUDE.md](CLAUDE.md): scope, architecture principles, folder structure and working rules
-- [docs/](docs/): decisions, workflow, Supabase and hosting guides, design and plans
+- [docs/](docs/README.md): decisions, workflow, Supabase and hosting guides, design, and an archive of old plans
 
 ## Privacy
 
