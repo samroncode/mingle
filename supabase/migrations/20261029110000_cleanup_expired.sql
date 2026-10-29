@@ -43,7 +43,7 @@ begin
     where e.expires_at <= now()
     returning e.id
   )
-  select coalesce(array_agg(d.id), '{}') into expired_ids from deleted;
+  select coalesce(array_agg(d.id), '{}') into expired_ids from deleted d;
   events_deleted := coalesce(cardinality(expired_ids), 0);
 
   -- 3. Rate-limit counters: those naming a deleted event (`action:<event id>`)
