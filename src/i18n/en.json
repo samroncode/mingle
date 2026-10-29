@@ -512,7 +512,10 @@
       "swish": "Swish {{number}}",
       "nothing": "You don't share any purchases.",
       "total": "Total",
-      "updated": "Updated"
+      "updated": "Updated",
+      "payWithSwish": "Pay with Swish",
+      "qrLabel": "Swish QR code with your amount",
+      "qrHint": "Or scan with Swish on another phone. You can change the amount in Swish."
     }
   },
   "hostPanel": {

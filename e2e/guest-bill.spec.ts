@@ -49,6 +49,16 @@ test("once the bill is sent the icon shows, and the sheet opens only on a tap", 
   await expect(sheet).toContainText("120 kr");
   await expect(sheet).toContainText("345 kr");
 
+  // Pay with Swish: a link carrying the amount, and a QR code for another phone.
+  const button = sheet.getByTestId("swish-button");
+  await expect(button).toHaveText("Pay with Swish");
+  const href = (await button.getAttribute("href")) ?? "";
+  expect(href).toMatch(/^swish:\/\/payment\?data=/);
+  expect(decodeURIComponent(href)).toContain('"value":345');
+  expect(decodeURIComponent(href)).toContain("Mingle");
+  await expect(sheet.getByRole("img", { name: /Swish QR/ })).toBeVisible();
+  await sheet.screenshot({ path: "/tmp/swish-sheet.png" });
+
   await page.keyboard.press("Escape");
   await expect(sheet).toHaveCount(0);
 });
