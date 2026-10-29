@@ -14,6 +14,9 @@ const statusByError: Record<HostActionErrorCode, number> = {
   module_disabled: 409,
   module_empty: 409,
   module_finished: 409,
+  not_found: 404,
+  name_taken: 409,
+  invalid_name: 400,
   internal_error: 500,
 };
 

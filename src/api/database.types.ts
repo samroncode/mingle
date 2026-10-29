@@ -583,6 +583,14 @@ export type Database = {
         };
         Returns: boolean;
       };
+      rename_guest: {
+        Args: {
+          new_name: string;
+          target_event_id: string;
+          target_user_id: string;
+        };
+        Returns: string;
+      };
       set_event_flow: {
         Args: {
           from_module?: string;

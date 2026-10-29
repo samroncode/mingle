@@ -10,6 +10,9 @@ import {
   type HostActionErrorCode,
   HostActionErrorSchema,
   type HostActionRequest,
+  type RenameGuestRequest,
+  type RenameGuestResponse,
+  RenameGuestResponseSchema,
   type SetFlowRequest,
   type SetFlowResponse,
   SetFlowResponseSchema,
@@ -183,5 +186,20 @@ export async function updateHotTakes(
   return toHostActionResult(
     UpdateHotTakesResponseSchema,
     await invokeHostActions({ action: "update_hottakes", ...input }),
+  );
+}
+
+/**
+ * Gives a guest a new display name. Fails with `not_found` for a user who
+ * isn't a guest of the event, `name_taken` when another guest has the name,
+ * `invalid_name` when it isn't 1 to 30 characters, and `invalid_transition`
+ * once the event has ended. The guest's answers and votes stay theirs.
+ */
+export async function renameGuest(
+  input: Omit<RenameGuestRequest, "action">,
+): Promise<HostActionResult<RenameGuestResponse>> {
+  return toHostActionResult(
+    RenameGuestResponseSchema,
+    await invokeHostActions({ action: "rename_guest", ...input }),
   );
 }

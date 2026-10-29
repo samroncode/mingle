@@ -204,6 +204,26 @@ export type UpdateHotTakesResponse = z.infer<
   typeof UpdateHotTakesResponseSchema
 >;
 
+/**
+ * Gives a guest of the event a new display name. The name is cleaned and
+ * checked by the database (1 to 30 characters, unique among the guests), the
+ * same rules as when joining; the guest's answers and votes stay theirs.
+ */
+export const RenameGuestRequestSchema = z.strictObject({
+  action: z.literal("rename_guest"),
+  ...hostLinkFields,
+  userId: z.uuid(),
+  /** Long names reach the database, which answers invalid_name. */
+  name: z.string().max(200),
+});
+
+export type RenameGuestRequest = z.infer<typeof RenameGuestRequestSchema>;
+
+/** Empty: the guest's phone and the TV read the new name from the members. */
+export const RenameGuestResponseSchema = z.strictObject({});
+
+export type RenameGuestResponse = z.infer<typeof RenameGuestResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -213,6 +233,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdateQuizRequestSchema,
   UpdateAwardsRequestSchema,
   UpdateHotTakesRequestSchema,
+  RenameGuestRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -244,6 +265,12 @@ export const hostActionErrorCodes = [
   "module_empty",
   /** start_module for an activity whose steps have all been played. */
   "module_finished",
+  /** rename_guest for a user who isn't a guest of the event. */
+  "not_found",
+  /** rename_guest to a name another guest of the event has. */
+  "name_taken",
+  /** rename_guest to a name that isn't 1 to 30 characters once cleaned. */
+  "invalid_name",
   "internal_error",
 ] as const;
 

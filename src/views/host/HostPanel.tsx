@@ -9,16 +9,9 @@ import { useHostEventId } from "@/hooks/useHostEventId";
 import type { HostLinkParts } from "@/lib/host/host-door";
 import { Activities } from "./Activities";
 import { EndEvent } from "./EndEvent";
+import { Guests } from "./Guests";
 import { PartyScreen } from "./PartyScreen";
 import { TopBar } from "./TopBar";
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <section className="space-y-1">
-      <h2 className="font-display text-xl font-bold">{title}</h2>
-    </section>
-  );
-}
 
 function EventSection({
   link,
@@ -74,7 +67,13 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         <Activities event={event} members={members} hostKey={link.key} />
       )}
       {!ended && <PartyScreen event={event} hostKey={link.key} />}
-      <Placeholder title={t("hostPanel.guestsTitle")} />
+      <Guests
+        code={event.code}
+        hostKey={link.key}
+        members={members}
+        language={event.language}
+        ended={ended}
+      />
       <EventSection link={link}>
         {!ended && (
           <EndEvent
