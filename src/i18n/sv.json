@@ -96,6 +96,8 @@
   "modules": {
     "quiz": {
       "name": "Quiz",
+      "items_one": "{{count}} fråga",
+      "items_other": "{{count}} frågor",
       "description": "Frågor som gästerna svarar på i mobilen.",
       "host": {
         "title": "Quizfrågor",
@@ -156,6 +158,8 @@
     },
     "awards": {
       "name": "Utmärkelser",
+      "items_one": "{{count}} kategori",
+      "items_other": "{{count}} kategorier",
       "description": "Rösta på vem som är mest benägen att...?",
       "host": {
         "empty": "Det finns inga kategorier i utmärkelserna än.",
@@ -218,6 +222,8 @@
     },
     "hottakes": {
       "name": "Het åsikt",
+      "items_one": "{{count}} het åsikt",
+      "items_other": "{{count}} heta åsikter",
       "description": "Håll med eller håll inte med om djärva påståenden.",
       "host": {
         "empty": "Det finns inga heta åsikter än.",
@@ -512,6 +518,17 @@
     "running": "Pågår",
     "switchedOff": "Avstängda ({{count}})",
     "partyScreen": "Festskärm",
+    "summary": {
+      "activity": "{{items}}, {{state}}",
+      "party": "{{count}} av 5 delar ifyllda",
+      "event": "Länkar och avslut av kvällen",
+      "state": {
+        "running": "pågår nu",
+        "notStarted": "ej startat",
+        "partlyPlayed": "{{done}} spelade",
+        "played": "alla spelade"
+      }
+    },
     "party": {
       "edit": "Redigera",
       "save": "Spara",

@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { memberRow } from "./fake-rows.ts";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "d".repeat(43);
@@ -23,6 +24,7 @@ test("the host removes a guest after a confirm", async ({ page }) => {
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "host-guests");
   const guests = page.getByTestId("host-guests");
   await expect(guests).toContainText("Anna");
 
@@ -66,6 +68,7 @@ test("a failed removal shows a plain message", async ({ page }) => {
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "host-guests");
   await page.getByRole("button", { name: "Remove Anna" }).click();
   await page
     .getByRole("alertdialog")

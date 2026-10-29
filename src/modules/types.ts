@@ -47,6 +47,11 @@ export interface ModuleDefinition {
    * "question 3 of 10". Left out when the activity has none.
    */
   useProgress?: (event: EventRow) => string | undefined;
+  /**
+   * Hook giving the one-line summary for the activity's panel header, such as
+   * "8 questions, not started". Left out when the activity has none.
+   */
+  useSummary?: (event: EventRow) => string | undefined;
   /** An extra setup wizard step, for activities that need one. */
   WizardStep?: ComponentType<ModuleWizardStepProps>;
 }

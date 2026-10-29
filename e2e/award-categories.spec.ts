@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "d".repeat(43);
@@ -150,6 +151,7 @@ test("the control panel lists the award categories before awards start", async (
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-awards");
   const panel = page.getByTestId("awards-host");
   await expect(panel.getByText("1. Most likely to dance")).toBeVisible();
   await expect(panel.getByText("2. Most likely to bake")).toBeVisible();
@@ -162,6 +164,7 @@ test("the control panel says when the awards have no categories", async ({
   await fakeHostPanel(page, { code, enabledModules: ["awards"] });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-awards");
   await expect(page.getByTestId("awards-host")).toContainText(
     "There are no categories in these awards yet.",
   );
@@ -181,6 +184,7 @@ test("the host starts awards and sees the category and the next move", async ({
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-awards");
   const panel = page.getByTestId("awards-host");
   await panel.getByRole("button", { name: "Start awards" }).click();
 
@@ -210,6 +214,7 @@ test("the control panel shows the open category and the Reveal button", async ({
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-awards");
   const panel = page.getByTestId("awards-host");
   await expect(panel.getByTestId("awards-progress")).toHaveText("Award 2 of 2");
   await expect(panel.getByText("Most likely to bake")).toBeVisible();

@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "d".repeat(43);
@@ -143,6 +144,7 @@ test("the control panel lists the hot takes before hot takes start", async ({
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-hottakes");
   const panel = page.getByTestId("hottakes-host");
   await expect(panel.getByText("1. Cats beat dogs")).toBeVisible();
   await expect(panel.getByText("2. Pineapple belongs on pizza")).toBeVisible();
@@ -155,6 +157,7 @@ test("the control panel says when the hot takes have no hot takes", async ({
   await fakeHostPanel(page, { code, enabledModules: ["hottakes"] });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-hottakes");
   await expect(page.getByTestId("hottakes-host")).toContainText(
     "There are no hot takes yet.",
   );
@@ -174,6 +177,7 @@ test("the host starts hot takes and sees the error line on a refusal", async ({
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-hottakes");
   const panel = page.getByTestId("hottakes-host");
   await panel.getByRole("button", { name: "Start hot takes" }).click();
 
@@ -203,6 +207,7 @@ test("the control panel shows the open hot take and the Reveal button", async ({
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-hottakes");
   const panel = page.getByTestId("hottakes-host");
   await expect(panel.getByTestId("hottakes-progress")).toHaveText(
     "Hot take 2 of 2",

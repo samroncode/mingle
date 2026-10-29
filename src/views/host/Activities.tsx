@@ -1,9 +1,11 @@
 import { useTranslation } from "react-i18next";
 import type { EventRow, MemberRow } from "@/api/events";
+import { PanelSection } from "@/components/PanelSection";
 import { Sticker } from "@/components/ui/sticker";
 import { orderActivities } from "@/lib/host/host-panel";
 import { moduleDefinitions } from "@/modules/definitions";
 import { isModuleId, type ModuleId } from "@/modules/registry";
+import type { ModuleDefinition } from "@/modules/types";
 
 interface ActivitiesProps {
   event: EventRow;
@@ -11,32 +13,47 @@ interface ActivitiesProps {
   hostKey: string;
 }
 
+/** Runs the definition's summary hook; its identity is fixed per activity. */
+function WithSummary({
+  definition,
+  ...rest
+}: SectionProps & { definition: ModuleDefinition }) {
+  const summary = definition.useSummary?.(rest.props.event);
+  return <Section {...rest} summary={summary} />;
+}
+
+interface SectionProps {
+  id: ModuleId;
+  props: ActivitiesProps;
+  running: ModuleId | null;
+}
+
 function Section({
   id,
   props,
   running,
-}: {
-  id: ModuleId;
-  props: ActivitiesProps;
-  running: ModuleId | null;
-}) {
+  summary,
+}: SectionProps & { summary?: string }) {
   const { t } = useTranslation();
   const definition = Object.hasOwn(moduleDefinitions, id)
     ? moduleDefinitions[id]
     : undefined;
-  const name = t(`modules.${id}.name`);
   const blocked = running !== null && running !== id;
   return (
-    <section
-      data-testid={`activity-${id}`}
-      className="space-y-3 rounded-lg border-[length:var(--border-chunky)] border-edge bg-surface-sunken p-4 shadow-pop-md"
+    <PanelSection
+      testId={`activity-${id}`}
+      title={t(`modules.${id}.name`)}
+      summary={summary}
+      openWhen={running === id}
+      badge={
+        running === id && (
+          <Sticker color="sage" lean="left">
+            {t("hostPanel.running")}
+          </Sticker>
+        )
+      }
     >
-      {running === id && (
-        <Sticker color="sage" lean="left">
-          {t("hostPanel.running")}
-        </Sticker>
-      )}
-      {definition ? (
+      {definition && (
         <definition.Host
           event={props.event}
           members={props.members}
@@ -44,8 +61,6 @@ function Section({
           hostKey={props.hostKey}
           startDisabled={blocked}
         />
-      ) : (
-        <h2 className="font-display text-xl font-bold">{name}</h2>
       )}
       {blocked && (
         <p className="text-sm text-ink-muted">
@@ -54,7 +69,18 @@ function Section({
           })}
         </p>
       )}
-    </section>
+    </PanelSection>
+  );
+}
+
+function ActivitySection(props: SectionProps) {
+  const definition = Object.hasOwn(moduleDefinitions, props.id)
+    ? moduleDefinitions[props.id]
+    : undefined;
+  return definition?.useSummary ? (
+    <WithSummary {...props} definition={definition} />
+  ) : (
+    <Section {...props} />
   );
 }
 
@@ -68,7 +94,7 @@ export function Activities(props: ActivitiesProps) {
   return (
     <div className="space-y-4">
       {enabled.map((id) => (
-        <Section key={id} id={id} props={props} running={running} />
+        <ActivitySection key={id} id={id} props={props} running={running} />
       ))}
       {disabled.length > 0 && (
         <details data-testid="disabled-activities">
@@ -77,7 +103,12 @@ export function Activities(props: ActivitiesProps) {
           </summary>
           <div className="space-y-4 pt-2">
             {disabled.map((id) => (
-              <Section key={id} id={id} props={props} running={running} />
+              <ActivitySection
+                key={id}
+                id={id}
+                props={props}
+                running={running}
+              />
             ))}
           </div>
         </details>

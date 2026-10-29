@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "c".repeat(43);
@@ -16,6 +17,7 @@ async function openPanel(page: Page, updateAnswer: [number, object]) {
     hottakes: ["Pineapple belongs on pizza", "Karaoke is overrated"],
   });
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-hottakes");
   await page.getByRole("button", { name: "Edit hot takes" }).click();
   return bodies;
 }

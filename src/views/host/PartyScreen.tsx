@@ -3,8 +3,10 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { EventRow } from "@/api/events";
 import { updatePartyContent } from "@/api/host-actions";
+import { PanelSection } from "@/components/PanelSection";
 import { Button } from "@/components/ui/button";
 import { useHostAction } from "@/hooks/useHostAction";
+import { countPartyParts } from "@/lib/host/host-panel";
 import { partyToForm, savePartyEdit } from "@/lib/host/party-edit";
 import { readParty } from "@/lib/party";
 import type { Party } from "@/lib/schemas/party";
@@ -119,16 +121,18 @@ function PartyEditor({
 export function PartyScreen(props: PartyScreenProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
+  const party = readParty(props.event.party);
   return (
-    <section
-      data-testid="party-screen"
-      className="space-y-3 rounded-lg border-[length:var(--border-chunky)] border-edge bg-surface p-4 shadow-pop-md"
+    <PanelSection
+      testId="party-screen"
+      title={t("hostPanel.partyScreen")}
+      summary={t("hostPanel.summary.party", { count: countPartyParts(party) })}
     >
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="font-display text-xl font-bold">
-          {t("hostPanel.partyScreen")}
-        </h2>
-        {!editing && (
+      {editing ? (
+        <PartyEditor {...props} onDone={() => setEditing(false)} />
+      ) : (
+        <>
+          <PartyView party={party} />
           <Button
             size="sm"
             variant="secondary"
@@ -136,13 +140,8 @@ export function PartyScreen(props: PartyScreenProps) {
           >
             {t("hostPanel.party.edit")}
           </Button>
-        )}
-      </div>
-      {editing ? (
-        <PartyEditor {...props} onDone={() => setEditing(false)} />
-      ) : (
-        <PartyView party={readParty(props.event.party)} />
+        </>
       )}
-    </section>
+    </PanelSection>
   );
 }

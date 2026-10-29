@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "c".repeat(43);
@@ -137,6 +138,7 @@ test("the control panel lists the quiz questions with the right answer", async (
   });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-quiz");
   const panel = page.getByTestId("quiz-host");
   await expect(panel.getByText("1. Capital of Australia?")).toBeVisible();
   await expect(panel.getByText("2. Feta comes from?")).toBeVisible();
@@ -152,6 +154,7 @@ test("the control panel says when the quiz has no questions", async ({
   await fakeHostPanel(page, { code, enabledModules: ["quiz"] });
 
   await page.goto(`/host/${code}#key=${key}`);
+  await openSection(page, "activity-quiz");
   await expect(page.getByTestId("quiz-host")).toContainText(
     "There are no questions in this quiz yet.",
   );

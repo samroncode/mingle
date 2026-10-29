@@ -96,7 +96,7 @@ export function HotTakesEdit({
           {error ?? t("modules.hottakes.edit.errors.incomplete")}
         </ErrorLine>
       )}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Button size="lg" disabled={busy} onClick={() => void save()}>
           {t("modules.hottakes.edit.save")}
         </Button>

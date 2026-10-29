@@ -96,6 +96,8 @@
   "modules": {
     "quiz": {
       "name": "Quiz",
+      "items_one": "{{count}} question",
+      "items_other": "{{count}} questions",
       "description": "Questions the guests answer on their phones.",
       "host": {
         "title": "Quiz questions",
@@ -156,6 +158,8 @@
     },
     "awards": {
       "name": "Awards",
+      "items_one": "{{count}} category",
+      "items_other": "{{count}} categories",
       "description": "Vote on who is most likely to...?",
       "host": {
         "empty": "There are no categories in these awards yet.",
@@ -218,6 +222,8 @@
     },
     "hottakes": {
       "name": "Hot takes",
+      "items_one": "{{count}} hot take",
+      "items_other": "{{count}} hot takes",
       "description": "Agree or disagree with bold statements.",
       "host": {
         "empty": "There are no hot takes yet.",
@@ -512,6 +518,17 @@
     "running": "Running",
     "switchedOff": "Switched off ({{count}})",
     "partyScreen": "Party screen",
+    "summary": {
+      "activity": "{{items}}, {{state}}",
+      "party": "{{count}} of 5 parts filled in",
+      "event": "Links, and closing the evening",
+      "state": {
+        "running": "running now",
+        "notStarted": "not started",
+        "partlyPlayed": "{{done}} played",
+        "played": "all played"
+      }
+    },
     "party": {
       "edit": "Edit",
       "save": "Save",

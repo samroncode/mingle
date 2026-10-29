@@ -35,12 +35,9 @@ export function QuizHost(props: ModuleHostProps) {
   return (
     <section
       data-testid="quiz-host"
-      aria-labelledby="quiz-host-title"
+      aria-label={t("modules.quiz.name")}
       className="space-y-3"
     >
-      <h2 id="quiz-host-title" className="font-display text-xl font-extrabold">
-        {t("modules.quiz.name")}
-      </h2>
       {run.failed && <ErrorLine>{t("modules.quiz.host.loadFailed")}</ErrorLine>}
       {run.progress && (
         <QuizControls
