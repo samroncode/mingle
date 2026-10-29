@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { listQuizAnswerers } from "@/api/quiz";
+import { useLoad } from "@/hooks/useLoad";
 
 /**
  * The ids of the guests who have answered a question, read again whenever
@@ -10,21 +10,10 @@ export function useQuizAnswerers(
   questionId: string | undefined,
   version: number,
 ): string[] {
-  const [loaded, setLoaded] = useState<{ questionId?: string; ids: string[] }>({
-    ids: [],
-  });
-
-  useEffect(() => {
-    if (!questionId) return;
-    let stale = false;
-    void listQuizAnswerers(questionId).then((result) => {
-      if (stale || !result.ok) return;
-      setLoaded({ questionId, ids: result.value });
-    });
-    return () => {
-      stale = true;
-    };
-  }, [questionId, version]);
-
-  return loaded.questionId === questionId ? loaded.ids : [];
+  const state = useLoad(
+    questionId ?? "",
+    () => listQuizAnswerers(questionId ?? ""),
+    { enabled: !!questionId, refresh: version, keepOnError: true },
+  );
+  return state.status === "ready" ? state.value : [];
 }
