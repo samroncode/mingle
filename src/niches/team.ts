@@ -7,12 +7,7 @@ export const team: NicheConfig = {
   id: "team",
   nameKey: "niches.team.name",
   descriptionKey: "niches.team.description",
-  // Placeholder values until the visual design exists.
-  theme: {
-    primary: "oklch(0.55 0.15 250)",
-    "primary-foreground": "oklch(0.985 0 0)",
-    radius: "0.5rem",
-  },
+  theme: { id: "loud", overrides: {} },
   defaultModules: ["quiz", "hottakes"],
   welcome: {
     sv: "Välkomna, och tack för att ni är här! Ikväll ska vi ha det trevligt tillsammans. Slå er ner, ta fram telefonen och häng med.",

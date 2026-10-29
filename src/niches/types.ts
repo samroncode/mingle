@@ -6,30 +6,21 @@ import { PartySchema } from "@/lib/schemas/party";
 import { QuizQuestionTextSchema } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
 
+/** The look a niche uses; each is a `data-theme` block in src/app/theme.css. */
+export const themeIds = ["garden", "loud", "day"] as const;
+
+/** Theme used before an event is read, and when a niche does not name one. */
+export const defaultThemeId = "garden";
+
 /**
- * The shadcn tokens from `:root` in src/app/index.css that a niche may override.
+ * The shadcn tokens from `:root` in src/app/theme.css that a niche may override.
  * Niches never add tokens of their own, so components only ever use one set.
  */
 export const themeTokens = [
-  "background",
-  "foreground",
-  "card",
-  "card-foreground",
-  "popover",
-  "popover-foreground",
   "primary",
   "primary-foreground",
-  "secondary",
-  "secondary-foreground",
-  "muted",
-  "muted-foreground",
-  "accent",
-  "accent-foreground",
-  "destructive",
-  "border",
-  "input",
-  "ring",
-  "radius",
+  "sidebar-primary",
+  "sidebar-primary-foreground",
 ] as const;
 
 /**
@@ -76,7 +67,12 @@ export const NicheConfigSchema = z.strictObject({
   /** i18n keys, never literal text, so the copy exists in sv and en. */
   nameKey: z.string().min(1),
   descriptionKey: z.string().min(1),
-  theme: z.partialRecord(z.enum(themeTokens), z.string().min(1)),
+  theme: z.strictObject({
+    /** Which Kalas theme in src/app/theme.css the niche uses. */
+    id: z.enum(themeIds),
+    /** Token overrides on top of the theme, e.g. a different lead color. */
+    overrides: z.partialRecord(z.enum(themeTokens), z.string().min(1)),
+  }),
   /** Activities that start switched on in the create flow. */
   defaultModules: z.array(z.enum(moduleIds)),
   /**
