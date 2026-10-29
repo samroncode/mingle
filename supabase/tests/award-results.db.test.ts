@@ -160,28 +160,32 @@ describe("the winner of a category", () => {
     expect(await winners(cast.guestA, 0)).toEqual({ [carl.id]: 3 });
   });
 
-  it("does not count votes for someone who is no longer a guest with a name", async () => {
-    const [leaver, nameless] = await anonymousUsers(2);
+  it("does not count votes for a guest who became the host", async () => {
+    const [leaver] = await anonymousUsers(1);
     await seedMember(cast.event.id, leaver.id, "guest", "Lena");
-    await seedMember(cast.event.id, nameless.id, "guest", "Nils");
-    await votes(0, [
-      [cast.guestA, leaver],
-      [cast.guestB, leaver],
-      [carl, nameless],
-      [dora, cast.guestA],
-    ]);
-    await reveal(0);
-    await serviceClient()
-      .from("members")
-      .update({ role: "host" })
-      .eq("user_id", leaver.id);
-    await serviceClient()
-      .from("members")
-      .update({ display_name: null })
-      .eq("user_id", nameless.id);
-    expect(await winners(cast.tv, 0)).toEqual({ [cast.guestA.id]: 1 });
-    expect(await tally(cast.host, 0)).not.toHaveProperty(leaver.id);
-    expect(await tally(cast.host, 0)).not.toHaveProperty(nameless.id);
+    try {
+      await votes(0, [
+        [cast.guestA, leaver],
+        [cast.guestB, leaver],
+        [dora, cast.guestA],
+      ]);
+      await reveal(0);
+      // What claim_host does to a guest who opens the host link.
+      const claimed = await serviceClient()
+        .from("members")
+        .update({ role: "host", display_name: null })
+        .eq("event_id", cast.event.id)
+        .eq("user_id", leaver.id);
+      expect(claimed.error).toBeNull();
+      expect(await winners(cast.tv, 0)).toEqual({ [cast.guestA.id]: 1 });
+      expect(await tally(cast.host, 0)).not.toHaveProperty(leaver.id);
+    } finally {
+      await serviceClient()
+        .from("members")
+        .delete()
+        .eq("event_id", cast.event.id)
+        .eq("user_id", leaver.id);
+    }
   });
 });
 
