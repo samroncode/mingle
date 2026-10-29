@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { supportedLanguages, type Language } from "@/i18n/language";
-import { toAwardCategories } from "@/lib/wizard/awards";
-import { toQuizQuestions } from "@/lib/wizard/quiz";
-import { toParty, type WizardDraft, type WizardStep } from "@/lib/wizard/state";
+import {
+  sliceSummaries,
+  toParty,
+  type WizardDraft,
+  type WizardStep,
+} from "@/lib/wizard/state";
 import { moduleIds, type ModuleId } from "@/modules/registry";
 import { niches, type NicheId } from "@/niches";
 import { nicheIds } from "@/niches/ids";
@@ -144,7 +147,7 @@ export function SummaryStep({
   onEdit: (step: WizardStep) => void;
 }) {
   const { t } = useTranslation();
-  const rows = [
+  const rows: SummaryRow[] = [
     {
       step: "niche",
       label: t("wizard.steps.niche"),
@@ -165,35 +168,13 @@ export function SummaryStep({
               .map((id) => t(`modules.${id}.name`))
               .join(", "),
     },
-    ...(draft.enabledModules.includes("quiz")
-      ? [
-          {
-            step: "quiz" as const,
-            label: t("wizard.steps.quiz"),
-            value: t("wizard.summary.quizQuestions", {
-              count: toQuizQuestions(draft.niche, draft.language, draft.quiz)
-                .length,
-            }),
-          },
-        ]
-      : []),
-    ...(draft.enabledModules.includes("awards")
-      ? [
-          {
-            step: "awards" as const,
-            label: t("wizard.steps.awards"),
-            value: t("wizard.summary.awardCategories", {
-              count: toAwardCategories(
-                draft.niche,
-                draft.language,
-                draft.awards,
-              ).length,
-            }),
-          },
-        ]
-      : []),
+    ...sliceSummaries(draft).map(({ step, key, count }) => ({
+      step,
+      label: t(`wizard.steps.${step}`),
+      value: t(key as ParseKeys, { count }),
+    })),
     ...partyRows(draft, t),
-  ] as const;
+  ];
 
   return (
     <dl className="space-y-2">

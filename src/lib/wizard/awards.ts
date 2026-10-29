@@ -100,5 +100,6 @@ export const awardsSlice = wizardSlice({
   reducer: awardsReducer,
   resetBuiltin: resetBuiltinAwards,
   invalidKeys: invalidOwnAwardKeys,
+  summaryKey: "wizard.summary.awardCategories",
   toRequest: toAwardCategories,
 });

@@ -108,5 +108,6 @@ export const quizSlice = wizardSlice({
   reducer: quizReducer,
   resetBuiltin: resetBuiltinQuiz,
   invalidKeys: invalidOwnKeys,
+  summaryKey: "wizard.summary.quizQuestions",
   toRequest: toQuizQuestions,
 });
