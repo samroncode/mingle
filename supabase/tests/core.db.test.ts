@@ -414,6 +414,25 @@ describe("guardrail", () => {
         "where n.nspname = 'private' and c.relkind in ('r', 'p') order by 1",
     );
     expect(tables).toContain("rate_limits|t|0");
+    expect(tables).toContain("retired_codes|t|0");
     for (const table of tables) expect(table).toMatch(/\|t\|0$/);
+  });
+
+  // The nightly cleanup deletes an event and relies on the cascade for
+  // everything that belongs to it, in any schema (spec #83).
+  it("every foreign key to public.events deletes with the event", () => {
+    const cascading = sql(
+      "select count(*) from pg_constraint " +
+        "where contype = 'f' and confrelid = 'public.events'::regclass " +
+        "and confdeltype = 'c'",
+    );
+    expect(Number(cascading[0])).toBeGreaterThan(0);
+
+    const notCascading = sql(
+      "select conrelid::regclass || '.' || conname from pg_constraint " +
+        "where contype = 'f' and confrelid = 'public.events'::regclass " +
+        "and confdeltype <> 'c' order by 1",
+    );
+    expect(notCascading).toEqual([]);
   });
 });
