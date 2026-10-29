@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { listAwardCategories, type AwardCategoryView } from "@/api/awards";
+import { useLoad } from "@/hooks/useLoad";
 
 export type AwardCategoriesState =
   | { status: "loading" }
@@ -8,26 +8,8 @@ export type AwardCategoriesState =
 
 /** Loads the event's award categories once, when the component mounts. */
 export function useAwardCategories(eventId: string): AwardCategoriesState {
-  const [loaded, setLoaded] = useState<{
-    eventId: string;
-    state: AwardCategoriesState;
-  }>();
-
-  useEffect(() => {
-    let stale = false;
-    void listAwardCategories(eventId).then((result) => {
-      if (stale) return;
-      setLoaded({
-        eventId,
-        state: result.ok
-          ? { status: "ready", categories: result.value }
-          : { status: "error" },
-      });
-    });
-    return () => {
-      stale = true;
-    };
-  }, [eventId]);
-
-  return loaded?.eventId === eventId ? loaded.state : { status: "loading" };
+  const state = useLoad(eventId, () => listAwardCategories(eventId));
+  return state.status === "ready"
+    ? { status: "ready", categories: state.value }
+    : state;
 }
