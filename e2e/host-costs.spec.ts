@@ -127,3 +127,75 @@ test("the host switches shared costs off after a confirm", async ({ page }) => {
     .poll(() => bodies.at(-1))
     .toEqual({ action: "update_costs", code, key, costs: null });
 });
+
+const withCosts = (billSentAt: string | null) => ({
+  payeeName: "Sam",
+  swishNumber: "46701234567",
+  billSentAt,
+  purchases: [
+    { id: "p1", name: "Drinks", price: 450, sharers: [anna, bertil] },
+  ],
+});
+
+test("the host sends the bill after a confirm", async ({ page }) => {
+  const bodies = await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    guests,
+    costs: withCosts(null),
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const section = page.getByTestId("host-costs");
+  await expect(section).toContainText("Bill not sent");
+  await section.getByRole("button", { name: /Shared costs/ }).click();
+  await section.getByRole("button", { name: "Send the bill" }).click();
+  // Nothing is sent until the confirm.
+  expect(
+    bodies.some(
+      (body) => (body as { action?: string }).action === "set_bill_sent",
+    ),
+  ).toBe(false);
+  await expect(section).toContainText("Send the bill?");
+  await section
+    .getByRole("alertdialog")
+    .getByRole("button", { name: "Send the bill" })
+    .click();
+
+  await expect
+    .poll(() => bodies.at(-1))
+    .toEqual({
+      action: "set_bill_sent",
+      code,
+      key,
+      sent: true,
+    });
+});
+
+test("the host hides a sent bill", async ({ page }) => {
+  const bodies = await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    guests,
+    costs: withCosts("2026-10-29T20:00:00Z"),
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const section = page.getByTestId("host-costs");
+  await expect(section).toContainText("Bill sent");
+  await section.getByRole("button", { name: /Shared costs/ }).click();
+  // Each guest's share is listed.
+  await expect(section).toContainText("What each guest pays");
+  await section.getByRole("button", { name: "Hide the bill" }).click();
+
+  await expect
+    .poll(() => bodies.at(-1))
+    .toEqual({
+      action: "set_bill_sent",
+      code,
+      key,
+      sent: false,
+    });
+});

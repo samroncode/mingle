@@ -16,6 +16,7 @@ import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
 import { removeGuest } from "./remove-guest.ts";
 import { renameGuest } from "./rename-guest.ts";
+import { setBillSent } from "./set-bill-sent.ts";
 import { setFlow } from "./set-flow.ts";
 import { updateAwards } from "./update-awards.ts";
 import { updateCosts } from "./update-costs.ts";
@@ -98,5 +99,7 @@ async function runAction(
       return removeGuest(db, caller, request);
     case "update_costs":
       return updateCosts(db, caller, request);
+    case "set_bill_sent":
+      return setBillSent(db, caller, request);
   }
 }

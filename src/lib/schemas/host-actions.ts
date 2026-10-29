@@ -260,6 +260,24 @@ export const UpdateCostsResponseSchema = z.strictObject({});
 
 export type UpdateCostsResponse = z.infer<typeof UpdateCostsResponseSchema>;
 
+/**
+ * Sends the bill to the guests, or hides it again. Until it is sent, guests
+ * see nothing about money. Fails with `invalid_transition` while shared costs
+ * are switched off.
+ */
+export const SetBillSentRequestSchema = z.strictObject({
+  action: z.literal("set_bill_sent"),
+  ...hostLinkFields,
+  sent: z.boolean(),
+});
+
+export type SetBillSentRequest = z.infer<typeof SetBillSentRequestSchema>;
+
+/** Empty: the host reads the new state, guests' phones follow `costs_version`. */
+export const SetBillSentResponseSchema = z.strictObject({});
+
+export type SetBillSentResponse = z.infer<typeof SetBillSentResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -272,6 +290,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   RenameGuestRequestSchema,
   RemoveGuestRequestSchema,
   UpdateCostsRequestSchema,
+  SetBillSentRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -295,7 +314,8 @@ export const hostActionErrorCodes = [
    * ended, any change to the party content of an ended event, and a quiz
    * edit while a question is open or revealed, once the quiz is finished or
    * once the event has ended; and the same for an awards or hot takes edit.
-   * Also renaming or removing a guest once the event has ended.
+   * Also renaming or removing a guest once the event has ended, and
+   * set_bill_sent while shared costs are switched off.
    */
   "invalid_transition",
   /** start_module for an activity the host turned off, quiz questions, award categories or hot takes for it. */

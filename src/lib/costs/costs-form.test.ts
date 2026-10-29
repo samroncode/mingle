@@ -15,6 +15,7 @@ const bertil = "0b1e6c1e-4d57-4c3a-8c55-5a2a1f0c9e22";
 const saved: CostsView = {
   payeeName: "Sam",
   swishNumber: "46701234567",
+  billSentAt: null,
   purchases: [
     { id: "p1", name: "Drinks", price: 450, sharers: [anna, "removed-guest"] },
   ],

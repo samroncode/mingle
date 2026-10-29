@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Sticker } from "@/components/ui/sticker";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
+import { idsSignal } from "@/lib/guest/bill";
 import { pickSnapshotState } from "@/lib/guest/guest-page";
 import { readParty } from "@/lib/party";
 import { pickScreen } from "@/modules/screen";
+import { GuestBill } from "./GuestBill";
 import { GuestMessage } from "./GuestMessage";
 import { NameForm } from "./NameForm";
 import { PartyInfo } from "./PartyInfo";
@@ -16,12 +18,19 @@ import { PartyInfo } from "./PartyInfo";
 interface GuestInProps {
   eventId: string;
   userId: string;
+  /** Where the receipt icon goes: next to the language switch. */
+  billSlot?: HTMLElement | null;
   /** The event can no longer be read: the guest may have been removed. */
   onAccessLost: () => Promise<void>;
 }
 
 /** The page of a guest who has joined: follows the event live. */
-export function GuestIn({ eventId, userId, onAccessLost }: GuestInProps) {
+export function GuestIn({
+  eventId,
+  userId,
+  billSlot,
+  onAccessLost,
+}: GuestInProps) {
   const { t } = useTranslation();
   const state = useEventState(eventId);
   const [renaming, setRenaming] = useState(false);
@@ -43,10 +52,15 @@ export function GuestIn({ eventId, userId, onAccessLost }: GuestInProps) {
     return <p className="text-lg text-ink-muted">{t("guest.loading")}</p>;
   }
 
+  // The bill is read again when the host changes it, and when a guest leaves.
+  const billSignal =
+    state.event.costs_version * 1_000_003 +
+    idsSignal(state.members.map((member) => member.user_id));
   const choice = pickScreen(state.event.current_module);
   const name = state.members.find((m) => m.user_id === userId)?.display_name;
   const content = (
     <div className="space-y-5">
+      <GuestBill eventId={eventId} signal={billSignal} slot={billSlot} />
       <header className="space-y-3">
         <Sticker color="sage" lean="left">
           {t("guest.joinedSticker")}

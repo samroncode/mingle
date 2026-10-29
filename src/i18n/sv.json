@@ -503,6 +503,16 @@
     "removed": {
       "title": "Du har tagits bort från eventet",
       "body": "Värden tog bort dig, så den här telefonen kan inte gå med igen."
+    },
+    "bill": {
+      "open": "Visa min nota",
+      "openUpdated": "Visa min nota, uppdaterad",
+      "close": "Stäng",
+      "title": "Betala {{name}}",
+      "swish": "Swish {{number}}",
+      "nothing": "Du delar inga inköp.",
+      "total": "Totalt",
+      "updated": "Uppdaterad"
     }
   },
   "hostPanel": {
@@ -613,7 +623,17 @@
       "nobodyShares": "Ingen delar det här längre",
       "invalid": "Kontrollera fältet.",
       "checkFields": "Några fält behöver rättas innan du kan spara.",
-      "loadFailed": "Det gick inte att läsa in de gemensamma kostnaderna."
+      "loadFailed": "Det gick inte att läsa in de gemensamma kostnaderna.",
+      "billSentSummary": "Notan är skickad",
+      "billNotSentSummary": "Notan är inte skickad",
+      "billNotSentHint": "Gästerna ser ingenting om pengar förrän du skickar notan.",
+      "sendBill": "Skicka notan",
+      "sendBillConfirm": "Skicka notan? Varje gäst får en liten kvittoikon på sin telefon med sin egen del och ditt Swish-nummer.",
+      "sendBillAction": "Skicka notan",
+      "billSent": "Notan är skickad",
+      "billSentHint": "Gästerna ser sin egen del. Du kan fortfarande ändra inköp, då uppdateras deras summor.",
+      "hideBill": "Dölj notan",
+      "perGuest": "Vad varje gäst betalar"
     }
   }
 }

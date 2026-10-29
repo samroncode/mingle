@@ -1,3 +1,4 @@
+import { MyBillSchema, type MyBill } from "@/lib/schemas/bill";
 import { getSupabase } from "./client";
 import { fail, ok, type Result } from "./errors";
 import type { AppClient } from "./session";
@@ -17,6 +18,8 @@ export interface CostsView {
   payeeName: string;
   /** Normalised, e.g. 46701234567. */
   swishNumber: string;
+  /** Null while the bill is hidden; guests see nothing until it is sent. */
+  billSentAt: string | null;
   purchases: PurchaseView[];
 }
 
@@ -32,7 +35,7 @@ export async function getCosts(
   const [settings, purchases, sharers] = await Promise.all([
     client
       .from("cost_settings")
-      .select("payee_name, swish_number")
+      .select("payee_name, swish_number, bill_sent_at")
       .eq("event_id", eventId)
       .maybeSingle(),
     client
@@ -52,6 +55,7 @@ export async function getCosts(
   return ok({
     payeeName: settings.data.payee_name,
     swishNumber: settings.data.swish_number,
+    billSentAt: settings.data.bill_sent_at,
     purchases: purchases.data.map((row) => ({
       id: row.id,
       name: row.name,
@@ -61,4 +65,23 @@ export async function getCosts(
         .map((sharer) => sharer.user_id),
     })),
   });
+}
+
+/**
+ * The calling guest's own bill, or null: until the host sends the bill, after
+ * they hide it, and for anyone who isn't a current guest. The database never
+ * answers more than the caller's own lines. A failed read is not an error the
+ * guest needs to see: there is simply no bill to show.
+ */
+export async function getMyBill(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<MyBill | null, "unknown">> {
+  const { data, error } = await client.rpc("my_bill", {
+    target_event_id: eventId,
+  });
+  if (error) return fail("unknown");
+  if (data === null) return ok(null);
+  const parsed = MyBillSchema.safeParse(data);
+  return parsed.success ? ok(parsed.data) : fail("unknown");
 }
