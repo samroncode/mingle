@@ -6,6 +6,8 @@ const code = "ABC234";
 
 /** What the fake database holds, which the test changes as the awards move. */
 interface AwardsWorld {
+  /** The phase the awards are in; the reveal ends the voting. */
+  phase?: "open" | "revealed";
   /** The guest's stored vote (a user id). */
   votedFor: string | null;
   /** The requests that wrote a vote. */
@@ -39,7 +41,7 @@ async function fakeAwards(page: Page, world: AwardsWorld) {
           status: "live",
           current_module: "awards",
           current_step: 0,
-          phase: "open",
+          phase: world.phase ?? "open",
         }),
         members: [
           memberRow({ display_name: "Anna" }),
@@ -60,9 +62,15 @@ async function fakeAwards(page: Page, world: AwardsWorld) {
         position: 0,
         text: "Most likely to dance on a table",
         vote_count: 0,
-        revealed_at: null,
+        revealed_at: world.phase === "revealed" ? "2026-10-29T20:00:00Z" : null,
       },
     ]),
+  );
+  await page.route(`${supabase}/rest/v1/rpc/award_winners`, (route) =>
+    json(route, 200, [{ user_id: "g2", votes: 4 }]),
+  );
+  await page.route(`${supabase}/rest/v1/rpc/my_award_votes`, (route) =>
+    json(route, 200, [{ votes: 2 }]),
   );
   await page.route(`${supabase}/rest/v1/award_votes*`, (route) => {
     const request = route.request();
@@ -126,4 +134,24 @@ test("a guest votes for another guest and changes the vote", async ({
     { method: "POST", body: { voted_for_id: "g2", category_id: "c1" } },
     { method: "PATCH", body: { voted_for_id: "g3" } },
   ]);
+});
+
+test("after the reveal a guest sees the winner and their own votes", async ({
+  page,
+}) => {
+  const world: AwardsWorld = { phase: "revealed", votedFor: "g2", writes: [] };
+  await fakeSupabase(page, []);
+  await fakeEvent(page, { code, joinedAs: "Anna" });
+  await fakeAwards(page, world);
+
+  await page.goto(`/p/${code}`);
+  const awards = page.getByTestId("awards-guest");
+  await expect(awards.getByTestId("awards-winner")).toHaveText(
+    "Bertil, 4 votes",
+  );
+  await expect(awards.getByTestId("awards-my-votes")).toHaveText(
+    "You got 2 votes",
+  );
+  // Voting is over: no buttons any more.
+  await expect(awards.getByRole("button")).toHaveCount(0);
 });

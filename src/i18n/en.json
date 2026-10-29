@@ -159,7 +159,12 @@
       "description": "Vote on who is most likely to...?",
       "host": {
         "empty": "There are no categories in these awards yet.",
-        "loadFailed": "Couldn't load the categories. Reload to try again."
+        "loadFailed": "Couldn't load the categories. Reload to try again.",
+        "tally": {
+          "title": "Votes per guest",
+          "votes_one": "{{count}} vote",
+          "votes_other": "{{count}} votes"
+        }
       },
       "counter": "Award {{number}} of {{total}}",
       "progress": "award {{number}} of {{total}}",
@@ -184,7 +189,18 @@
         "errors": {
           "question_closed": "Too late, voting is closed.",
           "unknown": "Your vote didn't go through. Try again."
-        }
+        },
+        "youGot_one": "You got {{count}} vote",
+        "youGot_other": "You got {{count}} votes",
+        "youWon_one": "You won {{count}} award",
+        "youWon_other": "You won {{count}} awards"
+      },
+      "winner": {
+        "line_one": "{{names}}, {{count}} vote",
+        "line_other": "{{names}}, {{count}} votes",
+        "tie_one": "{{names}}, {{count}} vote each",
+        "tie_other": "{{names}}, {{count}} votes each",
+        "none": "No votes this time"
       }
     },
     "hottakes": {

@@ -159,7 +159,12 @@
       "description": "Rösta på vem som är mest benägen att...?",
       "host": {
         "empty": "Det finns inga kategorier i utmärkelserna än.",
-        "loadFailed": "Kunde inte läsa in kategorierna. Ladda om för att försöka igen."
+        "loadFailed": "Kunde inte läsa in kategorierna. Ladda om för att försöka igen.",
+        "tally": {
+          "title": "Röster per gäst",
+          "votes_one": "{{count}} röst",
+          "votes_other": "{{count}} röster"
+        }
       },
       "counter": "Utmärkelse {{number}} av {{total}}",
       "progress": "utmärkelse {{number}} av {{total}}",
@@ -184,7 +189,18 @@
         "errors": {
           "question_closed": "För sent, omröstningen är stängd.",
           "unknown": "Din röst gick inte igenom. Försök igen."
-        }
+        },
+        "youGot_one": "Du fick {{count}} röst",
+        "youGot_other": "Du fick {{count}} röster",
+        "youWon_one": "Du vann {{count}} utmärkelse",
+        "youWon_other": "Du vann {{count}} utmärkelser"
+      },
+      "winner": {
+        "line_one": "{{names}}, {{count}} röst",
+        "line_other": "{{names}}, {{count}} röster",
+        "tie_one": "{{names}}, {{count}} röst var",
+        "tie_other": "{{names}}, {{count}} röster var",
+        "none": "Inga röster den här gången"
       }
     },
     "hottakes": {

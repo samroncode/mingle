@@ -6,6 +6,7 @@ import { RunControls } from "../../RunControls";
 import { awardsNextMove } from "../screen";
 import { useAwardCategories } from "../useAwardCategories";
 import { useAwardsRun } from "../useAwardsRun";
+import { Tally } from "./Tally";
 import { VoteStatus } from "./VoteStatus";
 
 /** The awards' section in the control panel: run them, and the categories. */
@@ -68,6 +69,14 @@ export function AwardsHost({
                 <VoteStatus
                   category={current}
                   members={members}
+                  version={run.version}
+                />
+              )}
+              {event.phase === "revealed" && (
+                <Tally
+                  category={current}
+                  members={members}
+                  language={event.language}
                   version={run.version}
                 />
               )}
