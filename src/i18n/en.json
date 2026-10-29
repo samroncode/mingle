@@ -163,6 +163,7 @@
       },
       "counter": "Award {{number}} of {{total}}",
       "progress": "award {{number}} of {{total}}",
+      "voted": "{{count}} of {{total}} voted",
       "winnersStep": "That was the last award! Here are the winners.",
       "winnersTitle": "The winners",
       "run": {
@@ -178,7 +179,12 @@
         "ready": "Get ready!"
       },
       "guest": {
-        "coming": "Next award coming"
+        "coming": "Next award coming",
+        "waitingForGuests": "Waiting for more guests",
+        "errors": {
+          "question_closed": "Too late, voting is closed.",
+          "unknown": "Your vote didn't go through. Try again."
+        }
       }
     },
     "hottakes": {

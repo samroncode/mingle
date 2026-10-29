@@ -163,6 +163,7 @@
       },
       "counter": "Utmärkelse {{number}} av {{total}}",
       "progress": "utmärkelse {{number}} av {{total}}",
+      "voted": "{{count}} av {{total}} har röstat",
       "winnersStep": "Det var sista utmärkelsen! Här är vinnarna.",
       "winnersTitle": "Vinnarna",
       "run": {
@@ -178,7 +179,12 @@
         "ready": "Gör er redo!"
       },
       "guest": {
-        "coming": "Nästa utmärkelse kommer"
+        "coming": "Nästa utmärkelse kommer",
+        "waitingForGuests": "Väntar på fler gäster",
+        "errors": {
+          "question_closed": "För sent, omröstningen är stängd.",
+          "unknown": "Din röst gick inte igenom. Försök igen."
+        }
       }
     },
     "hottakes": {

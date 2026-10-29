@@ -2,9 +2,10 @@ import { useTranslation } from "react-i18next";
 import type { ModuleGuestViewProps } from "../../types";
 import { awardsScreen } from "../screen";
 import { useAwardsRun } from "../useAwardsRun";
+import { GuestCategory } from "./GuestCategory";
 
 /** The guest page while the awards run. */
-export function AwardsGuest({ event }: ModuleGuestViewProps) {
+export function AwardsGuest({ event, members, userId }: ModuleGuestViewProps) {
   const { t } = useTranslation();
   const run = useAwardsRun(event);
   const screen = awardsScreen(event, run.progress, run.categories);
@@ -24,15 +25,17 @@ export function AwardsGuest({ event }: ModuleGuestViewProps) {
         </p>
       )}
       {screen.kind === "category" && (
-        <>
-          <p className="text-sm text-muted-foreground">
-            {t("modules.awards.counter", {
-              number: screen.number,
-              total: screen.total,
-            })}
-          </p>
-          <h2 className="text-2xl font-semibold">{screen.category.text}</h2>
-        </>
+        <GuestCategory
+          key={screen.category.id}
+          eventId={event.id}
+          userId={userId}
+          language={event.language}
+          members={members}
+          category={screen.category}
+          number={screen.number}
+          total={screen.total}
+          revealed={screen.revealed}
+        />
       )}
       {screen.kind === "winners" && (
         <h2 className="text-2xl font-semibold">

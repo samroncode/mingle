@@ -14,12 +14,15 @@ export type AwardsRunState = {
   categories: AwardCategoryView[];
   /** The latest read failed; the last data read is kept. */
   failed: boolean;
+  /** Counts the reads, so what hangs on them (the voters) can read again. */
+  version: number;
 };
 
 const empty: AwardsRunState = {
   progress: null,
   categories: [],
   failed: false,
+  version: 0,
 };
 
 /**
@@ -47,7 +50,10 @@ export function useAwardsRun(event: EventRow): AwardsRunState {
       setLoaded((previous) => {
         const last = previous.eventId === event.id ? previous.state : empty;
         if (!progress.ok || !categories.ok) {
-          return { eventId: event.id, state: { ...last, failed: true } };
+          return {
+            eventId: event.id,
+            state: { ...last, failed: true, version: last.version + 1 },
+          };
         }
         return {
           eventId: event.id,
@@ -55,6 +61,7 @@ export function useAwardsRun(event: EventRow): AwardsRunState {
             progress: progress.value,
             categories: categories.value,
             failed: false,
+            version: last.version + 1,
           },
         };
       });
