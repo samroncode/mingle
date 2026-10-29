@@ -210,6 +210,8 @@ interface FakeEventOptions {
   welcome?: string;
   /** The whole party content; wins over `welcome`. */
   party?: EventRow["party"];
+  /** The event's niche; defaults to the row's default (afterwork). */
+  niche?: string;
 }
 
 /**
@@ -226,6 +228,7 @@ export async function fakeEvent(page: Page, options: FakeEventOptions) {
   const event = () =>
     eventRow({
       code: options.code,
+      ...(options.niche ? { niche: options.niche } : {}),
       party:
         options.party ?? (options.welcome ? { welcome: options.welcome } : {}),
     });
