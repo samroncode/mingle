@@ -544,7 +544,17 @@
       "module_disabled": "This activity is switched off for the evening.",
       "module_empty": "There is nothing to play yet. Add some questions first.",
       "module_finished": "This has already been played to the end, so it can't start again.",
-      "internal_error": "Something went wrong. Try again."
+      "internal_error": "Something went wrong. Try again.",
+      "not_found": "That guest isn't part of this evening any more.",
+      "name_taken": "That name is taken. Pick another one.",
+      "invalid_name": "Enter a name of 1 to 30 characters."
+    },
+    "guestList": {
+      "empty": "No guests have joined yet.",
+      "rename": "Rename",
+      "save": "Save",
+      "cancel": "Cancel",
+      "nameLabel": "New name for {{name}}"
     }
   }
 }

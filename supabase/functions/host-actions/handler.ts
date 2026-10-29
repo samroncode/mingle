@@ -14,6 +14,7 @@ import { corsHeaders } from "./cors.ts";
 import { createEvent } from "./create-event.ts";
 import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
+import { renameGuest } from "./rename-guest.ts";
 import { setFlow } from "./set-flow.ts";
 import { updateAwards } from "./update-awards.ts";
 import { updateHotTakes } from "./update-hottakes.ts";
@@ -89,5 +90,7 @@ async function runAction(
       return updateAwards(db, caller, request);
     case "update_hottakes":
       return updateHotTakes(db, caller, request);
+    case "rename_guest":
+      return renameGuest(db, caller, request);
   }
 }

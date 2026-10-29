@@ -544,7 +544,17 @@
       "module_disabled": "Den här aktiviteten är avstängd för kvällen.",
       "module_empty": "Det finns inget att spela än. Lägg till frågor först.",
       "module_finished": "Den här är redan spelad till slut och kan inte starta igen.",
-      "internal_error": "Något gick fel. Försök igen."
+      "internal_error": "Något gick fel. Försök igen.",
+      "not_found": "Gästen är inte med på kvällen längre.",
+      "name_taken": "Namnet är upptaget. Välj ett annat.",
+      "invalid_name": "Skriv ett namn på 1 till 30 tecken."
+    },
+    "guestList": {
+      "empty": "Inga gäster har gått med än.",
+      "rename": "Byt namn",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "nameLabel": "Nytt namn för {{name}}"
     }
   }
 }
