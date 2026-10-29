@@ -14,7 +14,7 @@ Entry format:
 
 ## 2026-10-29: Short README, archived history, no AI README job
 
-**Decision:** The repo root stays as it is, because every file there is one a tool looks for at the root (this confirms 2026-10-21 and 2026-10-22). The README shrinks to about 40 lines: a screenshot of the TV party screen, a short pitch, how to run it and links to `CLAUDE.md` and `docs/`. It no longer holds a status line, folder tree, architecture sketch or scripts table. Finished history (`implementation.md`, `plans/`) moves to `docs/archive/`, and `docs/README.md` indexes the docs. There is no scheduled AI job for the README; an optional link-check script (`npm run check:doc-links`) is run by hand and is not a required check. Tracked in spec #146.
+**Decision:** The repo root stays as it is, because every file there is one a tool looks for at the root (this confirms 2026-10-21 and 2026-10-22). The README shrinks to about 40 lines: a screenshot of the TV party screen, a short pitch, how to run it and links to `CLAUDE.md` and `docs/`. It no longer holds a status line, folder tree, architecture sketch or scripts table. Finished history (`implementation.md`, `plans/`) moves to `docs/archive/`, and `docs/README.md` indexes the docs. There is no scheduled AI job for the README; an optional link-check script (`npm run check:links`) is run by hand and is not a required check. Tracked in spec #146.
 
 **Why:** What the README duplicated already lives in `CLAUDE.md` and `package.json`, and it was going stale. A scheduled AI job costs money and opens PRs to review even when nothing changed; a free link check catches the real failure (broken links) without that noise. Making the check part of CI belongs with #96.
 
@@ -404,7 +404,7 @@ Entry format:
 
 ## 2026-10-20: The backend core creates only the shared tables
 
-**Decision:** The backend core migration creates `events` and `members` (plus the `private` tables). Each module plan adds its own typed tables, following the draft/approved and answer-visibility pattern in [`docs/plans/backend-core.md`](plans/backend-core.md).
+**Decision:** The backend core migration creates `events` and `members` (plus the `private` tables). Each module plan adds its own typed tables, following the draft/approved and answer-visibility pattern in [`docs/archive/plans/backend-core.md`](archive/plans/backend-core.md).
 
 **Why:** Typed tables per module keep database constraints meaningful. Generic `module_items`/`responses` tables with JSON payloads would save a few migrations but move all checks into application code.
 

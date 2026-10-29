@@ -9,7 +9,7 @@ Set up an interactive party evening in a few minutes. A host picks a niche (afte
 - **Party screen**: the TV rotates between welcome message, join QR code, music and wifi, menu, schedule and who has joined, even if no activity is running.
 - **Quiz, Awards and Hot takes**: optional activities with built-in content per niche in Swedish and English. The host can add their own or switch any off.
 - **Guests need no account**: they join with a code or QR and pick a display name.
-- **Optional AI suggestions**: nothing is shown to guests or on the TV until the host approves it.
+- **Optional AI suggestions (planned)**: not built yet. Once they are, nothing will be shown to guests or on the TV until the host approves it.
 
 ## Run it
 
@@ -30,4 +30,4 @@ Then open http://localhost:5173. The app also starts without filling in `.env`.
 
 ## Privacy
 
-Guests are identified by a display name only. No emails, phone numbers or other personal data are stored, and event data is deleted automatically after a fixed retention period.
+Guests are identified by a display name only. No emails, phone numbers or other personal data are stored, and event data is meant to be deleted after a fixed retention period (30 days). Automatic deletion is planned and not built yet.
