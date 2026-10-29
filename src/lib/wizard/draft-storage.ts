@@ -2,10 +2,12 @@ import { z } from "zod";
 import { supportedLanguages } from "@/i18n/language";
 import { partyLimits } from "@/lib/schemas/party";
 import { awardsLimits } from "@/lib/schemas/awards";
+import { hottakesLimits } from "@/lib/schemas/hottakes";
 import { quizLimits } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
 import { nicheIds } from "@/niches/ids";
 import { emptyAwards } from "./awards";
+import { emptyHotTakes } from "./hottakes";
 import { emptyQuiz } from "./quiz";
 import { stepOrder, type WizardDraft } from "./state";
 
@@ -39,6 +41,16 @@ const AwardsItemSchema = z.discriminatedUnion("kind", [
   }),
 ]);
 
+// A hot take being typed may be unfinished, so its text can be empty.
+const HotTakesItemSchema = z.discriminatedUnion("kind", [
+  z.strictObject({ kind: z.literal("builtin"), id: z.string().max(100) }),
+  z.strictObject({
+    kind: z.literal("own"),
+    key: z.string().max(100),
+    text: typedText,
+  }),
+]);
+
 const DraftSchema = z.strictObject({
   step: z.enum(stepOrder),
   niche: z.enum(nicheIds),
@@ -58,6 +70,13 @@ const DraftSchema = z.strictObject({
       items: z.array(AwardsItemSchema).max(awardsLimits.categories),
     })
     .default(emptyAwards),
+  // Drafts saved before the hot takes step existed have none.
+  hottakes: z
+    .strictObject({
+      seeded: z.boolean(),
+      items: z.array(HotTakesItemSchema).max(hottakesLimits.takes),
+    })
+    .default(emptyHotTakes),
   party: z.strictObject({
     welcome: typedText,
     welcomeEdited: z.boolean(),

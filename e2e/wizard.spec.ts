@@ -32,6 +32,10 @@ test("creates an event through the wizard", async ({ page }) => {
   await expect(page.getByText("10 of 30 questions picked")).toBeVisible();
   await page.getByRole("button", { name: "Next" }).click();
 
+  // The hot takes step starts with eight of the niche's hot takes.
+  await expect(page.getByText("8 of 20 hot takes picked")).toBeVisible();
+  await page.getByRole("button", { name: "Next" }).click();
+
   // Welcome text is prefilled in the event language (Swedish); edit it.
   const welcome = page.getByLabel("Shown on the TV when guests arrive");
   await expect(welcome).not.toHaveValue("");
@@ -102,6 +106,7 @@ test("creates an event through the wizard", async ({ page }) => {
       enabledModules: ["quiz", "hottakes"],
       party,
       quiz: expect.any(Array),
+      hottakes: expect.any(Array),
     },
     {
       action: "create_event",
@@ -110,6 +115,7 @@ test("creates an event through the wizard", async ({ page }) => {
       enabledModules: ["quiz", "hottakes"],
       party,
       quiz: expect.any(Array),
+      hottakes: expect.any(Array),
     },
   ]);
 
@@ -156,7 +162,7 @@ test("remembers the created event under Your events", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByText("Your events")).toBeHidden();
   await page.getByRole("link", { name: "Create an event" }).click();
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 10; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
       .first()
@@ -183,7 +189,7 @@ test("stops adding menu lines at the party screen's limit", async ({
   page,
 }) => {
   await page.goto("/new");
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 7; i++) {
     await page.getByRole("button", { name: "Next", exact: true }).click();
   }
   const add = page.getByRole("button", { name: "Add a line" });

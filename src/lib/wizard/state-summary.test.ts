@@ -7,8 +7,8 @@ describe("sliceSummaries", () => {
     const draft = initialDraft("en");
     const lines = sliceSummaries(draft);
     expect(lines.map((line) => line.step)).toEqual(
-      ["quiz", "awards"].filter((id) =>
-        draft.enabledModules.includes(id as "quiz" | "awards"),
+      ["quiz", "awards", "hottakes"].filter((id) =>
+        draft.enabledModules.includes(id as "quiz" | "awards" | "hottakes"),
       ),
     );
     for (const line of lines) expect(line.key).toMatch(/^wizard\.summary\./);

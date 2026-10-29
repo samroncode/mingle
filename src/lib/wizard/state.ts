@@ -5,6 +5,7 @@ import type { ModuleId } from "@/modules/registry";
 import { getNiche, type NicheId } from "@/niches";
 import { nicheIds } from "@/niches/ids";
 import { awardsSlice } from "./awards";
+import { hotTakesSlice } from "./hottakes";
 import { quizSlice } from "./quiz";
 import type { WizardSlice } from "./slice";
 
@@ -15,6 +16,7 @@ export const stepOrder = [
   "activities",
   "quiz",
   "awards",
+  "hottakes",
   "welcome",
   "menu",
   "schedule",
@@ -38,6 +40,7 @@ export function isSkippable(step: WizardStep): boolean {
 const slices = {
   quiz: quizSlice,
   awards: awardsSlice,
+  hottakes: hotTakesSlice,
 };
 type SliceId = keyof typeof slices;
 const sliceIds = Object.keys(slices) as SliceId[];

@@ -15,11 +15,12 @@ function createEvent(caller: string, code: string) {
     code,
     niche: "aw",
     language: "sv",
-    enabled_modules: ["quiz", "awards"],
+    enabled_modules: ["quiz", "awards", "hottakes"],
     party: {},
     admin_key_hash: "0".repeat(64),
     quiz: [{ text: "Fråga?", options: ["a", "b", "c", "d"], correct: 0 }],
     awards: [{ text: "Mest sannolik att dansa" }],
+    hottakes: [{ text: "Ananas hör hemma på pizza" }],
   });
 }
 
@@ -34,7 +35,9 @@ function rowsFor(code: string, caller: string) {
       "(select count(*) from public.quiz_questions q " +
       `join public.events e on e.id = q.event_id where e.code = '${code}'), ` +
       "(select count(*) from public.award_categories a " +
-      `join public.events e on e.id = a.event_id where e.code = '${code}')`,
+      `join public.events e on e.id = a.event_id where e.code = '${code}'), ` +
+      "(select count(*) from public.hot_takes h " +
+      `join public.events e on e.id = h.event_id where e.code = '${code}')`,
   )[0];
 }
 
@@ -51,7 +54,7 @@ describe("create_event and retired codes", () => {
     const { data, error } = await createEvent(host.id, code);
     expect(error).toBeNull();
     expect(data).toBeNull();
-    expect(rowsFor(code, host.id)).toBe("0|0|0|0|0");
+    expect(rowsFor(code, host.id)).toBe("0|0|0|0|0|0");
   });
 
   it("still creates an event with a free code", async () => {
@@ -61,7 +64,7 @@ describe("create_event and retired codes", () => {
     const { data, error } = await createEvent(host.id, code);
     expect(error).toBeNull();
     expect(data).toEqual(expect.any(String));
-    expect(rowsFor(code, host.id)).toBe("1|1|1|1|1");
+    expect(rowsFor(code, host.id)).toBe("1|1|1|1|1|1");
   });
 
   it("is still security definer, with an empty search_path", () => {
@@ -69,7 +72,7 @@ describe("create_event and retired codes", () => {
       sql(
         "select prosecdef, proconfig from pg_proc " +
           "where oid = 'public.create_event(uuid, text, text, text, text[], " +
-          "jsonb, text, jsonb, jsonb)'::regprocedure",
+          "jsonb, text, jsonb, jsonb, jsonb)'::regprocedure",
       ),
     ).toEqual(['t|{"search_path=\\"\\""}']);
   });

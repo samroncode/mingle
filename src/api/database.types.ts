@@ -141,6 +141,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      hot_takes: {
+        Row: {
+          answer_count: number;
+          event_id: string;
+          id: string;
+          position: number;
+          revealed_at: string | null;
+          status: string;
+          text: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answer_count?: number;
+          event_id: string;
+          id?: string;
+          position: number;
+          revealed_at?: string | null;
+          status?: string;
+          text: string;
+        };
+        Update: {
+          answer_count?: number;
+          event_id?: string;
+          id?: string;
+          position?: number;
+          revealed_at?: string | null;
+          status?: string;
+          text?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "hot_takes_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       members: {
         Row: {
           created_at: string;
@@ -342,6 +381,15 @@ export type Database = {
         };
         Returns: boolean;
       };
+      can_read_hot_take: {
+        Args: {
+          take_position: number;
+          take_revealed_at: string;
+          take_status: string;
+          target_event_id: string;
+        };
+        Returns: boolean;
+      };
       can_read_quiz_key: {
         Args: { target_question_id: string };
         Returns: boolean;
@@ -383,6 +431,7 @@ export type Database = {
           caller: string;
           code: string;
           enabled_modules: string[];
+          hottakes?: Json;
           language: string;
           niche: string;
           party: Json;

@@ -218,7 +218,11 @@
     },
     "hottakes": {
       "name": "Het åsikt",
-      "description": "Håll med eller håll inte med om djärva påståenden."
+      "description": "Håll med eller håll inte med om djärva påståenden.",
+      "host": {
+        "empty": "Det finns inga heta åsikter än.",
+        "loadFailed": "Kunde inte läsa in de heta åsikterna. Ladda om för att försöka igen."
+      }
     }
   },
   "links": {
@@ -245,6 +249,7 @@
       "activities": "Aktiviteter",
       "quiz": "Quizfrågor",
       "awards": "Kategorier för utmärkelser",
+      "hottakes": "Heta åsikter",
       "welcome": "Välkomsttext",
       "menu": "Meny",
       "schedule": "Program",
@@ -262,7 +267,9 @@
       "quizQuestions_one": "{{count}} fråga",
       "quizQuestions_other": "{{count}} frågor",
       "awardCategories_one": "{{count}} kategori",
-      "awardCategories_other": "{{count}} kategorier"
+      "awardCategories_other": "{{count}} kategorier",
+      "hotTakes_one": "{{count}} het åsikt",
+      "hotTakes_other": "{{count}} heta åsikter"
     },
     "create": "Skapa event",
     "creating": "Skapar...",
@@ -343,6 +350,23 @@
       "categoryPlaceholder": "Mest sannolik att…",
       "errors": {
         "empty": "Kategori {{n}} behöver en text på 1 till {{max}} tecken."
+      }
+    },
+    "hottakes": {
+      "count": "{{count}} av {{max}} heta åsikter valda",
+      "empty": "Inga heta åsikter valda. Lägg till en färdig nedan eller skriv en egen.",
+      "addOwn": "Lägg till egen het åsikt",
+      "full": "De heta åsikterna är fulla ({{max}}). Ta bort en för att lägga till en ny.",
+      "more": "Fler färdiga heta åsikter",
+      "add": "Lägg till",
+      "addTake": "Lägg till den heta åsikten: {{text}}",
+      "moveUp": "Flytta het åsikt {{n}} uppåt",
+      "moveDown": "Flytta het åsikt {{n}} nedåt",
+      "remove": "Ta bort het åsikt {{n}}",
+      "takeText": "Text för het åsikt {{n}}",
+      "takePlaceholder": "Ananas hör hemma på pizza",
+      "errors": {
+        "empty": "Het åsikt {{n}} behöver en text på 1 till {{max}} tecken."
       }
     }
   },

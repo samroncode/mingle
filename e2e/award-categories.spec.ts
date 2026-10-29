@@ -64,7 +64,7 @@ test("the host picks award categories in the wizard", async ({ page }) => {
   await expect(picked.last()).toContainText(firstText);
 
   // Skip the rest and create.
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
       .first()
@@ -89,6 +89,11 @@ test("skipping the awards step keeps the eight picked", async ({ page }) => {
   }
   await expect(page.getByText("8 of 20 categories picked")).toBeVisible();
   await page.getByRole("button", { name: "Skip" }).click();
+  // The hot takes step follows; leave it as it is.
+  await expect(
+    page.getByRole("heading", { name: "Hot takes", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Welcome text" }),
   ).toBeVisible();
@@ -113,6 +118,11 @@ test("the awards step is left out when awards are switched off", async ({
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByRole("switch", { name: "Awards" }).click();
   await page.getByRole("button", { name: "Next", exact: true }).click();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  // The hot takes step follows; leave it as it is.
+  await expect(
+    page.getByRole("heading", { name: "Hot takes", exact: true }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Welcome text" }),

@@ -65,7 +65,7 @@ test("the host edits the picked quiz questions in the wizard", async ({
   await expect(page.getByText("10 of 30 questions picked")).toBeVisible();
 
   // Skip the rest (awards included) and create.
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 7; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
       .first()
@@ -100,7 +100,7 @@ test("the quiz step is left out when the quiz is switched off", async ({
     page.getByRole("heading", { name: "Award categories" }),
   ).toBeVisible();
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
       .first()

@@ -255,6 +255,34 @@ export async function seedAwardCategory(
   return data.id;
 }
 
+export type HotTakeFields = {
+  text?: string;
+  status?: "draft" | "approved";
+  /** Sets the revealed time, so the hot take counts as revealed. */
+  revealed?: boolean;
+};
+
+/** Inserts a hot take with the service role. */
+export async function seedHotTake(
+  eventId: string,
+  position: number,
+  fields: HotTakeFields = {},
+): Promise<string> {
+  const { data, error } = await serviceClient()
+    .from("hot_takes")
+    .insert({
+      event_id: eventId,
+      position,
+      text: fields.text ?? `Hot take ${position + 1}`,
+      status: fields.status ?? "approved",
+      revealed_at: fields.revealed ? new Date().toISOString() : null,
+    })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id;
+}
+
 /** Sets an event's flow state with the service role, as host-actions does. */
 export async function setEventFlow(
   eventId: string,

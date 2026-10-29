@@ -373,6 +373,8 @@ interface FakeHostPanelOptions {
   scores?: FakeQuiz["scores"];
   /** The texts of the award categories, in order. */
   awards?: string[];
+  /** The texts of the hot takes, in order. */
+  hottakes?: string[];
   /** The guests of the event, on top of the host. */
   guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
@@ -410,6 +412,19 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
       return json(route, 200, [
         { total: (options.awards ?? []).length, revealed: 0 },
       ]);
+    }
+    if (url.includes("/rest/v1/hot_takes")) {
+      return json(
+        route,
+        200,
+        (options.hottakes ?? []).map((text, position) => ({
+          id: `h${position}`,
+          position,
+          text,
+          answer_count: 0,
+          revealed_at: null,
+        })),
+      );
     }
     if (url.includes("/rest/v1/award_categories")) {
       return json(
