@@ -95,6 +95,46 @@ export type Database = {
           },
         ];
       };
+      cost_payments: {
+        Row: {
+          confirmed_at: string | null;
+          confirmed_kr: number | null;
+          event_id: string;
+          says_paid_at: string | null;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          confirmed_at?: string | null;
+          confirmed_kr?: number | null;
+          event_id: string;
+          says_paid_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          confirmed_at?: string | null;
+          confirmed_kr?: number | null;
+          event_id?: string;
+          says_paid_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "cost_payments_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "cost_payments_event_id_user_id_fkey";
+            columns: ["event_id", "user_id"];
+            isOneToOne: true;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+        ];
+      };
       cost_purchases: {
         Row: {
           event_id: string;
@@ -723,6 +763,18 @@ export type Database = {
           to_step: number;
         };
         Returns: boolean;
+      };
+      set_i_paid: {
+        Args: { paid: boolean; target_event_id: string };
+        Returns: string;
+      };
+      set_payment: {
+        Args: {
+          change: string;
+          target_event_id: string;
+          target_user_id: string;
+        };
+        Returns: string;
       };
       update_award_categories: {
         Args: { categories: Json; target_event_id: string };

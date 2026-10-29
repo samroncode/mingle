@@ -87,6 +87,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         hostKey={link.key}
         members={members}
         language={event.language}
+        costsVersion={event.costs_version}
       />
       <EventSection link={link}>
         {!ended && (

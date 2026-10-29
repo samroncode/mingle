@@ -515,7 +515,19 @@
       "updated": "Updated",
       "payWithSwish": "Pay with Swish",
       "qrLabel": "Swish QR code with your amount",
-      "qrHint": "Or scan with Swish on another phone. You can change the amount in Swish."
+      "qrHint": "Or scan with Swish on another phone. You can change the amount in Swish.",
+      "paidSoFar": "Paid so far",
+      "leftToPay": "Left to pay",
+      "paidThanks": "Paid, thanks!",
+      "iPaid": "I've paid",
+      "undoPaid": "I haven't paid after all",
+      "saysPaid": "Thanks! {{name}} will confirm when the money shows up in Swish.",
+      "errors": {
+        "not_sent": "The bill isn't available right now.",
+        "already_confirmed": "The host has already confirmed your payment.",
+        "not_found": "There is nothing to pay.",
+        "unknown": "Couldn't save that. Try again."
+      }
     }
   },
   "hostPanel": {
@@ -636,7 +648,16 @@
       "billSent": "The bill is sent",
       "billSentHint": "Guests see their own share. You can still change purchases; their totals update.",
       "hideBill": "Hide the bill",
-      "perGuest": "What each guest pays"
+      "perGuest": "What each guest pays",
+      "statusOwes": "Owes",
+      "statusSaysPaid": "Says paid",
+      "statusPaid": "Paid",
+      "confirm": "Confirm",
+      "markPaid": "Mark as paid",
+      "undoPayment": "Undo",
+      "paidAmount": "Paid {{amount}}",
+      "owesAmount": "Owes {{amount}}",
+      "paymentFailed": "Couldn't save that. Try again."
     }
   }
 }

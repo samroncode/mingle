@@ -106,6 +106,9 @@ describe("my_bill after the bill is sent", () => {
       payeeName: "Sam",
       swishNumber: SWISH,
       total: 345,
+      confirmed: 0,
+      owed: 345,
+      status: "owes",
       lines: [
         { name: "Drinks", share: 225 },
         { name: "Cake", share: 120 },
@@ -115,6 +118,9 @@ describe("my_bill after the bill is sent", () => {
       payeeName: "Sam",
       swishNumber: SWISH,
       total: 225,
+      confirmed: 0,
+      owed: 225,
+      status: "owes",
       lines: [{ name: "Drinks", share: 225 }],
     });
   });
@@ -183,6 +189,9 @@ describe("my_bill after the bill is sent", () => {
       payeeName: "Sam",
       swishNumber: SWISH,
       total: 0,
+      confirmed: 0,
+      owed: 0,
+      status: "owes",
       lines: [],
     });
   });

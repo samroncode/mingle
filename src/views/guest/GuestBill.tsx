@@ -19,7 +19,7 @@ interface GuestBillProps {
 
 /**
  * A small receipt icon, only while the host has sent the bill, with a dot
- * while the guest owes something. It never opens by itself and shows no
+ * while the guest owes something (until the host confirms). It never opens by itself and shows no
  * popup, sound or banner.
  */
 export function GuestBill({
@@ -32,10 +32,10 @@ export function GuestBill({
   const { t } = useTranslation();
   // Open, and whether the total had changed since the guest last looked.
   const [open, setOpen] = useState<"plain" | "updated">();
-  const { bill, updated, markSeen } = useMyBill(eventId, signal);
+  const { bill, updated, markSeen, reload } = useMyBill(eventId, signal);
   if (!bill || !slot) return null;
 
-  const owes = bill.total > 0;
+  const owes = bill.owed > 0;
   const label = updated ? t("guest.bill.openUpdated") : t("guest.bill.open");
   return (
     <>
@@ -66,9 +66,11 @@ export function GuestBill({
       {open && (
         <BillSheet
           bill={bill}
+          eventId={eventId}
           code={code}
           guestName={guestName}
           updated={open === "updated"}
+          onChanged={reload}
           onClose={() => setOpen(undefined)}
         />
       )}
