@@ -101,4 +101,11 @@ describe.each(themeIds)("theme %s focus ring", (id) => {
       ).toBeGreaterThanOrEqual(3);
     }
   });
+
+  it("reaches 3:1 on paper for controls inside cards", () => {
+    const tokens = themeTokens(id);
+    expect(
+      contrast(tokens["focus-on-paper"] ?? "", tokens.paper ?? ""),
+    ).toBeGreaterThanOrEqual(3);
+  });
 });
