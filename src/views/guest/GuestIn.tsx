@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { renameGuest } from "@/api/events";
 import { NicheTheme } from "@/components/NicheTheme";
 import { Button } from "@/components/ui/button";
+import { Sticker } from "@/components/ui/sticker";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
 import { pickSnapshotState } from "@/lib/guest/guest-page";
@@ -33,16 +34,21 @@ export function GuestIn({ eventId, userId }: GuestInProps) {
     return <GuestMessage kind={page} />;
   }
   if (page !== "in" || !state.event) {
-    return <p className="text-muted-foreground">{t("guest.loading")}</p>;
+    return <p className="text-lg text-ink-muted">{t("guest.loading")}</p>;
   }
 
   const choice = pickScreen(state.event.current_module);
   const name = state.members.find((m) => m.user_id === userId)?.display_name;
   const content = (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">
-        {t("guest.in", { name: name ?? "" })}
-      </h1>
+    <div className="space-y-5">
+      <header className="space-y-3">
+        <Sticker color="sage" lean="left">
+          {t("guest.joinedSticker")}
+        </Sticker>
+        <h1 className="font-display text-5xl leading-none font-extrabold break-words">
+          {t("guest.in", { name: name ?? "" })}
+        </h1>
+      </header>
       {renaming ? (
         <NameForm
           label={t("guest.renameLabel")}
@@ -58,7 +64,7 @@ export function GuestIn({ eventId, userId }: GuestInProps) {
           }}
         />
       ) : (
-        <Button variant="outline" onClick={() => setRenaming(true)}>
+        <Button variant="secondary" onClick={() => setRenaming(true)}>
           {t("guest.rename")}
         </Button>
       )}

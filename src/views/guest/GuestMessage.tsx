@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 type Kind = "ended" | "not_found" | "error" | "note" | "captcha_failed";
 
@@ -14,17 +15,19 @@ export function GuestMessage({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="space-y-2">
-      <h1 className="text-2xl font-semibold">{t(`guest.${kind}.title`)}</h1>
-      <p className="text-muted-foreground">{t(`guest.${kind}.body`)}</p>
+    <Card className="gap-4 p-6">
+      <h1 className="font-display text-4xl leading-tight font-extrabold">
+        {t(`guest.${kind}.title`)}
+      </h1>
+      <p className="text-lg text-on-paper-muted">{t(`guest.${kind}.body`)}</p>
       {kind === "captcha_failed" && onRetry && (
         <Button onClick={onRetry}>{t("captcha.retry")}</Button>
       )}
       {(kind === "not_found" || kind === "error") && (
-        <Button asChild variant="link" className="px-0">
+        <Button asChild variant="secondary">
           <Link to="/">{t("views.notFound.home")}</Link>
         </Button>
       )}
-    </div>
+    </Card>
   );
 }

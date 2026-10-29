@@ -40,6 +40,7 @@
       "title": "Var med i festen"
     },
     "summary": {
+      "sticker": "Kvällen i korthet",
       "title": "Sammanfattning"
     },
     "notFound": {
@@ -314,6 +315,8 @@
     "hint": "Kommer bara ihåg på den här enheten. Att glömma tar inte bort eventet."
   },
   "guest": {
+    "joinSticker": "Ny gäst",
+    "joinedSticker": "Med",
     "loading": "Laddar…",
     "nameLabel": "Ditt namn",
     "join": "Gå med",

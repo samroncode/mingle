@@ -38,9 +38,12 @@ export function NameForm({
   }
 
   return (
-    <form onSubmit={(event) => void submit(event)} className="space-y-3">
+    <form
+      onSubmit={(event) => void submit(event)}
+      className="flex flex-col gap-4"
+    >
       <label className="block space-y-1">
-        <span className="text-sm font-medium">{label}</span>
+        <span className="text-sm font-semibold">{label}</span>
         <Input
           value={name}
           maxLength={displayNameMaxLength}
@@ -50,11 +53,11 @@ export function NameForm({
         />
       </label>
       {error && (
-        <p role="alert" className="text-destructive">
+        <p role="alert" className="font-semibold text-danger">
           {t(`guest.errors.${error}`)}
         </p>
       )}
-      <Button type="submit" disabled={busy}>
+      <Button type="submit" size="lg" disabled={busy}>
         {submitLabel}
       </Button>
     </form>
