@@ -37,3 +37,26 @@ export function costsTotals(
 export function formatKr(amount: number): string {
   return `${new Intl.NumberFormat("sv-SE").format(amount)} kr`;
 }
+
+/**
+ * What each current guest owes in total, from the purchases they share. A
+ * guest who shares nothing owes 0. Used for the host's list; the guest's own
+ * bill comes from the database.
+ */
+export function guestTotals(
+  purchases: readonly PurchaseView[],
+  guestIds: readonly string[],
+): Map<string, number> {
+  const current = new Set(guestIds);
+  const totals = new Map(guestIds.map((id) => [id, 0]));
+  for (const purchase of purchases) {
+    const sharers = currentSharers(purchase, current);
+    for (const id of sharers) {
+      totals.set(
+        id,
+        (totals.get(id) ?? 0) + shareOf(purchase.price, sharers.length),
+      );
+    }
+  }
+  return totals;
+}

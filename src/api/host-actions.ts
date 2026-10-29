@@ -16,6 +16,9 @@ import {
   type RenameGuestRequest,
   type RenameGuestResponse,
   RenameGuestResponseSchema,
+  type SetBillSentRequest,
+  type SetBillSentResponse,
+  SetBillSentResponseSchema,
   type UpdateCostsRequest,
   type UpdateCostsResponse,
   UpdateCostsResponseSchema,
@@ -237,5 +240,18 @@ export async function updateCosts(
   return toHostActionResult(
     UpdateCostsResponseSchema,
     await invokeHostActions({ action: "update_costs", ...input }),
+  );
+}
+
+/**
+ * Sends the bill to the guests (`sent: true`) or hides it again. Fails with
+ * `invalid_transition` while shared costs are switched off.
+ */
+export async function setBillSent(
+  input: Omit<SetBillSentRequest, "action">,
+): Promise<HostActionResult<SetBillSentResponse>> {
+  return toHostActionResult(
+    SetBillSentResponseSchema,
+    await invokeHostActions({ action: "set_bill_sent", ...input }),
   );
 }

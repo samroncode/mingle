@@ -503,6 +503,16 @@
     "removed": {
       "title": "You've been removed from this event",
       "body": "The host removed you, so this phone can't join again."
+    },
+    "bill": {
+      "open": "Show my bill",
+      "openUpdated": "Show my bill, updated",
+      "close": "Close",
+      "title": "Pay {{name}}",
+      "swish": "Swish {{number}}",
+      "nothing": "You don't share any purchases.",
+      "total": "Total",
+      "updated": "Updated"
     }
   },
   "hostPanel": {
@@ -613,7 +623,17 @@
       "nobodyShares": "Nobody shares this any more",
       "invalid": "Check this field.",
       "checkFields": "Some fields need fixing before you can save.",
-      "loadFailed": "Couldn't load the shared costs."
+      "loadFailed": "Couldn't load the shared costs.",
+      "billSentSummary": "Bill sent",
+      "billNotSentSummary": "Bill not sent",
+      "billNotSentHint": "Guests see nothing about money until you send the bill.",
+      "sendBill": "Send the bill",
+      "sendBillConfirm": "Send the bill? Each guest gets a small receipt icon on their phone with their own share and your Swish number.",
+      "sendBillAction": "Send the bill",
+      "billSent": "The bill is sent",
+      "billSentHint": "Guests see their own share. You can still change purchases; their totals update.",
+      "hideBill": "Hide the bill",
+      "perGuest": "What each guest pays"
     }
   }
 }

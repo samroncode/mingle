@@ -1,4 +1,3 @@
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { type CostsView, getCosts } from "@/api/costs";
@@ -6,7 +5,7 @@ import type { MemberRow } from "@/api/events";
 import { updateCosts } from "@/api/host-actions";
 import { ErrorLine } from "@/components/ErrorLine";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { PanelSection } from "@/components/PanelSection";
 import { useHostAction } from "@/hooks/useHostAction";
 import { useLoad } from "@/hooks/useLoad";
 import {
@@ -19,9 +18,11 @@ import {
   costsTotals,
   currentSharers,
   formatKr,
+  guestTotals,
   shareOf,
 } from "@/lib/costs/shares";
-import { sortedGuests } from "@/lib/host/guest-list";
+import { sortedGuests, type ListedGuest } from "@/lib/host/guest-list";
+import { BillControl } from "./BillControl";
 import { CostsEditor } from "./CostsEditor";
 
 interface SharedCostsProps {
@@ -70,6 +71,38 @@ function PurchaseList({
         );
       })}
     </ul>
+  );
+}
+
+function GuestShares({
+  costs,
+  guests,
+}: {
+  costs: CostsView;
+  guests: ListedGuest[];
+}) {
+  const { t } = useTranslation();
+  const totals = guestTotals(
+    costs.purchases,
+    guests.map((guest) => guest.userId),
+  );
+  if (guests.length === 0 || costs.purchases.length === 0) return null;
+  return (
+    <div className="space-y-1">
+      <h3 className="font-display font-bold">
+        {t("hostPanel.costs.perGuest")}
+      </h3>
+      <ul className="space-y-1 text-base">
+        {guests.map((guest) => (
+          <li key={guest.userId} className="flex justify-between gap-2">
+            <span className="min-w-0 break-words">{guest.name}</span>
+            <span className="shrink-0">
+              {formatKr(totals.get(guest.userId) ?? 0)}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -143,7 +176,6 @@ export function SharedCosts({
   language,
 }: SharedCostsProps) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<CostsForm>();
   const [refresh, setRefresh] = useState(0);
   const load = useLoad(`costs:${eventId}`, () => getCosts(eventId), {
@@ -168,87 +200,77 @@ export function SharedCosts({
   };
 
   const totals = costs && costsTotals(costs.purchases, new Set(guestIds));
+  const summary = !costs
+    ? undefined
+    : [
+        costs.billSentAt
+          ? t("hostPanel.costs.billSentSummary")
+          : t("hostPanel.costs.billNotSentSummary"),
+        totals &&
+          t("hostPanel.costs.totals", {
+            spent: formatKr(totals.spent),
+            owed: formatKr(totals.owed),
+          }),
+      ]
+        .filter(Boolean)
+        .join(" · ");
   return (
-    <Card data-testid="host-costs">
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls="host-costs-body"
-        className="flex min-h-12 items-center justify-between gap-2 text-left"
-        onClick={() => setOpen((value) => !value)}
-      >
-        <span>
-          <span className="block font-display text-xl font-bold">
-            {t("hostPanel.costs.title")}
-          </span>
-          {totals && (
-            <span className="block text-sm text-on-paper-muted">
-              {t("hostPanel.costs.totals", {
-                spent: formatKr(totals.spent),
-                owed: formatKr(totals.owed),
-              })}
-            </span>
-          )}
-        </span>
-        <ChevronDown
-          aria-hidden
-          className={
-            open ? "rotate-180 transition-transform" : "transition-transform"
-          }
-        />
-      </button>
-      {open && (
-        <div id="host-costs-body" className="space-y-3">
-          {load.status === "error" && (
-            <ErrorLine>{t("hostPanel.costs.loadFailed")}</ErrorLine>
-          )}
-          {load.status === "loading" && (
-            <p className="text-on-paper-muted">{t("hostPanel.loading")}</p>
-          )}
-          {load.status === "ready" && editing && (
-            <CostsEditor
-              code={code}
-              hostKey={hostKey}
-              guests={guests}
-              initial={editing}
-              onDone={done}
-              onCancel={() => setEditing(undefined)}
-            />
-          )}
-          {load.status === "ready" && !editing && !costs && (
-            <>
-              <p className="text-on-paper-muted">{t("hostPanel.costs.off")}</p>
-              <Button size="sm" onClick={() => startEditing()}>
-                {t("hostPanel.costs.switchOn")}
-              </Button>
-            </>
-          )}
-          {load.status === "ready" && !editing && costs && (
-            <>
-              <p className="text-base">
-                {t("hostPanel.costs.payeeLine", {
-                  name: costs.payeeName,
-                  number: nationalNumber(costs.swishNumber),
-                })}
-              </p>
-              <PurchaseList costs={costs} guestIds={new Set(guestIds)} />
-              <div className="flex flex-wrap gap-2">
-                <Button size="sm" onClick={() => startEditing(true)}>
-                  {t("hostPanel.costs.addPurchase")}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => startEditing()}
-                >
-                  {t("hostPanel.costs.edit")}
-                </Button>
-              </div>
-              <SwitchOff code={code} hostKey={hostKey} onDone={done} />
-            </>
-          )}
-        </div>
+    <PanelSection
+      testId="host-costs"
+      title={t("hostPanel.costs.title")}
+      summary={summary}
+    >
+      {load.status === "error" && (
+        <ErrorLine>{t("hostPanel.costs.loadFailed")}</ErrorLine>
       )}
-    </Card>
+      {load.status === "loading" && (
+        <p className="text-on-paper-muted">{t("hostPanel.loading")}</p>
+      )}
+      {load.status === "ready" && editing && (
+        <CostsEditor
+          code={code}
+          hostKey={hostKey}
+          guests={guests}
+          initial={editing}
+          onDone={done}
+          onCancel={() => setEditing(undefined)}
+        />
+      )}
+      {load.status === "ready" && !editing && !costs && (
+        <>
+          <p className="text-on-paper-muted">{t("hostPanel.costs.off")}</p>
+          <Button size="sm" onClick={() => startEditing()}>
+            {t("hostPanel.costs.switchOn")}
+          </Button>
+        </>
+      )}
+      {load.status === "ready" && !editing && costs && (
+        <>
+          <BillControl
+            code={code}
+            hostKey={hostKey}
+            sent={costs.billSentAt !== null}
+            onDone={done}
+          />
+          <p className="text-base">
+            {t("hostPanel.costs.payeeLine", {
+              name: costs.payeeName,
+              number: nationalNumber(costs.swishNumber),
+            })}
+          </p>
+          <PurchaseList costs={costs} guestIds={new Set(guestIds)} />
+          <GuestShares costs={costs} guests={guests} />
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" onClick={() => startEditing(true)}>
+              {t("hostPanel.costs.addPurchase")}
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => startEditing()}>
+              {t("hostPanel.costs.edit")}
+            </Button>
+          </div>
+          <SwitchOff code={code} hostKey={hostKey} onDone={done} />
+        </>
+      )}
+    </PanelSection>
   );
 }

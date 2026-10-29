@@ -202,6 +202,7 @@ export type Database = {
       events: {
         Row: {
           code: string;
+          costs_version: number;
           created_at: string;
           current_module: string | null;
           current_step: number;
@@ -217,6 +218,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           code: string;
+          costs_version?: number;
           created_at?: string;
           current_module?: string | null;
           current_step?: number;
@@ -231,6 +233,7 @@ export type Database = {
         };
         Update: {
           code?: string;
+          costs_version?: number;
           created_at?: string;
           current_module?: string | null;
           current_step?: number;
@@ -650,6 +653,7 @@ export type Database = {
           votes: number;
         }[];
       };
+      my_bill: { Args: { target_event_id: string }; Returns: Json };
       my_hot_take_majority: {
         Args: { target_event_id: string };
         Returns: {
@@ -700,6 +704,10 @@ export type Database = {
           target_event_id: string;
           target_user_id: string;
         };
+        Returns: string;
+      };
+      set_bill_sent: {
+        Args: { sent: boolean; target_event_id: string };
         Returns: string;
       };
       set_event_flow: {

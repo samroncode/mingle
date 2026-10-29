@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { costsTotals, currentSharers, formatKr, shareOf } from "./shares";
+import {
+  costsTotals,
+  currentSharers,
+  formatKr,
+  guestTotals,
+  shareOf,
+} from "./shares";
 
 const guests = new Set(["a", "b", "c"]);
 
@@ -57,5 +63,27 @@ describe("formatKr", () => {
 
   it("separates thousands with a no-break space", () => {
     expect(formatKr(12000)).toMatch(/^12\s000 kr$/);
+  });
+});
+
+describe("guestTotals", () => {
+  const purchases = [
+    { id: "1", name: "Pizza", price: 100, sharers: ["a", "b", "c"] },
+    { id: "2", name: "Cake", price: 50, sharers: ["a"] },
+  ];
+
+  it("adds up each guest's shares, rounded up", () => {
+    expect([...guestTotals(purchases, ["a", "b", "c"])]).toEqual([
+      ["a", 84],
+      ["b", 34],
+      ["c", 34],
+    ]);
+  });
+
+  it("gives a guest who shares nothing 0 and recalculates after a removal", () => {
+    const totals = guestTotals(purchases, ["a", "b", "late"]);
+    expect(totals.get("late")).toBe(0);
+    expect(totals.get("b")).toBe(50);
+    expect(totals.has("c")).toBe(false);
   });
 });

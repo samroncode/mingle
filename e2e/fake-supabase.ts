@@ -212,6 +212,8 @@ interface FakeEventOptions {
   party?: EventRow["party"];
   /** The event's niche; defaults to the row's default (afterwork). */
   niche?: string;
+  /** What `my_bill` answers: the guest's own bill, or null (the default). */
+  bill?: unknown;
 }
 
 /**
@@ -238,6 +240,9 @@ export async function fakeEvent(page: Page, options: FakeEventOptions) {
     if (answerPreflight(route)) return;
     const request = route.request();
     const url = request.url();
+    if (url.includes("/rpc/my_bill")) {
+      return json(route, 200, options.bill ?? null);
+    }
     if (url.includes("/rpc/join_event")) {
       const name = (request.postDataJSON() as { display_name: string })
         .display_name;
@@ -384,6 +389,8 @@ interface FakeHostPanelOptions {
     payeeName: string;
     /** Stored form, e.g. 46701234567. */
     swishNumber: string;
+    /** When the bill was sent; null (the default) while it is hidden. */
+    billSentAt?: string | null;
     purchases: Array<{
       id: string;
       name: string;
@@ -466,6 +473,7 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
               {
                 payee_name: options.costs.payeeName,
                 swish_number: options.costs.swishNumber,
+                bill_sent_at: options.costs.billSentAt ?? null,
               },
             ]
           : [],
