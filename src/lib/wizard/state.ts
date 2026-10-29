@@ -4,24 +4,9 @@ import { PartySchema, type Party } from "@/lib/schemas/party";
 import type { ModuleId } from "@/modules/registry";
 import { getNiche, type NicheId } from "@/niches";
 import { nicheIds } from "@/niches/ids";
-import {
-  emptyQuiz,
-  invalidOwnKeys,
-  quizReducer,
-  resetBuiltinQuiz,
-  toQuizQuestions,
-  type QuizAction,
-  type QuizDraft,
-} from "./quiz";
-import {
-  awardsReducer,
-  emptyAwards,
-  invalidOwnAwardKeys,
-  resetBuiltinAwards,
-  toAwardCategories,
-  type AwardsAction,
-  type AwardsDraft,
-} from "./awards";
+import { awardsSlice } from "./awards";
+import { quizSlice } from "./quiz";
+import type { WizardSlice } from "./slice";
 
 /** The setup wizard's steps, in order. */
 export const stepOrder = [
@@ -43,20 +28,70 @@ export function isSkippable(step: WizardStep): boolean {
   return stepOrder.indexOf(step) > stepOrder.indexOf("language");
 }
 
-/** The steps that belong to an activity, shown only while it is on. */
-const moduleSteps: Partial<Record<WizardStep, ModuleId>> = {
-  quiz: "quiz",
-  awards: "awards",
+/**
+ * The activities that have a wizard step, each as one slice. A slice's key is
+ * its activity id and its step name. To add an activity's step: write a slice
+ * next to `quiz.ts`, add it here and to `stepOrder`, and write its step
+ * component in `src/modules/<name>/wizard/`. The draft, actions, reset on a
+ * niche change, validation and create request all follow from this table.
+ */
+const slices = {
+  quiz: quizSlice,
+  awards: awardsSlice,
+};
+type SliceId = keyof typeof slices;
+const sliceIds = Object.keys(slices) as SliceId[];
+
+function isSliceId(value: string): value is SliceId {
+  return value in slices;
+}
+
+/** The part of the draft each activity step owns, by activity id. */
+type SliceDrafts = {
+  [K in SliceId]: (typeof slices)[K]["empty"];
 };
 
+/** The action on one activity's part of the draft, wrapped with its id. */
+type SliceAction = {
+  [K in SliceId]: {
+    type: K;
+    action: Parameters<(typeof slices)[K]["reducer"]>[1];
+  };
+}[SliceId];
+
 /**
- * The steps this draft goes through, in order: an activity's step (quiz,
- * awards) only appears while that activity is switched on.
+ * The slices with their types erased, so the code below can treat every
+ * activity alike. The typed table above keeps `WizardDraft` and the actions
+ * exact; this is the one place that gives that up.
+ */
+const anySlice = slices as unknown as Record<
+  SliceId,
+  WizardSlice<unknown, unknown, unknown>
+>;
+
+function sliceDraft(draft: WizardDraft, id: SliceId): unknown {
+  return draft[id];
+}
+
+function withSlice(
+  draft: WizardDraft,
+  id: SliceId,
+  value: unknown,
+): WizardDraft {
+  return { ...draft, [id]: value };
+}
+
+/** Whether the activity has a step and is switched on. */
+function sliceActive(draft: WizardDraft, id: SliceId): boolean {
+  return draft.enabledModules.includes(id);
+}
+
+/**
+ * The steps this draft goes through, in order: an activity's step only appears while that activity is switched on.
  */
 export function stepsFor(draft: WizardDraft): WizardStep[] {
   return stepOrder.filter((step) => {
-    const module = moduleSteps[step];
-    return module === undefined || draft.enabledModules.includes(module);
+    return !isSliceId(step) || sliceActive(draft, step);
   });
 }
 
@@ -81,13 +116,11 @@ export interface PartyForm {
 }
 
 /** Everything the host has typed so far, plus where they are. */
-export interface WizardDraft {
+export interface WizardDraft extends SliceDrafts {
   step: WizardStep;
   niche: NicheId;
   language: Language;
   enabledModules: ModuleId[];
-  quiz: QuizDraft;
-  awards: AwardsDraft;
   party: PartyForm;
 }
 
@@ -98,8 +131,7 @@ export type WizardAction =
   | { type: "select_niche"; niche: NicheId }
   | { type: "set_language"; language: Language }
   | { type: "toggle_module"; module: ModuleId }
-  | { type: "quiz"; action: QuizAction }
-  | { type: "awards"; action: AwardsAction }
+  | SliceAction
   | { type: "skip" }
   | { type: "set_welcome"; text: string }
   | { type: "set_menu"; menu: string[] }
@@ -128,10 +160,24 @@ export function initialDraft(language: Language): WizardDraft {
     niche: firstNiche,
     language,
     enabledModules: [...getNiche(firstNiche).defaultModules],
-    quiz: emptyQuiz,
-    awards: emptyAwards,
+    ...emptySlices(),
     party: emptyParty(firstNiche, language),
   };
+}
+
+function emptySlices(): SliceDrafts {
+  return Object.fromEntries(
+    sliceIds.map((id) => [id, slices[id].empty]),
+  ) as SliceDrafts;
+}
+
+/** Drops the built-in items of every activity, as a new niche has its own. */
+function resetBuiltin(draft: WizardDraft): WizardDraft {
+  return sliceIds.reduce(
+    (next, id) =>
+      withSlice(next, id, anySlice[id].resetBuiltin(sliceDraft(next, id))),
+    draft,
+  );
 }
 
 /** Keeps an unedited welcome text in step with the niche and language. */
@@ -182,10 +228,17 @@ function moveStep(draft: WizardDraft, offset: number): WizardStep {
   return steps[clamped] ?? draft.step;
 }
 
+function sliceReducer(draft: WizardDraft, action: SliceAction): WizardDraft {
+  const id: SliceId = action.type;
+  const next = anySlice[id].reducer(sliceDraft(draft, id), action.action);
+  return withSlice(draft, id, next);
+}
+
 export function wizardReducer(
   draft: WizardDraft,
   action: WizardAction,
 ): WizardDraft {
+  if (isSliceId(action.type)) return sliceReducer(draft, action as SliceAction);
   switch (action.type) {
     case "next":
       return { ...draft, step: moveStep(draft, 1) };
@@ -195,17 +248,9 @@ export function wizardReducer(
       return { ...draft, step: action.step };
     case "select_niche":
       return followWelcome({
-        ...draft,
+        ...(action.niche === draft.niche ? draft : resetBuiltin(draft)),
         niche: action.niche,
         enabledModules: [...getNiche(action.niche).defaultModules],
-        quiz:
-          action.niche === draft.niche
-            ? draft.quiz
-            : resetBuiltinQuiz(draft.quiz),
-        awards:
-          action.niche === draft.niche
-            ? draft.awards
-            : resetBuiltinAwards(draft.awards),
       });
     case "set_language":
       return followWelcome({ ...draft, language: action.language });
@@ -215,13 +260,6 @@ export function wizardReducer(
         enabledModules: draft.enabledModules.includes(action.module)
           ? draft.enabledModules.filter((id) => id !== action.module)
           : [...draft.enabledModules, action.module],
-      };
-    case "quiz":
-      return { ...draft, quiz: quizReducer(draft.quiz, action.action) };
-    case "awards":
-      return {
-        ...draft,
-        awards: awardsReducer(draft.awards, action.action),
       };
     case "skip": {
       const cleared = clearStep(draft);
@@ -301,26 +339,17 @@ export function firstInvalidStep(form: PartyForm): WizardStep | undefined {
   return stepOrder.find((step) => steps.has(step));
 }
 
-/** Whether the quiz step has questions that break the shared schema. */
-export function quizIsInvalid(draft: WizardDraft): boolean {
+/** Whether an activity's step has items that break the shared schema. */
+function sliceIsInvalid(draft: WizardDraft, id: SliceId): boolean {
   return (
-    draft.enabledModules.includes("quiz") &&
-    invalidOwnKeys(draft.quiz).length > 0
-  );
-}
-
-/** Whether the awards step has categories that break the shared schema. */
-export function awardsIsInvalid(draft: WizardDraft): boolean {
-  return (
-    draft.enabledModules.includes("awards") &&
-    invalidOwnAwardKeys(draft.awards).length > 0
+    sliceActive(draft, id) &&
+    anySlice[id].invalidKeys(sliceDraft(draft, id)).length > 0
   );
 }
 
 /** Whether the step holds something invalid; Next is blocked while it does. */
 export function stepIsInvalid(draft: WizardDraft, step: WizardStep): boolean {
-  if (step === "quiz") return quizIsInvalid(draft);
-  if (step === "awards") return awardsIsInvalid(draft);
+  if (isSliceId(step)) return sliceIsInvalid(draft, step);
   return stepInvalidFields(draft.party, step).length > 0;
 }
 
@@ -344,15 +373,16 @@ export function toCreateInput(
     enabledModules: draft.enabledModules,
     party: toParty(draft.party),
   };
-  // Questions and categories only go with their activity switched on, and
-  // only once there are some.
-  if (draft.enabledModules.includes("quiz")) {
-    const quiz = toQuizQuestions(draft.niche, draft.language, draft.quiz);
-    if (quiz.length > 0) input.quiz = quiz;
-  }
-  if (draft.enabledModules.includes("awards")) {
-    const awards = toAwardCategories(draft.niche, draft.language, draft.awards);
-    if (awards.length > 0) input.awards = awards;
+  // Items only go with their activity switched on, and only once there are
+  // some.
+  for (const id of sliceIds) {
+    if (!sliceActive(draft, id)) continue;
+    const items = anySlice[id].toRequest(
+      draft.niche,
+      draft.language,
+      sliceDraft(draft, id),
+    );
+    if (items.length > 0) Object.assign(input, { [id]: items });
   }
   return input;
 }
