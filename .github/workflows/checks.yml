@@ -1,0 +1,76 @@
+# Light checks on every pull request. Not required: the main ruleset does not list them,
+# and the deploy workflows do not depend on them. They are there so a PR shows early whether it is healthy.
+# The database tests run only when the PR touches supabase/.
+name: Checks
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+# A new push to the same PR replaces the run in progress.
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: Typecheck, lint, tests, e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: package.json
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run typecheck:functions
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test # unit tests and the design check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+
+  changes:
+    name: Does the PR touch supabase/?
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      supabase: ${{ steps.filter.outputs.supabase }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+      - id: filter
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -q '^supabase/'; then
+            echo "supabase=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "supabase=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  database:
+    name: Database tests
+    needs: changes
+    if: needs.changes.outputs.supabase == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: package.json
+          cache: npm
+      # The Supabase CLI version comes from package-lock.json.
+      - run: npm ci
+      - run: npm run db:start
+      - run: npm run test:db
+      - name: Stop the local stack
+        if: always()
+        run: npm run db:stop
