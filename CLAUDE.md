@@ -101,7 +101,7 @@ src/          # the app, with its own tsconfig.json
   lib/          # helpers grouped by area (host/, guest/, tv/, wizard/), Zod schemas (schemas/); no Supabase
 supabase/
   migrations/   # SQL schema + RLS policies
-  functions/    # edge functions: host-actions, ai-suggest
+  functions/    # edge functions: host-actions (ai-suggest is planned, not built)
   tests/        # *.db.test.ts against the local stack (npm run test:db), with its own tsconfig.json
 e2e/            # Playwright tests and playwright.config.ts (npm run test:e2e), Supabase faked
 scripts/        # small Node scripts used by npm scripts

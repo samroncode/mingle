@@ -58,6 +58,6 @@ Database code needs the local Supabase stack, which runs in Docker on the deskto
 
 Still to do by the repo owner:
 
-- On the desktop, install a working Docker Desktop (see [`supabase.md`](supabase.md)) before the backend core is built.
-- In the cloud environment, add the setup script `npm ci` and the variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
+- Cloud sessions cannot run the database tests at the moment, so tickets that change `supabase/` are built on the desktop, where Docker Desktop is installed (see [`supabase.md`](supabase.md)).
+- Keep the cloud environment's setup script (`npm ci`) and variables `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in place.
 - Put Mingle online by following the launch checklist in [`hosting.md`](hosting.md). Until you set the repository variable `HOSTING_ENABLED=true` (step 5 there), the Deploy and Keep awake workflows are skipped on purpose.
