@@ -321,7 +321,7 @@ describe("the answer count", () => {
   it("counts a late joiner", async () => {
     await answer(cast.guestA);
     const [late] = await anonymousUsers(1);
-    await seedMember(cast.event.id, late.id, "guest", "Sent");
+    await seedMember(cast.event.id, late.id, "guest", "Sist");
     await answer(late);
     expect(await countOf(ids[0] as string)).toBe(2);
   });
