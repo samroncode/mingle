@@ -29,10 +29,10 @@ export function EndEvent({ code, hostKey, onEnded }: EndEventProps) {
         <div
           role="alertdialog"
           aria-label={t("hostPanel.end.title")}
-          className="space-y-2 rounded-lg border p-3"
+          className="space-y-3 rounded-md border-[length:var(--border-thin)] border-danger bg-surface-sunken p-3 text-ink"
         >
-          <p className="text-sm">{t("hostPanel.end.confirm")}</p>
-          <div className="flex gap-2">
+          <p className="text-base">{t("hostPanel.end.confirm")}</p>
+          <div className="flex flex-col gap-3">
             <Button
               variant="destructive"
               size="lg"
@@ -61,7 +61,7 @@ export function EndEvent({ code, hostKey, onEnded }: EndEventProps) {
         </Button>
       )}
       {error && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-sm font-bold text-danger-text">
           {error}
         </p>
       )}

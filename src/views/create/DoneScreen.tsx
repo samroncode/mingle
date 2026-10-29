@@ -1,7 +1,9 @@
+import { TriangleAlert } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { EventLinks } from "@/components/EventLinks";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { hostPath } from "@/lib/links";
 
 interface DoneScreenProps {
@@ -18,13 +20,21 @@ export function DoneScreen({ code, hostKey }: DoneScreenProps) {
   const { t } = useTranslation();
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">{t("wizard.done.title")}</h1>
-      <EventLinks code={code} hostKey={hostKey} />
+      <h1 className="font-display text-3xl leading-tight font-extrabold">
+        {t("wizard.done.title")}
+      </h1>
+      <Card>
+        <EventLinks code={code} hostKey={hostKey} />
+      </Card>
       <p
         role="alert"
-        className="rounded-lg border border-destructive p-3 text-sm text-destructive"
+        className="flex items-start gap-3 rounded-md border-[length:var(--border-thin)] border-danger bg-surface-sunken p-3 text-base"
       >
-        {t("wizard.done.warning")}
+        <TriangleAlert
+          aria-hidden="true"
+          className="mt-0.5 size-5 shrink-0 text-danger-text"
+        />
+        <span>{t("wizard.done.warning")}</span>
       </p>
       <Button asChild size="lg" className="w-full">
         <Link to={hostPath(code, hostKey)}>{t("wizard.done.openPanel")}</Link>

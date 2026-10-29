@@ -66,91 +66,103 @@ export function CreateView() {
 
   return (
     <NicheTheme niche={draft.niche}>
-      <div className="space-y-4">
-        <header>
-          <p className="text-sm text-muted-foreground">
+      <div className="flex min-h-[calc(100svh-6rem)] flex-col gap-5">
+        <header className="space-y-2">
+          <p className="font-display text-sm font-bold text-ink-muted">
             {t("wizard.progress", {
               current: stepIndex + 1,
               total: steps.length,
             })}
           </p>
-          <h1 className="text-2xl font-semibold">
+          <div
+            aria-hidden="true"
+            className="h-3 overflow-hidden rounded-pill border-[length:var(--border-thin)] border-line-strong bg-surface-sunken"
+          >
+            <div
+              className="h-full bg-champagne"
+              style={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
+            />
+          </div>
+          <h1 className="font-display text-3xl leading-tight font-extrabold">
             {t(`wizard.steps.${draft.step}`)}
           </h1>
         </header>
 
-        {draft.step === "niche" && (
-          <NicheStep
-            value={draft.niche}
-            onSelect={(niche) => dispatch({ type: "select_niche", niche })}
-          />
-        )}
-        {draft.step === "language" && (
-          <LanguageStep
-            value={draft.language}
-            onSelect={(language) =>
-              dispatch({ type: "set_language", language })
-            }
-          />
-        )}
-        {draft.step === "activities" && (
-          <ActivitiesStep
-            enabled={draft.enabledModules}
-            onToggle={(module) => dispatch({ type: "toggle_module", module })}
-          />
-        )}
-        {ModuleStep && <ModuleStep draft={draft} dispatch={dispatch} />}
-        {draft.step === "welcome" && (
-          <WelcomeStep
-            value={draft.party.welcome}
-            invalid={invalid}
-            onChange={(text) => dispatch({ type: "set_welcome", text })}
-          />
-        )}
-        {draft.step === "menu" && (
-          <MenuStep
-            menu={draft.party.menu}
-            invalid={invalid}
-            onChange={(menu) => dispatch({ type: "set_menu", menu })}
-          />
-        )}
-        {draft.step === "schedule" && (
-          <ScheduleStep
-            schedule={draft.party.schedule}
-            invalid={invalid}
-            onChange={(schedule) =>
-              dispatch({ type: "set_schedule", schedule })
-            }
-          />
-        )}
-        {draft.step === "wifi" && (
-          <WifiStep
-            party={draft.party}
-            invalid={invalid}
-            onWifiChange={(ssid, password) =>
-              dispatch({ type: "set_wifi", ssid, password })
-            }
-            onMusicChange={(url) => dispatch({ type: "set_music_url", url })}
-          />
-        )}
-        {draft.step === "summary" && (
-          <SummaryStep
-            draft={draft}
-            onEdit={(step) => dispatch({ type: "go_to", step })}
-          />
-        )}
+        <div className="flex-1 space-y-4">
+          {draft.step === "niche" && (
+            <NicheStep
+              value={draft.niche}
+              onSelect={(niche) => dispatch({ type: "select_niche", niche })}
+            />
+          )}
+          {draft.step === "language" && (
+            <LanguageStep
+              value={draft.language}
+              onSelect={(language) =>
+                dispatch({ type: "set_language", language })
+              }
+            />
+          )}
+          {draft.step === "activities" && (
+            <ActivitiesStep
+              enabled={draft.enabledModules}
+              onToggle={(module) => dispatch({ type: "toggle_module", module })}
+            />
+          )}
+          {ModuleStep && <ModuleStep draft={draft} dispatch={dispatch} />}
+          {draft.step === "welcome" && (
+            <WelcomeStep
+              value={draft.party.welcome}
+              invalid={invalid}
+              onChange={(text) => dispatch({ type: "set_welcome", text })}
+            />
+          )}
+          {draft.step === "menu" && (
+            <MenuStep
+              menu={draft.party.menu}
+              invalid={invalid}
+              onChange={(menu) => dispatch({ type: "set_menu", menu })}
+            />
+          )}
+          {draft.step === "schedule" && (
+            <ScheduleStep
+              schedule={draft.party.schedule}
+              invalid={invalid}
+              onChange={(schedule) =>
+                dispatch({ type: "set_schedule", schedule })
+              }
+            />
+          )}
+          {draft.step === "wifi" && (
+            <WifiStep
+              party={draft.party}
+              invalid={invalid}
+              onWifiChange={(ssid, password) =>
+                dispatch({ type: "set_wifi", ssid, password })
+              }
+              onMusicChange={(url) => dispatch({ type: "set_music_url", url })}
+            />
+          )}
+          {draft.step === "summary" && (
+            <SummaryStep
+              draft={draft}
+              onEdit={(step) => dispatch({ type: "go_to", step })}
+            />
+          )}
 
-        {error && (
-          <p role="alert" className="text-sm text-destructive">
-            {t(createErrorKey(error))}
-          </p>
-        )}
+          {error && (
+            <p role="alert" className="text-sm font-bold text-danger-text">
+              {t(createErrorKey(error))}
+            </p>
+          )}
+        </div>
 
-        <div className="flex gap-2">
+        <div className="sticky bottom-0 -mx-4 flex gap-3 border-t-[length:var(--border-thin)] border-line bg-surface px-4 py-3">
           {!isFirst && (
             <Button
               variant="outline"
               size="lg"
+              className="w-auto"
               disabled={busy}
               onClick={() => dispatch({ type: "back" })}
             >
@@ -176,6 +188,7 @@ export function CreateView() {
                 <Button
                   variant="ghost"
                   size="lg"
+                  className="w-auto"
                   onClick={() => dispatch({ type: "skip" })}
                 >
                   {t("wizard.skip")}

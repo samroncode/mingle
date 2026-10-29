@@ -44,6 +44,7 @@ function ItemControls({
       <Button
         variant="ghost"
         size="icon"
+        className="text-on-paper hover:bg-surface-sunken hover:text-ink"
         aria-label={labels.moveUp(n)}
         disabled={index === 0}
         onClick={() => dispatch({ type: "move", from: index, to: index - 1 })}
@@ -53,6 +54,7 @@ function ItemControls({
       <Button
         variant="ghost"
         size="icon"
+        className="text-on-paper hover:bg-surface-sunken hover:text-ink"
         aria-label={labels.moveDown(n)}
         disabled={index === count - 1}
         onClick={() => dispatch({ type: "move", from: index, to: index + 1 })}
@@ -62,6 +64,7 @@ function ItemControls({
       <Button
         variant="ghost"
         size="icon"
+        className="text-on-paper hover:bg-surface-sunken hover:text-ink"
         aria-label={labels.remove(n)}
         onClick={() => dispatch({ type: "remove", index })}
       >
@@ -107,17 +110,17 @@ export function PickListEditor<O>({
   const moreId = `${id}-more`;
   return (
     <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">{labels.count}</p>
+      <p className="text-sm text-ink-muted">{labels.count}</p>
 
       {items.length === 0 && seeded && (
-        <p className="text-sm text-muted-foreground">{labels.empty}</p>
+        <p className="text-sm text-ink-muted">{labels.empty}</p>
       )}
 
       <ol className="space-y-2">
         {items.map((item, index) => (
           <li key={item.kind === "own" ? item.key : item.id}>
             <Card className="flex-row items-start gap-1 p-3">
-              <span className="w-6 shrink-0 pt-0.5 text-sm text-muted-foreground">
+              <span className="w-6 shrink-0 pt-0.5 font-display text-sm font-bold text-on-paper-muted">
                 {index + firstNumber}.
               </span>
               {renderItem(item, index)}
@@ -141,11 +144,11 @@ export function PickListEditor<O>({
       >
         {labels.addOwn}
       </Button>
-      {full && <p className="text-sm text-muted-foreground">{labels.full}</p>}
+      {full && <p className="text-sm text-ink-muted">{labels.full}</p>}
 
       {available.length > 0 && (
         <section aria-labelledby={moreId} className="space-y-2">
-          <h2 id={moreId} className="text-lg font-semibold">
+          <h2 id={moreId} className="font-display text-xl font-bold">
             {labels.more}
           </h2>
           <ul className="space-y-2">

@@ -368,6 +368,7 @@
     "tvNow": "På TV:n:",
     "stop": "Stoppa",
     "stopFirst": "Stoppa {{name}} först",
+    "running": "Pågår",
     "switchedOff": "Avstängda ({{count}})",
     "partyScreen": "Festskärm",
     "party": {

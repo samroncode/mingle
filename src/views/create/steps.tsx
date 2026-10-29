@@ -1,5 +1,6 @@
 import type { ParseKeys, TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { supportedLanguages, type Language } from "@/i18n/language";
@@ -29,10 +30,10 @@ export function NicheStep({
             selected={id === value}
             onSelect={() => onSelect(id)}
           >
-            <span className="block font-medium">
+            <span className="block font-display text-lg font-bold">
               {t(niche.nameKey as ParseKeys)}
             </span>
-            <span className="block text-sm opacity-80">
+            <span className="block text-sm">
               {t(niche.descriptionKey as ParseKeys)}
             </span>
           </ChoiceButton>
@@ -58,7 +59,7 @@ export function LanguageStep({
           selected={language === value}
           onSelect={() => onSelect(language)}
         >
-          <span lang={language} className="font-medium">
+          <span lang={language} className="font-display text-lg font-bold">
             {t(`language.${language}`)}
           </span>
         </ChoiceButton>
@@ -93,7 +94,7 @@ export function ActivitiesStep({
         </Card>
       ))}
       {enabled.length === 0 && (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-ink-muted">
           {t("wizard.activities.noneHint")}
         </p>
       )}
@@ -199,17 +200,17 @@ export function SummaryStep({
       {rows.map((row) => (
         <Card key={row.step} className="flex-row items-center justify-between">
           <div>
-            <dt className="text-sm text-muted-foreground">{row.label}</dt>
-            <dd className="font-medium">{row.value}</dd>
+            <dt className="text-sm text-on-paper-muted">{row.label}</dt>
+            <dd className="font-display font-bold">{row.value}</dd>
           </div>
-          <button
-            type="button"
-            className="text-sm text-primary underline-offset-4 hover:underline"
+          <Button
+            variant="outline"
+            size="sm"
             aria-label={t("wizard.summary.change", { step: row.label })}
             onClick={() => onEdit(row.step)}
           >
             {t("wizard.summary.edit")}
-          </button>
+          </Button>
         </Card>
       ))}
     </dl>

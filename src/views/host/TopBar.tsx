@@ -74,11 +74,11 @@ export function TopBar({ event, members, hostKey }: TopBarProps) {
   return (
     <div
       data-testid="host-top-bar"
-      className="sticky top-0 z-10 -mx-4 space-y-1 border-b-[length:var(--border-chunky)] border-edge bg-forest px-4 py-2 text-on-forest"
+      className="sticky top-0 z-10 -mx-4 space-y-2 border-b-[length:var(--border-chunky)] border-edge bg-forest px-4 py-3 text-on-forest"
     >
       <div className="flex items-center justify-between gap-2">
         <Logo className="text-xl" />
-        <span className="font-display font-extrabold tracking-widest">
+        <span className="rounded-sm bg-champagne px-2 py-0.5 font-display text-lg font-extrabold tracking-widest text-on-bright">
           {event.code}
         </span>
         <span data-testid="guest-count" className="text-sm">
@@ -86,7 +86,7 @@ export function TopBar({ event, members, hostKey }: TopBarProps) {
         </span>
       </div>
       <div className="flex items-center justify-between gap-2">
-        <p data-testid="tv-now" className="text-sm text-on-forest">
+        <p data-testid="tv-now" className="font-body text-base text-on-forest">
           {t("hostPanel.tvNow")} <TvNow event={event} />
         </p>
         {running && (
@@ -101,7 +101,7 @@ export function TopBar({ event, members, hostKey }: TopBarProps) {
         )}
       </div>
       {error && (
-        <p role="alert" className="text-sm text-danger-text">
+        <p role="alert" className="text-sm font-bold text-danger-text">
           {error}
         </p>
       )}

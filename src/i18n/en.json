@@ -368,6 +368,7 @@
     "tvNow": "On the TV:",
     "stop": "Stop",
     "stopFirst": "Stop the {{name}} first",
+    "running": "Running",
     "switchedOff": "Switched off ({{count}})",
     "partyScreen": "Party screen",
     "party": {
