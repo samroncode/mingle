@@ -13,6 +13,8 @@ export interface WizardSlice<D, A, R> {
   resetBuiltin: (draft: D) => D;
   /** Keys of the host's own items that break the shared schema. */
   invalidKeys: (draft: D) => string[];
+  /** i18n key of the summary line; it takes the item count as `count`. */
+  summaryKey: string;
   toRequest: (niche: NicheId, language: Language, draft: D) => R[];
 }
 

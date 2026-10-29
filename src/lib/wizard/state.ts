@@ -363,6 +363,27 @@ export function firstInvalidDraftStep(
   return stepOrder.find((step) => stepIsInvalid(draft, step));
 }
 
+/** One activity's summary line: its step, an i18n key and the item count. */
+export interface SliceSummary {
+  step: WizardStep;
+  key: string;
+  count: number;
+}
+
+/** The summary lines of the activities switched on, in step order. */
+export function sliceSummaries(draft: WizardDraft): SliceSummary[] {
+  return stepOrder.filter(isSliceId).flatMap((id): SliceSummary[] => {
+    if (!sliceActive(draft, id)) return [];
+    const slice = anySlice[id];
+    const items = slice.toRequest(
+      draft.niche,
+      draft.language,
+      sliceDraft(draft, id),
+    );
+    return [{ step: id, key: slice.summaryKey, count: items.length }];
+  });
+}
+
 /** The input for `createEvent`: the `create_event` request without its action. */
 export function toCreateInput(
   draft: WizardDraft,
