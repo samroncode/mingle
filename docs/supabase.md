@@ -72,7 +72,7 @@ order by start_time desc
 limit 10;
 ```
 
-`return_message` is the first row of the result, and `status` is `succeeded` or `failed`. The counts (`events`, `codes_retired`, `rate_limits`, `users`) are in the function's return value; to see them for a run, run it by hand as below.
+`status` is `succeeded` or `failed`, and `return_message` holds the error text of a failed run. pg_cron does not keep the function's counts (`events`, `codes_retired`, `rate_limits`, `users`); to see them, run the function by hand as below.
 
 **Run it by hand.** Only an admin can, in the dashboard's SQL editor:
 
