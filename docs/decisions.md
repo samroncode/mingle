@@ -12,6 +12,18 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-29: Shared costs: guests pay the host by Swish, confirmed by hand
+
+**Decision:** Hosts can switch on **shared costs** (spec #175, tickets #176 to #181). The host enters a Swish number, the name guests pay to and **purchases** (name, price in whole kronor, who shares it). Nothing about money shows until the host presses **Send the bill**; it can be hidden again.
+- **Guests see only their own bill,** behind a small receipt icon next to the language switch (a dot while they owe). No popup, sound or banner, never over an activity. The sheet has their lines and total, a Swish button and QR code, and "I've paid".
+- **Paid is never automatic.** Swish has no payment API for a private number (only companies with a bank agreement, with a fee per payment). The guest says they paid, the host confirms, or marks someone paid directly (cash). Mingle sends no reminders; the host chases people.
+- **Money rules:** Swedish kronor only, whole kronor; an even split rounds each share up to the next krona; shares are computed on read from the current sharers, so removing a guest or adding a purchase updates everyone. Confirming stores the amount paid, so a later purchase only adds the difference. The Swish message is `Mingle <code> <guest name>`; the payer can change the amount.
+- **Privacy:** the TV and the summary page never show money. The number is not in the party content (which the TV can read): costs live in their own tables that no guest can read directly, and a guest gets only their own bill through one `security definer` function, only while the bill is sent. Everything is deleted with the event after 30 days.
+- **Not an activity:** it is an event setting beside the activities. It doesn't use the module registry or change the event's flow. Off by default in every niche.
+- **Swish handoff:** a `swish://` app link and a prefilled QR text, built in the app with the QR library we already use. The exact formats must be tested on a real phone with Swish before the ticket is done.
+
+**Why:** Hosts otherwise settle up in a group chat afterwards and track payments in their head. Using Swish's free app link and QR keeps it free to run with no business agreement; asking the guest to tap "I've paid" is the best that is possible without a paid payment API. Keeping it behind an icon and a host button keeps the evening about the party.
+
 ## 2026-10-29: Short README, archived history, no AI README job
 
 **Decision:** The repo root stays as it is, because every file there is one a tool looks for at the root (this confirms 2026-10-21 and 2026-10-22). The README shrinks to about 40 lines: a screenshot of the TV party screen, a short pitch, how to run it and links to `CLAUDE.md` and `docs/`. It no longer holds a status line, folder tree, architecture sketch or scripts table. Finished history (`implementation.md`, `plans/`) moves to `docs/archive/`, and `docs/README.md` indexes the docs. There is no scheduled AI job for the README; an optional link-check script (`npm run check:links`) is run by hand and is not a required check. Tracked in spec #146.
