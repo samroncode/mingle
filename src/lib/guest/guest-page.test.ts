@@ -53,6 +53,12 @@ describe("pickGuestPageState", () => {
     ).toBe("ended");
   });
 
+  it("shows the removed note when joining says the guest was removed", () => {
+    expect(pickGuestPageState({ lookup: guest, joinOutcome: "removed" })).toBe(
+      "removed",
+    );
+  });
+
   it("shows not found when joining says the code is unknown", () => {
     expect(
       pickGuestPageState({

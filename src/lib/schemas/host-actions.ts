@@ -224,6 +224,23 @@ export const RenameGuestResponseSchema = z.strictObject({});
 
 export type RenameGuestResponse = z.infer<typeof RenameGuestResponseSchema>;
 
+/**
+ * Removes a guest from the evening. The guest's answers and votes on items
+ * that aren't revealed yet go with them; a removed phone can't join again.
+ */
+export const RemoveGuestRequestSchema = z.strictObject({
+  action: z.literal("remove_guest"),
+  ...hostLinkFields,
+  userId: z.uuid(),
+});
+
+export type RemoveGuestRequest = z.infer<typeof RemoveGuestRequestSchema>;
+
+/** Empty: the TV and the host read the new member list. */
+export const RemoveGuestResponseSchema = z.strictObject({});
+
+export type RemoveGuestResponse = z.infer<typeof RemoveGuestResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -234,6 +251,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdateAwardsRequestSchema,
   UpdateHotTakesRequestSchema,
   RenameGuestRequestSchema,
+  RemoveGuestRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -257,6 +275,7 @@ export const hostActionErrorCodes = [
    * ended, any change to the party content of an ended event, and a quiz
    * edit while a question is open or revealed, once the quiz is finished or
    * once the event has ended; and the same for an awards or hot takes edit.
+   * Also renaming or removing a guest once the event has ended.
    */
   "invalid_transition",
   /** start_module for an activity the host turned off, quiz questions, award categories or hot takes for it. */
@@ -265,7 +284,7 @@ export const hostActionErrorCodes = [
   "module_empty",
   /** start_module for an activity whose steps have all been played. */
   "module_finished",
-  /** rename_guest for a user who isn't a guest of the event. */
+  /** rename_guest or remove_guest for a user who isn't a guest of the event (or is already removed). */
   "not_found",
   /** rename_guest to a name another guest of the event has. */
   "name_taken",

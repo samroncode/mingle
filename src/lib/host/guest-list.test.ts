@@ -13,6 +13,7 @@ function member(
     display_name,
     event_id: "e",
     created_at: "2026-10-29T10:00:00Z",
+    removed_at: null,
   };
 }
 

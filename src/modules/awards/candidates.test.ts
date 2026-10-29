@@ -13,6 +13,7 @@ function member(
     role,
     display_name,
     created_at: "2026-10-23T18:00:00Z",
+    removed_at: null,
   };
 }
 

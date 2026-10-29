@@ -10,6 +10,9 @@ import {
   type HostActionErrorCode,
   HostActionErrorSchema,
   type HostActionRequest,
+  type RemoveGuestRequest,
+  type RemoveGuestResponse,
+  RemoveGuestResponseSchema,
   type RenameGuestRequest,
   type RenameGuestResponse,
   RenameGuestResponseSchema,
@@ -201,5 +204,20 @@ export async function renameGuest(
   return toHostActionResult(
     RenameGuestResponseSchema,
     await invokeHostActions({ action: "rename_guest", ...input }),
+  );
+}
+
+/**
+ * Removes a guest from the evening, with their answers and votes on items
+ * that aren't revealed yet. Fails with `not_found` for a user who isn't a
+ * guest of the event or is already removed, and `invalid_transition` once the
+ * event has ended.
+ */
+export async function removeGuest(
+  input: Omit<RemoveGuestRequest, "action">,
+): Promise<HostActionResult<RemoveGuestResponse>> {
+  return toHostActionResult(
+    RemoveGuestResponseSchema,
+    await invokeHostActions({ action: "remove_guest", ...input }),
   );
 }

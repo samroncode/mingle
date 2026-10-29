@@ -6,12 +6,16 @@ import {
 } from "./errors";
 
 describe("toJoinErrorCode", () => {
-  it.each(["not_found", "ended", "name_taken", "invalid_name", "rate_limited"])(
-    "passes %s through",
-    (code) => {
-      expect(toJoinErrorCode(code)).toBe(code);
-    },
-  );
+  it.each([
+    "not_found",
+    "ended",
+    "name_taken",
+    "invalid_name",
+    "rate_limited",
+    "removed",
+  ])("passes %s through", (code) => {
+    expect(toJoinErrorCode(code)).toBe(code);
+  });
 
   it("maps a code it does not know to unknown", () => {
     expect(toJoinErrorCode("something_else")).toBe("unknown");
