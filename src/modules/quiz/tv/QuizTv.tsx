@@ -6,6 +6,7 @@ import type { ModuleViewProps } from "../../types";
 import { QuizOptions } from "../QuizOptions";
 import { ScoreList } from "../ScoreList";
 import { quizScreen } from "../screen";
+import { TvCounter, TvStage } from "../../TvStage";
 
 /** The left side of the TV while the quiz runs. */
 export function QuizTv({ event, members }: ModuleViewProps) {
@@ -27,42 +28,52 @@ export function QuizTv({ event, members }: ModuleViewProps) {
   const guests = members.filter((m) => m.role === "guest").length;
 
   return (
-    <section
+    <TvStage
       data-testid="quiz-tv"
       data-screen={screen.kind}
-      className="flex min-h-[70svh] flex-col justify-center gap-8"
+      moment={screen.kind === "revealed" || screen.kind === "results"}
+      momentKey={`${screen.kind}-${shown?.id ?? ""}`}
     >
       {screen.kind === "loading" && (
-        <p className="text-5xl font-semibold">{t("modules.quiz.name")}</p>
+        <p className="font-display text-6xl font-extrabold">
+          {t("modules.quiz.name")}
+        </p>
       )}
       {screen.kind === "idle" && (
         <>
-          <p className="text-4xl text-muted-foreground">
+          <TvCounter>
             {t("modules.quiz.counter", {
               number: screen.number,
               total: screen.total,
             })}
+          </TvCounter>
+          <p className="tv-float font-display text-8xl leading-none font-extrabold">
+            {t("modules.quiz.tv.ready")}
           </p>
-          <p className="text-7xl font-semibold">{t("modules.quiz.tv.ready")}</p>
         </>
       )}
       {(screen.kind === "open" || screen.kind === "revealed") && (
         <>
-          <p className="text-3xl text-muted-foreground">
+          <TvCounter>
             {t("modules.quiz.counter", {
               number: screen.number,
               total: screen.total,
             })}
-          </p>
-          <h2 className="text-6xl font-semibold">{screen.question.text}</h2>
+          </TvCounter>
+          <h2 className="font-display text-6xl leading-tight font-extrabold">
+            {screen.question.text}
+          </h2>
           <QuizOptions
             options={screen.question.options}
             correct={screen.kind === "revealed" ? screen.correct : null}
             votes={votes}
-            itemClassName="text-4xl py-6"
+            itemClassName="py-6 text-4xl"
           />
           {screen.kind === "open" && (
-            <p data-testid="quiz-answered" className="text-4xl">
+            <p
+              data-testid="quiz-answered"
+              className="font-display text-4xl font-bold"
+            >
               {t("modules.quiz.answered", {
                 count: screen.question.answerCount,
                 total: guests,
@@ -73,7 +84,7 @@ export function QuizTv({ event, members }: ModuleViewProps) {
       )}
       {screen.kind === "results" && (
         <>
-          <h2 className="text-6xl font-semibold">
+          <h2 className="font-display text-7xl font-extrabold">
             {t("modules.quiz.scores.title")}
           </h2>
           {scores && (
@@ -81,6 +92,6 @@ export function QuizTv({ event, members }: ModuleViewProps) {
           )}
         </>
       )}
-    </section>
+    </TvStage>
   );
 }

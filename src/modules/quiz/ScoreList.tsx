@@ -8,31 +8,40 @@ interface ScoreListProps {
   itemClassName?: string;
 }
 
+/** The places that get a bright fill: champagne first, then blush and sage. */
+const placeFills = ["bg-champagne", "bg-blush", "bg-sage"] as const;
+
 /** Guests with their place and points, best first. Ties share a place. */
 export function ScoreList({ scores, itemClassName }: ScoreListProps) {
   const { t } = useTranslation();
   if (scores.length === 0) {
     return (
-      <p className="text-muted-foreground">{t("modules.quiz.scores.empty")}</p>
+      <p className="text-on-paper-muted">{t("modules.quiz.scores.empty")}</p>
     );
   }
   return (
-    <ol data-testid="quiz-scores" className="space-y-2">
-      {scores.map((row) => (
-        <li
-          key={row.userId}
-          className={cn(
-            "flex items-center gap-4 rounded-lg border px-4 py-3",
-            itemClassName,
-          )}
-        >
-          <span className="font-bold">{row.place}</span>
-          <span className="min-w-0 flex-1 truncate">{row.displayName}</span>
-          <span className="font-semibold">
-            {t("modules.quiz.scores.points", { count: row.score })}
-          </span>
-        </li>
-      ))}
+    <ol data-testid="quiz-scores" className="space-y-3">
+      {scores.map((row) => {
+        const fill = placeFills[row.place - 1];
+        return (
+          <li
+            key={row.userId}
+            className={cn(
+              "flex items-center gap-4 rounded-md border-[length:var(--border-chunky)] border-edge px-4 py-3 font-display font-bold shadow-pop-sm",
+              fill ? `${fill} text-on-bright` : "bg-paper text-on-paper",
+              itemClassName,
+            )}
+          >
+            <span className="w-[1.2em] text-center font-extrabold">
+              {row.place}
+            </span>
+            <span className="min-w-0 flex-1 truncate">{row.displayName}</span>
+            <span className="font-extrabold">
+              {t("modules.quiz.scores.points", { count: row.score })}
+            </span>
+          </li>
+        );
+      })}
     </ol>
   );
 }

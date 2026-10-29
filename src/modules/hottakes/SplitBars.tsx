@@ -20,7 +20,7 @@ export function SplitBars({ split, large }: SplitBarsProps) {
     return (
       <p
         data-testid="hottakes-split"
-        className={large ? "text-5xl" : "text-lg"}
+        className={cn("font-display font-bold", large ? "text-5xl" : "text-lg")}
       >
         {t("modules.hottakes.split.none")}
       </p>
@@ -31,13 +31,13 @@ export function SplitBars({ split, large }: SplitBarsProps) {
       key: "agree",
       percent: view.agreePercent,
       count: split.agree,
-      bar: "bg-primary",
+      bar: "bg-sage",
     },
     {
       key: "disagree",
       percent: view.disagreePercent,
       count: split.disagree,
-      bar: "bg-ink-muted",
+      bar: "bg-blush",
     },
   ] as const;
   return (
@@ -47,7 +47,12 @@ export function SplitBars({ split, large }: SplitBarsProps) {
     >
       {rows.map((row) => (
         <div key={row.key} data-testid={`hottakes-split-${row.key}`}>
-          <p className={cn("font-semibold", large ? "text-4xl" : "text-base")}>
+          <p
+            className={cn(
+              "font-display font-extrabold",
+              large ? "text-5xl" : "text-lg",
+            )}
+          >
             {t(`modules.hottakes.split.${row.key}`)}{" "}
             {t("modules.hottakes.split.share", {
               percent: row.percent,
@@ -56,19 +61,27 @@ export function SplitBars({ split, large }: SplitBarsProps) {
           </p>
           <div
             className={cn(
-              "mt-1 overflow-hidden rounded-full bg-surface-sunken",
-              large ? "h-8" : "h-3",
+              "mt-1 overflow-hidden rounded-sm border-[length:var(--border-thin)] border-edge bg-surface-sunken",
+              large ? "h-12" : "h-5",
             )}
           >
             <div
-              className={cn("h-full", row.bar)}
+              className={cn(
+                "h-full border-r-[length:var(--border-thin)] border-edge",
+                row.bar,
+              )}
               style={{ width: `${row.percent}%` }}
             />
           </div>
         </div>
       ))}
       {view.kind === "even" && (
-        <p className={large ? "text-4xl" : "text-base"}>
+        <p
+          className={cn(
+            "font-display font-bold",
+            large ? "text-4xl" : "text-base",
+          )}
+        >
           {t("modules.hottakes.split.even")}
         </p>
       )}

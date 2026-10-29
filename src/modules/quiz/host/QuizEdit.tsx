@@ -68,7 +68,7 @@ export function QuizEdit({
           {start.played.map((question, index) => (
             <li key={question.id}>
               <QuestionCard question={{ ...question, position: index }} />
-              <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+              <p className="mt-1 flex items-center gap-1 text-xs text-ink-muted">
                 <Lock aria-hidden className="size-3" />
                 {t("modules.quiz.edit.locked")}
               </p>

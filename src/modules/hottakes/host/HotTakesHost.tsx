@@ -50,7 +50,10 @@ export function HotTakesHost({
       aria-labelledby="hottakes-host-title"
       className="space-y-3"
     >
-      <h2 id="hottakes-host-title" className="text-lg font-semibold">
+      <h2
+        id="hottakes-host-title"
+        className="font-display text-xl font-extrabold"
+      >
         {t("modules.hottakes.name")}
       </h2>
       {run.failed && (
@@ -61,7 +64,7 @@ export function HotTakesHost({
           {running ? (
             <p
               data-testid="hottakes-progress"
-              className="text-sm text-muted-foreground"
+              className="text-sm text-ink-muted"
             >
               {next
                 ? t("modules.hottakes.counter", {
@@ -72,14 +75,14 @@ export function HotTakesHost({
             </p>
           ) : (
             finished && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-ink-muted">
                 {t("modules.hottakes.run.finished")}
               </p>
             )
           )}
           {current && next && (
             <Card className="p-3">
-              <p className="font-medium">{current.text}</p>
+              <p className="font-display font-bold">{current.text}</p>
               {event.phase === "open" && (
                 <p
                   data-testid="hottakes-answered"
@@ -131,7 +134,7 @@ export function HotTakesHost({
             </Button>
           )}
           {run.progress && run.takes.length === 0 && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-ink-muted">
               {t("modules.hottakes.host.empty")}
             </p>
           )}
@@ -140,7 +143,7 @@ export function HotTakesHost({
               {run.takes.map((take) => (
                 <li key={take.id}>
                   <Card className="p-3">
-                    <p className="font-medium">
+                    <p className="font-display font-bold">
                       {take.position + 1}. {take.text}
                     </p>
                   </Card>

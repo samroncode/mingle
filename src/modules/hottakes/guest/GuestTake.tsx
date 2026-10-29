@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { answerHotTake, getMyHotTakeAnswer } from "@/api/hottakes";
 import type { HotTakeView } from "@/api/hottakes";
+import { Counter } from "../../Counter";
 import { guestStanding } from "../split";
 import { SplitBars } from "../SplitBars";
 import { useHotTakeResult } from "../useHotTakeResults";
@@ -73,10 +74,10 @@ export function GuestTake({
 
   return (
     <>
-      <p className="text-sm text-muted-foreground">
-        {t("modules.hottakes.counter", { number, total })}
-      </p>
-      <h2 className="text-2xl font-semibold">{take.text}</h2>
+      <Counter>{t("modules.hottakes.counter", { number, total })}</Counter>
+      <h2 className="font-display text-3xl leading-tight font-extrabold">
+        {take.text}
+      </h2>
       {!revealed && (
         <AnswerButtons chosen={chosen} onChoose={(a) => void choose(a)} />
       )}
@@ -84,7 +85,10 @@ export function GuestTake({
         <SplitBars split={result.value} />
       )}
       {standing && (
-        <p data-testid="hottakes-standing" className="text-lg font-medium">
+        <p
+          data-testid="hottakes-standing"
+          className="fun-pop font-display text-2xl font-extrabold text-champagne-text"
+        >
           {t(`modules.hottakes.split.${standing}`)}
         </p>
       )}

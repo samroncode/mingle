@@ -72,10 +72,14 @@ Do not use: blue-purple gradients, emoji cards, cards with a colored left border
 
 - `npm test` runs `src/app/theme.test.ts`: every text pair above reaches 4.5:1 in all three themes, every text-bearing token a theme declares must be in the pair list (add new ones there), all themes declare the same tokens, `focus` and `line-strong` reach 3:1 on the surfaces, and `focus-on-paper` reaches 3:1 on `paper`.
 - `npm test` also runs `scripts/check-design-rules.mjs` (`npm run check:design`). It fails on hex or `rgb()`/`hsl()`/`oklch()` colors, hardcoded font families and `dark:` classes anywhere in `src/`, except `src/app/theme.css` and the QR code (black on white).
-- `npm run test:e2e` runs `e2e/look.spec.ts`: landing, guest and TV party screens in each niche theme, no horizontal scroll at 412px and 1920x1080, and every button at least 48px high on the phone.
+- `npm run test:e2e` runs `e2e/look.spec.ts`: landing, guest and TV party screens and the quiz, awards and hot takes guest and TV screens (open, revealed, end) in each niche theme, no horizontal scroll at 412px and 1920x1080, every button at least 48px high on the phone, and that a TV reveal goes to party and back to playful.
 
-**For the module screens (#130):** add the quiz, awards and hot takes guest, TV and host screens to `e2e/look.spec.ts` (each niche, phone and 1920x1080), and use new color tokens only if the pair list in `src/app/theme.test.ts` gets them too.
+## Quiz, awards and hot takes
+
+- Answer tiles are coral, champagne, blush, sage for A to D (`src/modules/optionFills.ts`), with a letter chip. A picked tile is pressed in and carries a check, so selection is never color alone. Agree is sage, Disagree blush.
+- The TV shows each activity on a forest panel (`src/modules/TvStage.tsx`). A reveal or winner gets about 4 seconds of `party` with confetti (`usePartyMoment`), then goes back to `playful`. The ready screen has the one gentle float.
+- The phone's reveal pops in with a word and an icon (`ResultBadge`, `WinnerCard`). Host sections stay calm.
 
 ## Known gaps
 
-- The host panel is not in the look spec (it needs a host key and several fakes); the TV and guest screens are.
+- The host panel, including the module sections, is not in the look spec (it needs a host key and several fakes); the TV and guest screens are.

@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { answerQuizQuestion, getMyQuizAnswer } from "@/api/quiz";
 import type { QuizQuestionView } from "@/api/quiz";
 import { QuizOptions } from "../QuizOptions";
+import { Counter } from "../../Counter";
+import { ResultBadge } from "../../ResultBadge";
 import { optionLetters } from "../screen";
 import { AnswerButtons } from "./AnswerButtons";
 
@@ -69,10 +71,10 @@ export function GuestQuestion({
 
   return (
     <>
-      <p className="text-sm text-muted-foreground">
-        {t("modules.quiz.counter", { number, total })}
-      </p>
-      <h2 className="text-xl font-semibold">{question.text}</h2>
+      <Counter>{t("modules.quiz.counter", { number, total })}</Counter>
+      <h2 className="font-display text-3xl leading-tight font-extrabold">
+        {question.text}
+      </h2>
       {correct === null ? (
         <AnswerButtons
           options={question.options}
@@ -83,16 +85,16 @@ export function GuestQuestion({
         <>
           <QuizOptions options={question.options} correct={correct} />
           {chosen !== undefined && (
-            <p data-testid="quiz-result" className="text-lg font-semibold">
+            <ResultBadge testId="quiz-result" good={chosen === correct}>
               {chosen === correct
                 ? t("modules.quiz.guest.right")
                 : t("modules.quiz.guest.answerWas", {
                     letter: optionLetters[correct],
                   })}
-            </p>
+            </ResultBadge>
           )}
           {score !== undefined && (
-            <p data-testid="quiz-score" className="text-muted-foreground">
+            <p data-testid="quiz-score" className="text-lg text-ink-muted">
               {t("modules.quiz.guest.scoreSoFar", { count: score })}
             </p>
           )}

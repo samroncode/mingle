@@ -9,17 +9,14 @@ export function QuestionCard({ question }: { question: QuizQuestionView }) {
   const { t } = useTranslation();
   return (
     <Card className="gap-2 p-3">
-      <p className="font-medium">
+      <p className="font-display font-bold">
         {question.position + 1}. {question.text}
       </p>
       <ul className="space-y-1 text-sm">
         {question.options.map((option, index) => {
           const right = index === question.correct;
           return (
-            <li
-              key={index}
-              className={right ? "font-semibold text-primary" : ""}
-            >
+            <li key={index} className={right ? "font-bold" : ""}>
               {optionLetters[index]}. {option}
               {right && (
                 <>
@@ -42,11 +39,9 @@ export function QuestionList({ questions }: { questions: QuizQuestionView[] }) {
   const { t } = useTranslation();
   return (
     <div className="space-y-2">
-      <h3 className="font-semibold">{t("modules.quiz.host.title")}</h3>
+      <h3 className="font-display font-bold">{t("modules.quiz.host.title")}</h3>
       {questions.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {t("modules.quiz.host.empty")}
-        </p>
+        <p className="text-sm text-ink-muted">{t("modules.quiz.host.empty")}</p>
       ) : (
         <ol className="space-y-2">
           {questions.map((question) => (

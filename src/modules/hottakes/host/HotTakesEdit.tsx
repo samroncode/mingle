@@ -71,11 +71,11 @@ export function HotTakesEdit({
           {start.revealed.map((take, index) => (
             <li key={take.id}>
               <Card className="p-3">
-                <p className="font-medium">
+                <p className="font-display font-bold">
                   {index + 1}. {take.text}
                 </p>
               </Card>
-              <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+              <p className="mt-1 flex items-center gap-1 text-xs text-ink-muted">
                 <Lock aria-hidden className="size-3" />
                 {t("modules.hottakes.edit.locked")}
               </p>

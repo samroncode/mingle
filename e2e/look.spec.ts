@@ -1,11 +1,18 @@
 import { expect, test, type Page } from "@playwright/test";
 import { eventRow, memberRow } from "./fake-rows.ts";
-import { fakeEvent, fakeSupabase, fakeTv } from "./fake-supabase.ts";
+import {
+  fakeRun,
+  runEvent,
+  type RunModule,
+  type RunScreen,
+} from "./fake-run.ts";
+import { fakeEvent, fakeSupabase, fakeTv, supabase } from "./fake-supabase.ts";
 
 // Checks the rules in docs/design.md that a browser can prove: no sideways
 // scroll on any screen and phone tap targets of at least 48px, in every niche
 // theme (aw = garden, team = loud, bachelor = garden with blush leading).
-// Quiz, awards and hot takes screens are added by ticket #130.
+// The quiz, awards and hot takes screens are checked on the phone and the TV in
+// each niche, for an open item, a revealed one and the closing step.
 
 const code = "ABC234";
 const niches = ["aw", "team", "bachelor"] as const;
@@ -32,6 +39,20 @@ async function expectTapTargetsAtLeast48px(page: Page) {
     }
   }
   expect(tooSmall).toEqual([]);
+}
+
+const modules: Array<{ id: RunModule; end: string; open: string }> = [
+  { id: "quiz", open: "open", end: "results" },
+  { id: "awards", open: "category", end: "winners" },
+  { id: "hottakes", open: "take", end: "summary" },
+];
+const screens: RunScreen[] = ["open", "revealed", "end"];
+
+/** The `data-screen` a module's view shows for a step. */
+function screenName(module: (typeof modules)[number], screen: RunScreen) {
+  if (screen === "end") return module.end;
+  if (screen === "revealed" && module.id === "quiz") return "revealed";
+  return module.open;
 }
 
 test.describe("phone size", () => {
@@ -68,6 +89,41 @@ test.describe("phone size", () => {
       await expectNoHorizontalScroll(page);
       await expectTapTargetsAtLeast48px(page);
     });
+  }
+
+  for (const niche of niches) {
+    for (const module of modules) {
+      for (const screen of screens) {
+        test(`the ${module.id} ${screen} screen fits and has big buttons (${niche})`, async ({
+          page,
+        }) => {
+          await fakeSupabase(page, []);
+          await fakeEvent(page, { code, niche, joinedAs: "Anna" });
+          await page.route(`${supabase}/rest/v1/events*`, (route) => {
+            if (!route.request().url().includes("id=eq.")) {
+              return route.fallback();
+            }
+            return route.fulfill({
+              status: 200,
+              headers: {
+                "access-control-allow-origin": "*",
+                "content-type": "application/json",
+              },
+              body: JSON.stringify([runEvent(code, niche, module.id, screen)]),
+            });
+          });
+          await fakeRun(page, screen);
+          await page.goto(`/p/${code}`);
+          await expect(page.getByTestId(`${module.id}-guest`)).toHaveAttribute(
+            "data-screen",
+            screenName(module, screen),
+          );
+          await expect(page.getByRole("heading").nth(1)).toBeVisible();
+          await expectNoHorizontalScroll(page);
+          await expectTapTargetsAtLeast48px(page);
+        });
+      }
+    }
   }
 });
 
@@ -117,5 +173,41 @@ test.describe("1920x1080", () => {
       );
       await expectNoHorizontalScroll(page);
     });
+
+    for (const module of modules) {
+      for (const screen of screens) {
+        test(`the ${module.id} ${screen} TV screen fits (${niche})`, async ({
+          page,
+        }) => {
+          await fakeSupabase(page, []);
+          await fakeTv(page, {
+            snapshot: runEvent(code, niche, module.id, screen),
+          });
+          await fakeRun(page, screen);
+          await page.goto(`/tv/${code}`);
+          await expect(page.getByTestId(`${module.id}-tv`)).toHaveAttribute(
+            "data-screen",
+            screenName(module, screen),
+          );
+          await expect(page.getByTestId(`${module.id}-tv`)).toBeVisible();
+          await expectNoHorizontalScroll(page);
+        });
+      }
+    }
   }
+
+  test("a reveal gets a few seconds of party on the TV, then goes back to playful", async ({
+    page,
+  }) => {
+    await fakeSupabase(page, []);
+    await fakeTv(page, { snapshot: runEvent(code, "aw", "quiz", "revealed") });
+    await fakeRun(page, "revealed");
+    await page.goto(`/tv/${code}`);
+    await expect(page.getByTestId("confetti")).toBeAttached();
+    await expect(page.locator("[data-fun='party']")).toHaveCount(1);
+    await expect(page.locator("[data-fun='party']")).toHaveCount(0, {
+      timeout: 8000,
+    });
+    await expect(page.getByTestId("confetti")).toHaveCount(0);
+  });
 });

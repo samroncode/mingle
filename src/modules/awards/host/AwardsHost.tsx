@@ -48,7 +48,10 @@ export function AwardsHost({
       aria-labelledby="awards-host-title"
       className="space-y-3"
     >
-      <h2 id="awards-host-title" className="text-lg font-semibold">
+      <h2
+        id="awards-host-title"
+        className="font-display text-xl font-extrabold"
+      >
         {t("modules.awards.name")}
       </h2>
       {run.failed && (
@@ -57,10 +60,7 @@ export function AwardsHost({
       {run.progress && (
         <div className="space-y-3">
           {running ? (
-            <p
-              data-testid="awards-progress"
-              className="text-sm text-muted-foreground"
-            >
+            <p data-testid="awards-progress" className="text-sm text-ink-muted">
               {next
                 ? t("modules.awards.counter", {
                     number: event.current_step + 1,
@@ -70,14 +70,14 @@ export function AwardsHost({
             </p>
           ) : (
             finished && (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-ink-muted">
                 {t("modules.awards.run.finished")}
               </p>
             )
           )}
           {current && next && (
             <Card className="p-3">
-              <p className="font-medium">{current.text}</p>
+              <p className="font-display font-bold">{current.text}</p>
               {event.phase === "open" && (
                 <VoteStatus
                   category={current}
@@ -128,7 +128,7 @@ export function AwardsHost({
             </Button>
           )}
           {run.progress && run.categories.length === 0 && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-ink-muted">
               {t("modules.awards.host.empty")}
             </p>
           )}
@@ -137,7 +137,7 @@ export function AwardsHost({
               {run.categories.map((category) => (
                 <li key={category.id}>
                   <Card className="p-3">
-                    <p className="font-medium">
+                    <p className="font-display font-bold">
                       {category.position + 1}. {category.text}
                     </p>
                   </Card>

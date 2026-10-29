@@ -38,7 +38,7 @@ export function QuizHost(props: ModuleHostProps) {
       aria-labelledby="quiz-host-title"
       className="space-y-3"
     >
-      <h2 id="quiz-host-title" className="text-lg font-semibold">
+      <h2 id="quiz-host-title" className="font-display text-xl font-extrabold">
         {t("modules.quiz.name")}
       </h2>
       {run.failed && <ErrorLine>{t("modules.quiz.host.loadFailed")}</ErrorLine>}
@@ -52,7 +52,9 @@ export function QuizHost(props: ModuleHostProps) {
       )}
       {finished && scores && (
         <div className="space-y-2">
-          <h3 className="font-semibold">{t("modules.quiz.scores.all")}</h3>
+          <h3 className="font-display font-bold">
+            {t("modules.quiz.scores.all")}
+          </h3>
           <ScoreList scores={scores} />
         </div>
       )}
