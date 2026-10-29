@@ -21,6 +21,8 @@ const threeQuestions = [1, 2, 3].map((n) => ({
   correct: 0,
 }));
 
+const threeHotTakes = [1, 2, 3].map((n) => ({ text: `Hot take ${n}` }));
+
 const threeCategories = ["dance", "laugh", "sing"].map((word) => ({
   text: `Most likely to ${word}`,
 }));
@@ -41,6 +43,10 @@ async function createEvent(
       ...(enabledModules.includes("quiz") ? { quiz: threeQuestions } : {}),
       // Awards likewise (see awards-run.db.test.ts).
       ...(enabledModules.includes("awards") ? { awards: threeCategories } : {}),
+      // And hot takes (see hot-takes-run.db.test.ts).
+      ...(enabledModules.includes("hottakes")
+        ? { hottakes: threeHotTakes }
+        : {}),
     },
     { user },
   );

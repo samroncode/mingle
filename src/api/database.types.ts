@@ -446,6 +446,13 @@ export type Database = {
           event_id: string;
         }[];
       };
+      hot_take_progress: {
+        Args: { target_event_id: string };
+        Returns: {
+          revealed: number;
+          total: number;
+        }[];
+      };
       is_host: { Args: { target_event_id: string }; Returns: boolean };
       is_member: { Args: { target_event_id: string }; Returns: boolean };
       join_event: {

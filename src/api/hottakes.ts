@@ -39,3 +39,65 @@ export async function listHotTakes(
     })),
   );
 }
+
+/** How far the hot takes have come: approved hot takes, and how many are revealed. */
+export interface HotTakeProgress {
+  total: number;
+  revealed: number;
+}
+
+/**
+ * The hot takes' progress, for any member of the event. A non-member, an
+ * unknown id and an expired event all get `not_found`.
+ */
+export async function getHotTakeProgress(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<HotTakeProgress, "not_found" | "unknown">> {
+  const { data, error } = await client.rpc("hot_take_progress", {
+    target_event_id: eventId,
+  });
+  if (error) return fail("unknown");
+  const row = data[0];
+  return row
+    ? ok({ total: row.total, revealed: row.revealed })
+    : fail("not_found");
+}
+
+/** Answers arrive in bursts; one refetch per this long is enough. */
+const CHANGE_DELAY_MS = 300;
+
+/**
+ * Calls `onChange` (at most once per burst) when a hot take of the event
+ * changes, such as an answer counting on it. Changes are only a signal to
+ * refetch, so RLS applies to every read. Returns a function that stops it.
+ */
+export function subscribeToHotTakeChanges(
+  eventId: string,
+  onChange: () => void,
+  client: AppClient = getSupabase(),
+): () => void {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const signal = () => {
+    clearTimeout(timer);
+    timer = setTimeout(onChange, CHANGE_DELAY_MS);
+  };
+  // A random suffix: two views of one event must not share a channel.
+  const channel = client
+    .channel(`hottakes:${eventId}:${Math.random().toString(36).slice(2)}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "hot_takes",
+        filter: `event_id=eq.${eventId}`,
+      },
+      signal,
+    )
+    .subscribe();
+  return () => {
+    clearTimeout(timer);
+    void client.removeChannel(channel);
+  };
+}
