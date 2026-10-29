@@ -238,6 +238,13 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      award_progress: {
+        Args: { target_event_id: string };
+        Returns: {
+          revealed: number;
+          total: number;
+        }[];
+      };
       can_answer_quiz_question: {
         Args: { target_event_id: string; target_question_id: string };
         Returns: boolean;

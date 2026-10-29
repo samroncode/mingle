@@ -1,14 +1,52 @@
 import { useTranslation } from "react-i18next";
+import type { ModuleViewProps } from "../../types";
+import { awardsScreen } from "../screen";
+import { useAwardsRun } from "../useAwardsRun";
 
-/** Placeholder for the left side of the TV until the awards' run is built. */
-export function AwardsTv() {
+/** The left side of the TV while the awards run. */
+export function AwardsTv({ event }: ModuleViewProps) {
   const { t } = useTranslation();
+  const run = useAwardsRun(event);
+  const screen = awardsScreen(event, run.progress, run.categories);
+
   return (
     <section
       data-testid="awards-tv"
-      className="flex min-h-[70svh] flex-col justify-center"
+      data-screen={screen.kind}
+      className="flex min-h-[70svh] flex-col justify-center gap-8"
     >
-      <p className="text-5xl font-semibold">{t("modules.awards.name")}</p>
+      {screen.kind === "loading" && (
+        <p className="text-5xl font-semibold">{t("modules.awards.name")}</p>
+      )}
+      {screen.kind === "idle" && (
+        <>
+          <p className="text-4xl text-muted-foreground">
+            {t("modules.awards.counter", {
+              number: screen.number,
+              total: screen.total,
+            })}
+          </p>
+          <p className="text-7xl font-semibold">
+            {t("modules.awards.tv.ready")}
+          </p>
+        </>
+      )}
+      {screen.kind === "category" && (
+        <>
+          <p className="text-3xl text-muted-foreground">
+            {t("modules.awards.counter", {
+              number: screen.number,
+              total: screen.total,
+            })}
+          </p>
+          <h2 className="text-6xl font-semibold">{screen.category.text}</h2>
+        </>
+      )}
+      {screen.kind === "winners" && (
+        <h2 className="text-6xl font-semibold">
+          {t("modules.awards.winnersTitle")}
+        </h2>
+      )}
     </section>
   );
 }

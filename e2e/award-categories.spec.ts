@@ -156,3 +156,53 @@ test("the control panel says when the awards have no categories", async ({
     "There are no categories in these awards yet.",
   );
 });
+
+test("the host starts awards and sees the category and the next move", async ({
+  page,
+}) => {
+  const bodies = await fakeSupabase(page, [
+    () => [200, {}],
+    () => [409, { error: "module_empty" }],
+  ]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: ["awards"],
+    awards: ["Most likely to dance"],
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const panel = page.getByTestId("awards-host");
+  await panel.getByRole("button", { name: "Start awards" }).click();
+
+  await expect(panel.getByRole("alert")).toBeVisible();
+  expect(bodies[1]).toEqual({
+    action: "set_flow",
+    code,
+    key,
+    move: { type: "start_module", module: "awards" },
+  });
+});
+
+test("the control panel shows the open category and the Reveal button", async ({
+  page,
+}) => {
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: ["awards"],
+    awards: ["Most likely to dance", "Most likely to bake"],
+    flow: {
+      status: "live",
+      current_module: "awards",
+      current_step: 1,
+      phase: "open",
+    },
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const panel = page.getByTestId("awards-host");
+  await expect(panel.getByTestId("awards-progress")).toHaveText("Award 2 of 2");
+  await expect(panel.getByText("Most likely to bake")).toBeVisible();
+  await expect(panel.getByRole("button", { name: "Reveal" })).toBeVisible();
+  await expect(panel.getByRole("button", { name: "Stop" })).toBeVisible();
+});

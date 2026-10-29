@@ -21,6 +21,10 @@ const threeQuestions = [1, 2, 3].map((n) => ({
   correct: 0,
 }));
 
+const threeCategories = ["dance", "laugh", "sing"].map((word) => ({
+  text: `Most likely to ${word}`,
+}));
+
 /** Creates an event through host-actions, as the wizard does. */
 async function createEvent(
   enabledModules: string[] = ["quiz", "awards", "hottakes"],
@@ -35,6 +39,8 @@ async function createEvent(
       party: {},
       // The quiz can only start with questions (see quiz-run.db.test.ts).
       ...(enabledModules.includes("quiz") ? { quiz: threeQuestions } : {}),
+      // Awards likewise (see awards-run.db.test.ts).
+      ...(enabledModules.includes("awards") ? { awards: threeCategories } : {}),
     },
     { user },
   );

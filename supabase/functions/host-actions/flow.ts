@@ -19,9 +19,10 @@
 // constraint holds the same shape in the database.
 //
 // * Step bounds. An activity with a fixed list of steps (the quiz: one per
-//   question) gives its StepBounds (step-bounds.ts). It starts at its first
-//   unplayed step; with no steps start_module answers `module_empty`, with
-//   every step played `module_finished`. next_step from the last step moves
+//   question, awards: one per category) gives its StepBounds
+//   (step-bounds.ts). It starts at its first unplayed step; with no steps
+//   start_module answers `module_empty`, with every step played
+//   `module_finished`. next_step from the last step moves
 //   to the results step (step = number of steps), which is not "on a step":
 //   there open, reveal and next_step answer `invalid_transition`, and only
 //   stop_module or end_event leave it. An activity without bounds starts at

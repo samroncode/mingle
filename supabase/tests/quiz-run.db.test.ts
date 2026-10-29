@@ -40,7 +40,7 @@ async function createQuiz(count: number): Promise<Host> {
       action: "create_event",
       niche: "aw",
       language: "sv",
-      enabledModules: ["quiz", "awards"],
+      enabledModules: ["quiz", "awards", "hottakes"],
       party: {},
       ...(count > 0 ? { quiz } : {}),
     },
@@ -148,9 +148,9 @@ describe("start_module for the quiz", () => {
   it("still starts another activity without questions as before", async () => {
     const host = await createQuiz(0);
 
-    await moves(host, { type: "start_module", module: "awards" });
+    await moves(host, { type: "start_module", module: "hottakes" });
 
-    expect((await flowOf(host)).current_module).toBe("awards");
+    expect((await flowOf(host)).current_module).toBe("hottakes");
   });
 });
 
