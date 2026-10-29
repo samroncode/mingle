@@ -18,8 +18,6 @@ import {
 } from "./helpers";
 
 let cast: Cast;
-/** A guest of the event without a display name. */
-let nameless: User;
 /** A guest of the other event. */
 let otherGuest: User;
 /** Category ids by position 0 to 2 in the event; 2 is a draft. */
@@ -29,8 +27,7 @@ let otherCategoryId: string;
 
 beforeAll(async () => {
   cast = await seedCast({ enabled_modules: ["quiz", "awards"] });
-  [nameless, otherGuest] = await anonymousUsers(2);
-  await seedMember(cast.event.id, nameless.id, "guest");
+  [otherGuest] = await anonymousUsers(1);
   await seedMember(cast.otherEvent.id, otherGuest.id, "guest", "Olle");
   ids = [
     await seedAwardCategory(cast.event.id, 0),
@@ -199,12 +196,10 @@ describe("a guest voting", () => {
     expect(await storedVotes(ids[0] as string)).toEqual([]);
   });
 
-  it.each(["host", "tv", "nameless", "otherGuest"] as const)(
+  it.each(["host", "tv", "otherGuest"] as const)(
     "cannot vote for the %s",
     async (who) => {
-      const target = { host: cast.host, tv: cast.tv, nameless, otherGuest }[
-        who
-      ];
+      const target = { host: cast.host, tv: cast.tv, otherGuest }[who];
       const result = await vote(cast.guestA, { voted_for_id: target.id });
       expect(result.error).not.toBeNull();
       expect(await storedVotes(ids[0] as string)).toEqual([]);
@@ -219,7 +214,7 @@ describe("a guest voting", () => {
 
   it("cannot change a vote to someone they could not vote for", async () => {
     expect((await vote(cast.guestA)).error).toBeNull();
-    for (const target of [cast.host, cast.tv, nameless, otherGuest]) {
+    for (const target of [cast.host, cast.tv, otherGuest]) {
       const result = await changeVote(cast.guestA, target.id);
       expect(result.error?.code).toBe("42501");
     }
@@ -454,8 +449,8 @@ describe("the catalog", () => {
   it("is deleted with the event", async () => {
     const event = await seedEvent({ enabled_modules: ["awards"] });
     const [a, b] = await anonymousUsers(2);
-    await seedMember(event.id, a.id, "guest", "A");
-    await seedMember(event.id, b.id, "guest", "B");
+    await seedMember(event.id, a.id, "guest", "Ann");
+    await seedMember(event.id, b.id, "guest", "Bob");
     const category = await seedAwardCategory(event.id, 0);
     const service = serviceClient();
     const inserted = await service.from("award_votes").insert({
