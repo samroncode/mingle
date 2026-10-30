@@ -498,6 +498,7 @@
     "party": {
       "menu": "Menu",
       "schedule": "Schedule",
+      "winners": "Winners",
       "wifi": "Wifi",
       "openNetwork": "Open network",
       "copyPassword": "Copy wifi password",
