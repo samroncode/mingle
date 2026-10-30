@@ -5,6 +5,14 @@ import type { ModuleId } from "@/modules/registry";
 import { getNiche, type NicheId } from "@/niches";
 import { nicheIds } from "@/niches/ids";
 import { awardsSlice } from "./awards";
+import {
+  costsInvalid,
+  costsReducer,
+  emptyCosts,
+  parseCosts,
+  type CostsAction,
+  type CostsDraft,
+} from "./costs";
 import { hotTakesSlice } from "./hottakes";
 import { quizSlice } from "./quiz";
 import type { WizardSlice } from "./slice";
@@ -17,6 +25,7 @@ export const stepOrder = [
   "quiz",
   "awards",
   "hottakes",
+  "costs",
   "welcome",
   "menu",
   "schedule",
@@ -90,10 +99,11 @@ function sliceActive(draft: WizardDraft, id: SliceId): boolean {
 }
 
 /**
- * The steps this draft goes through, in order: an activity's step only appears while that activity is switched on.
+ * The steps this draft goes through, in order: an activity's step only appears while that activity is switched on, and the shared costs step while shared costs are.
  */
 export function stepsFor(draft: WizardDraft): WizardStep[] {
   return stepOrder.filter((step) => {
+    if (step === "costs") return draft.costs.enabled;
     return !isSliceId(step) || sliceActive(draft, step);
   });
 }
@@ -124,6 +134,7 @@ export interface WizardDraft extends SliceDrafts {
   niche: NicheId;
   language: Language;
   enabledModules: ModuleId[];
+  costs: CostsDraft;
   party: PartyForm;
 }
 
@@ -135,6 +146,7 @@ export type WizardAction =
   | { type: "set_language"; language: Language }
   | { type: "toggle_module"; module: ModuleId }
   | SliceAction
+  | { type: "costs"; action: CostsAction }
   | { type: "skip" }
   | { type: "set_welcome"; text: string }
   | { type: "set_menu"; menu: string[] }
@@ -164,6 +176,7 @@ export function initialDraft(language: Language): WizardDraft {
     language,
     enabledModules: [...getNiche(firstNiche).defaultModules],
     ...emptySlices(),
+    costs: emptyCosts(firstNiche),
     party: emptyParty(firstNiche, language),
   };
 }
@@ -203,6 +216,11 @@ function clearStep(draft: WizardDraft): WizardDraft {
   switch (draft.step) {
     case "welcome":
       return followWelcome(withParty(draft, { welcomeEdited: false }));
+    case "costs":
+      return {
+        ...draft,
+        costs: { ...emptyCosts(draft.niche), enabled: false },
+      };
     case "menu":
       return withParty(draft, { menu: [] });
     case "schedule":
@@ -254,6 +272,10 @@ export function wizardReducer(
         ...(action.niche === draft.niche ? draft : resetBuiltin(draft)),
         niche: action.niche,
         enabledModules: [...getNiche(action.niche).defaultModules],
+        costs: {
+          ...draft.costs,
+          enabled: getNiche(action.niche).defaultSharedCosts,
+        },
       });
     case "set_language":
       return followWelcome({ ...draft, language: action.language });
@@ -265,9 +287,13 @@ export function wizardReducer(
           : [...draft.enabledModules, action.module],
       };
     case "skip": {
-      const cleared = clearStep(draft);
-      return { ...cleared, step: moveStep(cleared, 1) };
+      // The next step comes from the draft as it is: skipping the costs step
+      // switches shared costs off, which removes the step itself.
+      const step = moveStep(draft, 1);
+      return { ...clearStep(draft), step };
     }
+    case "costs":
+      return { ...draft, costs: costsReducer(draft.costs, action.action) };
     case "set_welcome":
       return withParty(draft, { welcome: action.text, welcomeEdited: true });
     case "set_menu":
@@ -352,6 +378,7 @@ function sliceIsInvalid(draft: WizardDraft, id: SliceId): boolean {
 
 /** Whether the step holds something invalid; Next is blocked while it does. */
 export function stepIsInvalid(draft: WizardDraft, step: WizardStep): boolean {
+  if (step === "costs") return costsInvalid(draft.costs);
   if (isSliceId(step)) return sliceIsInvalid(draft, step);
   return stepInvalidFields(draft.party, step).length > 0;
 }
@@ -397,6 +424,10 @@ export function toCreateInput(
     enabledModules: draft.enabledModules,
     party: toParty(draft.party),
   };
+  if (draft.costs.enabled) {
+    const costs = parseCosts(draft.costs);
+    if (costs.ok) input.costs = costs.costs;
+  }
   // Items only go with their activity switched on, and only once there are
   // some.
   for (const id of sliceIds) {

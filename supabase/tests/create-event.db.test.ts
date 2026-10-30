@@ -524,6 +524,154 @@ describe("hot takes", () => {
   });
 });
 
+describe("shared costs", () => {
+  const costs = {
+    payeeName: "Sam",
+    swishNumber: "070-123 45 67",
+    purchases: [
+      { name: "Drinks", price: 450 },
+      { name: "Pizza", price: 1200 },
+    ],
+  };
+
+  /** The cost rows of the event, read as the service role. */
+  async function storedCosts(code: string) {
+    const service = serviceClient();
+    const { data: event } = await service
+      .from("events")
+      .select("id")
+      .eq("code", code)
+      .single();
+    const eventId = event?.id ?? "";
+    const { data: settings } = await service
+      .from("cost_settings")
+      .select("payee_name, swish_number, bill_sent_at")
+      .eq("event_id", eventId);
+    const { data: purchases } = await service
+      .from("cost_purchases")
+      .select("position, name, price_kr")
+      .eq("event_id", eventId)
+      .order("position");
+    const { data: sharers } = await service
+      .from("cost_sharers")
+      .select("user_id")
+      .eq("event_id", eventId);
+    return { settings, purchases, sharers };
+  }
+
+  it("stores the payee, the normalised number and the purchases in order, with no sharers", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...createEvent, costs },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+    const { code } = response.body as { code: string };
+
+    expect(await storedCosts(code)).toEqual({
+      settings: [
+        { payee_name: "Sam", swish_number: "46701234567", bill_sent_at: null },
+      ],
+      purchases: [
+        { position: 0, name: "Drinks", price_kr: 450 },
+        { position: 1, name: "Pizza", price_kr: 1200 },
+      ],
+      sharers: [],
+    });
+  });
+
+  it("stores the payee and number alone when there are no purchases", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...createEvent, costs: { ...costs, purchases: [] } },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+    const { code } = response.body as { code: string };
+
+    const stored = await storedCosts(code);
+    expect(stored.settings).toHaveLength(1);
+    expect(stored.purchases).toEqual([]);
+  });
+
+  it("stores nothing without costs", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(createEvent, { user: host });
+    expect(response.status).toBe(200);
+    const { code } = response.body as { code: string };
+
+    expect(await storedCosts(code)).toEqual({
+      settings: [],
+      purchases: [],
+      sharers: [],
+    });
+  });
+
+  it("lets the host read the costs through the app's own client, and nobody else", async () => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...createEvent, costs },
+      { user: host },
+    );
+    expect(response.status).toBe(200);
+
+    const read = await host.client.from("cost_settings").select("payee_name");
+    expect(read.data).toEqual([{ payee_name: "Sam" }]);
+
+    const stranger = await anonymousUser();
+    const hidden = await stranger.client.from("cost_settings").select();
+    expect(hidden.data).toEqual([]);
+  });
+
+  const invalid: [string, unknown][] = [
+    ["a bad Swish number", { ...costs, swishNumber: "12345" }],
+    ["a blank payee", { ...costs, payeeName: "  " }],
+    ["no payee", { swishNumber: costs.swishNumber, purchases: [] }],
+    ["a price of 0", { ...costs, purchases: [{ name: "Drinks", price: 0 }] }],
+    [
+      "a decimal price",
+      { ...costs, purchases: [{ name: "Drinks", price: 4.5 }] },
+    ],
+    [
+      "a blank purchase name",
+      { ...costs, purchases: [{ name: " ", price: 5 }] },
+    ],
+    [
+      "a purchase with sharers",
+      {
+        ...costs,
+        purchases: [
+          {
+            name: "Drinks",
+            price: 450,
+            sharers: ["7f9c3c9e-52a1-4a52-9d0e-1c8f6a7b2d11"],
+          },
+        ],
+      },
+    ],
+    [
+      "more than 50 purchases",
+      {
+        ...costs,
+        purchases: Array.from({ length: 51 }, () => ({ name: "x", price: 1 })),
+      },
+    ],
+    ["costs that are null", null],
+  ];
+
+  it.each(invalid)("refuses %s with invalid_request", async (_, bad) => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...createEvent, costs: bad },
+      { user: host },
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ error: "invalid_request" });
+    expect(await eventsOf(host)).toEqual([]);
+  });
+});
+
 describe("invalid requests", () => {
   const invalid: [string, unknown][] = [
     ["an unknown action", { ...createEvent, action: "drop_tables" }],

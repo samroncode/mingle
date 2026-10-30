@@ -624,6 +624,7 @@ export type Database = {
           awards?: Json;
           caller: string;
           code: string;
+          costs?: Json;
           enabled_modules: string[];
           hottakes?: Json;
           language: string;

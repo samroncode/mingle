@@ -65,6 +65,21 @@ export const PurchaseSchema = z.strictObject({
 
 export type Purchase = z.infer<typeof PurchaseSchema>;
 
+/**
+ * A purchase as the setup wizard enters it. Nobody has joined yet, so it has
+ * no sharers; the host picks them in the control panel.
+ */
+export const WizardPurchaseSchema = PurchaseSchema.omit({ sharers: true });
+
+/** The costs the setup wizard sends with `create_event`. */
+export const WizardCostsSchema = z.strictObject({
+  payeeName: z.string().trim().min(1).max(costsLimits.payeeName),
+  swishNumber: SwishNumberSchema,
+  purchases: z.array(WizardPurchaseSchema).max(costsLimits.purchases),
+});
+
+export type WizardCosts = z.infer<typeof WizardCostsSchema>;
+
 /** Who guests pay, where, and what for. */
 export const CostsSchema = z.strictObject({
   payeeName: z.string().trim().min(1).max(costsLimits.payeeName),
