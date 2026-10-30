@@ -26,7 +26,8 @@ const rules = [
   ],
 ];
 
-// The pressable controls that may wear the hard offset shadow (shadow-pop-*).
+// The pressable controls that may wear the hard offset shadow (shadow-pop-sm).
+// Add a file here when you build a new pressable control.
 const pressables = new Set([
   "components/ui/button.tsx",
   "components/ui/switch.tsx",

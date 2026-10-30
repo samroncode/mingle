@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import type { ChoiceFill, ChoiceState } from "./choiceState";
+import { softFills } from "./optionFills";
 
 interface ChoiceTileProps {
   fill: ChoiceFill;
@@ -23,22 +24,22 @@ const fills: Record<ChoiceFill, Record<ChoiceState, string>> = {
   coral: {
     idle: "bg-coral text-on-bright",
     chosen: "bg-coral text-on-bright",
-    "other-chosen": "bg-coral-soft-fill text-on-bright",
+    "other-chosen": cn(softFills.coral, "text-on-bright"),
   },
   champagne: {
     idle: "bg-champagne text-on-bright",
     chosen: "bg-champagne text-on-bright",
-    "other-chosen": "bg-champagne-soft-fill text-on-bright",
+    "other-chosen": cn(softFills.champagne, "text-on-bright"),
   },
   blush: {
     idle: "bg-blush text-on-bright",
     chosen: "bg-blush text-on-bright",
-    "other-chosen": "bg-blush-soft-fill text-on-bright",
+    "other-chosen": cn(softFills.blush, "text-on-bright"),
   },
   sage: {
     idle: "bg-sage text-on-bright",
     chosen: "bg-sage text-on-bright",
-    "other-chosen": "bg-sage-soft-fill text-on-bright",
+    "other-chosen": cn(softFills.sage, "text-on-bright"),
   },
   paper: {
     idle: "bg-paper text-on-paper",
