@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { useOutletContext, useParams } from "react-router";
+import { useParams } from "react-router";
+import { useGuestHeaderSlots } from "@/app/layouts/guestHeader";
 import { Card } from "@/components/ui/card";
 import { Sticker } from "@/components/ui/sticker";
 import { useGuestLookup } from "@/hooks/useGuestLookup";
@@ -12,7 +13,7 @@ import { NameForm } from "./NameForm";
 export function GuestView() {
   const { t } = useTranslation();
   const { code = "" } = useParams();
-  const billSlot = useOutletContext<HTMLElement | null | undefined>();
+  const headerSlots = useGuestHeaderSlots();
   const { lookup, userId, joinOutcome, join, checkRemoved, retry } =
     useGuestLookup(code);
   const page = pickGuestPageState({ lookup, joinOutcome });
@@ -22,7 +23,7 @@ export function GuestView() {
       <GuestIn
         eventId={lookup.eventId}
         userId={userId}
-        billSlot={billSlot}
+        headerSlots={headerSlots}
         onAccessLost={checkRemoved}
       />
     );

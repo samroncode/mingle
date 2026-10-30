@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { renameGuest } from "@/api/events";
 import { NicheTheme } from "@/components/NicheTheme";
-import { Button } from "@/components/ui/button";
 import { Sticker } from "@/components/ui/sticker";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
+import type { GuestHeaderSlots } from "@/app/layouts/guestHeader";
 import { idsSignal } from "@/lib/guest/bill";
 import { pickSnapshotState } from "@/lib/guest/guest-page";
 import { readParty } from "@/lib/party";
 import { pickScreen } from "@/modules/screen";
 import { GuestBill } from "./GuestBill";
+import { GuestNameButton } from "./GuestNameButton";
 import { GuestMessage } from "./GuestMessage";
 import { NameForm } from "./NameForm";
 import { PartyInfo } from "./PartyInfo";
@@ -18,8 +19,8 @@ import { PartyInfo } from "./PartyInfo";
 interface GuestInProps {
   eventId: string;
   userId: string;
-  /** Where the receipt icon goes: next to the language switch. */
-  billSlot?: HTMLElement | null;
+  /** Where the name and the receipt icon go: next to the language switch. */
+  headerSlots?: GuestHeaderSlots;
   /** The event can no longer be read: the guest may have been removed. */
   onAccessLost: () => Promise<void>;
 }
@@ -28,7 +29,7 @@ interface GuestInProps {
 export function GuestIn({
   eventId,
   userId,
-  billSlot,
+  headerSlots,
   onAccessLost,
 }: GuestInProps) {
   const { t } = useTranslation();
@@ -63,7 +64,7 @@ export function GuestIn({
       code={state.event.code}
       guestName={name ?? ""}
       signal={billSignal}
-      slot={billSlot}
+      slot={headerSlots?.bill}
     />
   );
   // People pay the next day: the receipt icon stays after the evening ends.
@@ -79,6 +80,12 @@ export function GuestIn({
   const content = (
     <div className="space-y-5">
       {bill}
+      <GuestNameButton
+        name={name ?? ""}
+        open={renaming}
+        onToggle={() => setRenaming((open) => !open)}
+        slot={headerSlots?.name}
+      />
       <header className="space-y-3">
         <Sticker color="sage" lean="left">
           {t("guest.joinedSticker")}
@@ -87,7 +94,7 @@ export function GuestIn({
           {t("guest.in", { name: name ?? "" })}
         </h1>
       </header>
-      {renaming ? (
+      {renaming && (
         <NameForm
           label={t("guest.renameLabel")}
           submitLabel={t("guest.renameSave")}
@@ -101,10 +108,6 @@ export function GuestIn({
             return result.error;
           }}
         />
-      ) : (
-        <Button variant="secondary" onClick={() => setRenaming(true)}>
-          {t("guest.rename")}
-        </Button>
       )}
       {choice.kind === "module" ? (
         <choice.definition.Guest
