@@ -8,7 +8,7 @@ import { Slot } from "radix-ui";
  * The shadow color and the fills come from theme tokens only.
  */
 const buttonVariants = cva(
-  "group/button fun-lift inline-flex shrink-0 items-center justify-center gap-2 rounded-md border-[length:var(--border-chunky)] border-edge font-display font-bold whitespace-nowrap select-none shadow-pop-sm transition-[transform,box-shadow,background-color] duration-(--duration-fast) outline-none active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-danger [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
+  "group/button fun-lift inline-flex shrink-0 items-center justify-center gap-2 rounded-md border-[length:var(--border-chunky)] border-edge font-display font-bold whitespace-nowrap select-none shadow-pop-sm transition-[transform,box-shadow,background-color] duration-(--duration-fast) outline-none active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:pointer-events-none disabled:bg-disabled disabled:text-on-disabled disabled:shadow-none aria-invalid:border-danger [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5",
   {
     variants: {
       variant: {
@@ -19,8 +19,8 @@ const buttonVariants = cva(
         hype: "fun-pulse bg-champagne text-on-bright hover:brightness-105",
         destructive: "bg-danger text-on-bright hover:brightness-105",
         ghost:
-          "border-transparent bg-transparent text-ink shadow-none hover:bg-surface-sunken active:translate-x-0 active:translate-y-0",
-        link: "border-transparent bg-transparent text-link shadow-none underline-offset-4 hover:underline active:translate-x-0 active:translate-y-0",
+          "border-transparent bg-transparent text-ink shadow-none hover:bg-surface-sunken disabled:bg-transparent disabled:text-ink-muted active:translate-x-0 active:translate-y-0",
+        link: "border-transparent bg-transparent text-link shadow-none underline-offset-4 hover:underline disabled:bg-transparent disabled:text-ink-muted active:translate-x-0 active:translate-y-0",
       },
       size: {
         default: "min-h-12 px-4 text-base",

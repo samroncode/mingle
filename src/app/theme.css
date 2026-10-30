@@ -69,6 +69,8 @@
   --on-forest: #f6efdc;
   --focus: #e9c97f;
   --focus-on-paper: #1f4d3a;
+  --disabled: #2f5242;
+  --on-disabled: #c9d6c6;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #04100a;
   --glow: 0 0 0 6px rgba(233, 201, 127, 0.35);
@@ -109,6 +111,8 @@
   --on-forest: #f1ead8;
   --focus: #e6c27a;
   --focus-on-paper: #e6c27a;
+  --disabled: #264a3c;
+  --on-disabled: #c4cfc2;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #ff6f4f;
   --glow: 0 0 0 6px rgba(230, 194, 122, 0.35);
@@ -149,6 +153,8 @@
   --on-forest: #f6efdc;
   --focus: #11301f;
   --focus-on-paper: #11301f;
+  --disabled: #d8c68f;
+  --on-disabled: #2f4337;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #11301f;
   --glow: 0 0 0 6px rgba(255, 122, 89, 0.3);
@@ -239,6 +245,8 @@
   --color-danger: var(--danger);
   --color-danger-text: var(--danger-text);
   --color-on-bright: var(--on-bright);
+  --color-disabled: var(--disabled);
+  --color-on-disabled: var(--on-disabled);
   --color-on-forest: var(--on-forest);
   --color-focus: var(--focus);
   --color-link: var(--link);

@@ -18,7 +18,7 @@ export function JoinWithCode() {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4">
-      <h2 className="font-display text-3xl leading-none font-extrabold">
+      <h2 className="font-display text-2xl leading-none font-extrabold text-ink">
         {t("views.landing.joinTitle")}
       </h2>
       <div className="flex flex-col gap-4">

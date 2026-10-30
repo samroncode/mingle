@@ -42,6 +42,7 @@ const pairs: [string, string][] = [
   ["on-paper", "paper"],
   ["on-paper-muted", "paper"],
   ["on-forest", "forest"],
+  ["on-disabled", "disabled"],
   ...brights.map((b): [string, string] => ["on-bright", b]),
   ...soft.map((c): [string, string] => ["ink", `${c}-soft`]),
   ...soft.map((c): [string, string] => ["on-bright", `${c}-soft-fill`]),

@@ -4,17 +4,17 @@ interface WelcomePartProps {
   welcome: string | undefined;
 }
 
-/** The welcome text; for now it is the whole left side of the party screen. */
+/** The welcome text, set straight on the TV ground beside the join column. */
 export function WelcomePart({ welcome }: WelcomePartProps) {
   const { t } = useTranslation();
   return (
     <section
       aria-label={t("tv.welcome")}
-      className="flex h-full items-center justify-center rounded-xl border-[length:var(--border-thin)] border-edge bg-forest p-(--space-7) text-on-forest"
+      className="flex h-full items-center px-(--space-7) text-ink"
     >
       <p
         data-testid="welcome-text"
-        className="text-center font-display text-7xl leading-tight font-extrabold"
+        className="tv-float max-w-[14ch] font-display text-9xl leading-[0.95] font-extrabold text-balance"
       >
         {welcome ?? t("app.name")}
       </p>
