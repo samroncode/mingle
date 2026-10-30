@@ -752,6 +752,10 @@ export type Database = {
         Args: { sent: boolean; target_event_id: string };
         Returns: string;
       };
+      set_enabled_modules: {
+        Args: { modules: string[]; target_event_id: string };
+        Returns: string;
+      };
       set_event_flow: {
         Args: {
           from_module?: string;

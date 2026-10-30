@@ -561,6 +561,11 @@
     "stop": "Stop",
     "stopFirst": "Stop the {{name}} first",
     "running": "Running",
+    "activity": {
+      "use": "Use this activity",
+      "stopToSwitchOff": "Stop it to switch it off.",
+      "pickFailed": "{{name}} is on, but its ready-made list couldn't be added. Add items in its section."
+    },
     "switchedOff": "Switched off ({{count}})",
     "partyScreen": "Party screen",
     "summary": {

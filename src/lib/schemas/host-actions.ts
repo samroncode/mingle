@@ -304,6 +304,26 @@ export const SetPaymentResponseSchema = z.strictObject({});
 
 export type SetPaymentResponse = z.infer<typeof SetPaymentResponseSchema>;
 
+/**
+ * Replaces the event's enabled activities with `modules`, in the order the
+ * panel shows them. Fails with `invalid_transition` when the list leaves out
+ * the running activity or the event has ended.
+ */
+export const SetModulesRequestSchema = z.strictObject({
+  action: z.literal("set_modules"),
+  ...hostLinkFields,
+  modules: z
+    .array(ModuleIdSchema)
+    .refine((ids) => new Set(ids).size === ids.length, "duplicate module"),
+});
+
+export type SetModulesRequest = z.infer<typeof SetModulesRequestSchema>;
+
+/** Empty: the host and members read the new list from the event row. */
+export const SetModulesResponseSchema = z.strictObject({});
+
+export type SetModulesResponse = z.infer<typeof SetModulesResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -318,6 +338,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdateCostsRequestSchema,
   SetBillSentRequestSchema,
   SetPaymentRequestSchema,
+  SetModulesRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;

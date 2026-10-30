@@ -561,6 +561,11 @@
     "stop": "Stoppa",
     "stopFirst": "Stoppa {{name}} först",
     "running": "Pågår",
+    "activity": {
+      "use": "Använd den här aktiviteten",
+      "stopToSwitchOff": "Stoppa den för att stänga av den.",
+      "pickFailed": "{{name}} är på, men den färdiga listan gick inte att lägga till. Lägg till i dess sektion."
+    },
     "switchedOff": "Avstängda ({{count}})",
     "partyScreen": "Festskärm",
     "summary": {
