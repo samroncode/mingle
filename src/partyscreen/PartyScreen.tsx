@@ -19,7 +19,7 @@ export function PartyScreen({ event, members, left }: PartyScreenProps) {
   const party = readParty(event.party);
   return (
     <FunZone level="playful">
-      <div className="tv-backdrop -m-(--space-6) grid min-h-svh grid-cols-[1fr_30rem] gap-(--space-7) p-(--space-6)">
+      <div className="tv-backdrop -m-(--space-6) grid min-h-svh grid-cols-[1fr_32rem] gap-(--space-7) p-(--space-6)">
         <div data-testid="party-left" className="relative">
           {left ?? <PartRotation party={party} members={members} />}
           <GuestWelcome members={members} />

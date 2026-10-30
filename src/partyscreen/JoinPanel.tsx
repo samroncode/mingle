@@ -7,14 +7,14 @@ interface JoinPanelProps {
   guestCount: number;
 }
 
-/** The fixed right-hand panel of the party screen: how guests join. */
+/** The fixed right-hand column of the party screen: how guests join. */
 export function JoinPanel({ code, guestCount }: JoinPanelProps) {
   const { t } = useTranslation();
   const address = guestAddress(window.location.origin, code);
   return (
     <aside
       aria-label={t("tv.join.title")}
-      className="tv-float flex flex-col items-center gap-5 self-center rounded-xl border-[length:var(--border-thin)] border-edge bg-champagne p-(--space-6) text-center text-on-bright"
+      className="flex flex-col justify-center gap-5 border-l-[length:var(--border-thin)] border-line pl-(--space-7) text-ink"
     >
       <h2 className="font-display text-4xl font-extrabold">
         {t("tv.join.title")}
@@ -22,11 +22,14 @@ export function JoinPanel({ code, guestCount }: JoinPanelProps) {
       <QrCode value={address} label={t("tv.join.qrLabel")} size={320} />
       <p
         data-testid="tv-code"
-        className="font-display text-7xl font-extrabold tracking-widest"
+        className="font-display text-8xl leading-none font-extrabold tracking-widest text-champagne-text"
       >
         {code}
       </p>
-      <p data-testid="join-address" className="font-body text-2xl break-all">
+      <p
+        data-testid="join-address"
+        className="font-body text-2xl break-all text-ink-muted"
+      >
         {address}
       </p>
       <p data-testid="guest-count" className="font-display text-3xl font-bold">

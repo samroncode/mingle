@@ -28,7 +28,7 @@ A niche can override a few tokens on top of its theme (`overrides` in its config
 - Text is `ink`, secondary `ink-muted`. On paper use `on-paper` and `on-paper-muted`. On a bright fill use `on-bright`. On forest use `on-forest`.
 - **Coral** is the brand: primary button, answer A, active states. One primary action per screen.
 - **Blush** is the fun accent: answer C, bonuses, accent button.
-- **Champagne** is celebration: answer B, first place, the join card.
+- **Champagne** is celebration: answer B, first place, the TV join code.
 - **Sage** is success: answer D, correct, joined, saved.
 - **Forest** is the deep block: TV hero cards, the host bar.
 - `danger` is only for wrong answers and destructive actions, always with a word or icon.
@@ -59,7 +59,7 @@ Host panel and wizard are calm. Guest phones are playful, with a brief party mom
 
 ## Accessibility
 
-- Every text pair below reaches 4.5:1 in all three themes, checked by `src/app/theme.test.ts`: `ink` and `ink-muted` on `surface` and `surface-sunken`; `ink` on each `-soft` tint; `on-paper` and `on-paper-muted` on `paper`; `on-bright` on coral, blush, champagne, sage and danger, and on each `-soft-fill`; `on-forest` on `forest`; each `-text` color on `surface` and `surface-sunken`.
+- Every text pair below reaches 4.5:1 in all three themes, checked by `src/app/theme.test.ts`: `ink` and `ink-muted` on `surface` and `surface-sunken`; `ink` on each `-soft` tint; `on-paper` and `on-paper-muted` on `paper`; `on-disabled` on `disabled` (a disabled button is a flat `disabled` fill with `on-disabled` text and no shadow, never reduced opacity), `on-bright` on coral, blush, champagne, sage and danger, and on each `-soft-fill`; `on-forest` on `forest`; each `-text` color on `surface` and `surface-sunken`.
 - `line-strong` reaches 3:1 on the surfaces.
 - Keyboard focus is a solid 3px `focus` outline, offset 3px. Inside a `bg-paper` card it uses `focus-on-paper` instead (forest in Garden, champagne in Loud, ink in Day), because champagne is faint on cream.
 - Phone tap targets are at least 48px. Color is never the only signal: answers carry a letter, results a word and an icon.
