@@ -490,6 +490,11 @@
     "renameFor": "{{name}}, byt namn",
     "renameLabel": "Nytt namn",
     "renameSave": "Spara",
+    "notices": {
+      "title": "Meddelanden",
+      "dismiss": "Stäng meddelandet",
+      "more": "+{{count}} till"
+    },
     "party": {
       "menu": "Meny",
       "schedule": "Schema",

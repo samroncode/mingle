@@ -3,7 +3,9 @@ import { CopyButton } from "@/components/CopyButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Sticker } from "@/components/ui/sticker";
+import type { NoticeView } from "@/api/notices";
 import type { Party } from "@/lib/schemas/party";
+import { NoticeList } from "./NoticeList";
 
 interface SectionProps {
   title: string;
@@ -20,7 +22,13 @@ function Section({ title, children }: SectionProps) {
 }
 
 /** The evening's info for a guest: only the parts the host filled in. */
-export function PartyInfo({ party }: { party: Party }) {
+export function PartyInfo({
+  party,
+  notices = [],
+}: {
+  party: Party;
+  notices?: readonly NoticeView[];
+}) {
   const { t } = useTranslation();
   const { welcome, menu, schedule, wifi, musicUrl } = party;
   return (
@@ -28,6 +36,7 @@ export function PartyInfo({ party }: { party: Party }) {
       {welcome ? (
         <p className="text-xl leading-snug whitespace-pre-line">{welcome}</p>
       ) : null}
+      <NoticeList notices={notices} />
       {menu?.length ? (
         <Section title={t("guest.party.menu")}>
           <ul className="list-disc space-y-1 pl-5 text-lg">

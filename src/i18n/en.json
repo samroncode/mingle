@@ -490,6 +490,11 @@
     "renameFor": "{{name}}, change my name",
     "renameLabel": "New name",
     "renameSave": "Save",
+    "notices": {
+      "title": "Messages",
+      "dismiss": "Dismiss message",
+      "more": "+{{count}} more"
+    },
     "party": {
       "menu": "Menu",
       "schedule": "Schedule",
