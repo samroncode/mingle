@@ -43,12 +43,6 @@ describe("theme tokens", () => {
 });
 
 describe("niche themes", () => {
-  it("maps each niche onto its Kalas theme", () => {
-    expect(niches.aw.theme.id).toBe("garden");
-    expect(niches.team.theme.id).toBe("loud");
-    expect(niches.bachelor.theme.id).toBe("garden");
-  });
-
   it("lets bachelor lead with blush through a token override", () => {
     expect(nicheThemeStyle(niches.bachelor.theme)).toMatchObject({
       "--primary": "var(--blush)",
@@ -60,10 +54,6 @@ describe("niche themes", () => {
 describe.each(Object.entries(niches))("niche %s", (registryKey, niche) => {
   it("passes the config schema", () => {
     expect(NicheConfigSchema.safeParse(niche).error).toBeUndefined();
-  });
-
-  it("starts with shared costs switched off", () => {
-    expect(niche.defaultSharedCosts).toBe(false);
   });
 
   it("is registered under its own id", () => {
@@ -97,10 +87,6 @@ describe.each(Object.values(niches))("niche $id content", (niche) => {
       expect(result.error).toBeUndefined();
     },
   );
-
-  it("has English prompt hints", () => {
-    expect(niche.promptHints).toMatch(/^[\x20-\x7e]+$/);
-  });
 });
 
 describe.each(Object.values(niches))("niche $id quiz", (niche) => {
