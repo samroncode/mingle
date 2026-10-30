@@ -40,7 +40,9 @@ async function expectTapTargetsAtLeast48px(page: Page) {
   const tooSmall: string[] = [];
   for (const button of buttons) {
     const box = await button.boundingBox();
-    if (box && box.height < 47.5) {
+    // A switch is 32px tall but has an invisible 8px tap area on every side.
+    const hitArea = (await button.getAttribute("role")) === "switch" ? 16 : 0;
+    if (box && box.height + hitArea < 47.5) {
       tooSmall.push(`${(await button.innerText()).trim()} (${box.height}px)`);
     }
   }
