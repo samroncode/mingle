@@ -22,7 +22,8 @@ function Section({ title, children }: SectionProps) {
 /** The evening's info for a guest: only the parts the host filled in. */
 export function PartyInfo({ party }: { party: Party }) {
   const { t } = useTranslation();
-  const { welcome, menu, schedule, wifi, musicUrl } = party;
+  const { welcome, menu, schedule, wifi, musicUrl, winners, winnersHidden } =
+    party;
   return (
     <div className="space-y-5">
       {welcome ? (
@@ -49,6 +50,20 @@ export function PartyInfo({ party }: { party: Party }) {
                   {item.time}
                 </Sticker>
                 <span>{item.title}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      ) : null}
+      {winners?.length && !winnersHidden ? (
+        <Section title={t("guest.party.winners")}>
+          <ul className="space-y-2" data-testid="guest-winners">
+            {winners.map((winner, i) => (
+              <li key={i} className="text-lg">
+                <span className="text-on-paper-muted">{winner.title}</span>
+                <span className="block font-display text-2xl leading-tight font-bold break-words">
+                  {winner.name}
+                </span>
               </li>
             ))}
           </ul>

@@ -134,3 +134,38 @@ test("an unknown or expired code shows the note on the guest and summary pages",
     page.getByRole("heading", { name: "We can't find this event" }),
   ).toBeVisible();
 });
+
+test("a guest sees the winners card, and not when the list is hidden", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  await fakeEvent(page, {
+    code,
+    joinedAs: "Anna",
+    party: { winners: [{ title: "Dart tournament", name: "Bo" }] },
+  });
+  await page.goto(`/p/${code}`);
+  await expect(page.getByTestId("guest-winners")).toContainText(
+    "Dart tournament",
+  );
+  await expect(page.getByTestId("guest-winners")).toContainText("Bo");
+});
+
+test("a guest sees no winners card when the list is hidden", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  await fakeEvent(page, {
+    code,
+    joinedAs: "Anna",
+    party: {
+      winners: [{ title: "Dart tournament", name: "Bo" }],
+      winnersHidden: true,
+    },
+  });
+  await page.goto(`/p/${code}`);
+  await expect(
+    page.getByRole("heading", { name: "You're in, Anna!" }),
+  ).toBeVisible();
+  await expect(page.getByTestId("guest-winners")).toHaveCount(0);
+});
