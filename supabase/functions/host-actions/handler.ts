@@ -15,6 +15,7 @@ import { createEvent } from "./create-event.ts";
 import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
 import { removeGuest } from "./remove-guest.ts";
+import { deleteNotice } from "./delete-notice.ts";
 import { renameGuest } from "./rename-guest.ts";
 import { setBillSent } from "./set-bill-sent.ts";
 import { setBrightRoom } from "./set-bright-room.ts";
@@ -22,6 +23,7 @@ import { setModules } from "./set-modules.ts";
 import { setFlow } from "./set-flow.ts";
 import { setPayment } from "./set-payment.ts";
 import { updateAwards } from "./update-awards.ts";
+import { sendNotice } from "./send-notice.ts";
 import { updateCosts } from "./update-costs.ts";
 import { updateHotTakes } from "./update-hottakes.ts";
 import { updatePartyContent } from "./update-party-content.ts";
@@ -110,5 +112,9 @@ async function runAction(
       return setModules(db, caller, request);
     case "set_bright_room":
       return setBrightRoom(db, caller, request);
+    case "send_notice":
+      return sendNotice(db, caller, request);
+    case "delete_notice":
+      return deleteNotice(db, caller, request);
   }
 }

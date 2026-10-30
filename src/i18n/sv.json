@@ -630,7 +630,10 @@
       "not_found": "Gästen är inte med på kvällen längre.",
       "name_taken": "Namnet är upptaget. Välj ett annat.",
       "invalid_name": "Skriv ett namn på 1 till 30 tecken.",
-      "invalid_sharer": "Ett inköp har en gäst som inte längre är med på kvällen. Kontrollera vilka som delar det."
+      "invalid_sharer": "Ett inköp har en gäst som inte längre är med på kvällen. Kontrollera vilka som delar det.",
+      "ended": "Kvällen är slut, så det går inte att skicka mer.",
+      "too_many": "Du har skickat så många meddelanden som en kväll tillåter. Ta bort något gammalt först.",
+      "too_soon": "Vänta några sekunder innan du skickar nästa meddelande."
     },
     "guestList": {
       "empty": "Inga gäster har gått med än.",

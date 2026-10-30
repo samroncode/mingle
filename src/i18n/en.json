@@ -630,7 +630,10 @@
       "not_found": "That guest isn't part of this evening any more.",
       "name_taken": "That name is taken. Pick another one.",
       "invalid_name": "Enter a name of 1 to 30 characters.",
-      "invalid_sharer": "That purchase has a guest who isn't part of this evening any more. Check who shares it."
+      "invalid_sharer": "That purchase has a guest who isn't part of this evening any more. Check who shares it.",
+      "ended": "That evening has ended, so nothing more can be sent.",
+      "too_many": "You have sent the most messages one evening allows. Delete an old one first.",
+      "too_soon": "Wait a few seconds before sending the next message."
     },
     "guestList": {
       "empty": "No guests have joined yet.",

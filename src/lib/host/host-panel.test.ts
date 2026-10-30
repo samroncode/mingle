@@ -67,6 +67,9 @@ describe("hostPanelErrorKey", () => {
       "hostPanel.errors.invalid_name",
     );
     expect(hostPanelErrorKey("not_found")).toBe("hostPanel.errors.not_found");
+    expect(hostPanelErrorKey("ended")).toBe("hostPanel.errors.ended");
+    expect(hostPanelErrorKey("too_many")).toBe("hostPanel.errors.too_many");
+    expect(hostPanelErrorKey("too_soon")).toBe("hostPanel.errors.too_soon");
     expect(hostPanelErrorKey("internal_error")).toBe(
       "hostPanel.errors.internal_error",
     );
