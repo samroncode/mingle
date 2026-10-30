@@ -7,6 +7,7 @@ import { quizLimits } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
 import { nicheIds } from "@/niches/ids";
 import { emptyAwards } from "./awards";
+import { costsLimits } from "@/lib/schemas/costs";
 import { emptyHotTakes } from "./hottakes";
 import { emptyQuiz } from "./quiz";
 import { stepOrder, type WizardDraft } from "./state";
@@ -77,6 +78,23 @@ const DraftSchema = z.strictObject({
       items: z.array(HotTakesItemSchema).max(hottakesLimits.takes),
     })
     .default(emptyHotTakes),
+  // Drafts saved before the shared costs step existed have none: switched off.
+  costs: z
+    .strictObject({
+      enabled: z.boolean(),
+      payeeName: typedText,
+      swishNumber: typedText,
+      purchases: z
+        .array(
+          z.strictObject({
+            key: z.string().max(100),
+            name: typedText,
+            price: typedText,
+          }),
+        )
+        .max(costsLimits.purchases),
+    })
+    .default({ enabled: false, payeeName: "", swishNumber: "", purchases: [] }),
   party: z.strictObject({
     welcome: typedText,
     welcomeEdited: z.boolean(),

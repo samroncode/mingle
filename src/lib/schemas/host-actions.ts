@@ -8,7 +8,7 @@ import { moduleIds } from "../../modules/registry.ts";
 import { nicheIds } from "../../niches/ids.ts";
 import { ADMIN_KEY_PATTERN, EVENT_CODE_PATTERN } from "../formats.ts";
 import { AwardCategoriesSchema } from "./awards.ts";
-import { CostsSchema } from "./costs.ts";
+import { CostsSchema, WizardCostsSchema } from "./costs.ts";
 import { HotTakesSchema } from "./hottakes.ts";
 import { PartySchema } from "./party.ts";
 import { QuizQuestionsSchema } from "./quiz.ts";
@@ -37,6 +37,11 @@ export const CreateEventRequestSchema = z
     awards: AwardCategoriesSchema.optional(),
     /** The hot takes picked in the wizard, in order. Needs hot takes on. */
     hottakes: HotTakesSchema.optional(),
+    /**
+     * Shared costs switched on in the wizard: the payee, the Swish number and
+     * the purchases, which have no sharers yet. Left out when switched off.
+     */
+    costs: WizardCostsSchema.optional(),
   })
   .refine(
     (request) =>

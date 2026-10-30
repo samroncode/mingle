@@ -73,10 +73,14 @@ export function LanguageStep({
 
 export function ActivitiesStep({
   enabled,
+  sharedCosts,
   onToggle,
+  onToggleSharedCosts,
 }: {
   enabled: readonly ModuleId[];
+  sharedCosts: boolean;
   onToggle: (module: ModuleId) => void;
+  onToggleSharedCosts: (enabled: boolean) => void;
 }) {
   const { t } = useTranslation();
   return (
@@ -96,6 +100,19 @@ export function ActivitiesStep({
           />
         </Card>
       ))}
+      <Card className="flex-row items-center justify-between">
+        <div>
+          <CardTitle id="activity-shared-costs">
+            {t("wizard.costs.name")}
+          </CardTitle>
+          <CardDescription>{t("wizard.costs.description")}</CardDescription>
+        </div>
+        <Switch
+          aria-labelledby="activity-shared-costs"
+          checked={sharedCosts}
+          onCheckedChange={onToggleSharedCosts}
+        />
+      </Card>
       {enabled.length === 0 && (
         <p className="text-sm text-ink-muted">
           {t("wizard.activities.noneHint")}
@@ -139,6 +156,21 @@ function partyRows(draft: WizardDraft, t: TFunction): SummaryRow[] {
   ];
 }
 
+/** The shared costs row, only while shared costs are switched on. */
+function costsRows(draft: WizardDraft, t: TFunction): SummaryRow[] {
+  if (!draft.costs.enabled) return [];
+  return [
+    {
+      step: "costs",
+      label: t("wizard.steps.costs"),
+      value: t("wizard.summary.costs", {
+        name: draft.costs.payeeName.trim(),
+        count: draft.costs.purchases.length,
+      }),
+    },
+  ];
+}
+
 export function SummaryStep({
   draft,
   onEdit,
@@ -173,6 +205,7 @@ export function SummaryStep({
       label: t(`wizard.steps.${step}`),
       value: t(key as ParseKeys, { count }),
     })),
+    ...costsRows(draft, t),
     ...partyRows(draft, t),
   ];
 

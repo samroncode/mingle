@@ -20,6 +20,7 @@ import {
   stepsFor,
   wizardReducer,
 } from "@/lib/wizard/state";
+import { CostsStep } from "./costs-step";
 import { DoneScreen } from "./DoneScreen";
 import { MenuStep, ScheduleStep, WelcomeStep, WifiStep } from "./party-steps";
 import { ActivitiesStep, LanguageStep, NicheStep, SummaryStep } from "./steps";
@@ -107,10 +108,23 @@ export function CreateView() {
           {draft.step === "activities" && (
             <ActivitiesStep
               enabled={draft.enabledModules}
+              sharedCosts={draft.costs.enabled}
               onToggle={(module) => dispatch({ type: "toggle_module", module })}
+              onToggleSharedCosts={(enabled) =>
+                dispatch({
+                  type: "costs",
+                  action: { type: "set_enabled", enabled },
+                })
+              }
             />
           )}
           {ModuleStep && <ModuleStep draft={draft} dispatch={dispatch} />}
+          {draft.step === "costs" && (
+            <CostsStep
+              costs={draft.costs}
+              dispatch={(action) => dispatch({ type: "costs", action })}
+            />
+          )}
           {draft.step === "welcome" && (
             <WelcomeStep
               value={draft.party.welcome}

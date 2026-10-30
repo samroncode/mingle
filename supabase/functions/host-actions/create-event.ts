@@ -48,6 +48,7 @@ export async function createEvent(
       quiz: request.quiz ?? [],
       awards: request.awards ?? [],
       hottakes: request.hottakes ?? [],
+      costs: request.costs ?? null,
     });
     if (error) return databaseFailed("create_event", error);
     if (eventId !== null) {

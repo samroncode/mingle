@@ -68,7 +68,7 @@ export type CostsFormResult =
   { ok: true; costs: Costs } | { ok: false; errors: CostsFormErrors };
 
 /** A price typed as whole kronor, or NaN. "1 200" counts, "12,5" does not. */
-function parsePrice(text: string): number {
+export function parsePrice(text: string): number {
   const digits = text.replace(/\s/g, "");
   return /^\d+$/.test(digits) ? Number(digits) : Number.NaN;
 }

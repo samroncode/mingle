@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CostsSchema, normalizeSwishNumber } from "./costs";
+import { CostsSchema, normalizeSwishNumber, WizardCostsSchema } from "./costs";
 
 const guest = "7f9c3c9e-52a1-4a52-9d0e-1c8f6a7b2d11";
 const valid = {
@@ -87,5 +87,49 @@ describe("CostsSchema", () => {
         }).success,
       ).toBe(true);
     }
+  });
+});
+
+describe("WizardCostsSchema", () => {
+  const wizard = {
+    payeeName: "Sam",
+    swishNumber: "070-123 45 67",
+    purchases: [{ name: "Drinks", price: 450 }],
+  };
+
+  it("accepts purchases without sharers and normalises the number", () => {
+    const parsed = WizardCostsSchema.parse(wizard);
+    expect(parsed.swishNumber).toBe("46701234567");
+    expect(parsed.purchases).toEqual([{ name: "Drinks", price: 450 }]);
+  });
+
+  it("accepts no purchases", () => {
+    expect(
+      WizardCostsSchema.safeParse({ ...wizard, purchases: [] }).success,
+    ).toBe(true);
+  });
+
+  it.each([
+    ["a bad number", { swishNumber: "12345" }],
+    ["a blank payee", { payeeName: "  " }],
+    ["a price of 0", { purchases: [{ name: "Drinks", price: 0 }] }],
+    ["a decimal price", { purchases: [{ name: "Drinks", price: 4.5 }] }],
+    [
+      "a sharers field",
+      { purchases: [{ name: "Drinks", price: 450, sharers: [guest] }] },
+    ],
+    [
+      "more than 50 purchases",
+      {
+        purchases: Array.from({ length: 51 }, () => ({
+          name: "x",
+          price: 1,
+        })),
+      },
+    ],
+  ])("rejects %s", (_, part) => {
+    expect(WizardCostsSchema.safeParse({ ...wizard, ...part }).success).toBe(
+      false,
+    );
   });
 });

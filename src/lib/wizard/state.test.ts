@@ -35,7 +35,9 @@ describe("steps", () => {
       draft = wizardReducer(draft, { type: "next" });
       seen.push(draft.step);
     }
-    expect(seen.slice(0, stepOrder.length)).toEqual([...stepOrder]);
+    // The shared costs step is off by default, so it is not walked through.
+    const walked = stepOrder.filter((step) => step !== "costs");
+    expect(seen.slice(0, walked.length)).toEqual(walked);
     expect(draft.step).toBe(stepOrder.at(-1));
 
     for (let i = 0; i < stepOrder.length + 2; i++) {
