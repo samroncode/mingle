@@ -12,6 +12,15 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-30: Winners on the TV and host messages to guests (#206)
+
+**Decision:** Two small features, tickets #207 to #213.
+- **Winners** are a host-typed list of title + name (at most 8, free text, not linked to guests). They are stored in `events.party` (optional `winners` and `winnersHidden`), so there is no migration: the TV and guests already read the party content and it is deleted with the event. They show as a calm slide in the TV rotation and on the guests' "You're in" page. The host edits them in their own Winners section, and the Party screen editor and the Winners editor each keep the other's fields when saving.
+- **Notices** (UI name "Messages") are short host-written texts (1 to 140 characters) sent to every guest's phone. They need a table (`notices`) because the host can delete them and guests list them. Only the host can send, through host-actions with the admin key; nobody has direct write access. Limits are enforced in the database function: 30 per event and 5 seconds between sends. Live delivery uses a `notices_version` counter on the event row, like `costs_version`. Phones show a dismissible banner in normal page flow (never covering answers), remembered per device, and a list under "You're in". No push, sound or vibration, so no app install or permission prompt. Plain text only, no links.
+- **Not built:** notices on the TV, guest replies, scheduled notices, a leaderboard or points (v1.1 competitions stays in `docs/IDEAS.md`), winners on the summary page.
+
+**Why:** Hosts announce tournament winners and practical news out loud and it is forgotten; both need only the app the guests already have open. Putting winners in the party content avoids a database change; notices need one for host-only writes and spam limits. Push notifications would need an install and permission and a push service, so they are left out.
+
 ## 2026-10-30: Direction A: hard shadow only on pressables, soft fills instead of opacity
 
 **Decision:** Sam picked design direction A, "refined original" (spec #193), over B (editorial poster) and C (product-first). It keeps the palette, fonts, wordmark and coloured answers, and refines the hierarchy:
