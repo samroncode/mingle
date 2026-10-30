@@ -63,6 +63,7 @@ test("a guest who is already in goes straight to the page and can rename", async
     .getByRole("banner")
     .getByRole("button", { name: "Anna, change my name" });
   await edit.click();
+  await expect(page.getByLabel("New name")).toBeFocused();
   await page.getByLabel("New name").fill("Annika");
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.getByLabel("New name")).toHaveCount(0);

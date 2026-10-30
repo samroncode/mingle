@@ -99,6 +99,7 @@ export function GuestIn({
           label={t("guest.renameLabel")}
           submitLabel={t("guest.renameSave")}
           initialName={name ?? ""}
+          autoFocus
           onSubmit={async (next) => {
             const result = await renameGuest(eventId, next);
             if (result.ok) {

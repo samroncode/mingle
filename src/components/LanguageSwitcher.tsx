@@ -30,12 +30,12 @@ export function LanguageSwitcher() {
             <button
               type="button"
               aria-pressed={isActive}
-              aria-label={t(`language.${language}`)}
               lang={language}
               onClick={() => select(language)}
               className="min-h-12 min-w-12 rounded-sm px-2 font-semibold hover:text-ink aria-pressed:font-extrabold aria-pressed:text-ink"
             >
               {t(`language.${language}Short`)}
+              <span className="sr-only"> {t(`language.${language}`)}</span>
             </button>
           </Fragment>
         );
