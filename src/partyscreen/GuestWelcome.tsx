@@ -12,7 +12,7 @@ export function GuestWelcome({ members }: { members: MemberRow[] }) {
       <p
         role="status"
         data-testid="guest-welcome"
-        className="fun-pop -rotate-2 rounded-xl border-[length:var(--border-chunky)] border-edge bg-coral px-(--space-7) py-(--space-6) text-center font-display text-8xl font-extrabold text-on-bright shadow-pop-lg"
+        className="fun-pop -rotate-2 rounded-xl border-[length:var(--border-thin)] border-edge bg-coral px-(--space-7) py-(--space-6) text-center font-display text-8xl font-extrabold text-on-bright"
       >
         {t("tv.welcomeGuest", { name: welcome.name })}
       </p>

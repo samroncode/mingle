@@ -1,13 +1,13 @@
 # Design
 
-Mingle's look is a grown-up party: forest green and champagne, chunky outlines, hard offset shadows and a few bright pops. It is based on the Kalas design system and copied into this repo, so nothing here depends on an outside source.
+Mingle's look is a grown-up party: forest green and champagne, chunky outlines and hard offset shadows on what you press, and a few bright pops. It is based on the Kalas design system and copied into this repo, so nothing here depends on an outside source.
 
 **To change the look, edit `src/app/theme.css` (and this file). Components use tokens only: never a hardcoded color, font or size.**
 
 ## Personality
 
 - **Grown-up party.** A good dinner with a game after it, not a children's app. Deep forest, champagne gold, small doses of coral, blush and sage.
-- **Chunky and tactile.** Rounded rectangles, 2.5px outlines, hard offset shadows, tilted stickers.
+- **Chunky and tactile.** Rounded rectangles, 2.5px outlines and hard offset shadows on things you press, tilted stickers.
 - **Quiet until it counts.** Most screens are calm and readable. The reveal, the winner and the countdown get the loud treatment.
 
 ## Themes
@@ -32,7 +32,7 @@ A niche can override a few tokens on top of its theme (`overrides` in its config
 - **Sage** is success: answer D, correct, joined, saved.
 - **Forest** is the deep block: TV hero cards, the host bar.
 - `danger` is only for wrong answers and destructive actions, always with a word or icon.
-- Each bright has a `-soft` tint for panels and a `-text` version for colored text.
+- Each bright has a `-soft` tint for panels, a `-text` version for colored text and a `-soft-fill` for an answer that steps back: when another answer was chosen, or an option that wasn't right on a reveal. Never fade an answer with opacity; it turns the colours muddy.
 - `edge` is the chunky outline, `press` the hard shadow and bottom edge. `line` is decoration only; `line-strong` is for input borders.
 - At most three bright fills in one view, plus forest.
 
@@ -48,8 +48,9 @@ A niche can override a few tokens on top of its theme (`overrides` in its config
 ## Shape, borders and shadows
 
 - Corners: `radius-md` 12px for buttons, chips, inputs, tiles; `radius-lg` 14px for cards; `radius-xl` for hero and TV panels; `radius-sm` for stickers and badges; pill only for round things.
-- Chunky components have a 2.5px `edge` outline. Inputs use a 2px `line-strong` border.
-- Shadows are hard and offset, never blurred: `shadow-pop-sm` stickers and chips, `shadow-pop-md` cards, `shadow-pop-lg` one hero card.
+- **The hard shadow means "press me".** Only pressable controls (buttons, switches, the wizard's choice buttons, answer tiles) get the 2.5px `edge` outline and the hard offset `shadow-pop-sm`; pressed, they move into the shadow. Cards, panels, stickers, chips, badges and TV panels have a 2px `edge` outline and no shadow. `npm run check:design` enforces it.
+- Inputs use a 2px `line-strong` border.
+- Shadows are hard and offset, never blurred.
 - Cards and stickers may lean up to 3 degrees, alternating the sign between neighbors.
 
 ## The fun dial
@@ -58,7 +59,7 @@ Host panel and wizard are calm. Guest phones are playful, with a brief party mom
 
 ## Accessibility
 
-- Every text pair below reaches 4.5:1 in all three themes, checked by `src/app/theme.test.ts`: `ink` and `ink-muted` on `surface` and `surface-sunken`; `ink` on each `-soft` tint; `on-paper` and `on-paper-muted` on `paper`; `on-bright` on coral, blush, champagne, sage and danger; `on-forest` on `forest`; each `-text` color on `surface` and `surface-sunken`.
+- Every text pair below reaches 4.5:1 in all three themes, checked by `src/app/theme.test.ts`: `ink` and `ink-muted` on `surface` and `surface-sunken`; `ink` on each `-soft` tint; `on-paper` and `on-paper-muted` on `paper`; `on-bright` on coral, blush, champagne, sage and danger, and on each `-soft-fill`; `on-forest` on `forest`; each `-text` color on `surface` and `surface-sunken`.
 - `line-strong` reaches 3:1 on the surfaces.
 - Keyboard focus is a solid 3px `focus` outline, offset 3px. Inside a `bg-paper` card it uses `focus-on-paper` instead (forest in Garden, champagne in Loud, ink in Day), because champagne is faint on cream.
 - Phone tap targets are at least 48px. Color is never the only signal: answers carry a letter, results a word and an icon.

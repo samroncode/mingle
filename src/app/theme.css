@@ -2,7 +2,7 @@
  * THE ONE FILE THAT DEFINES THE LOOK.
  * Colors, fonts, radii, shadows and motion for all three themes live here and
  * nowhere else. Components use these tokens (bg-coral, bg-paper, border-edge,
- * shadow-pop-md, font-display) and never hardcode a color, font or size.
+ * shadow-pop-sm, font-display) and never hardcode a color, font or size.
  * To change the look, edit this file and docs/design.md.
  *
  * A theme is chosen with data-theme on <html> or on a wrapper element:
@@ -48,15 +48,19 @@
   --press: #04100a;
   --coral: #ff7a59;
   --coral-soft: #4a2218;
+  --coral-soft-fill: #fbb59b;
   --coral-text: #ff9a80;
   --blush: #f6a9c0;
   --blush-soft: #4a2434;
+  --blush-soft-fill: #f6ccce;
   --blush-text: #f8bdd0;
   --champagne: #e9c97f;
   --champagne-soft: #3c3418;
+  --champagne-soft-fill: #f0dcae;
   --champagne-text: #e9c97f;
   --sage: #8ed3b0;
   --sage-soft: #123a2a;
+  --sage-soft-fill: #c2e1c6;
   --sage-text: #8ed3b0;
   --forest: #1f4d3a;
   --danger: #ff6b6b;
@@ -86,15 +90,19 @@
   --press: #ff6f4f;
   --coral: #ff6f4f;
   --coral-soft: #4a2218;
+  --coral-soft-fill: #f8ad94;
   --coral-text: #ff8f73;
   --blush: #f6a9c0;
   --blush-soft: #4a2434;
+  --blush-soft-fill: #f4cacc;
   --blush-text: #f8bdd0;
   --champagne: #e6c27a;
   --champagne-soft: #3a3216;
+  --champagne-soft-fill: #ecd6a9;
   --champagne-text: #e6c27a;
   --sage: #8ed3b0;
   --sage-soft: #123a2a;
+  --sage-soft-fill: #c0dfc4;
   --sage-text: #8ed3b0;
   --forest: #1b4536;
   --danger: #ff6b6b;
@@ -124,15 +132,19 @@
   --press: #11301f;
   --coral: #ff7a59;
   --coral-soft: #ffd9cc;
+  --coral-soft-fill: #ffd9cc;
   --coral-text: #a63416;
   --blush: #f6a9c0;
   --blush-soft: #fbd9e3;
+  --blush-soft-fill: #fbd9e3;
   --blush-text: #a8305a;
   --champagne: #e6c27a;
   --champagne-soft: #f6e8c0;
+  --champagne-soft-fill: #f6e8c0;
   --champagne-text: #6f510d;
   --sage: #8ed3b0;
   --sage-soft: #d3efe0;
+  --sage-soft-fill: #d3efe0;
   --sage-text: #1d6a4a;
   --forest: #11301f;
   --danger: #f26b70;
@@ -200,7 +212,7 @@
   --sidebar-ring: var(--focus);
 }
 
-/* Tailwind utilities: bg-coral, text-on-bright, border-edge, shadow-pop-md, bg-primary ... */
+/* Tailwind utilities: bg-coral, bg-coral-soft-fill, text-on-bright, border-edge, shadow-pop-sm, bg-primary ... */
 @theme inline {
   --color-surface: var(--surface);
   --color-paper: var(--paper);
@@ -215,15 +227,19 @@
   --color-press: var(--press);
   --color-coral: var(--coral);
   --color-coral-soft: var(--coral-soft);
+  --color-coral-soft-fill: var(--coral-soft-fill);
   --color-coral-text: var(--coral-text);
   --color-blush: var(--blush);
   --color-blush-soft: var(--blush-soft);
+  --color-blush-soft-fill: var(--blush-soft-fill);
   --color-blush-text: var(--blush-text);
   --color-champagne: var(--champagne);
   --color-champagne-soft: var(--champagne-soft);
+  --color-champagne-soft-fill: var(--champagne-soft-fill);
   --color-champagne-text: var(--champagne-text);
   --color-sage: var(--sage);
   --color-sage-soft: var(--sage-soft);
+  --color-sage-soft-fill: var(--sage-soft-fill);
   --color-sage-text: var(--sage-text);
   --color-forest: var(--forest);
   --color-danger: var(--danger);

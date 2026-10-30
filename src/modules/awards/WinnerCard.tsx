@@ -14,7 +14,7 @@ export function WinnerCard({
     <FunZone level="party">
       <p
         data-testid={testId}
-        className="fun-pop fun-tilt flex items-center gap-3 rounded-lg border-[length:var(--border-chunky)] border-edge bg-champagne px-4 py-4 font-display text-3xl leading-tight font-extrabold text-on-bright shadow-pop-md"
+        className="fun-pop fun-tilt flex items-center gap-3 rounded-lg border-[length:var(--border-thin)] border-edge bg-champagne px-4 py-4 font-display text-3xl leading-tight font-extrabold text-on-bright"
       >
         <Trophy aria-hidden className="size-9 shrink-0" strokeWidth={2.5} />
         <span>{children}</span>

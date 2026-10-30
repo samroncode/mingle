@@ -14,7 +14,7 @@ export function JoinPanel({ code, guestCount }: JoinPanelProps) {
   return (
     <aside
       aria-label={t("tv.join.title")}
-      className="tv-float flex flex-col items-center gap-5 self-center rounded-xl border-[length:var(--border-chunky)] border-edge bg-champagne p-(--space-6) text-center text-on-bright shadow-pop-lg"
+      className="tv-float flex flex-col items-center gap-5 self-center rounded-xl border-[length:var(--border-thin)] border-edge bg-champagne p-(--space-6) text-center text-on-bright"
     >
       <h2 className="font-display text-4xl font-extrabold">
         {t("tv.join.title")}

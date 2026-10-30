@@ -11,7 +11,7 @@ function Panel({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section
       aria-label={title}
-      className="flex h-full flex-col items-center justify-center gap-(--space-6) rounded-xl border-[length:var(--border-chunky)] border-edge bg-forest p-(--space-7) text-center text-on-forest shadow-pop-lg"
+      className="flex h-full flex-col items-center justify-center gap-(--space-6) rounded-xl border-[length:var(--border-thin)] border-edge bg-forest p-(--space-7) text-center text-on-forest"
     >
       <h2 className="font-display text-6xl font-extrabold">{title}</h2>
       {children}

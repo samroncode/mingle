@@ -12,6 +12,15 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-10-30: Direction A: hard shadow only on pressables, soft fills instead of opacity
+
+**Decision:** Sam picked design direction A, "refined original" (spec #193), over B (editorial poster) and C (product-first). It keeps the palette, fonts, wordmark and coloured answers, and refines the hierarchy:
+- **The hard offset shadow and chunky outline belong to things you press:** buttons, switches, the wizard's choice buttons and the shared answer tile. Cards, panels, stickers, chips, badges and TV panels lose the shadow and keep a thin outline. `npm run check:design` fails when `shadow-pop-*` appears outside those controls.
+- **Soft fills instead of opacity.** Each bright colour has a `-soft-fill` token in every theme, used when another answer was chosen (and for the options that weren't right on a quiz reveal), with `on-bright` text at 4.5:1. Opacity is no longer used for that state, because it turned the colours muddy brown and olive on the dark ground.
+- **A quiet header** with a small wordmark, the guest's name and a compact SV/EN switch (#195).
+
+**Why:** Parts of the UI read as AI-generated: the same outline and shadow on everything gave nothing more weight than anything else, and faded answers looked muddy. B was more memorable but worse to use; C was easier to use but lost the brand. Mockups and critique are in the project files (`design-directions/`).
+
 ## 2026-10-29: Shared costs: guests pay the host by Swish, confirmed by hand
 
 **Decision:** Hosts can switch on **shared costs** (spec #175, tickets #176 to #181). The host enters a Swish number, the name guests pay to and **purchases** (name, price in whole kronor, who shares it). Nothing about money shows until the host presses **Send the bill**; it can be hidden again.

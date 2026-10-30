@@ -27,7 +27,7 @@ export function ScoreList({ scores, itemClassName }: ScoreListProps) {
           <li
             key={row.userId}
             className={cn(
-              "flex items-center gap-4 rounded-md border-[length:var(--border-chunky)] border-edge px-4 py-3 font-display font-bold shadow-pop-sm",
+              "flex items-center gap-4 rounded-md border-[length:var(--border-thin)] border-edge px-4 py-3 font-display font-bold",
               fill ? `${fill} text-on-bright` : "bg-paper text-on-paper",
               itemClassName,
             )}

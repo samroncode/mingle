@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 
 const stickerVariants = cva(
-  "fun-tilt inline-flex items-center rounded-sm border-[length:var(--border-chunky)] border-edge px-2 py-0.5 font-display text-sm font-extrabold text-on-bright shadow-pop-sm",
+  "fun-tilt inline-flex items-center rounded-sm border-[length:var(--border-thin)] border-edge px-2 py-0.5 font-display text-sm font-extrabold text-on-bright",
   {
     variants: {
       color: {

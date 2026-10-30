@@ -43,7 +43,7 @@ export function PanelSection({
     <section
       data-testid={testId}
       data-open={open}
-      className="rounded-lg border-[length:var(--border-chunky)] border-edge bg-paper text-on-paper shadow-pop-md"
+      className="rounded-lg border-[length:var(--border-thin)] border-edge bg-paper text-on-paper"
     >
       <h2>
         <button

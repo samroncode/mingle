@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { optionFills } from "../optionFills";
+import { optionFills, optionSoftFills } from "../optionFills";
 import { optionLetters } from "./screen";
 
 interface QuizOptionsProps {
@@ -32,10 +32,10 @@ export function QuizOptions({
             key={index}
             data-correct={right || undefined}
             className={cn(
-              "relative flex items-center gap-3 overflow-hidden rounded-md border-[length:var(--border-chunky)] border-edge px-4 py-3 font-display font-bold text-on-bright shadow-pop-sm",
-              optionFills[index],
-              correct !== null && !right && "opacity-40 shadow-none",
-              right && "shadow-pop-md",
+              "relative flex items-center gap-3 overflow-hidden rounded-md border-[length:var(--border-thin)] border-edge px-4 py-3 font-display font-bold text-on-bright",
+              correct !== null && !right
+                ? optionSoftFills[index]
+                : optionFills[index],
               itemClassName,
             )}
           >
