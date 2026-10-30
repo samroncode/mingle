@@ -141,3 +141,30 @@ test("the TV uses the niche's theme, and the day theme in a bright room", async 
     await page.screenshot({ path: `${process.env.SHOTS}/tv-bright.png` });
   }
 });
+
+test("the TV congratulates a winner that is added, but not the ones already there", async ({
+  page,
+}) => {
+  const anna = { title: "Dart tournament", name: "Anna" };
+  const bo = { title: "Ping pong", name: "Bo" };
+  await fakeSupabase(page, []);
+  let current = snapshot({ party: { winners: [anna] } });
+  await fakeTv(page, {
+    get snapshot() {
+      return current;
+    },
+  });
+
+  await page.goto(`/tv/${code}`);
+  await expect(page.getByTestId("tv-code")).toHaveText(code);
+  await expect(page.getByTestId("winner-congrats")).toHaveCount(0);
+
+  current = snapshot({ party: { winners: [anna, bo] } });
+  await page.evaluate('document.dispatchEvent(new Event("visibilitychange"))');
+
+  const popup = page.getByTestId("winner-congrats");
+  await expect(popup).toContainText("Congratulations, Bo!");
+  await expect(popup).toContainText("Ping pong");
+  await page.screenshot({ path: test.info().outputPath("tv-congrats.png") });
+  await expect(popup).toHaveCount(0, { timeout: 6000 });
+});

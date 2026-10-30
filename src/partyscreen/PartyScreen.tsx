@@ -5,6 +5,7 @@ import { countGuests } from "./guests";
 import { GuestWelcome } from "./GuestWelcome";
 import { JoinPanel } from "./JoinPanel";
 import { PartRotation } from "./PartRotation";
+import { WinnerCongrats } from "./WinnerCongrats";
 import { readParty } from "@/lib/party";
 
 interface PartyScreenProps {
@@ -23,6 +24,7 @@ export function PartyScreen({ event, members, left }: PartyScreenProps) {
         <div data-testid="party-left" className="relative">
           {left ?? <PartRotation party={party} members={members} />}
           <GuestWelcome members={members} />
+          <WinnerCongrats party={party} />
         </div>
         <JoinPanel code={event.code} guestCount={countGuests(members)} />
       </div>
