@@ -406,6 +406,8 @@ interface FakeHostPanelOptions {
   flow?: Partial<EventRow>;
   /** The event's language; defaults to the row's default (English). */
   language?: EventRow["language"];
+  /** The notices the host has sent, newest first. */
+  notices?: Array<{ id: string; text: string; createdAt: string }>;
   /** The shared costs the host reads; none while they are switched off. */
   costs?: {
     payeeName: string;
@@ -494,6 +496,17 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
           text,
           vote_count: 0,
           revealed_at: null,
+        })),
+      );
+    }
+    if (url.includes("/rest/v1/notices")) {
+      return json(
+        route,
+        200,
+        (options.notices ?? []).map(({ id, text, createdAt }) => ({
+          id,
+          text,
+          created_at: createdAt,
         })),
       );
     }

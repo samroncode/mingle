@@ -699,6 +699,20 @@
       "removedPaid": "{{name}} betalade {{amount}} innan hen togs bort. Betala tillbaka själv.",
       "removedSaidPaid": "{{name}} sa att hen hade betalat innan hen togs bort. Kolla Swish och betala tillbaka om det stämmer.",
       "paymentFailed": "Det gick inte att spara. Försök igen."
+    },
+    "messages": {
+      "title": "Meddelanden",
+      "none": "Inga än",
+      "sent_one": "{{count}} skickat",
+      "sent_other": "{{count}} skickade",
+      "label": "Meddelande till alla gäster",
+      "placeholder": "Middagen är serverad",
+      "left_one": "{{count}} tecken kvar",
+      "left_other": "{{count}} tecken kvar",
+      "send": "Skicka",
+      "delete": "Ta bort",
+      "history": "Skickade meddelanden",
+      "loadFailed": "Det gick inte att ladda meddelandena."
     }
   }
 }

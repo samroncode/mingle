@@ -699,6 +699,20 @@
       "removedPaid": "{{name}} paid {{amount}} before being removed. Pay it back yourself.",
       "removedSaidPaid": "{{name}} said they had paid before being removed. Check Swish and pay it back if so.",
       "paymentFailed": "Couldn't save that. Try again."
+    },
+    "messages": {
+      "title": "Messages",
+      "none": "None yet",
+      "sent_one": "{{count}} sent",
+      "sent_other": "{{count}} sent",
+      "label": "Message to all guests",
+      "placeholder": "Dinner is served",
+      "left_one": "{{count}} character left",
+      "left_other": "{{count}} characters left",
+      "send": "Send",
+      "delete": "Delete",
+      "history": "Sent messages",
+      "loadFailed": "Couldn't load the messages."
     }
   }
 }
