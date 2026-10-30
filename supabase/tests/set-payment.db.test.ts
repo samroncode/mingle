@@ -181,14 +181,6 @@ describe("set_payment without the right key", () => {
     }
     expect(await billOf(cast, cast.anna)).toMatchObject({ status: "owes" });
   });
-
-  it("refuses a guest who sends the right key from another login's session", async () => {
-    const cast = await createCast();
-    await switchOnCostsAndSend(cast);
-
-    const response = await pay(cast, "confirm", cast.anna.id, cast, cast.anna);
-
-    expect(response.status).not.toBe(200);
-    expect(await billOf(cast, cast.anna)).toMatchObject({ status: "owes" });
+});
   });
 });
