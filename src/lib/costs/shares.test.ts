@@ -56,6 +56,25 @@ describe("costsTotals", () => {
   });
 });
 
+describe("costsTotals with payments", () => {
+  const purchases = [
+    { id: "1", name: "Pizza", price: 100, sharers: ["a", "b"] },
+  ];
+
+  it("subtracts what the host confirmed, per guest", () => {
+    const payments = new Map([["a", { saysPaid: false, confirmedKr: 50 }]]);
+    expect(costsTotals(purchases, guests, payments)).toEqual({
+      spent: 100,
+      owed: 50,
+    });
+  });
+
+  it("never lets a confirmation go below zero", () => {
+    const payments = new Map([["a", { saysPaid: false, confirmedKr: 80 }]]);
+    expect(costsTotals(purchases, guests, payments).owed).toBe(50);
+  });
+});
+
 describe("formatKr", () => {
   it("writes whole kronor with kr", () => {
     expect(formatKr(120)).toBe("120 kr");

@@ -213,7 +213,9 @@ interface FakeEventOptions {
   /** The event's niche; defaults to the row's default (afterwork). */
   niche?: string;
   /** What `my_bill` answers: the guest's own bill, or null (the default). */
-  bill?: unknown;
+  bill?: Record<string, unknown> | null;
+  /** Each "I've paid" call the page makes is pushed here (true = paid). */
+  iPaidCalls?: boolean[];
 }
 
 /**
@@ -226,6 +228,7 @@ export async function fakeEvent(page: Page, options: FakeEventOptions) {
   const answers = [...(options.joinAnswers ?? [])];
   const sent: string[] = [];
   let myName = options.joinedAs;
+  let bill = options.bill ?? null;
 
   const event = () =>
     eventRow({
@@ -241,7 +244,13 @@ export async function fakeEvent(page: Page, options: FakeEventOptions) {
     const request = route.request();
     const url = request.url();
     if (url.includes("/rpc/my_bill")) {
-      return json(route, 200, options.bill ?? null);
+      return json(route, 200, bill);
+    }
+    if (url.includes("/rpc/set_i_paid")) {
+      const { paid } = request.postDataJSON() as { paid: boolean };
+      options.iPaidCalls?.push(paid);
+      if (bill) bill = { ...bill, status: paid ? "says_paid" : "owes" };
+      return json(route, 200, "updated");
     }
     if (url.includes("/rpc/join_event")) {
       const name = (request.postDataJSON() as { display_name: string })
@@ -397,6 +406,11 @@ interface FakeHostPanelOptions {
       price: number;
       sharers: string[];
     }>;
+    /** What guests said or the host confirmed, by user id. */
+    payments?: Record<
+      string,
+      { saysPaid?: boolean; confirmedKr?: number | null }
+    >;
   };
 }
 
@@ -487,6 +501,17 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
           id,
           name,
           price_kr: price,
+        })),
+      );
+    }
+    if (url.includes("/rest/v1/cost_payments")) {
+      return json(
+        route,
+        200,
+        Object.entries(options.costs?.payments ?? {}).map(([user_id, p]) => ({
+          user_id,
+          says_paid_at: p.saysPaid ? "2026-10-29T21:00:00Z" : null,
+          confirmed_kr: p.confirmedKr ?? null,
         })),
       );
     }

@@ -278,6 +278,27 @@ export const SetBillSentResponseSchema = z.strictObject({});
 
 export type SetBillSentResponse = z.infer<typeof SetBillSentResponseSchema>;
 
+/**
+ * Settles a guest's share: `confirm` stores their current total as paid (an
+ * "I've paid" the host has seen in Swish, or cash), `undo` takes a
+ * confirmation back and clears "I've paid". Fails with `not_found` for a
+ * user who isn't a current guest, and `invalid_transition` while shared
+ * costs are switched off.
+ */
+export const SetPaymentRequestSchema = z.strictObject({
+  action: z.literal("set_payment"),
+  ...hostLinkFields,
+  userId: z.uuid(),
+  change: z.enum(["confirm", "undo"]),
+});
+
+export type SetPaymentRequest = z.infer<typeof SetPaymentRequestSchema>;
+
+/** Empty: the host reads the new payments, the guest's phone follows `costs_version`. */
+export const SetPaymentResponseSchema = z.strictObject({});
+
+export type SetPaymentResponse = z.infer<typeof SetPaymentResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -291,6 +312,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   RemoveGuestRequestSchema,
   UpdateCostsRequestSchema,
   SetBillSentRequestSchema,
+  SetPaymentRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -315,7 +337,7 @@ export const hostActionErrorCodes = [
    * edit while a question is open or revealed, once the quiz is finished or
    * once the event has ended; and the same for an awards or hot takes edit.
    * Also renaming or removing a guest once the event has ended, and
-   * set_bill_sent while shared costs are switched off.
+   * set_bill_sent or set_payment while shared costs are switched off.
    */
   "invalid_transition",
   /** start_module for an activity the host turned off, quiz questions, award categories or hot takes for it. */
@@ -324,7 +346,7 @@ export const hostActionErrorCodes = [
   "module_empty",
   /** start_module for an activity whose steps have all been played. */
   "module_finished",
-  /** rename_guest or remove_guest for a user who isn't a guest of the event (or is already removed). */
+  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed). */
   "not_found",
   /** rename_guest to a name another guest of the event has. */
   "name_taken",

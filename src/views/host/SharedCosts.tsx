@@ -18,12 +18,12 @@ import {
   costsTotals,
   currentSharers,
   formatKr,
-  guestTotals,
   shareOf,
 } from "@/lib/costs/shares";
-import { sortedGuests, type ListedGuest } from "@/lib/host/guest-list";
+import { sortedGuests } from "@/lib/host/guest-list";
 import { BillControl } from "./BillControl";
 import { CostsEditor } from "./CostsEditor";
+import { GuestPayments } from "./GuestPayments";
 
 interface SharedCostsProps {
   eventId: string;
@@ -31,6 +31,8 @@ interface SharedCostsProps {
   hostKey: string;
   members: MemberRow[];
   language: string;
+  /** The event's `costs_version`; it changes when a guest says they paid. */
+  costsVersion: number;
 }
 
 function PurchaseList({
@@ -71,38 +73,6 @@ function PurchaseList({
         );
       })}
     </ul>
-  );
-}
-
-function GuestShares({
-  costs,
-  guests,
-}: {
-  costs: CostsView;
-  guests: ListedGuest[];
-}) {
-  const { t } = useTranslation();
-  const totals = guestTotals(
-    costs.purchases,
-    guests.map((guest) => guest.userId),
-  );
-  if (guests.length === 0 || costs.purchases.length === 0) return null;
-  return (
-    <div className="space-y-1">
-      <h3 className="font-display font-bold">
-        {t("hostPanel.costs.perGuest")}
-      </h3>
-      <ul className="space-y-1 text-base">
-        {guests.map((guest) => (
-          <li key={guest.userId} className="flex justify-between gap-2">
-            <span className="min-w-0 break-words">{guest.name}</span>
-            <span className="shrink-0">
-              {formatKr(totals.get(guest.userId) ?? 0)}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 
@@ -174,12 +144,13 @@ export function SharedCosts({
   hostKey,
   members,
   language,
+  costsVersion,
 }: SharedCostsProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState<CostsForm>();
   const [refresh, setRefresh] = useState(0);
   const load = useLoad(`costs:${eventId}`, () => getCosts(eventId), {
-    refresh,
+    refresh: refresh + costsVersion,
     keepOnError: true,
   });
   const guests = sortedGuests(members, language);
@@ -199,7 +170,8 @@ export function SharedCosts({
     setRefresh((count) => count + 1);
   };
 
-  const totals = costs && costsTotals(costs.purchases, new Set(guestIds));
+  const totals =
+    costs && costsTotals(costs.purchases, new Set(guestIds), costs.payments);
   const summary = !costs
     ? undefined
     : [
@@ -259,7 +231,13 @@ export function SharedCosts({
             })}
           </p>
           <PurchaseList costs={costs} guestIds={new Set(guestIds)} />
-          <GuestShares costs={costs} guests={guests} />
+          <GuestPayments
+            costs={costs}
+            guests={guests}
+            code={code}
+            hostKey={hostKey}
+            onDone={done}
+          />
           <div className="flex flex-wrap gap-2">
             <Button size="sm" onClick={() => startEditing(true)}>
               {t("hostPanel.costs.addPurchase")}

@@ -515,7 +515,19 @@
       "updated": "Uppdaterad",
       "payWithSwish": "Betala med Swish",
       "qrLabel": "Swish-QR-kod med ditt belopp",
-      "qrHint": "Eller skanna med Swish på en annan telefon. Du kan ändra beloppet i Swish."
+      "qrHint": "Eller skanna med Swish på en annan telefon. Du kan ändra beloppet i Swish.",
+      "paidSoFar": "Betalat hittills",
+      "leftToPay": "Kvar att betala",
+      "paidThanks": "Betalat, tack!",
+      "iPaid": "Jag har betalat",
+      "undoPaid": "Jag har inte betalat ändå",
+      "saysPaid": "Tack! {{name}} bekräftar när pengarna syns i Swish.",
+      "errors": {
+        "not_sent": "Notan är inte tillgänglig just nu.",
+        "already_confirmed": "Värden har redan bekräftat din betalning.",
+        "not_found": "Det finns inget att betala.",
+        "unknown": "Det gick inte att spara. Försök igen."
+      }
     }
   },
   "hostPanel": {
@@ -636,7 +648,16 @@
       "billSent": "Notan är skickad",
       "billSentHint": "Gästerna ser sin egen del. Du kan fortfarande ändra inköp, då uppdateras deras summor.",
       "hideBill": "Dölj notan",
-      "perGuest": "Vad varje gäst betalar"
+      "perGuest": "Vad varje gäst betalar",
+      "statusOwes": "Är skyldig",
+      "statusSaysPaid": "Säger sig ha betalat",
+      "statusPaid": "Betalat",
+      "confirm": "Bekräfta",
+      "markPaid": "Markera som betalt",
+      "undoPayment": "Ångra",
+      "paidAmount": "Betalat {{amount}}",
+      "owesAmount": "Skyldig {{amount}}",
+      "paymentFailed": "Det gick inte att spara. Försök igen."
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { PurchaseView } from "@/api/costs";
+import type { PaymentView, PurchaseView } from "@/api/costs";
 
 /** A guest's share of a purchase: the price over the sharers, rounded up to a whole krona. */
 export function shareOf(price: number, sharerCount: number): number {
@@ -15,22 +15,26 @@ export function currentSharers(
 
 /**
  * The host's one-line summary: `spent` is the sum of the prices, `owed` what
- * the current guests owe together (shares are rounded up, so it can be a
- * little more than spent). A purchase whose sharers have all been removed
- * has nobody to pay it. Nothing is confirmed yet, so nothing is subtracted.
+ * the current guests still owe together (shares are rounded up, so it can be
+ * a little more than spent). A purchase whose sharers have all been removed
+ * has nobody to pay it. What the host has confirmed is subtracted per guest.
  */
 export function costsTotals(
   purchases: readonly PurchaseView[],
   guestIds: ReadonlySet<string>,
+  payments: ReadonlyMap<string, PaymentView> = new Map(),
 ): { spent: number; owed: number } {
-  let spent = 0;
+  const spent = purchases.reduce((sum, purchase) => sum + purchase.price, 0);
   let owed = 0;
-  for (const purchase of purchases) {
-    spent += purchase.price;
-    const count = currentSharers(purchase, guestIds).length;
-    if (count > 0) owed += shareOf(purchase.price, count) * count;
+  for (const [id, total] of guestTotals(purchases, [...guestIds])) {
+    owed += owedOf(total, payments.get(id));
   }
   return { spent, owed };
+}
+
+/** What a guest still owes: their total minus what the host confirmed. */
+export function owedOf(total: number, payment?: PaymentView): number {
+  return Math.max(total - (payment?.confirmedKr ?? 0), 0);
 }
 
 /** Whole kronor as the UI writes them in both languages: "120 kr". */

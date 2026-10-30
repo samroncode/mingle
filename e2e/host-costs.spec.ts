@@ -199,3 +199,77 @@ test("the host hides a sent bill", async ({ page }) => {
       sent: false,
     });
 });
+
+const sentWith = (
+  payments: Record<string, { saysPaid?: boolean; confirmedKr?: number }>,
+) => ({ ...withCosts("2026-10-29T20:00:00Z"), payments });
+
+test("the host sees Owes, Says paid and Paid, and confirms a guest who says they paid", async ({
+  page,
+}) => {
+  const bodies = await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    guests,
+    costs: sentWith({ [anna]: { saysPaid: true } }),
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const section = page.getByTestId("host-costs");
+  await section.getByRole("button", { name: /Shared costs/ }).click();
+  const rows = section.getByTestId("guest-payment");
+  await expect(rows.filter({ hasText: "Anna" })).toContainText("Says paid");
+  await expect(rows.filter({ hasText: "Bertil" })).toContainText("Owes");
+
+  await rows
+    .filter({ hasText: "Anna" })
+    .getByRole("button", { name: "Confirm" })
+    .click();
+
+  await expect
+    .poll(() => bodies.at(-1))
+    .toEqual({
+      action: "set_payment",
+      code,
+      key,
+      userId: anna,
+      change: "confirm",
+    });
+});
+
+test("the host marks a guest paid in cash and undoes a confirmation", async ({
+  page,
+}) => {
+  const bodies = await fakeSupabase(page, [() => [200, {}], () => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    guests,
+    costs: sentWith({ [anna]: { confirmedKr: 225 } }),
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const section = page.getByTestId("host-costs");
+  // Spent 450, Anna's 225 is confirmed: one line shows what is still owed.
+  await expect(section).toContainText("450 kr spent · 225 kr still owed");
+  await section.getByRole("button", { name: /Shared costs/ }).click();
+  const rows = section.getByTestId("guest-payment");
+  await expect(rows.filter({ hasText: "Anna" })).toContainText("Paid");
+
+  await rows
+    .filter({ hasText: "Bertil" })
+    .getByRole("button", { name: "Mark as paid" })
+    .click();
+  await expect
+    .poll(() => bodies.at(-1))
+    .toMatchObject({ change: "confirm", userId: bertil });
+
+  await rows
+    .filter({ hasText: "Anna" })
+    .getByRole("button", { name: "Undo" })
+    .click();
+  await expect
+    .poll(() => bodies.at(-1))
+    .toMatchObject({ change: "undo", userId: anna });
+});

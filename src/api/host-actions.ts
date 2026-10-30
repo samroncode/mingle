@@ -17,6 +17,9 @@ import {
   type RenameGuestResponse,
   RenameGuestResponseSchema,
   type SetBillSentRequest,
+  type SetPaymentRequest,
+  type SetPaymentResponse,
+  SetPaymentResponseSchema,
   type SetBillSentResponse,
   SetBillSentResponseSchema,
   type UpdateCostsRequest,
@@ -253,5 +256,20 @@ export async function setBillSent(
   return toHostActionResult(
     SetBillSentResponseSchema,
     await invokeHostActions({ action: "set_bill_sent", ...input }),
+  );
+}
+
+/**
+ * Confirms a guest's payment, which stores their current total (also to mark
+ * a guest paid directly), or undoes it (`change: "undo"`). Fails with
+ * `not_found` for a user who isn't a current guest, and `invalid_transition`
+ * while shared costs are switched off.
+ */
+export async function setPayment(
+  input: Omit<SetPaymentRequest, "action">,
+): Promise<HostActionResult<SetPaymentResponse>> {
+  return toHostActionResult(
+    SetPaymentResponseSchema,
+    await invokeHostActions({ action: "set_payment", ...input }),
   );
 }

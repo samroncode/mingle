@@ -1,7 +1,9 @@
 import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { setIPaid } from "@/api/costs";
+import { ErrorLine } from "@/components/ErrorLine";
 import { QrCode } from "@/components/QrCode";
 import { Button } from "@/components/ui/button";
 import { nationalNumber } from "@/lib/costs/costs-form";
@@ -11,10 +13,13 @@ import type { MyBill } from "@/lib/schemas/bill";
 
 interface BillSheetProps {
   bill: MyBill;
+  eventId: string;
   /** The event code and the guest's display name, for the Swish message. */
   code: string;
   guestName: string;
   updated: boolean;
+  /** The guest's own "I've paid" changed (or failed): read the bill again. */
+  onChanged: () => void;
   onClose: () => void;
 }
 
@@ -24,12 +29,26 @@ interface BillSheetProps {
  */
 export function BillSheet({
   bill,
+  eventId,
   code,
   guestName,
   updated,
+  onChanged,
   onClose,
 }: BillSheetProps) {
   const { t } = useTranslation();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string>();
+
+  async function say(paid: boolean) {
+    setBusy(true);
+    setError(undefined);
+    const result = await setIPaid(eventId, paid);
+    setBusy(false);
+    if (!result.ok) setError(t(`guest.bill.errors.${result.error}`));
+    // Also after a refusal: the host may have changed the bill meanwhile.
+    onChanged();
+  }
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -41,7 +60,7 @@ export function BillSheet({
 
   const pay = {
     number: bill.swishNumber,
-    amount: bill.total,
+    amount: bill.owed,
     message: swishMessage(code, guestName),
   };
 
@@ -103,7 +122,41 @@ export function BillSheet({
           <span>{t("guest.bill.total")}</span>
           <span>{formatKr(bill.total)}</span>
         </p>
-        {bill.total > 0 && (
+        {bill.confirmed > 0 && (
+          <div className="space-y-1">
+            <p className="flex justify-between gap-3">
+              <span>{t("guest.bill.paidSoFar")}</span>
+              <span>{formatKr(bill.confirmed)}</span>
+            </p>
+            {bill.owed > 0 && (
+              <p className="flex justify-between gap-3 font-bold">
+                <span>{t("guest.bill.leftToPay")}</span>
+                <span>{formatKr(bill.owed)}</span>
+              </p>
+            )}
+          </div>
+        )}
+        {bill.status === "paid" && bill.total > 0 && (
+          <p data-testid="bill-paid" className="font-display text-xl font-bold">
+            {t("guest.bill.paidThanks")}
+          </p>
+        )}
+        {bill.status === "says_paid" && (
+          <div className="space-y-3" data-testid="bill-says-paid">
+            <p className="text-base">
+              {t("guest.bill.saysPaid", { name: bill.payeeName })}
+            </p>
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={busy}
+              onClick={() => void say(false)}
+            >
+              {t("guest.bill.undoPaid")}
+            </Button>
+          </div>
+        )}
+        {bill.status === "owes" && bill.owed > 0 && (
           <div className="space-y-3">
             <Button asChild className="w-full">
               <a href={swishAppLink(pay)} data-testid="swish-button">
@@ -120,8 +173,18 @@ export function BillSheet({
                 {t("guest.bill.qrHint")}
               </p>
             </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={busy}
+              data-testid="i-paid"
+              onClick={() => void say(true)}
+            >
+              {t("guest.bill.iPaid")}
+            </Button>
           </div>
         )}
+        {error && <ErrorLine>{error}</ErrorLine>}
       </section>
     </div>,
     document.body,

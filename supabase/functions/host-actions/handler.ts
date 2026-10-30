@@ -18,6 +18,7 @@ import { removeGuest } from "./remove-guest.ts";
 import { renameGuest } from "./rename-guest.ts";
 import { setBillSent } from "./set-bill-sent.ts";
 import { setFlow } from "./set-flow.ts";
+import { setPayment } from "./set-payment.ts";
 import { updateAwards } from "./update-awards.ts";
 import { updateCosts } from "./update-costs.ts";
 import { updateHotTakes } from "./update-hottakes.ts";
@@ -101,5 +102,7 @@ async function runAction(
       return updateCosts(db, caller, request);
     case "set_bill_sent":
       return setBillSent(db, caller, request);
+    case "set_payment":
+      return setPayment(db, caller, request);
   }
 }
