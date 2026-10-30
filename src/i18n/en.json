@@ -63,6 +63,7 @@
   },
   "tv": {
     "welcomeGuest": "Welcome, {{name}}!",
+    "congratulations": "Congratulations, {{name}}!",
     "joining": "Connecting the TV...",
     "welcome": "Welcome",
     "menu": "Menu",

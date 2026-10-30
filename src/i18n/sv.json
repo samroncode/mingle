@@ -63,6 +63,7 @@
   },
   "tv": {
     "welcomeGuest": "Välkommen, {{name}}!",
+    "congratulations": "Grattis, {{name}}!",
     "joining": "Kopplar ihop TV:n...",
     "welcome": "Välkommen",
     "menu": "Meny",
