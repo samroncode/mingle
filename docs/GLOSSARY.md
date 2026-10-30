@@ -203,6 +203,14 @@ _Avoid_: Response, submission
 A guest's choice of another guest in an award category.
 _Avoid_: Nomination, pick
 
+**Winner**:
+A title and a name the host types in ("Dart tournament", "Anna"), shown in the party screen rotation and on guests' phones. Free text, not linked to a guest.
+_Avoid_: Result, champion, leaderboard entry
+
+**Notice**:
+A short text the host sends to every guest's phone, shown as a dismissible banner and listed under "You're in". Called "Messages" in the UI.
+_Avoid_: Notification (it implies push), announcement, alert
+
 ## Running Mingle online
 
 **Live**:
