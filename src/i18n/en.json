@@ -713,6 +713,32 @@
       "delete": "Delete",
       "history": "Sent messages",
       "loadFailed": "Couldn't load the messages."
+    },
+    "winners": {
+      "title": "Winners",
+      "none": "None yet",
+      "hidden": "Hidden",
+      "count_one": "{{count}} winner",
+      "count_other": "{{count}} winners",
+      "list": "Winners",
+      "titleLabel": "What they won",
+      "titlePlaceholder": "Dart tournament",
+      "nameLabel": "Winner",
+      "namePlaceholder": "Anna",
+      "add": "Add winner",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "hide": "Hide winners slide",
+      "show": "Show winners slide",
+      "shownHelp": "The winners slide is on the TV's party screen.",
+      "hiddenHelp": "The winners slide is hidden. Your list is kept.",
+      "errors": {
+        "title": "Enter what they won, 1 to 40 characters.",
+        "name": "Enter the winner's name, 1 to 40 characters.",
+        "full": "You can add up to 8 winners. Delete one first."
+      }
     }
   }
 }

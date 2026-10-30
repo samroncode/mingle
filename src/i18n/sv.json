@@ -713,6 +713,32 @@
       "delete": "Ta bort",
       "history": "Skickade meddelanden",
       "loadFailed": "Det gick inte att ladda meddelandena."
+    },
+    "winners": {
+      "title": "Vinnare",
+      "none": "Inga än",
+      "hidden": "Dold",
+      "count_one": "{{count}} vinnare",
+      "count_other": "{{count}} vinnare",
+      "list": "Vinnare",
+      "titleLabel": "Vad de vann",
+      "titlePlaceholder": "Dartturnering",
+      "nameLabel": "Vinnare",
+      "namePlaceholder": "Anna",
+      "add": "Lägg till vinnare",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "edit": "Ändra",
+      "delete": "Ta bort",
+      "hide": "Dölj vinnarbilden",
+      "show": "Visa vinnarbilden",
+      "shownHelp": "Vinnarbilden visas på TV:ns festskärm.",
+      "hiddenHelp": "Vinnarbilden är dold. Din lista finns kvar.",
+      "errors": {
+        "title": "Skriv vad de vann, 1 till 40 tecken.",
+        "name": "Skriv vinnarens namn, 1 till 40 tecken.",
+        "full": "Du kan lägga till högst 8 vinnare. Ta bort en först."
+      }
     }
   }
 }
