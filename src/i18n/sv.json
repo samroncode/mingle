@@ -476,6 +476,10 @@
     "hint": "Kommer bara ihåg på den här enheten. Att glömma tar inte bort eventet."
   },
   "guest": {
+    "answered_one": "{{count}} av {{total}} har svarat",
+    "answered_other": "{{count}} av {{total}} har svarat",
+    "canChange": "Du kan ändra ditt svar fram till avslöjandet",
+    "yourAnswer": "Ditt svar",
     "joinSticker": "Ny gäst",
     "joinedSticker": "Med",
     "loading": "Laddar…",

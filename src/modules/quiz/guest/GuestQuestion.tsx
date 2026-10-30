@@ -4,7 +4,9 @@ import { useTranslation } from "react-i18next";
 import { answerQuizQuestion, getMyQuizAnswer } from "@/api/quiz";
 import type { QuizQuestionView } from "@/api/quiz";
 import { QuizOptions } from "../QuizOptions";
-import { Counter } from "../../Counter";
+import { ItemProgress } from "@/components/ItemProgress";
+import { AnswerNotes } from "../../AnswerNotes";
+import { answeredCount } from "../../guestCounts";
 import { ResultBadge } from "../../ResultBadge";
 import { optionLetters } from "../screen";
 import { AnswerButtons } from "./AnswerButtons";
@@ -15,6 +17,8 @@ interface GuestQuestionProps {
   question: QuizQuestionView;
   number: number;
   total: number;
+  /** How many guests are in the event. */
+  guests: number;
   /** The right option once revealed; null while the question is open. */
   correct: number | null;
   /** The guest score so far once revealed; undefined until it is read. */
@@ -32,6 +36,7 @@ export function GuestQuestion({
   question,
   number,
   total,
+  guests,
   correct,
   score,
 }: GuestQuestionProps) {
@@ -71,16 +76,30 @@ export function GuestQuestion({
 
   return (
     <>
-      <Counter>{t("modules.quiz.counter", { number, total })}</Counter>
+      <ItemProgress
+        activity={t("modules.quiz.name")}
+        position={t("modules.quiz.counter", { number, total })}
+        number={number}
+        total={total}
+      />
       <h2 className="font-display text-3xl leading-tight font-extrabold">
         {question.text}
       </h2>
       {correct === null ? (
-        <AnswerButtons
-          options={question.options}
-          chosen={chosen ?? null}
-          onChoose={(index) => void choose(index)}
-        />
+        <>
+          <AnswerButtons
+            options={question.options}
+            chosen={chosen ?? null}
+            onChoose={(index) => void choose(index)}
+          />
+          <AnswerNotes
+            answered={answeredCount(
+              question.answerCount,
+              (chosen ?? null) !== null,
+            )}
+            total={guests}
+          />
+        </>
       ) : (
         <>
           <QuizOptions options={question.options} correct={correct} />

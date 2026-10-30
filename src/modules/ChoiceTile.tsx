@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 import type { ChoiceFill, ChoiceState } from "./choiceState";
@@ -74,6 +75,7 @@ export function ChoiceTile({
   onPress,
   size = "md",
 }: ChoiceTileProps) {
+  const { t } = useTranslation();
   const chosen = state === "chosen";
   const look = sizes[size];
   return (
@@ -90,7 +92,14 @@ export function ChoiceTile({
     >
       {leading}
       {look.label ? <span className={look.label}>{label}</span> : label}
-      {chosen && <Check aria-hidden strokeWidth={3} className={look.check} />}
+      {chosen && (
+        <span className="flex shrink-0 items-center gap-2">
+          <span className="text-sm font-bold tracking-wider uppercase">
+            {t("guest.yourAnswer")}
+          </span>
+          <Check aria-hidden strokeWidth={3} className={look.check} />
+        </span>
+      )}
     </button>
   );
 }

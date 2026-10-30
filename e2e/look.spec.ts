@@ -126,7 +126,7 @@ test.describe("phone size", () => {
             "data-screen",
             screenName(module, screen),
           );
-          await expect(page.getByRole("heading").nth(1)).toBeVisible();
+          await expect(page.getByRole("heading").first()).toBeVisible();
           await expectNoHorizontalScroll(page);
           await expectTapTargetsAtLeast48px(page);
         });

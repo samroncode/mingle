@@ -6,7 +6,9 @@ import type { AwardCategoryView } from "@/api/awards";
 import type { MemberRow } from "@/api/events";
 import { voteCandidates } from "../candidates";
 import { useAwardWinners, useMyAwardVotes } from "../useAwardResults";
-import { Counter } from "../../Counter";
+import { ItemProgress } from "@/components/ItemProgress";
+import { AnswerNotes } from "../../AnswerNotes";
+import { answeredCount, countGuests } from "../../guestCounts";
 import { WinnerText } from "../WinnerText";
 import { WinnerCard } from "../WinnerCard";
 import { VoteButtons } from "./VoteButtons";
@@ -77,7 +79,12 @@ export function GuestCategory({
 
   return (
     <>
-      <Counter>{t("modules.awards.counter", { number, total })}</Counter>
+      <ItemProgress
+        activity={t("modules.awards.name")}
+        position={t("modules.awards.counter", { number, total })}
+        number={number}
+        total={total}
+      />
       <h2 className="font-display text-3xl leading-tight font-extrabold">
         {category.text}
       </h2>
@@ -87,11 +94,17 @@ export function GuestCategory({
             {t("modules.awards.guest.waitingForGuests")}
           </p>
         ) : (
-          <VoteButtons
-            candidates={candidates}
-            chosen={chosen}
-            onChoose={(id) => void choose(id)}
-          />
+          <>
+            <VoteButtons
+              candidates={candidates}
+              chosen={chosen}
+              onChoose={(id) => void choose(id)}
+            />
+            <AnswerNotes
+              answered={answeredCount(category.voteCount, chosen !== null)}
+              total={countGuests(members)}
+            />
+          </>
         ))}
       {revealed && winners.status === "ready" && (
         <WinnerCard testId="awards-winner">

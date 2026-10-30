@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { answerHotTake, getMyHotTakeAnswer } from "@/api/hottakes";
 import type { HotTakeView } from "@/api/hottakes";
-import { Counter } from "../../Counter";
+import { ItemProgress } from "@/components/ItemProgress";
+import { AnswerNotes } from "../../AnswerNotes";
+import { answeredCount } from "../../guestCounts";
 import { guestStanding } from "../split";
 import { SplitBars } from "../SplitBars";
 import { useHotTakeResult } from "../useHotTakeResults";
@@ -15,6 +17,8 @@ interface GuestTakeProps {
   take: HotTakeView;
   number: number;
   total: number;
+  /** How many guests are in the event. */
+  guests: number;
   /** The reveal closes the answers. */
   revealed: boolean;
   /** Changes whenever the hot takes are read again. */
@@ -32,6 +36,7 @@ export function GuestTake({
   take,
   number,
   total,
+  guests,
   revealed,
   version,
 }: GuestTakeProps) {
@@ -74,12 +79,23 @@ export function GuestTake({
 
   return (
     <>
-      <Counter>{t("modules.hottakes.counter", { number, total })}</Counter>
+      <ItemProgress
+        activity={t("modules.hottakes.name")}
+        position={t("modules.hottakes.counter", { number, total })}
+        number={number}
+        total={total}
+      />
       <h2 className="font-display text-3xl leading-tight font-extrabold">
         {take.text}
       </h2>
       {!revealed && (
-        <AnswerButtons chosen={chosen} onChoose={(a) => void choose(a)} />
+        <>
+          <AnswerButtons chosen={chosen} onChoose={(a) => void choose(a)} />
+          <AnswerNotes
+            answered={answeredCount(take.answerCount, chosen !== null)}
+            total={guests}
+          />
+        </>
       )}
       {revealed && result.status === "ready" && result.value && (
         <SplitBars split={result.value} />

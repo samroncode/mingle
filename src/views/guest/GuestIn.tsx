@@ -86,14 +86,17 @@ export function GuestIn({
         onToggle={() => setRenaming((open) => !open)}
         slot={headerSlots?.name}
       />
-      <header className="space-y-3">
-        <Sticker color="sage" lean="left">
-          {t("guest.joinedSticker")}
-        </Sticker>
-        <h1 className="font-display text-5xl leading-none font-extrabold break-words">
-          {t("guest.in", { name: name ?? "" })}
-        </h1>
-      </header>
+      {/* While an activity runs, its question is the biggest text. */}
+      {choice.kind !== "module" && (
+        <header className="space-y-3">
+          <Sticker color="sage" lean="left">
+            {t("guest.joinedSticker")}
+          </Sticker>
+          <h1 className="font-display text-5xl leading-none font-extrabold break-words">
+            {t("guest.in", { name: name ?? "" })}
+          </h1>
+        </header>
+      )}
       {renaming && (
         <NameForm
           label={t("guest.renameLabel")}
