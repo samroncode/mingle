@@ -113,7 +113,7 @@ test("a guest agrees with a hot take and changes the answer", async ({
   await expect(guest.getByRole("heading")).toHaveText(
     "Pineapple belongs on pizza",
   );
-  const agree = guest.getByRole("button", { name: "Agree", exact: true });
+  const agree = guest.getByRole("button", { name: /^Agree/ });
   const disagree = guest.getByRole("button", { name: "Disagree" });
 
   await agree.click();

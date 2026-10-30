@@ -476,6 +476,10 @@
     "hint": "Only remembered on this device. Forgetting does not delete the event."
   },
   "guest": {
+    "answered_one": "{{count}} of {{total}} has answered",
+    "answered_other": "{{count}} of {{total}} have answered",
+    "canChange": "You can change your answer until the reveal",
+    "yourAnswer": "Your answer",
     "joinSticker": "New guest",
     "joinedSticker": "In",
     "loading": "Loading…",

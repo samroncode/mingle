@@ -138,8 +138,21 @@ test("a guest answers, changes the answer and sees the result after the reveal",
     "DPerth",
   ]);
 
+  // The question leads: no welcome heading while a question is open.
+  await expect(page.getByRole("heading", { name: /You're in/ })).toBeHidden();
+  await expect(page.getByRole("progressbar")).toHaveAttribute(
+    "aria-valuenow",
+    "1",
+  );
+  await expect(quiz.getByText("0 of 1 have answered")).toBeVisible();
+  await expect(
+    quiz.getByText(/change your answer until the reveal/),
+  ).toBeVisible();
+
   await buttons.nth(1).click();
   await expect(buttons.nth(1)).toHaveAttribute("aria-pressed", "true");
+  await expect(buttons.nth(1)).toContainText("Your answer");
+  await expect(quiz.getByText("1 of 1 has answered")).toBeVisible();
   await buttons.nth(2).click();
   await expect(buttons.nth(2)).toHaveAttribute("aria-pressed", "true");
   await expect(buttons.nth(1)).toHaveAttribute("aria-pressed", "false");

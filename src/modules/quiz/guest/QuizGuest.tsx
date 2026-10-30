@@ -2,11 +2,12 @@ import { useTranslation } from "react-i18next";
 import { useQuizRun } from "@/modules/quiz/useQuizRun";
 import { useQuizScores } from "@/modules/quiz/useQuizScores";
 import type { ModuleGuestViewProps } from "../../types";
+import { countGuests } from "../../guestCounts";
 import { quizScreen } from "../screen";
 import { GuestQuestion } from "./GuestQuestion";
 
 /** The guest page while the quiz runs: answer, then see the result. */
-export function QuizGuest({ event, userId }: ModuleGuestViewProps) {
+export function QuizGuest({ event, members, userId }: ModuleGuestViewProps) {
   const { t } = useTranslation();
   const run = useQuizRun(event);
   const screen = quizScreen(event, run.progress, run.questions);
@@ -41,6 +42,7 @@ export function QuizGuest({ event, userId }: ModuleGuestViewProps) {
           question={screen.question}
           number={screen.number}
           total={screen.total}
+          guests={countGuests(members)}
           correct={screen.kind === "revealed" ? screen.correct : null}
           score={screen.kind === "revealed" ? mine?.score : undefined}
         />
