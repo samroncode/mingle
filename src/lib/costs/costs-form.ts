@@ -65,8 +65,7 @@ export function costsToForm(
 }
 
 export type CostsFormResult =
-  | { ok: true; costs: Costs }
-  | { ok: false; errors: CostsFormErrors };
+  { ok: true; costs: Costs } | { ok: false; errors: CostsFormErrors };
 
 /** A price typed as whole kronor, or NaN. "1 200" counts, "12,5" does not. */
 export function parsePrice(text: string): number {
