@@ -11,6 +11,7 @@ import { Activities } from "./Activities";
 import { BrightRoom } from "./BrightRoom";
 import { EndEvent } from "./EndEvent";
 import { Guests } from "./Guests";
+import { Messages } from "./Messages";
 import { PartyScreen } from "./PartyScreen";
 import { SharedCosts } from "./SharedCosts";
 import { TopBar } from "./TopBar";
@@ -91,6 +92,15 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         language={event.language}
         costsVersion={event.costs_version}
       />
+      {!ended && (
+        <Messages
+          eventId={eventId}
+          code={event.code}
+          hostKey={link.key}
+          language={event.language}
+          noticesVersion={event.notices_version}
+        />
+      )}
       <EventSection link={link}>
         {!ended && (
           <EndEvent
