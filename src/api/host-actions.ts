@@ -17,6 +17,9 @@ import {
   type RenameGuestResponse,
   RenameGuestResponseSchema,
   type SetBillSentRequest,
+  type SetBrightRoomRequest,
+  type SetBrightRoomResponse,
+  SetBrightRoomResponseSchema,
   type SetModulesRequest,
   type SetModulesResponse,
   SetModulesResponseSchema,
@@ -288,5 +291,15 @@ export async function setPayment(
   return toHostActionResult(
     SetPaymentResponseSchema,
     await invokeHostActions({ action: "set_payment", ...input }),
+  );
+}
+
+/** Switches the light "day" theme on or off for the TV and the guests' phones. */
+export async function setBrightRoom(
+  input: Omit<SetBrightRoomRequest, "action">,
+): Promise<HostActionResult<SetBrightRoomResponse>> {
+  return toHostActionResult(
+    SetBrightRoomResponseSchema,
+    await invokeHostActions({ action: "set_bright_room", ...input }),
   );
 }

@@ -241,6 +241,7 @@ export type Database = {
       };
       events: {
         Row: {
+          bright_room: boolean;
           code: string;
           costs_version: number;
           created_at: string;
@@ -257,6 +258,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          bright_room?: boolean;
           code: string;
           costs_version?: number;
           created_at?: string;
@@ -272,6 +274,7 @@ export type Database = {
           status?: string;
         };
         Update: {
+          bright_room?: boolean;
           code?: string;
           costs_version?: number;
           created_at?: string;
@@ -750,6 +753,10 @@ export type Database = {
       };
       set_bill_sent: {
         Args: { sent: boolean; target_event_id: string };
+        Returns: string;
+      };
+      set_bright_room: {
+        Args: { bright: boolean; target_event_id: string };
         Returns: string;
       };
       set_enabled_modules: {

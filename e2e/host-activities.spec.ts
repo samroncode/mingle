@@ -89,3 +89,25 @@ test("the running activity can't be switched off", async ({ page }) => {
   await expect(quiz.getByText("Stop it to switch it off.")).toBeVisible();
   await page.screenshot({ path: "test-results/host-activities-running.png" });
 });
+
+test("the host switches the bright room on", async ({ page }) => {
+  const bodies = await openPanel(page, [() => [200, {}]]);
+
+  const bright = page.getByRole("switch", { name: "Bright room" });
+  await expect(bright).not.toBeChecked();
+  await page.getByTestId("bright-room").scrollIntoViewIfNeeded();
+  if (process.env.SHOTS) {
+    await page
+      .getByTestId("bright-room")
+      .screenshot({ path: `${process.env.SHOTS}/host-switch.png` });
+  }
+  await bright.click();
+
+  await expect.poll(() => bodies.length).toBe(2);
+  expect(bodies[1]).toEqual({
+    action: "set_bright_room",
+    code,
+    key,
+    bright: true,
+  });
+});

@@ -114,3 +114,30 @@ test("the TV shows no money and reads none, even when costs are on", async ({
     urls.filter((url) => url.startsWith(supabase) && /cost|my_bill/.test(url)),
   ).toEqual([]);
 });
+
+test("the TV uses the niche's theme, and the day theme in a bright room", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  await fakeTv(page, { snapshot: snapshot({ niche: "team" }) });
+  await page.goto(`/tv/${code}`);
+  await expect(page.locator("[data-niche]")).toHaveAttribute(
+    "data-theme",
+    "loud",
+  );
+  if (process.env.SHOTS) {
+    await page.screenshot({ path: `${process.env.SHOTS}/tv-before.png` });
+  }
+
+  await fakeTv(page, {
+    snapshot: snapshot({ niche: "team", bright_room: true }),
+  });
+  await page.goto(`/tv/${code}`);
+  await expect(page.locator("[data-niche]")).toHaveAttribute(
+    "data-theme",
+    "day",
+  );
+  if (process.env.SHOTS) {
+    await page.screenshot({ path: `${process.env.SHOTS}/tv-bright.png` });
+  }
+});

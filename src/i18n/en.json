@@ -566,6 +566,10 @@
       "stopToSwitchOff": "Stop it to switch it off.",
       "pickFailed": "{{name}} is on, but its ready-made list couldn't be added. Add items in its section."
     },
+    "brightRoom": {
+      "title": "Bright room",
+      "help": "Shows the TV and the guests' phones in a light theme, easier to read in a bright room."
+    },
     "switchedOff": "Switched off ({{count}})",
     "partyScreen": "Party screen",
     "summary": {

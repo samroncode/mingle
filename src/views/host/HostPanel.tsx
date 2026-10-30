@@ -8,6 +8,7 @@ import { useEventState } from "@/hooks/useEventState";
 import { useHostEventId } from "@/hooks/useHostEventId";
 import type { HostLinkParts } from "@/lib/host/host-door";
 import { Activities } from "./Activities";
+import { BrightRoom } from "./BrightRoom";
 import { EndEvent } from "./EndEvent";
 import { Guests } from "./Guests";
 import { PartyScreen } from "./PartyScreen";
@@ -74,6 +75,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         <Activities event={event} members={members} hostKey={link.key} />
       )}
       {!ended && <PartyScreen event={event} hostKey={link.key} />}
+      {!ended && <BrightRoom event={event} hostKey={link.key} />}
       <Guests
         code={event.code}
         hostKey={link.key}

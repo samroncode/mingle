@@ -18,7 +18,7 @@ A theme is set with `data-theme` on `<html>` or a wrapper. Niche configs in `src
 | --- | --- | --- | --- |
 | Garden party | `garden` | Forest ground, champagne and cream cards, near-black hard shadows. Default, also before an event is read. | Afterwork; Bachelor (blush leads) |
 | One loud color | `loud` | Deeper forest, champagne outlines, dark cards, coral only in shadows and stickers. | Team event |
-| Champagne day | `day` | Champagne ground, forest TV cards. | Host's "bright room" switch (later ticket) |
+| Champagne day | `day` | Champagne ground, forest TV cards. | Host's "bright room" switch (`events.bright_room`), on the TV and guest phones |
 
 A niche can override a few tokens on top of its theme (`overrides` in its config), for example Bachelor sets `--primary` to blush.
 
