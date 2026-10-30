@@ -1,4 +1,9 @@
-import { MyBillSchema, type MyBill } from "@/lib/schemas/bill";
+import {
+  MyBillSchema,
+  RemovedPayersSchema,
+  type MyBill,
+  type RemovedPayer,
+} from "@/lib/schemas/bill";
 import { getSupabase } from "./client";
 import { fail, ok, type Result } from "./errors";
 import type { AppClient } from "./session";
@@ -31,6 +36,8 @@ export interface CostsView {
   purchases: PurchaseView[];
   /** By user id; a guest without an entry owes everything. */
   payments: Map<string, PaymentView>;
+  /** Removed guests who had paid; the host may owe them money back. */
+  removedPayers: RemovedPayer[];
 }
 
 /**
@@ -42,7 +49,7 @@ export async function getCosts(
   eventId: string,
   client: AppClient = getSupabase(),
 ): Promise<Result<CostsView | null, "unknown">> {
-  const [settings, purchases, sharers, payments] = await Promise.all([
+  const [settings, purchases, sharers, payments, removed] = await Promise.all([
     client
       .from("cost_settings")
       .select("payee_name, swish_number, bill_sent_at")
@@ -61,10 +68,19 @@ export async function getCosts(
       .from("cost_payments")
       .select("user_id, says_paid_at, confirmed_kr")
       .eq("event_id", eventId),
+    client.rpc("removed_payers", { target_event_id: eventId }),
   ]);
-  if (settings.error || purchases.error || sharers.error || payments.error)
+  if (
+    settings.error ||
+    purchases.error ||
+    sharers.error ||
+    payments.error ||
+    removed.error
+  )
     return fail("unknown");
   if (!settings.data) return ok(null);
+  const removedPayers = RemovedPayersSchema.safeParse(removed.data);
+  if (!removedPayers.success) return fail("unknown");
 
   return ok({
     payeeName: settings.data.payee_name,
@@ -87,6 +103,7 @@ export async function getCosts(
         },
       ]),
     ),
+    removedPayers: removedPayers.data,
   });
 }
 

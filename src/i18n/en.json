@@ -677,6 +677,8 @@
       "undoPayment": "Undo",
       "paidAmount": "Paid {{amount}}",
       "owesAmount": "Owes {{amount}}",
+      "removedPaid": "{{name}} paid {{amount}} before being removed. Pay it back yourself.",
+      "removedSaidPaid": "{{name}} said they had paid before being removed. Check Swish and pay it back if so.",
       "paymentFailed": "Couldn't save that. Try again."
     }
   }

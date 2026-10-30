@@ -45,10 +45,10 @@ export function GuestIn({
   useEffect(() => {
     if (lost) void onAccessLost();
   }, [lost, onAccessLost]);
-  if (page === "ended" || page === "not_found" || page === "error") {
+  if (page === "not_found" || page === "error") {
     return <GuestMessage kind={page} />;
   }
-  if (page !== "in" || !state.event) {
+  if ((page !== "in" && page !== "ended") || !state.event) {
     return <p className="text-lg text-ink-muted">{t("guest.loading")}</p>;
   }
 
@@ -56,17 +56,29 @@ export function GuestIn({
   const billSignal =
     state.event.costs_version * 1_000_003 +
     idsSignal(state.members.map((member) => member.user_id));
-  const choice = pickScreen(state.event.current_module);
   const name = state.members.find((m) => m.user_id === userId)?.display_name;
+  const bill = (
+    <GuestBill
+      eventId={eventId}
+      code={state.event.code}
+      guestName={name ?? ""}
+      signal={billSignal}
+      slot={billSlot}
+    />
+  );
+  // People pay the next day: the receipt icon stays after the evening ends.
+  if (page === "ended") {
+    return (
+      <>
+        {bill}
+        <GuestMessage kind="ended" />
+      </>
+    );
+  }
+  const choice = pickScreen(state.event.current_module);
   const content = (
     <div className="space-y-5">
-      <GuestBill
-        eventId={eventId}
-        code={state.event.code}
-        guestName={name ?? ""}
-        signal={billSignal}
-        slot={billSlot}
-      />
+      {bill}
       <header className="space-y-3">
         <Sticker color="sage" lean="left">
           {t("guest.joinedSticker")}
