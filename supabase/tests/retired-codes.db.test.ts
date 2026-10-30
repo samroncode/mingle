@@ -72,7 +72,7 @@ describe("create_event and retired codes", () => {
       sql(
         "select prosecdef, proconfig from pg_proc " +
           "where oid = 'public.create_event(uuid, text, text, text, text[], " +
-          "jsonb, text, jsonb, jsonb, jsonb)'::regprocedure",
+          "jsonb, text, jsonb, jsonb, jsonb, jsonb)'::regprocedure",
       ),
     ).toEqual(['t|{"search_path=\\"\\""}']);
   });
