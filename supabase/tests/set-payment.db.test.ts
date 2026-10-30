@@ -182,5 +182,3 @@ describe("set_payment without the right key", () => {
     expect(await billOf(cast, cast.anna)).toMatchObject({ status: "owes" });
   });
 });
-  });
-});
