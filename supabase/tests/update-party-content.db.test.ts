@@ -133,6 +133,18 @@ describe("update_party_content with the right key", () => {
     expect(await partyAs(host.user, host.code)).toEqual(updated);
   });
 
+  it("stores winners and the hidden flag", async () => {
+    const host = await createEvent();
+    const party = {
+      ...updated,
+      winners: [{ title: "Dart tournament", name: "Anna" }],
+      winnersHidden: true,
+    };
+
+    expect((await updateParty(host, party)).status).toBe(200);
+    expect(await partyAs(host.user, host.code)).toEqual(party);
+  });
+
   it("never returns the key", async () => {
     const host = await createEvent();
     const response = await updateParty(host, updated);
@@ -188,6 +200,26 @@ describe("update_party_content: invalid content", () => {
     ["wifi without a network name", { wifi: { password: "x" } }],
     ["a music link that isn't https", { musicUrl: "http://example.com/x" }],
     ["a music link with a script scheme", { musicUrl: "javascript:alert(1)" }],
+    [
+      "more than 8 winners",
+      { winners: Array.from({ length: 9 }, () => ({ title: "T", name: "N" })) },
+    ],
+    [
+      "a winner with an empty name",
+      { winners: [{ title: "Darts", name: " " }] },
+    ],
+    [
+      "a winner with an empty title",
+      { winners: [{ title: "", name: "Anna" }] },
+    ],
+    [
+      "a winner name that is too long",
+      { winners: [{ title: "Darts", name: "x".repeat(41) }] },
+    ],
+    [
+      "a winner title that is too long",
+      { winners: [{ title: "x".repeat(41), name: "Anna" }] },
+    ],
     ["content that isn't an object", ["Välkomna!"]],
     ["no content at all", undefined],
   ])(

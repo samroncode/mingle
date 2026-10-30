@@ -6,6 +6,7 @@ export type Part =
   | { kind: "welcome"; text: string }
   | { kind: "menu"; lines: string[] }
   | { kind: "schedule"; items: NonNullable<Party["schedule"]> }
+  | { kind: "winners"; winners: NonNullable<Party["winners"]> }
   | { kind: "wifi"; ssid: string; password: string }
   | { kind: "music"; url: string }
   | { kind: "guests"; names: string[] };
@@ -17,6 +18,8 @@ export function partsOf(party: Party, members: MemberRow[]): Part[] {
     party.welcome !== undefined && { kind: "welcome", text: party.welcome },
     !!party.menu?.length && { kind: "menu", lines: party.menu },
     !!party.schedule?.length && { kind: "schedule", items: party.schedule },
+    !!party.winners?.length &&
+      !party.winnersHidden && { kind: "winners", winners: party.winners },
     party.wifi !== undefined && { kind: "wifi", ...party.wifi },
     party.musicUrl !== undefined && { kind: "music", url: party.musicUrl },
     names.length > 0 && { kind: "guests", names },

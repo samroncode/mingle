@@ -277,6 +277,42 @@ test.describe("1920x1080", () => {
       await expectNoHorizontalScroll(page);
     });
 
+    test(`the TV winners slide fits and reads big (${niche})`, async ({
+      page,
+    }) => {
+      await fakeSupabase(page, []);
+      await fakeTv(page, {
+        snapshot: {
+          ...eventRow({
+            id: "e1",
+            code,
+            niche,
+            party: {
+              winners: [
+                { title: "Dart tournament", name: "Anna" },
+                { title: "Best costume", name: "Bertil and Cissi" },
+              ],
+            },
+          }),
+          members: [
+            memberRow({ user_id: "t", role: "tv", display_name: null }),
+          ],
+        },
+      });
+      await page.goto(`/tv/${code}`);
+      await expect(page.getByTestId("winners")).toContainText("Anna");
+      await expect(page.locator("[data-niche]")).toHaveAttribute(
+        "data-niche",
+        niche,
+      );
+      await expectNoHorizontalScroll(page);
+      const smallest = await page.evaluate<number>(
+        "Math.min(...[...document.querySelectorAll('[data-testid=winners] p')].map((el) => parseFloat(getComputedStyle(el).fontSize)))",
+      );
+      expect(smallest).toBeGreaterThanOrEqual(22);
+      await shoot(page, `tv-winners-${niche}`);
+    });
+
     for (const module of modules) {
       for (const screen of screens) {
         test(`the ${module.id} ${screen} TV screen fits (${niche})`, async ({
