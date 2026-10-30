@@ -10,6 +10,8 @@ interface NameFormProps {
   label: string;
   submitLabel: string;
   initialName?: string;
+  /** Put the cursor in the field at once, for a form the guest just opened. */
+  autoFocus?: boolean;
   /** Resolves to an error code, or nothing on success. */
   onSubmit: (
     name: string,
@@ -21,6 +23,7 @@ export function NameForm({
   label,
   submitLabel,
   initialName = "",
+  autoFocus = false,
   onSubmit,
 }: NameFormProps) {
   const { t } = useTranslation();
@@ -49,6 +52,7 @@ export function NameForm({
           value={name}
           maxLength={displayNameMaxLength}
           autoComplete="off"
+          autoFocus={autoFocus}
           aria-invalid={error !== undefined}
           onChange={(event) => setName(event.target.value)}
         />

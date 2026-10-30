@@ -58,12 +58,16 @@ test("a guest who is already in goes straight to the page and can rename", async
   await expect(
     page.getByRole("heading", { name: "You're in, Anna!" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Change my name" }).click();
+  // The name sits in the header, and its edit action opens the rename form.
+  const edit = page
+    .getByRole("banner")
+    .getByRole("button", { name: "Anna, change my name" });
+  await edit.click();
+  await expect(page.getByLabel("New name")).toBeFocused();
   await page.getByLabel("New name").fill("Annika");
   await page.getByRole("button", { name: "Save" }).click();
-  await expect(
-    page.getByRole("button", { name: "Change my name" }),
-  ).toBeVisible();
+  await expect(page.getByLabel("New name")).toHaveCount(0);
+  await expect(edit).toHaveAttribute("aria-expanded", "false");
 });
 
 test("a guest sees the evening's info after joining", async ({ page }) => {

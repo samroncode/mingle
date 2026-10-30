@@ -13,7 +13,9 @@
   "language": {
     "label": "Språk",
     "sv": "Svenska",
-    "en": "English"
+    "en": "English",
+    "svShort": "SV",
+    "enShort": "EN"
   },
   "niches": {
     "aw": {
@@ -480,7 +482,7 @@
     "nameLabel": "Ditt namn",
     "join": "Gå med",
     "in": "Du är med, {{name}}!",
-    "rename": "Byt namn",
+    "renameFor": "{{name}}, byt namn",
     "renameLabel": "Nytt namn",
     "renameSave": "Spara",
     "party": {
