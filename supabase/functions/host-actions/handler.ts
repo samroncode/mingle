@@ -17,6 +17,7 @@ import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
 import { removeGuest } from "./remove-guest.ts";
 import { renameGuest } from "./rename-guest.ts";
 import { setBillSent } from "./set-bill-sent.ts";
+import { setModules } from "./set-modules.ts";
 import { setFlow } from "./set-flow.ts";
 import { setPayment } from "./set-payment.ts";
 import { updateAwards } from "./update-awards.ts";
@@ -104,5 +105,7 @@ async function runAction(
       return setBillSent(db, caller, request);
     case "set_payment":
       return setPayment(db, caller, request);
+    case "set_modules":
+      return setModules(db, caller, request);
   }
 }

@@ -17,6 +17,9 @@ import {
   type RenameGuestResponse,
   RenameGuestResponseSchema,
   type SetBillSentRequest,
+  type SetModulesRequest,
+  type SetModulesResponse,
+  SetModulesResponseSchema,
   type SetPaymentRequest,
   type SetPaymentResponse,
   SetPaymentResponseSchema,
@@ -198,6 +201,20 @@ export async function updateHotTakes(
   return toHostActionResult(
     UpdateHotTakesResponseSchema,
     await invokeHostActions({ action: "update_hottakes", ...input }),
+  );
+}
+
+/**
+ * Saves which activities are switched on, in display order. Fails with
+ * `invalid_transition` when the list leaves out the running activity or the
+ * event has ended, and `invalid_request` for an unknown or repeated id.
+ */
+export async function setModules(
+  input: Omit<SetModulesRequest, "action">,
+): Promise<HostActionResult<SetModulesResponse>> {
+  return toHostActionResult(
+    SetModulesResponseSchema,
+    await invokeHostActions({ action: "set_modules", ...input }),
   );
 }
 
