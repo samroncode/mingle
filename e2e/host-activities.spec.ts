@@ -82,7 +82,7 @@ test("the running activity can't be switched off", async ({ page }) => {
   });
 
   const quiz = page.getByTestId("activity-quiz");
-  await expect(quiz.getByText("Running")).toBeVisible();
+  await expect(quiz.getByText("Running", { exact: true })).toBeVisible();
   await expect(
     quiz.getByRole("switch", { name: "Use this activity" }),
   ).toBeDisabled();
