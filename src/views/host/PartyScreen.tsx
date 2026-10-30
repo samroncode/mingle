@@ -71,6 +71,7 @@ function PartyEditor({
     const result = await run(() =>
       savePartyEdit(
         form,
+        readParty(event.party),
         { code: event.code, key: hostKey },
         updatePartyContent,
       ),

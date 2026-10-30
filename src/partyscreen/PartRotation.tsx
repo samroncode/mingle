@@ -6,6 +6,7 @@ import {
   MusicPart,
   SchedulePart,
   WifiPart,
+  WinnersPart,
 } from "./PartPanels";
 import { partsOf, type Part } from "./parts";
 import { useRotation } from "./rotation";
@@ -19,6 +20,8 @@ function PartView({ part }: { part: Part }) {
       return <MenuPart {...part} />;
     case "schedule":
       return <SchedulePart {...part} />;
+    case "winners":
+      return <WinnersPart {...part} />;
     case "wifi":
       return <WifiPart {...part} />;
     case "music":

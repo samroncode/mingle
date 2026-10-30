@@ -21,6 +21,16 @@ export function partyToForm(party: Party): PartyForm {
   };
 }
 
+/** `party` with the winners fields of `saved`, which this editor doesn't own. */
+function withWinners(party: Party, saved: Party): Party {
+  const { winners, winnersHidden } = saved;
+  return {
+    ...party,
+    ...(winners !== undefined && { winners }),
+    ...(winnersHidden !== undefined && { winnersHidden }),
+  };
+}
+
 export type PartySaveResult =
   | { ok: true }
   | { ok: false; invalid: PartyField[] }
@@ -34,15 +44,20 @@ type SendParty = (input: {
 
 /**
  * Checks the form and sends the whole party object, which replaces the saved
- * one: a part the host cleared is gone from the TV too.
+ * one: a part the host cleared is gone from the TV too. The winners belong to
+ * their own editor, so they are carried over from `saved` untouched.
  */
 export async function savePartyEdit(
   form: PartyForm,
+  saved: Party,
   target: { code: string; key: string },
   send: SendParty,
 ): Promise<PartySaveResult> {
   const invalid = invalidFields(form);
   if (invalid.length > 0) return { ok: false, invalid };
-  const result = await send({ ...target, party: toParty(form) });
+  const result = await send({
+    ...target,
+    party: withWinners(toParty(form), saved),
+  });
   return result.ok ? { ok: true } : { ok: false, error: result.error };
 }

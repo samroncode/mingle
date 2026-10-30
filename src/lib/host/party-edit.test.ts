@@ -14,7 +14,7 @@ const saved: Party = {
 describe("partyToForm", () => {
   it("round-trips the saved content through the form", async () => {
     const send = vi.fn().mockResolvedValue({ ok: true, data: {} });
-    await savePartyEdit(partyToForm(saved), target, send);
+    await savePartyEdit(partyToForm(saved), saved, target, send);
     expect(send).toHaveBeenCalledWith({ ...target, party: saved });
   });
 
@@ -31,16 +31,31 @@ describe("savePartyEdit", () => {
   it("sends the whole object without a cleared part", async () => {
     const send = vi.fn().mockResolvedValue({ ok: true, data: {} });
     const form = { ...partyToForm(saved), wifiSsid: "", wifiPassword: "" };
-    expect(await savePartyEdit(form, target, send)).toEqual({ ok: true });
+    expect(await savePartyEdit(form, saved, target, send)).toEqual({
+      ok: true,
+    });
     const sent = send.mock.calls[0]?.[0] as { party: Party };
     expect(sent.party).not.toHaveProperty("wifi");
     expect(sent.party.welcome).toBe("Hi");
   });
 
+  it("keeps the winners and the hidden flag the editor doesn't own", async () => {
+    const send = vi.fn().mockResolvedValue({ ok: true, data: {} });
+    const withWinners: Party = {
+      ...saved,
+      winners: [{ title: "Darts", name: "Anna" }],
+      winnersHidden: true,
+    };
+    const form = { ...partyToForm(withWinners), welcome: "New text" };
+    await savePartyEdit(form, withWinners, target, send);
+    const sent = send.mock.calls[0]?.[0] as { party: Party };
+    expect(sent.party).toEqual({ ...withWinners, welcome: "New text" });
+  });
+
   it("sends nothing while a field is invalid", async () => {
     const send = vi.fn();
     const form = { ...partyToForm(saved), musicUrl: "not a url" };
-    expect(await savePartyEdit(form, target, send)).toEqual({
+    expect(await savePartyEdit(form, saved, target, send)).toEqual({
       ok: false,
       invalid: ["musicUrl"],
     });
@@ -51,7 +66,9 @@ describe("savePartyEdit", () => {
     "returns %s from the server",
     async (error) => {
       const send = vi.fn().mockResolvedValue({ ok: false, error });
-      expect(await savePartyEdit(partyToForm(saved), target, send)).toEqual({
+      expect(
+        await savePartyEdit(partyToForm(saved), saved, target, send),
+      ).toEqual({
         ok: false,
         error,
       });

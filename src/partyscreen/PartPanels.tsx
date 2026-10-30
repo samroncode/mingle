@@ -50,6 +50,30 @@ export function SchedulePart({ items }: Of<"schedule">) {
   );
 }
 
+export function WinnersPart({ winners }: Of<"winners">) {
+  const { t } = useTranslation();
+  return (
+    <Panel title={t("tv.winners")}>
+      <ul
+        data-testid="winners"
+        className="grid w-full grid-cols-2 gap-(--space-4)"
+      >
+        {winners.map((winner, index) => (
+          <li
+            key={index}
+            className="rounded-lg border-[length:var(--border-thin)] border-edge bg-champagne p-(--space-5) text-on-bright"
+          >
+            <p className="font-body text-2xl font-medium">{winner.title}</p>
+            <p className="truncate font-display text-5xl font-extrabold">
+              {winner.name}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </Panel>
+  );
+}
+
 export function WifiPart({ ssid, password }: Of<"wifi">) {
   const { t } = useTranslation();
   return (

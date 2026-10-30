@@ -34,6 +34,23 @@ describe("partsOf", () => {
     ]);
   });
 
+  it("adds winners after the schedule, unless empty or hidden", () => {
+    const winners = [{ title: "Darts", name: "Anna" }];
+    const kinds = (party: object) =>
+      partsOf({ ...full, ...party }, []).map((part) => part.kind);
+    expect(kinds({ winners })).toContain("winners");
+    expect(kinds({ winners })).toEqual([
+      "welcome",
+      "menu",
+      "schedule",
+      "winners",
+      "wifi",
+      "music",
+    ]);
+    expect(kinds({ winners: [] })).not.toContain("winners");
+    expect(kinds({ winners, winnersHidden: true })).not.toContain("winners");
+  });
+
   it("leaves out parts the host left empty, and guests when nobody joined", () => {
     expect(partsOf({ welcome: "Hi", menu: [] }, [])).toEqual([
       { kind: "welcome", text: "Hi" },
