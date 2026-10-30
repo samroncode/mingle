@@ -566,6 +566,10 @@
       "stopToSwitchOff": "Stoppa den för att stänga av den.",
       "pickFailed": "{{name}} är på, men den färdiga listan gick inte att lägga till. Lägg till i dess sektion."
     },
+    "brightRoom": {
+      "title": "Ljust rum",
+      "help": "Visar TV:n och gästernas mobiler i ett ljust tema som är lättare att läsa i ett ljust rum."
+    },
     "switchedOff": "Avstängda ({{count}})",
     "partyScreen": "Festskärm",
     "summary": {

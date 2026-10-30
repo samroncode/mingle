@@ -69,7 +69,11 @@ function TvEvent({ eventId }: { eventId: string }) {
     ) : (
       <PartyScreen event={state.event} members={state.members} left={left} />
     );
-  return <NicheTheme niche={state.event.niche}>{screen}</NicheTheme>;
+  return (
+    <NicheTheme niche={state.event.niche} bright={state.event.bright_room}>
+      {screen}
+    </NicheTheme>
+  );
 }
 
 /** The shared big-screen view: joins the event as its TV. */

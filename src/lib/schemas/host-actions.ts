@@ -324,6 +324,23 @@ export const SetModulesResponseSchema = z.strictObject({});
 
 export type SetModulesResponse = z.infer<typeof SetModulesResponseSchema>;
 
+/**
+ * Switches the light "day" theme on (`bright: true`) or off for the event. The
+ * TV and the guests' phones follow the event row.
+ */
+export const SetBrightRoomRequestSchema = z.strictObject({
+  action: z.literal("set_bright_room"),
+  ...hostLinkFields,
+  bright: z.boolean(),
+});
+
+export type SetBrightRoomRequest = z.infer<typeof SetBrightRoomRequestSchema>;
+
+/** Empty: the host and the screens read the new state from the event. */
+export const SetBrightRoomResponseSchema = z.strictObject({});
+
+export type SetBrightRoomResponse = z.infer<typeof SetBrightRoomResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -339,6 +356,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   SetBillSentRequestSchema,
   SetPaymentRequestSchema,
   SetModulesRequestSchema,
+  SetBrightRoomRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;

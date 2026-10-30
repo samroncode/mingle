@@ -117,5 +117,9 @@ export function GuestIn({
       )}
     </div>
   );
-  return <NicheTheme niche={state.event.niche}>{content}</NicheTheme>;
+  return (
+    <NicheTheme niche={state.event.niche} bright={state.event.bright_room}>
+      {content}
+    </NicheTheme>
+  );
 }
