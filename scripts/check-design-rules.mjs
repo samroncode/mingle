@@ -1,6 +1,7 @@
 // Fails when src/ breaks the look rules in docs/design.md: hardcoded colors,
 // hardcoded font families, `dark:` classes and fill-colour text. The look lives in
-// src/app/theme.css; the QR code is black on white by necessity.
+// src/app/theme.css; the QR code is black on white by necessity. The hard
+// shadow belongs to things you press, so only the pressable controls may use it.
 import fs from "node:fs";
 import path from "node:path";
 
@@ -25,6 +26,16 @@ const rules = [
   ],
 ];
 
+// The pressable controls that may wear the hard offset shadow (shadow-pop-sm).
+// Add a file here when you build a new pressable control.
+const pressables = new Set([
+  "components/ui/button.tsx",
+  "components/ui/switch.tsx",
+  "modules/ChoiceTile.tsx",
+  "views/create/ChoiceButton.tsx",
+]);
+const hardShadow = /(?<![\w-])shadow-pop-(?:sm|md|lg)\b/;
+
 function* sourceFiles(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
@@ -45,6 +56,11 @@ for (const file of sourceFiles(root)) {
   fs.readFileSync(file, "utf8")
     .split("\n")
     .forEach((line, i) => {
+      if (!pressables.has(rel) && hardShadow.test(line)) {
+        found.push(
+          `src/${rel}:${i + 1}: a hard shadow on something you can't press: ${line.trim()}`,
+        );
+      }
       for (const [name, pattern] of rules) {
         if (pattern.test(line)) {
           found.push(`src/${rel}:${i + 1}: ${name}: ${line.trim()}`);
@@ -59,4 +75,6 @@ if (found.length > 0) {
   );
   process.exit(1);
 }
-console.log("Design rules hold: no hardcoded colors, fonts or dark: classes.");
+console.log(
+  "Design rules hold: no hardcoded colors, fonts or dark: classes, and hard shadows only on pressables.",
+);

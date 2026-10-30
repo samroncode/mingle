@@ -68,7 +68,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
       )}
       {ended ? (
-        <p className="rounded-md border-[length:var(--border-chunky)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright shadow-pop-sm">
+        <p className="rounded-md border-[length:var(--border-thin)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright">
           {t("hostPanel.ended")}
         </p>
       ) : (

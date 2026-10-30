@@ -27,7 +27,7 @@ export function WinnersList({
         <li
           key={result.categoryId}
           className={cn(
-            "fun-tilt rounded-md border-[length:var(--border-chunky)] border-edge bg-paper px-4 py-3 text-on-paper shadow-pop-sm",
+            "fun-tilt rounded-md border-[length:var(--border-thin)] border-edge bg-paper px-4 py-3 text-on-paper",
             index % 2 === 0 ? "-rotate-2" : "rotate-2",
             large && "px-6 py-5",
           )}

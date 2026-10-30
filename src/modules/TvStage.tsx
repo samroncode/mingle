@@ -27,7 +27,7 @@ export function TvStage({
     <FunZone level={level}>
       <section
         className={cn(
-          "relative flex min-h-[70svh] flex-col justify-center gap-8 overflow-hidden rounded-xl border-[length:var(--border-chunky)] border-edge bg-forest p-(--space-7) text-on-forest shadow-pop-lg",
+          "relative flex min-h-[70svh] flex-col justify-center gap-8 overflow-hidden rounded-xl border-[length:var(--border-thin)] border-edge bg-forest p-(--space-7) text-on-forest",
           className,
         )}
         {...props}

@@ -53,7 +53,7 @@ export function QuizGuest({ event, userId }: ModuleGuestViewProps) {
           {mine && (
             <div
               data-testid="quiz-final"
-              className="fun-pop space-y-1 rounded-lg border-[length:var(--border-chunky)] border-edge bg-champagne p-4 text-on-bright shadow-pop-md"
+              className="fun-pop space-y-1 rounded-lg border-[length:var(--border-thin)] border-edge bg-champagne p-4 text-on-bright"
             >
               <p className="font-display text-6xl leading-none font-extrabold">
                 {t("modules.quiz.guest.finalPlace", { place: mine.place })}

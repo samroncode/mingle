@@ -21,7 +21,7 @@ export function ResultBadge({ good, testId, children }: ResultBadgeProps) {
       <p
         data-testid={testId}
         className={cn(
-          "fun-pop flex items-center gap-3 rounded-lg border-[length:var(--border-chunky)] border-edge px-4 py-3 font-display text-3xl font-extrabold text-on-bright shadow-pop-md",
+          "fun-pop flex items-center gap-3 rounded-lg border-[length:var(--border-thin)] border-edge px-4 py-3 font-display text-3xl font-extrabold text-on-bright",
           good ? "bg-sage" : "bg-danger",
         )}
       >

@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import type { ChoiceFill, ChoiceState } from "./choiceState";
+import { softFills } from "./optionFills";
 
 interface ChoiceTileProps {
   fill: ChoiceFill;
@@ -15,29 +16,30 @@ interface ChoiceTileProps {
   size?: "md" | "lg";
 }
 
-const brightOther = "opacity-75";
-
-/** The fill and text of each fill in each state. A paper tile turns champagne once chosen. */
+/**
+ * The fill and text of each fill in each state. Once another tile is chosen, a
+ * bright tile steps back to its soft fill. A paper tile turns champagne once chosen.
+ */
 const fills: Record<ChoiceFill, Record<ChoiceState, string>> = {
   coral: {
     idle: "bg-coral text-on-bright",
     chosen: "bg-coral text-on-bright",
-    "other-chosen": cn("bg-coral text-on-bright", brightOther),
+    "other-chosen": cn(softFills.coral, "text-on-bright"),
   },
   champagne: {
     idle: "bg-champagne text-on-bright",
     chosen: "bg-champagne text-on-bright",
-    "other-chosen": cn("bg-champagne text-on-bright", brightOther),
+    "other-chosen": cn(softFills.champagne, "text-on-bright"),
   },
   blush: {
     idle: "bg-blush text-on-bright",
     chosen: "bg-blush text-on-bright",
-    "other-chosen": cn("bg-blush text-on-bright", brightOther),
+    "other-chosen": cn(softFills.blush, "text-on-bright"),
   },
   sage: {
     idle: "bg-sage text-on-bright",
     chosen: "bg-sage text-on-bright",
-    "other-chosen": cn("bg-sage text-on-bright", brightOther),
+    "other-chosen": cn(softFills.sage, "text-on-bright"),
   },
   paper: {
     idle: "bg-paper text-on-paper",

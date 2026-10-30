@@ -10,7 +10,7 @@ export function WelcomePart({ welcome }: WelcomePartProps) {
   return (
     <section
       aria-label={t("tv.welcome")}
-      className="flex h-full items-center justify-center rounded-xl border-[length:var(--border-chunky)] border-edge bg-forest p-(--space-7) text-on-forest shadow-pop-lg"
+      className="flex h-full items-center justify-center rounded-xl border-[length:var(--border-thin)] border-edge bg-forest p-(--space-7) text-on-forest"
     >
       <p
         data-testid="welcome-text"

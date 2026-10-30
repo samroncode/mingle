@@ -44,6 +44,7 @@ const pairs: [string, string][] = [
   ["on-forest", "forest"],
   ...brights.map((b): [string, string] => ["on-bright", b]),
   ...soft.map((c): [string, string] => ["ink", `${c}-soft`]),
+  ...soft.map((c): [string, string] => ["on-bright", `${c}-soft-fill`]),
   ...soft.flatMap((c): [string, string][] =>
     surfaces.map((s): [string, string] => [`${c}-text`, s]),
   ),
@@ -84,7 +85,7 @@ describe("token coverage", () => {
   it("checks every text-bearing token a theme declares", () => {
     const checked = new Set(pairs.flat());
     const textBearing = Object.keys(garden).filter((name) =>
-      /^(ink|on-|.*-text$|.*-soft$)/.test(name),
+      /^(ink|on-|.*-text$|.*-soft$|.*-soft-fill$)/.test(name),
     );
     // Add new text tokens to `pairs` above so the 4.5:1 rule covers them.
     expect(textBearing.filter((name) => !checked.has(name))).toEqual([]);

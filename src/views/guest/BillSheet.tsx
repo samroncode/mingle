@@ -74,7 +74,7 @@ export function BillSheet({
         aria-modal="true"
         aria-labelledby="bill-title"
         data-testid="bill-sheet"
-        className="max-h-[85svh] w-full max-w-md space-y-4 overflow-y-auto rounded-lg border-[length:var(--border-chunky)] border-edge bg-paper p-5 text-on-paper shadow-pop-lg"
+        className="max-h-[85svh] w-full max-w-md space-y-4 overflow-y-auto rounded-lg border-[length:var(--border-thin)] border-edge bg-paper p-5 text-on-paper"
         onClick={(event) => event.stopPropagation()}
       >
         <header className="flex items-start justify-between gap-3">
