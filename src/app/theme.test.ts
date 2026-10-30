@@ -56,12 +56,15 @@ const pairs: [string, string][] = [
 describe.each(themeIds)("theme %s", (id) => {
   const tokens = themeTokens(id);
 
-  it.each(pairs)("%s on %s reaches 4.5:1", (text, background) => {
-    const fg = tokens[text];
-    const bg = tokens[background];
-    expect(fg, text).toBeDefined();
-    expect(bg, background).toBeDefined();
-    expect(contrast(fg ?? "", bg ?? "")).toBeGreaterThanOrEqual(4.5);
+  it("reaches 4.5:1 for every text pair", () => {
+    const failing = pairs
+      .filter(([text, background]) => {
+        const fg = tokens[text];
+        const bg = tokens[background];
+        return !fg || !bg || contrast(fg, bg) < 4.5;
+      })
+      .map(([text, background]) => `${text} on ${background}`);
+    expect(failing).toEqual([]);
   });
 
   it("keeps line-strong visible (3:1) on the surfaces", () => {

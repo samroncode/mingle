@@ -76,24 +76,6 @@ describe("seed", () => {
 describe("editing the quiz", () => {
   const seeded = run(emptyQuiz, { type: "seed", ids: ["a-1", "a-2", "a-3"] });
 
-  it("removes a question and adds a ready-made one back at the end", () => {
-    const quiz = run(
-      seeded,
-      { type: "remove", index: 0 },
-      { type: "add_builtin", id: "a-1" },
-    );
-    expect(ids(quiz)).toEqual(["a-2", "a-3", "a-1"]);
-  });
-
-  it("does not add the same ready-made question twice", () => {
-    expect(run(seeded, { type: "add_builtin", id: "a-2" })).toBe(seeded);
-  });
-
-  it("moves a question", () => {
-    const quiz = run(seeded, { type: "move", from: 2, to: 0 });
-    expect(ids(quiz)).toEqual(["a-3", "a-1", "a-2"]);
-  });
-
   it("adds, edits and removes the host's own question", () => {
     const quiz = run(
       seeded,

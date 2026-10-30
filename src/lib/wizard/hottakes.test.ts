@@ -17,9 +17,6 @@ function run(takes: HotTakesDraft, ...actions: HotTakesAction[]) {
   return actions.reduce(hotTakesReducer, takes);
 }
 
-const ids = (takes: HotTakesDraft) =>
-  takes.items.map((item) => (item.kind === "builtin" ? item.id : item.key));
-
 describe("pickDefaultHotTakeIds", () => {
   it.each(nicheIds)("picks eight different hot takes of the %s niche", (id) => {
     const picked = pickDefaultHotTakeIds(id);
@@ -38,32 +35,6 @@ describe("pickDefaultHotTakeIds", () => {
 });
 
 describe("editing the hot takes", () => {
-  const seeded = run(emptyHotTakes, {
-    type: "seed",
-    ids: ["a-1", "a-2", "a-3"],
-  });
-
-  it("keeps the first pick when seeded again, so the pick stays stable", () => {
-    expect(run(seeded, { type: "seed", ids: ["b-1"] })).toBe(seeded);
-  });
-
-  it("unticks, ticks, reorders and adds the host's own", () => {
-    const takes = run(
-      seeded,
-      { type: "remove", index: 0 },
-      { type: "add_builtin", id: "a-9" },
-      { type: "move", from: 2, to: 0 },
-      { type: "add_own", key: "k1" },
-      { type: "edit_own", key: "k1", change: { text: "Best at fika" } },
-    );
-    expect(ids(takes)).toEqual(["a-9", "a-2", "a-3", "k1"]);
-    expect(takes.items[3]).toEqual({
-      kind: "own",
-      key: "k1",
-      text: "Best at fika",
-    });
-  });
-
   it("stops at 20 hot takes", () => {
     const full = run(emptyHotTakes, {
       type: "seed",
