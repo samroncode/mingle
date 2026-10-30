@@ -677,6 +677,8 @@
       "undoPayment": "Ångra",
       "paidAmount": "Betalat {{amount}}",
       "owesAmount": "Skyldig {{amount}}",
+      "removedPaid": "{{name}} betalade {{amount}} innan hen togs bort. Betala tillbaka själv.",
+      "removedSaidPaid": "{{name}} sa att hen hade betalat innan hen togs bort. Kolla Swish och betala tillbaka om det stämmer.",
       "paymentFailed": "Det gick inte att spara. Försök igen."
     }
   }

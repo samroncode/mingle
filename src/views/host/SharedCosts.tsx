@@ -20,10 +20,12 @@ import {
   formatKr,
   shareOf,
 } from "@/lib/costs/shares";
+import { idsSignal } from "@/lib/guest/bill";
 import { sortedGuests } from "@/lib/host/guest-list";
 import { BillControl } from "./BillControl";
 import { CostsEditor } from "./CostsEditor";
 import { GuestPayments } from "./GuestPayments";
+import { RemovedPayers } from "./RemovedPayers";
 
 interface SharedCostsProps {
   eventId: string;
@@ -149,12 +151,14 @@ export function SharedCosts({
   const { t } = useTranslation();
   const [editing, setEditing] = useState<CostsForm>();
   const [refresh, setRefresh] = useState(0);
-  const load = useLoad(`costs:${eventId}`, () => getCosts(eventId), {
-    refresh: refresh + costsVersion,
-    keepOnError: true,
-  });
   const guests = sortedGuests(members, language);
   const guestIds = guests.map((guest) => guest.userId);
+  // Read again when the host changes something, a guest says they paid, or
+  // the guests change: a removed guest leaves a note if they had paid.
+  const load = useLoad(`costs:${eventId}`, () => getCosts(eventId), {
+    refresh: refresh + costsVersion + idsSignal(guestIds),
+    keepOnError: true,
+  });
   const costs = load.status === "ready" ? load.value : null;
 
   const startEditing = (addPurchase = false) => {
@@ -231,6 +235,7 @@ export function SharedCosts({
             })}
           </p>
           <PurchaseList costs={costs} guestIds={new Set(guestIds)} />
+          <RemovedPayers payers={costs.removedPayers} />
           <GuestPayments
             costs={costs}
             guests={guests}

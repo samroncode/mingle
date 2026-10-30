@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
 import { eventRow, memberRow, type EventRow } from "./fake-rows.ts";
-import { fakeSupabase, fakeTv } from "./fake-supabase.ts";
+import {
+  fakeSupabase,
+  fakeTv,
+  recordRequestUrls,
+  supabase,
+} from "./fake-supabase.ts";
 
 test.use({ viewport: { width: 1920, height: 1080 } });
 
@@ -92,4 +97,20 @@ test("an unknown code shows a clear error", async ({ page }) => {
   await expect(page.getByRole("alert")).toContainText("couldn't find an event");
   await page.getByRole("link", { name: "Go to the start page" }).click();
   await expect(page).toHaveURL("/");
+});
+
+test("the TV shows no money and reads none, even when costs are on", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  await fakeTv(page, { snapshot: snapshot({ costs_version: 3 }) });
+  const urls = recordRequestUrls(page);
+
+  await page.goto(`/tv/${code}`);
+  await expect(page.getByTestId("tv-code")).toHaveText(code);
+
+  await expect(page.getByText(/swish|\bkr\b/i)).toHaveCount(0);
+  expect(
+    urls.filter((url) => url.startsWith(supabase) && /cost|my_bill/.test(url)),
+  ).toEqual([]);
 });

@@ -739,6 +739,7 @@ export type Database = {
         Args: { target_event_id: string; target_user_id: string };
         Returns: string;
       };
+      removed_payers: { Args: { target_event_id: string }; Returns: Json };
       rename_guest: {
         Args: {
           new_name: string;

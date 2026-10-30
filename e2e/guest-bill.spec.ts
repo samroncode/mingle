@@ -1,5 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { fakeEvent, fakeSupabase } from "./fake-supabase.ts";
+import {
+  fakeEvent,
+  fakeSupabase,
+  recordRequestUrls,
+  supabase,
+} from "./fake-supabase.ts";
 
 const code = "ABC234";
 
@@ -129,4 +134,42 @@ test("after a later purchase the guest owes only the rest", async ({
   const href =
     (await sheet.getByTestId("swish-button").getAttribute("href")) ?? "";
   expect(decodeURIComponent(href)).toContain('"value":90');
+});
+
+test("after the evening has ended the icon stays and the guest can still say they paid", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  const calls: boolean[] = [];
+  await fakeEvent(page, {
+    code,
+    joinedAs: "Anna",
+    status: "ended",
+    bill,
+    iPaidCalls: calls,
+  });
+
+  await page.goto(`/p/${code}`);
+  await expect(page.getByText("This event has ended.")).toBeVisible();
+  await page.getByTestId("bill-icon").click();
+  const sheet = page.getByTestId("bill-sheet");
+  await expect(sheet).toContainText("345 kr");
+  await sheet.getByTestId("i-paid").click();
+  await expect(sheet.getByTestId("bill-says-paid")).toBeVisible();
+  expect(calls).toEqual([true]);
+});
+
+test("the summary page shows no money and reads none", async ({ page }) => {
+  await fakeSupabase(page, []);
+  await fakeEvent(page, { code, joinedAs: "Anna", status: "ended", bill });
+  const urls = recordRequestUrls(page);
+
+  await page.goto(`/p/${code}/summary`);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+
+  await expect(page.getByTestId("bill-icon")).toHaveCount(0);
+  await expect(page.getByText(/swish|\bkr\b/i)).toHaveCount(0);
+  expect(
+    urls.filter((url) => url.startsWith(supabase) && /cost|my_bill/.test(url)),
+  ).toEqual([]);
 });

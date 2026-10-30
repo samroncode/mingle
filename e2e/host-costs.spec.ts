@@ -273,3 +273,77 @@ test("the host marks a guest paid in cash and undoes a confirmation", async ({
     .poll(() => bodies.at(-1))
     .toMatchObject({ change: "undo", userId: anna });
 });
+
+test("the host is told when a removed guest had paid", async ({ page }) => {
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    guests: [guests[1] ?? memberRow()],
+    costs: {
+      ...sentWith({}),
+      removedPayers: [
+        { userId: anna, name: "Anna", paidKr: 120 },
+        { userId: "c3", name: "Cecilia", paidKr: null },
+      ],
+    },
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const section = page.getByTestId("host-costs");
+  await section.getByRole("button", { name: /Shared costs/ }).click();
+  const notes = section.getByTestId("removed-payers");
+  await expect(notes).toContainText("Anna paid 120 kr before being removed");
+  await expect(notes).toContainText(
+    "Cecilia said they had paid before being removed",
+  );
+});
+
+test("there is no note when no removed guest had paid", async ({ page }) => {
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    guests: [guests[1] ?? memberRow()],
+    costs: sentWith({}),
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  const section = page.getByTestId("host-costs");
+  await section.getByRole("button", { name: /Shared costs/ }).click();
+  await expect(section.getByTestId("guest-payment")).toHaveCount(1);
+  await expect(section.getByTestId("removed-payers")).toHaveCount(0);
+});
+
+test("after the evening has ended the host can still confirm a payment", async ({
+  page,
+}) => {
+  const bodies = await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    status: "ended",
+    guests,
+    costs: sentWith({ [anna]: { saysPaid: true } }),
+  });
+
+  await page.goto(`/host/${code}#key=${key}`);
+  await expect(page.getByText("The evening has ended")).toBeVisible();
+  const section = page.getByTestId("host-costs");
+  await section.getByRole("button", { name: /Shared costs/ }).click();
+  await section
+    .getByTestId("guest-payment")
+    .filter({ hasText: "Anna" })
+    .getByRole("button", { name: "Confirm" })
+    .click();
+
+  await expect
+    .poll(() => bodies.at(-1))
+    .toEqual({
+      action: "set_payment",
+      code,
+      key,
+      userId: anna,
+      change: "confirm",
+    });
+});

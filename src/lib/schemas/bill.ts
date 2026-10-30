@@ -25,3 +25,18 @@ export const MyBillSchema = z.object({
 });
 
 export type MyBill = z.infer<typeof MyBillSchema>;
+
+/**
+ * The removed guests who had said they paid or been confirmed, as the
+ * database function `removed_payers` answers the host. `paidKr` is the
+ * amount the host confirmed, null when the guest only said they paid.
+ */
+export const RemovedPayersSchema = z.array(
+  z.object({
+    userId: z.string(),
+    name: z.string().nullable(),
+    paidKr: z.number().int().nonnegative().nullable(),
+  }),
+);
+
+export type RemovedPayer = z.infer<typeof RemovedPayersSchema>[number];

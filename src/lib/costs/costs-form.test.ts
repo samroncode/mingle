@@ -17,6 +17,7 @@ const saved: CostsView = {
   swishNumber: "46701234567",
   billSentAt: null,
   payments: new Map(),
+  removedPayers: [],
   purchases: [
     { id: "p1", name: "Drinks", price: 450, sharers: [anna, "removed-guest"] },
   ],

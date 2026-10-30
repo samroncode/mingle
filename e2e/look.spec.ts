@@ -6,7 +6,13 @@ import {
   type RunModule,
   type RunScreen,
 } from "./fake-run.ts";
-import { fakeEvent, fakeSupabase, fakeTv, supabase } from "./fake-supabase.ts";
+import {
+  fakeEvent,
+  fakeHostPanel,
+  fakeSupabase,
+  fakeTv,
+  supabase,
+} from "./fake-supabase.ts";
 
 // Checks the rules in docs/design.md that a browser can prove: no sideways
 // scroll on any screen and phone tap targets of at least 48px, in every niche
@@ -123,6 +129,101 @@ test.describe("phone size", () => {
           await expectTapTargetsAtLeast48px(page);
         });
       }
+    }
+  }
+});
+
+/** Saves a screenshot when SHOT_DIR is set: for the before/after in a PR. */
+async function shoot(page: Page, name: string) {
+  const dir = process.env.SHOT_DIR;
+  if (dir) await page.screenshot({ path: `${dir}/${name}.png` });
+}
+
+const costsLanguages = [
+  { language: "en", sheetTitle: "Pay Sam" },
+  { language: "sv", sheetTitle: "Betala Sam" },
+] as const;
+const costsNiches = ["aw", "team"] as const;
+const hostKey = "d".repeat(43);
+const annaId = "00000000-0000-4000-8000-0000000000a1";
+const bertilId = "00000000-0000-4000-8000-0000000000b2";
+
+test.describe("shared costs, phone size", () => {
+  test.use({ viewport: phone });
+
+  for (const niche of costsNiches) {
+    for (const { language, sheetTitle } of costsLanguages) {
+      test(`the receipt icon and the bill sheet fit and have big buttons (${niche}, ${language})`, async ({
+        page,
+      }) => {
+        await fakeSupabase(page, []);
+        await fakeEvent(page, {
+          code,
+          niche,
+          language,
+          joinedAs: "Anna",
+          bill: {
+            payeeName: "Sam",
+            swishNumber: "46701234567",
+            total: 345,
+            confirmed: 0,
+            owed: 345,
+            status: "owes",
+            lines: [
+              { name: "Drinks", share: 225 },
+              { name: "Cake", share: 120 },
+            ],
+          },
+        });
+        await page.goto(`/p/${code}`);
+        await expect(page.getByTestId("bill-icon")).toBeVisible();
+        await expectNoHorizontalScroll(page);
+        await shoot(page, `guest-icon-${niche}-${language}`);
+
+        await page.getByTestId("bill-icon").click();
+        await expect(page.getByTestId("bill-sheet")).toContainText(sheetTitle);
+        await expectNoHorizontalScroll(page);
+        await expectTapTargetsAtLeast48px(page);
+        await shoot(page, `guest-sheet-${niche}-${language}`);
+      });
+
+      test(`the host's shared costs section fits and has big buttons (${niche}, ${language})`, async ({
+        page,
+      }) => {
+        await fakeSupabase(page, [() => [200, {}]]);
+        await fakeHostPanel(page, {
+          code,
+          language,
+          enabledModules: [],
+          flow: { niche },
+          guests: [
+            memberRow({ user_id: annaId, display_name: "Anna" }),
+            memberRow({ user_id: bertilId, display_name: "Bertil" }),
+          ],
+          costs: {
+            payeeName: "Sam",
+            swishNumber: "46701234567",
+            billSentAt: "2026-10-29T20:00:00Z",
+            purchases: [
+              {
+                id: "p1",
+                name: "Drinks",
+                price: 450,
+                sharers: [annaId, bertilId],
+              },
+            ],
+            payments: { [annaId]: { saysPaid: true } },
+            removedPayers: [{ userId: "c3", name: "Cecilia", paidKr: 120 }],
+          },
+        });
+        await page.goto(`/host/${code}#key=${hostKey}`);
+        const section = page.getByTestId("host-costs");
+        await section.getByRole("button").first().click();
+        await expect(section.getByTestId("removed-payers")).toBeVisible();
+        await expectNoHorizontalScroll(page);
+        await expectTapTargetsAtLeast48px(page);
+        await shoot(page, `host-section-${niche}-${language}`);
+      });
     }
   }
 });

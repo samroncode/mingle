@@ -212,10 +212,18 @@ interface FakeEventOptions {
   party?: EventRow["party"];
   /** The event's niche; defaults to the row's default (afterwork). */
   niche?: string;
+  /** The event's language; defaults to the row's default (English). */
+  language?: string;
+  /** The event's status; defaults to the lobby. */
+  status?: EventRow["status"];
   /** What `my_bill` answers: the guest's own bill, or null (the default). */
   bill?: Record<string, unknown> | null;
+  /** Like `bill`, asked on every read: for tests that change it mid-way. */
+  liveBill?: () => Record<string, unknown> | null;
   /** Each "I've paid" call the page makes is pushed here (true = paid). */
   iPaidCalls?: boolean[];
+  /** Called with each "I've paid" call; with `liveBill`, it changes the world. */
+  onIPaid?: (paid: boolean) => void;
 }
 
 /**
@@ -234,6 +242,8 @@ export async function fakeEvent(page: Page, options: FakeEventOptions) {
     eventRow({
       code: options.code,
       ...(options.niche ? { niche: options.niche } : {}),
+      ...(options.language ? { language: options.language } : {}),
+      ...(options.status ? { status: options.status } : {}),
       party:
         options.party ?? (options.welcome ? { welcome: options.welcome } : {}),
     });
@@ -244,11 +254,12 @@ export async function fakeEvent(page: Page, options: FakeEventOptions) {
     const request = route.request();
     const url = request.url();
     if (url.includes("/rpc/my_bill")) {
-      return json(route, 200, bill);
+      return json(route, 200, options.liveBill ? options.liveBill() : bill);
     }
     if (url.includes("/rpc/set_i_paid")) {
       const { paid } = request.postDataJSON() as { paid: boolean };
       options.iPaidCalls?.push(paid);
+      options.onIPaid?.(paid);
       if (bill) bill = { ...bill, status: paid ? "says_paid" : "owes" };
       return json(route, 200, "updated");
     }
@@ -393,6 +404,8 @@ interface FakeHostPanelOptions {
   guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
   flow?: Partial<EventRow>;
+  /** The event's language; defaults to the row's default (English). */
+  language?: EventRow["language"];
   /** The shared costs the host reads; none while they are switched off. */
   costs?: {
     payeeName: string;
@@ -405,6 +418,12 @@ interface FakeHostPanelOptions {
       name: string;
       price: number;
       sharers: string[];
+    }>;
+    /** Removed guests who had paid: what `removed_payers` answers the host. */
+    removedPayers?: Array<{
+      userId: string;
+      name: string;
+      paidKr: number | null;
     }>;
     /** What guests said or the host confirmed, by user id. */
     payments?: Record<
@@ -424,6 +443,7 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
   const event = eventRow({
     code: options.code,
     enabled_modules: options.enabledModules,
+    ...(options.language && { language: options.language }),
     ...options.flow,
     ...(options.status && { status: options.status }),
     ...(options.party && { party: options.party }),
@@ -476,6 +496,9 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
           revealed_at: null,
         })),
       );
+    }
+    if (url.includes("/rest/v1/rpc/removed_payers")) {
+      return json(route, 200, options.costs?.removedPayers ?? []);
     }
     // Before the event lookups: `event_id=eq.` also contains `id=eq.`.
     if (url.includes("/rest/v1/cost_settings")) {
