@@ -5,15 +5,18 @@ import { NicheTheme } from "@/components/NicheTheme";
 import { Sticker } from "@/components/ui/sticker";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
+import { useNotices } from "@/hooks/useNotices";
 import type { GuestHeaderSlots } from "@/app/layouts/guestHeader";
 import { idsSignal } from "@/lib/guest/bill";
 import { pickSnapshotState } from "@/lib/guest/guest-page";
+import { pickBanner } from "@/lib/guest/notices";
 import { readParty } from "@/lib/party";
 import { pickScreen } from "@/modules/screen";
 import { GuestBill } from "./GuestBill";
 import { GuestNameButton } from "./GuestNameButton";
 import { GuestMessage } from "./GuestMessage";
 import { NameForm } from "./NameForm";
+import { NoticeBanner } from "./NoticeBanner";
 import { PartyInfo } from "./PartyInfo";
 
 interface GuestInProps {
@@ -43,6 +46,12 @@ export function GuestIn({
     error: state.error,
   });
   const lost = page === "not_found";
+  // Messages are only read while the guest is in; not after the evening ends.
+  const { notices, dismissed, dismiss } = useNotices(
+    eventId,
+    state.event?.notices_version ?? 0,
+    page === "in",
+  );
   useEffect(() => {
     if (lost) void onAccessLost();
   }, [lost, onAccessLost]);
@@ -76,9 +85,12 @@ export function GuestIn({
       </>
     );
   }
+  const joinedAt = state.members.find((m) => m.user_id === userId)?.created_at;
+  const banner = pickBanner(notices, dismissed, joinedAt);
   const choice = pickScreen(state.event.current_module);
   const content = (
     <div className="space-y-5">
+      {banner && <NoticeBanner banner={banner} onDismiss={dismiss} />}
       {bill}
       <GuestNameButton
         name={name ?? ""}
@@ -120,7 +132,7 @@ export function GuestIn({
           userId={userId}
         />
       ) : (
-        <PartyInfo party={readParty(state.event.party)} />
+        <PartyInfo party={readParty(state.event.party)} notices={notices} />
       )}
     </div>
   );

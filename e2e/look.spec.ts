@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { fakeNotices } from "./fake-notices.ts";
 import { eventRow, memberRow } from "./fake-rows.ts";
 import {
   fakeRun,
@@ -225,6 +226,39 @@ test.describe("shared costs, phone size", () => {
         await expectNoHorizontalScroll(page);
         await expectTapTargetsAtLeast48px(page);
         await shoot(page, `host-section-${niche}-${language}`);
+      });
+    }
+  }
+});
+
+test.describe("host messages, phone size", () => {
+  test.use({ viewport: phone });
+
+  for (const niche of niches) {
+    for (const language of ["en", "sv"] as const) {
+      test(`the message banner and the Messages list fit and have big buttons (${niche}, ${language})`, async ({
+        page,
+      }) => {
+        await fakeSupabase(page, []);
+        await fakeEvent(page, { code, niche, language, joinedAs: "Anna" });
+        await fakeNotices(page, () => [
+          {
+            id: "n1",
+            text: "Dinner is served",
+            created_at: "2026-10-22T11:00:00Z",
+          },
+          {
+            id: "n2",
+            text: "Taxi leaves at 01:00 from the front door, so be there",
+            created_at: "2026-10-22T12:00:00Z",
+          },
+        ]);
+        await page.goto(`/p/${code}`);
+        await expect(page.getByTestId("notice-banner")).toBeVisible();
+        await expect(page.getByTestId("notice-list")).toBeVisible();
+        await expectNoHorizontalScroll(page);
+        await expectTapTargetsAtLeast48px(page);
+        await shoot(page, `guest-notices-${niche}-${language}`);
       });
     }
   }
