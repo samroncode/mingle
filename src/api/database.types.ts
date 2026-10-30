@@ -252,6 +252,7 @@ export type Database = {
           id: string;
           language: string;
           niche: string;
+          notices_version: number;
           party: NonNullable<Json>;
           phase: string;
           status: string;
@@ -269,6 +270,7 @@ export type Database = {
           id?: string;
           language: string;
           niche: string;
+          notices_version?: number;
           party?: NonNullable<Json>;
           phase?: string;
           status?: string;
@@ -285,6 +287,7 @@ export type Database = {
           id?: string;
           language?: string;
           niche?: string;
+          notices_version?: number;
           party?: NonNullable<Json>;
           phase?: string;
           status?: string;
@@ -399,6 +402,36 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "members_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      notices: {
+        Row: {
+          created_at: string;
+          event_id: string;
+          id: string;
+          text: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          text: string;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          text?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notices_event_id_fkey";
             columns: ["event_id"];
             isOneToOne: false;
             referencedRelation: "events";
@@ -637,6 +670,10 @@ export type Database = {
         };
         Returns: string;
       };
+      delete_notice: {
+        Args: { notice_id: string; target_event_id: string };
+        Returns: string;
+      };
       event_admin_key_hash: {
         Args: { code: string };
         Returns: {
@@ -749,6 +786,10 @@ export type Database = {
           target_event_id: string;
           target_user_id: string;
         };
+        Returns: string;
+      };
+      send_notice: {
+        Args: { notice_text: string; target_event_id: string };
         Returns: string;
       };
       set_bill_sent: {

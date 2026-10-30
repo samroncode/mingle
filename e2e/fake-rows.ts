@@ -18,6 +18,7 @@ export function eventRow(overrides: Partial<EventRow> = {}): EventRow {
     enabled_modules: [],
     phase: "idle",
     costs_version: 0,
+    notices_version: 0,
     bright_room: false,
     created_at: "2026-10-22T10:00:00Z",
     expires_at: "2026-11-21T10:00:00Z",

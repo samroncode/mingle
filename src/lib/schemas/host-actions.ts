@@ -341,6 +341,42 @@ export const SetBrightRoomResponseSchema = z.strictObject({});
 
 export type SetBrightRoomResponse = z.infer<typeof SetBrightRoomResponseSchema>;
 
+/**
+ * Sends a short text to every guest's phone. The text is trimmed and must be
+ * 1 to 140 characters; it is shown as plain text. The database holds the
+ * limits: `too_many` past 30 notices, `too_soon` within 5 seconds of the
+ * last one, and `ended` once the event has ended.
+ */
+export const SendNoticeRequestSchema = z.strictObject({
+  action: z.literal("send_notice"),
+  ...hostLinkFields,
+  text: z.string().trim().min(1).max(140),
+});
+
+export type SendNoticeRequest = z.infer<typeof SendNoticeRequestSchema>;
+
+/** Empty: the host and the phones read the notices again on `notices_version`. */
+export const SendNoticeResponseSchema = z.strictObject({});
+
+export type SendNoticeResponse = z.infer<typeof SendNoticeResponseSchema>;
+
+/**
+ * Deletes a notice the host sent. Fails with `not_found` for an unknown
+ * notice and for one that belongs to another event.
+ */
+export const DeleteNoticeRequestSchema = z.strictObject({
+  action: z.literal("delete_notice"),
+  ...hostLinkFields,
+  id: z.uuid(),
+});
+
+export type DeleteNoticeRequest = z.infer<typeof DeleteNoticeRequestSchema>;
+
+/** Empty: the host and the phones read the notices again on `notices_version`. */
+export const DeleteNoticeResponseSchema = z.strictObject({});
+
+export type DeleteNoticeResponse = z.infer<typeof DeleteNoticeResponseSchema>;
+
 /** Every body host-actions accepts, told apart by `action`. */
 export const HostActionRequestSchema = z.discriminatedUnion("action", [
   CreateEventRequestSchema,
@@ -357,6 +393,8 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   SetPaymentRequestSchema,
   SetModulesRequestSchema,
   SetBrightRoomRequestSchema,
+  SendNoticeRequestSchema,
+  DeleteNoticeRequestSchema,
 ]);
 
 export type HostActionRequest = z.infer<typeof HostActionRequestSchema>;
@@ -390,12 +428,18 @@ export const hostActionErrorCodes = [
   "module_empty",
   /** start_module for an activity whose steps have all been played. */
   "module_finished",
-  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed). */
+  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed), delete_notice for an unknown notice or another event's. */
   "not_found",
   /** rename_guest to a name another guest of the event has. */
   "name_taken",
   /** rename_guest to a name that isn't 1 to 30 characters once cleaned. */
   "invalid_name",
+  /** send_notice once the event has ended. */
+  "ended",
+  /** send_notice when the event already has 30 notices. */
+  "too_many",
+  /** send_notice less than 5 seconds after the last notice. */
+  "too_soon",
   /** update_costs with a purchase nobody shares, or a sharer who isn't a current guest. */
   "invalid_sharer",
   "internal_error",

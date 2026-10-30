@@ -10,12 +10,18 @@ import {
   type HostActionErrorCode,
   HostActionErrorSchema,
   type HostActionRequest,
+  type DeleteNoticeRequest,
+  type DeleteNoticeResponse,
+  DeleteNoticeResponseSchema,
   type RemoveGuestRequest,
   type RemoveGuestResponse,
   RemoveGuestResponseSchema,
   type RenameGuestRequest,
   type RenameGuestResponse,
   RenameGuestResponseSchema,
+  type SendNoticeRequest,
+  type SendNoticeResponse,
+  SendNoticeResponseSchema,
   type SetBillSentRequest,
   type SetBrightRoomRequest,
   type SetBrightRoomResponse,
@@ -301,5 +307,29 @@ export async function setBrightRoom(
   return toHostActionResult(
     SetBrightRoomResponseSchema,
     await invokeHostActions({ action: "set_bright_room", ...input }),
+  );
+}
+
+/**
+ * Sends a notice (1 to 140 characters, plain text) to every guest's phone.
+ * Fails with `ended` once the event has ended, `too_many` past 30 notices and
+ * `too_soon` within 5 seconds of the last one.
+ */
+export async function sendNotice(
+  input: Omit<SendNoticeRequest, "action">,
+): Promise<HostActionResult<SendNoticeResponse>> {
+  return toHostActionResult(
+    SendNoticeResponseSchema,
+    await invokeHostActions({ action: "send_notice", ...input }),
+  );
+}
+
+/** Deletes a notice. Fails with `not_found` for an unknown notice. */
+export async function deleteNotice(
+  input: Omit<DeleteNoticeRequest, "action">,
+): Promise<HostActionResult<DeleteNoticeResponse>> {
+  return toHostActionResult(
+    DeleteNoticeResponseSchema,
+    await invokeHostActions({ action: "delete_notice", ...input }),
   );
 }
