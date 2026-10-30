@@ -120,6 +120,8 @@ test("a guest votes for another guest and changes the vote", async ({
   await expect(awards.getByRole("heading")).toHaveText(
     "Most likely to dance on a table",
   );
+  // The category leads: no welcome heading while it is open.
+  await expect(page.getByRole("heading", { name: /You're in/ })).toBeHidden();
   // A to Z, without the guest's own name, the host or the TV.
   const buttons = awards.getByRole("button");
   await expect(buttons).toHaveText(["Bertil", "Cecilia"]);

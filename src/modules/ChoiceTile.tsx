@@ -94,7 +94,7 @@ export function ChoiceTile({
       {look.label ? <span className={look.label}>{label}</span> : label}
       {chosen && (
         <span className="flex shrink-0 items-center gap-2">
-          <span className="text-xs font-bold tracking-wider uppercase">
+          <span className="text-sm font-bold tracking-wider uppercase">
             {t("guest.yourAnswer")}
           </span>
           <Check aria-hidden strokeWidth={3} className={look.check} />

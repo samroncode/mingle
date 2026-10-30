@@ -11,7 +11,11 @@ export function AnswerNotes({ answered, total }: AnswerNotesProps) {
   return (
     <div className="space-y-1 text-base text-ink-muted">
       <p data-testid="answer-count">
-        {t("guest.answered", { count: answered, total })}
+        {t("guest.answered", {
+          count: answered,
+          // Members are read separately, so never show "4 of 3".
+          total: Math.max(total, answered),
+        })}
       </p>
       <p>{t("guest.canChange")}</p>
     </div>

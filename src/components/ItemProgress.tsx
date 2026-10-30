@@ -38,7 +38,10 @@ export function ItemProgress({
   const label = `${activity} · ${position}`;
   return (
     <div className="space-y-2">
-      <p className="text-sm font-bold tracking-wider text-champagne-text uppercase">
+      <p
+        aria-hidden
+        className="text-sm font-bold tracking-wider text-champagne-text uppercase"
+      >
         {label}
       </p>
       <div
@@ -49,16 +52,16 @@ export function ItemProgress({
         aria-valuenow={number}
         className="flex gap-1.5"
       >
-        {Array.from({ length: total }, (_, index) => (
-          <span
-            key={index}
-            data-segment={segmentState(index, number)}
-            className={cn(
-              "h-1.5 flex-1 rounded-full",
-              segmentLook[segmentState(index, number)],
-            )}
-          />
-        ))}
+        {Array.from({ length: total }, (_, index) => {
+          const state = segmentState(index, number);
+          return (
+            <span
+              key={index}
+              data-segment={state}
+              className={cn("h-1.5 flex-1 rounded-full", segmentLook[state])}
+            />
+          );
+        })}
       </div>
     </div>
   );
