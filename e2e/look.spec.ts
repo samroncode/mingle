@@ -227,6 +227,31 @@ test.describe("shared costs, phone size", () => {
         await expectTapTargetsAtLeast48px(page);
         await shoot(page, `host-section-${niche}-${language}`);
       });
+
+      test(`the host's winners section fits and has big buttons (${niche}, ${language})`, async ({
+        page,
+      }) => {
+        await fakeSupabase(page, [() => [200, {}]]);
+        await fakeHostPanel(page, {
+          code,
+          language,
+          enabledModules: [],
+          flow: { niche },
+          party: {
+            winners: [
+              { title: "Dart tournament", name: "Anna" },
+              { title: "Best costume", name: "Bertil" },
+            ],
+          },
+        });
+        await page.goto(`/host/${code}#key=${hostKey}`);
+        const section = page.getByTestId("host-winners");
+        await section.getByRole("button").first().click();
+        await expect(section.getByText("Anna")).toBeVisible();
+        await expectNoHorizontalScroll(page);
+        await expectTapTargetsAtLeast48px(page);
+        await shoot(page, `host-winners-${niche}-${language}`);
+      });
     }
   }
 });

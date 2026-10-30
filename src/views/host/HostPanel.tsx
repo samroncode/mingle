@@ -15,6 +15,7 @@ import { Messages } from "./Messages";
 import { PartyScreen } from "./PartyScreen";
 import { SharedCosts } from "./SharedCosts";
 import { TopBar } from "./TopBar";
+import { Winners } from "./Winners";
 
 function EventSection({
   link,
@@ -76,6 +77,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         <Activities event={event} members={members} hostKey={link.key} />
       )}
       {!ended && <PartyScreen event={event} hostKey={link.key} />}
+      {!ended && <Winners event={event} hostKey={link.key} />}
       {!ended && <BrightRoom event={event} hostKey={link.key} />}
       <Guests
         code={event.code}
