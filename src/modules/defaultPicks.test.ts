@@ -34,9 +34,9 @@ const empty = { ok: true, value: { total: 0, played: 0, revealed: 0 } };
 const saved = { ok: true, data: {} };
 
 const cases = [
-  ["quiz", "getQuizProgress", "updateQuiz", "questions", 10],
-  ["awards", "getAwardProgress", "updateAwards", "categories", 8],
-  ["hottakes", "getHotTakeProgress", "updateHotTakes", "takes", 8],
+  ["quiz", "getQuizProgress", "updateQuiz", "questions", 4],
+  ["awards", "getAwardProgress", "updateAwards", "categories", 4],
+  ["hottakes", "getHotTakeProgress", "updateHotTakes", "takes", 4],
 ] as const;
 
 beforeEach(() => vi.clearAllMocks());

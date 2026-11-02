@@ -129,7 +129,7 @@ export function HotTakesListEditor({
         empty: t("wizard.hottakes.empty"),
         addOwn: t("wizard.hottakes.addOwn"),
         full: t("wizard.hottakes.full", { max: hottakesLimits.takes }),
-        more: t("wizard.hottakes.more"),
+        more: (count) => t("wizard.hottakes.more", { count }),
         add: t("wizard.hottakes.add"),
         moveUp: (n) => t("wizard.hottakes.moveUp", { n }),
         moveDown: (n) => t("wizard.hottakes.moveDown", { n }),

@@ -129,7 +129,7 @@ export function AwardsListEditor({
         empty: t("wizard.awards.empty"),
         addOwn: t("wizard.awards.addOwn"),
         full: t("wizard.awards.full", { max: awardsLimits.categories }),
-        more: t("wizard.awards.more"),
+        more: (count) => t("wizard.awards.more", { count }),
         add: t("wizard.awards.add"),
         moveUp: (n) => t("wizard.awards.moveUp", { n }),
         moveDown: (n) => t("wizard.awards.moveDown", { n }),

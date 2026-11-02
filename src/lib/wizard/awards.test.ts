@@ -18,17 +18,14 @@ function run(awards: AwardsDraft, ...actions: AwardsAction[]) {
 }
 
 describe("pickDefaultAwardIds", () => {
-  it.each(nicheIds)(
-    "picks eight different categories of the %s niche",
-    (id) => {
-      const picked = pickDefaultAwardIds(id);
-      const known = new Set(getNiche(id).awards.map((a) => a.id));
-      expect(defaultAwardsSize).toBe(8);
-      expect(picked).toHaveLength(8);
-      expect(new Set(picked).size).toBe(8);
-      expect(picked.every((pick) => known.has(pick))).toBe(true);
-    },
-  );
+  it.each(nicheIds)("picks four different categories of the %s niche", (id) => {
+    const picked = pickDefaultAwardIds(id);
+    const known = new Set(getNiche(id).awards.map((a) => a.id));
+    expect(defaultAwardsSize).toBe(4);
+    expect(picked).toHaveLength(4);
+    expect(new Set(picked).size).toBe(4);
+    expect(picked.every((pick) => known.has(pick))).toBe(true);
+  });
 
   it("is a different pick for a different random source", () => {
     expect(pickDefaultAwardIds("aw", () => 0)).not.toEqual(

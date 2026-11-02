@@ -15,25 +15,28 @@ test("the host edits the picked quiz questions in the wizard", async ({
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();
   await page.getByRole("button", { name: "Next" }).click();
-  await expect(page.getByText("10 of 30 questions picked")).toBeVisible();
+  await expect(page.getByText("4 of 30 questions picked")).toBeVisible();
 
   // Untick the first question and tick another ready-made one.
   const picked = page.locator("ol > li");
-  await expect(picked).toHaveCount(10);
+  await expect(picked).toHaveCount(4);
   const firstText = await picked.first().locator("p").first().innerText();
   await page
     .getByRole("button", { name: "Remove question 1", exact: true })
     .click();
-  await expect(page.getByText("9 of 30 questions picked")).toBeVisible();
+  await expect(page.getByText("3 of 30 questions picked")).toBeVisible();
+  await page
+    .getByRole("button", { name: /^More ready-made questions/ })
+    .click();
   await expect(
     page.getByRole("main").getByText(firstText, { exact: true }),
   ).toHaveCount(1); // Offered again under "More ready-made questions".
 
   // An unfinished question of the host's own blocks Next with a message.
   await page.getByRole("button", { name: "Add your own question" }).click();
-  await page.getByLabel("Text of question 10").fill("Who baked the cake?");
+  await page.getByLabel("Text of question 4").fill("Who baked the cake?");
   await expect(page.getByRole("alert")).toContainText(
-    "Question 10 needs a question and four options",
+    "Question 4 needs a question and four options",
   );
   await expect(page.getByRole("button", { name: "Next" })).toBeDisabled();
 
@@ -43,15 +46,15 @@ test("the host edits the picked quiz questions in the wizard", async ({
     ["C", "Cecilia"],
     ["D", "David"],
   ] as const) {
-    await page.getByLabel(`Option ${letter} of question 10`).fill(text);
+    await page.getByLabel(`Option ${letter} of question 4`).fill(text);
   }
-  await page.getByLabel("Option C is the right answer to question 10").check();
+  await page.getByLabel("Option C is the right answer to question 4").check();
   await expect(page.getByRole("alert")).toHaveCount(0);
 
   // Move it to the top, so the order is the host's.
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 3; i++) {
     await page
-      .getByRole("button", { name: `Move question ${10 - i} up` })
+      .getByRole("button", { name: `Move question ${4 - i} up` })
       .click();
   }
   await expect(page.getByLabel("Text of question 1")).toHaveValue(
@@ -63,7 +66,7 @@ test("the host edits the picked quiz questions in the wizard", async ({
   await expect(page.getByLabel("Text of question 1")).toHaveValue(
     "Who baked the cake?",
   );
-  await expect(page.getByText("10 of 30 questions picked")).toBeVisible();
+  await expect(page.getByText("4 of 30 questions picked")).toBeVisible();
 
   // Skip the rest (awards included) and create.
   for (let i = 0; i < 7; i++) {
@@ -72,12 +75,12 @@ test("the host edits the picked quiz questions in the wizard", async ({
       .first()
       .click();
   }
-  await expect(page.getByText("10 questions")).toBeVisible();
+  await expect(page.getByText("4 questions")).toBeVisible();
   await page.getByRole("button", { name: "Create event" }).click();
   await expect(page.getByTestId("event-code")).toHaveText(code);
 
   const body = bodies[0] as { quiz: { text: string; correct: number }[] };
-  expect(body.quiz).toHaveLength(10);
+  expect(body.quiz).toHaveLength(4);
   expect(body.quiz[0]).toEqual({
     text: "Who baked the cake?",
     options: ["Anna", "Bertil", "Cecilia", "David"],

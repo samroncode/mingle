@@ -18,38 +18,43 @@ test("the host picks award categories in the wizard", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Award categories" }),
   ).toBeVisible();
-  await expect(page.getByText("8 of 20 categories picked")).toBeVisible();
+  await expect(page.getByText("4 of 20 categories picked")).toBeVisible();
 
   // Untick the first category and tick another ready-made one.
   const picked = page.locator("ol > li");
-  await expect(picked).toHaveCount(8);
+  await expect(picked).toHaveCount(4);
   const firstText = await picked.first().locator("p").first().innerText();
   await page
     .getByRole("button", { name: "Remove category 1", exact: true })
     .click();
-  await expect(page.getByText("7 of 20 categories picked")).toBeVisible();
-  const more = page.getByRole("region", { name: "More ready-made categories" });
+  await expect(page.getByText("3 of 20 categories picked")).toBeVisible();
+  await page
+    .getByRole("button", { name: /^More ready-made categories \(17\)$/ })
+    .click();
+  const more = page.getByRole("region", {
+    name: /^More ready-made categories/,
+  });
   await expect(more.getByText(firstText, { exact: true })).toBeVisible();
   await page
     .getByRole("button", { name: `Add the category: ${firstText}` })
     .click();
-  await expect(page.getByText("8 of 20 categories picked")).toBeVisible();
+  await expect(page.getByText("4 of 20 categories picked")).toBeVisible();
 
   // An empty category of the host's own blocks Next with a message.
   await page.getByRole("button", { name: "Add your own category" }).click();
   await expect(page.getByRole("alert")).toContainText(
-    "Category 9 needs a text",
+    "Category 5 needs a text",
   );
   await expect(
     page.getByRole("button", { name: "Next", exact: true }),
   ).toBeDisabled();
-  await page.getByLabel("Text of category 9").fill("Most likely to bake");
+  await page.getByLabel("Text of category 5").fill("Most likely to bake");
   await expect(page.getByRole("alert")).toHaveCount(0);
 
   // Move it to the top, so the order is the host's.
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 4; i++) {
     await page
-      .getByRole("button", { name: `Move category ${9 - i} up` })
+      .getByRole("button", { name: `Move category ${5 - i} up` })
       .click();
   }
   await expect(page.getByLabel("Text of category 1")).toHaveValue(
@@ -61,7 +66,7 @@ test("the host picks award categories in the wizard", async ({ page }) => {
   await expect(page.getByLabel("Text of category 1")).toHaveValue(
     "Most likely to bake",
   );
-  await expect(page.getByText("9 of 20 categories picked")).toBeVisible();
+  await expect(page.getByText("5 of 20 categories picked")).toBeVisible();
   await expect(picked.last()).toContainText(firstText);
 
   // Skip the rest and create.
@@ -71,24 +76,24 @@ test("the host picks award categories in the wizard", async ({ page }) => {
       .first()
       .click();
   }
-  await expect(page.getByText("9 categories")).toBeVisible();
+  await expect(page.getByText("5 categories")).toBeVisible();
   await page.getByRole("button", { name: "Create event" }).click();
   await expect(page.getByTestId("event-code")).toHaveText(code);
 
   const body = bodies[0] as { awards: { text: string }[] };
-  expect(body.awards).toHaveLength(9);
+  expect(body.awards).toHaveLength(5);
   expect(body.awards[0]).toEqual({ text: "Most likely to bake" });
-  expect(body.awards[8]).toEqual({ text: firstText });
+  expect(body.awards[4]).toEqual({ text: firstText });
 });
 
-test("skipping the awards step keeps the eight picked", async ({ page }) => {
+test("skipping the awards step keeps the four picked", async ({ page }) => {
   const bodies = await fakeSupabase(page, [() => [200, { code, key }]]);
 
   await page.goto("/new");
   for (let i = 0; i < 4; i++) {
     await page.getByRole("button", { name: "Next", exact: true }).click();
   }
-  await expect(page.getByText("8 of 20 categories picked")).toBeVisible();
+  await expect(page.getByText("4 of 20 categories picked")).toBeVisible();
   await page.getByRole("button", { name: "Skip" }).click();
   // The hot takes step follows; leave it as it is.
   await expect(
@@ -106,7 +111,7 @@ test("skipping the awards step keeps the eight picked", async ({ page }) => {
   }
   await page.getByRole("button", { name: "Create event" }).click();
   await expect(page.getByTestId("event-code")).toHaveText(code);
-  expect((bodies[0] as { awards: unknown[] }).awards).toHaveLength(8);
+  expect((bodies[0] as { awards: unknown[] }).awards).toHaveLength(4);
 });
 
 test("the awards step is left out when awards are switched off", async ({

@@ -1,5 +1,7 @@
 import { ArrowDown, ArrowUp, Trash2 } from "lucide-react";
-import type { ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
+import { useId, useState, type ReactNode } from "react";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { PickItem, PickListAction } from "@/lib/wizard/pick-list";
@@ -10,7 +12,8 @@ export interface PickListLabels {
   empty: string;
   addOwn: string;
   full: string;
-  more: string;
+  /** The toggle text, with the number of ready-made items left. */
+  more: (count: number) => string;
   add: string;
   moveUp: (n: number) => string;
   moveDown: (n: number) => string;
@@ -71,6 +74,74 @@ function ItemControls({
         <Trash2 />
       </Button>
     </div>
+  );
+}
+
+/**
+ * The ready-made items not yet picked, shut by default so the step stays
+ * short. The header is the button; the items are slim rows, not cards.
+ */
+function ReadyMadeList<O>({
+  id,
+  available,
+  full,
+  labels,
+  dispatch,
+}: {
+  id: string;
+  available: AvailableItem[];
+  full: boolean;
+  labels: PickListLabels;
+  dispatch: (action: PickListAction<O>) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const bodyId = useId();
+  if (available.length === 0) return null;
+  return (
+    <section
+      aria-labelledby={id}
+      data-open={open}
+      className="rounded-lg border-[length:var(--border-thin)] border-edge bg-paper text-on-paper"
+    >
+      <h2 id={id}>
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={bodyId}
+          onClick={() => setOpen((current) => !current)}
+          className="flex min-h-14 w-full items-center justify-between gap-3 rounded-lg p-4 text-left"
+        >
+          <span className="font-display text-xl font-bold">
+            {labels.more(available.length)}
+          </span>
+          <ChevronDown
+            aria-hidden
+            className={cn("size-6 shrink-0", open && "rotate-180")}
+          />
+        </button>
+      </h2>
+      {open && (
+        <ul id={bodyId} className="border-t border-line px-4">
+          {available.map((entry) => (
+            <li
+              key={entry.id}
+              className="flex items-start gap-2 border-b border-line py-3 last:border-b-0"
+            >
+              {entry.content}
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={full}
+                aria-label={entry.addLabel}
+                onClick={() => dispatch({ type: "add_builtin", id: entry.id })}
+              >
+                {labels.add}
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 
@@ -146,33 +217,13 @@ export function PickListEditor<O>({
       </Button>
       {full && <p className="text-sm text-ink-muted">{labels.full}</p>}
 
-      {available.length > 0 && (
-        <section aria-labelledby={moreId} className="space-y-2">
-          <h2 id={moreId} className="font-display text-xl font-bold">
-            {labels.more}
-          </h2>
-          <ul className="space-y-2">
-            {available.map((entry) => (
-              <li key={entry.id}>
-                <Card className="flex-row items-start gap-2 p-3">
-                  {entry.content}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={full}
-                    aria-label={entry.addLabel}
-                    onClick={() =>
-                      dispatch({ type: "add_builtin", id: entry.id })
-                    }
-                  >
-                    {labels.add}
-                  </Button>
-                </Card>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <ReadyMadeList
+        id={moreId}
+        available={available}
+        full={full}
+        labels={labels}
+        dispatch={dispatch}
+      />
     </div>
   );
 }

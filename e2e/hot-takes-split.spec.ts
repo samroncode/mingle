@@ -139,12 +139,12 @@ test("the host picks hot takes, then a guest answers and sees the split", async 
     () => [200, { code, key: "d".repeat(43) }],
   ]);
 
-  // The host keeps the ready-made eight and creates the event.
+  // The host keeps the ready-made four and creates the event.
   await page.goto("/new");
   for (let i = 0; i < 5; i++) {
     await page.getByRole("button", { name: "Next", exact: true }).click();
   }
-  await expect(page.getByText("8 of 20 hot takes picked")).toBeVisible();
+  await expect(page.getByText("4 of 20 hot takes picked")).toBeVisible();
   for (let i = 0; i < 5; i++) {
     await page
       .getByRole("button", { name: /Next|Skip/ })
@@ -153,7 +153,7 @@ test("the host picks hot takes, then a guest answers and sees the split", async 
   }
   await page.getByRole("button", { name: "Create event" }).click();
   await expect(page.getByTestId("event-code")).toHaveText(code);
-  expect((bodies[0] as { hottakes: unknown[] }).hottakes).toHaveLength(8);
+  expect((bodies[0] as { hottakes: unknown[] }).hottakes).toHaveLength(4);
 
   // A guest answers the open hot take, then the host reveals it.
   const world: SplitWorld = {

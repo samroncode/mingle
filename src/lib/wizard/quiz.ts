@@ -19,7 +19,7 @@ import {
 import { wizardSlice } from "./slice";
 
 /** How many of the niche's questions are picked for the host to start from. */
-export const defaultQuizSize = 10;
+export const defaultQuizSize = 4;
 
 export type QuizOptions = [string, string, string, string];
 
