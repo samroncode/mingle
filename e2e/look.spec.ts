@@ -409,3 +409,49 @@ test.describe("1920x1080", () => {
     await expect(page.getByTestId("confetti")).toHaveCount(0);
   });
 });
+
+test.describe("wizard shared costs step", () => {
+  for (const width of [412, 360]) {
+    test(`purchases are flat one-line rows at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 915 });
+      await fakeSupabase(page, []);
+      await page.goto("/new");
+      const next = page.getByRole("button", { name: "Next", exact: true });
+      await next.click();
+      await next.click();
+      await page.getByRole("switch", { name: "Shared costs" }).click();
+      for (let i = 0; i < 4; i++) await next.click();
+      await page.getByLabel("Guests pay").fill("Sam");
+      await page.getByLabel("Your Swish number").fill("070-123 45 67");
+      if (process.env.NICHE_TEXT)
+        await page.evaluate(
+          "document.querySelectorAll('[data-theme]').forEach((el) => el.setAttribute('data-theme', 'loud'))",
+        );
+
+      for (const count of [0, 1, 3]) {
+        const add = page.getByRole("button", { name: "Add a purchase" });
+        while ((await page.getByRole("listitem").count()) < count) {
+          await add.click();
+          const n = await page.getByRole("listitem").count();
+          await page
+            .getByLabel(`What you bought (purchase ${n})`)
+            .fill(`Item ${n}`);
+          await page.getByLabel(`Price in kr (purchase ${n})`).fill("100");
+        }
+        await expectNoHorizontalScroll(page);
+        await expectTapTargetsAtLeast48px(page);
+        await shoot(
+          page,
+          `wizard-costs-${process.env.NICHE_TEXT ? "loud" : "garden"}-${count}-${width}`,
+        );
+      }
+
+      // One row: name, price and remove sit on the same line.
+      const name = await page
+        .getByLabel("What you bought (purchase 1)")
+        .boundingBox();
+      const remove = await page.getByLabel("Remove purchase 1").boundingBox();
+      expect(Math.abs((name?.y ?? 0) - (remove?.y ?? 99))).toBeLessThan(8);
+    });
+  }
+});
