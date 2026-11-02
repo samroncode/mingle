@@ -1,5 +1,6 @@
 // create_event: the wizard's data in, `{ code, key }` out. The caller becomes
 // the event's host. This is the only response that ever contains the key.
+import { logFailure } from "./request-log.ts";
 import type {
   CreateEventRequest,
   CreateEventResponse,
@@ -57,6 +58,6 @@ export async function createEvent(
     }
   }
 
-  console.error("create_event found no free code");
+  logFailure("create_event found no free code");
   return { ok: false, error: "internal_error" };
 }

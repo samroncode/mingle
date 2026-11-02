@@ -1,6 +1,7 @@
 // Step bounds per activity (see flow.ts): one small function per activity
 // with a fixed list of steps. An activity without one has no bounds and
 // behaves as before. Add an activity by adding its reader to `readers`.
+import { logFailure } from "./request-log.ts";
 import type { ModuleId } from "../../../src/modules/registry.ts";
 import type { Db } from "./db.ts";
 import type { StepBounds } from "./flow.ts";
@@ -22,7 +23,7 @@ async function quizBounds(db: Db, eventId: string): Promise<BoundsResult> {
     .eq("status", "approved")
     .order("position");
   if (error) {
-    console.error("reading the quiz bounds failed", error.code);
+    logFailure("reading the quiz bounds failed", error.code);
     return "error";
   }
   const unplayed = data.find((question) => question.revealed_at === null);
@@ -46,7 +47,7 @@ async function awardsBounds(db: Db, eventId: string): Promise<BoundsResult> {
     .eq("status", "approved")
     .order("position");
   if (error) {
-    console.error("reading the awards bounds failed", error.code);
+    logFailure("reading the awards bounds failed", error.code);
     return "error";
   }
   const unrevealed = data.find((category) => category.revealed_at === null);
@@ -71,7 +72,7 @@ async function hotTakesBounds(db: Db, eventId: string): Promise<BoundsResult> {
     .eq("status", "approved")
     .order("position");
   if (error) {
-    console.error("reading the hot takes bounds failed", error.code);
+    logFailure("reading the hot takes bounds failed", error.code);
     return "error";
   }
   const unrevealed = data.find((take) => take.revealed_at === null);
