@@ -29,11 +29,11 @@ test("creates an event through the wizard", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "Quiz questions" }),
   ).toBeVisible();
-  await expect(page.getByText("10 of 30 questions picked")).toBeVisible();
+  await expect(page.getByText("4 of 30 questions picked")).toBeVisible();
   await page.getByRole("button", { name: "Next" }).click();
 
   // The hot takes step starts with eight of the niche's hot takes.
-  await expect(page.getByText("8 of 20 hot takes picked")).toBeVisible();
+  await expect(page.getByText("4 of 20 hot takes picked")).toBeVisible();
   await page.getByRole("button", { name: "Next" }).click();
 
   // Welcome text is prefilled in the event language (Swedish); edit it.

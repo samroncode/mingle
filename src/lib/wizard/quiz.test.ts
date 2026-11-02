@@ -29,7 +29,7 @@ function counter() {
 }
 
 describe("pickDefaultQuizIds", () => {
-  it.each(nicheIds)("picks ten different questions of the %s niche", (id) => {
+  it.each(nicheIds)("picks four different questions of the %s niche", (id) => {
     const picked = pickDefaultQuizIds(id);
     const known = new Set(getNiche(id).quiz.map((q) => q.id));
     expect(picked).toHaveLength(defaultQuizSize);

@@ -19,7 +19,7 @@ import {
 import { wizardSlice } from "./slice";
 
 /** How many of the niche's categories are picked for the host to start from. */
-export const defaultAwardsSize = 8;
+export const defaultAwardsSize = 4;
 
 /** The fields of a category the host wrote, as typed: it may be unfinished. */
 export interface OwnCategoryFields {

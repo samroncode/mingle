@@ -19,7 +19,7 @@ import {
 import { wizardSlice } from "./slice";
 
 /** How many of the niche's hot takes are picked for the host to start from. */
-export const defaultHotTakesSize = 8;
+export const defaultHotTakesSize = 4;
 
 /** The fields of a hot take the host wrote, as typed: it may be unfinished. */
 export interface OwnHotTakeFields {

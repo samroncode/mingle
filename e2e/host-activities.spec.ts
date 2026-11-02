@@ -46,7 +46,7 @@ test("the host switches an activity on and gets the ready-made list", async ({
   });
   expect(bodies[2]).toMatchObject({ action: "update_awards", code, key });
   const sent = bodies[2] as { categories: unknown[] };
-  expect(sent.categories).toHaveLength(8);
+  expect(sent.categories).toHaveLength(4);
   await expect(page.getByRole("alert")).toHaveCount(0);
 });
 

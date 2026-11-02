@@ -18,12 +18,12 @@ function run(takes: HotTakesDraft, ...actions: HotTakesAction[]) {
 }
 
 describe("pickDefaultHotTakeIds", () => {
-  it.each(nicheIds)("picks eight different hot takes of the %s niche", (id) => {
+  it.each(nicheIds)("picks four different hot takes of the %s niche", (id) => {
     const picked = pickDefaultHotTakeIds(id);
     const known = new Set(getNiche(id).hottakes.map((a) => a.id));
-    expect(defaultHotTakesSize).toBe(8);
-    expect(picked).toHaveLength(8);
-    expect(new Set(picked).size).toBe(8);
+    expect(defaultHotTakesSize).toBe(4);
+    expect(picked).toHaveLength(4);
+    expect(new Set(picked).size).toBe(4);
     expect(picked.every((pick) => known.has(pick))).toBe(true);
   });
 

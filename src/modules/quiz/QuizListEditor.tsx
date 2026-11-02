@@ -186,7 +186,7 @@ export function QuizListEditor({
         empty: t("wizard.quiz.empty"),
         addOwn: t("wizard.quiz.addOwn"),
         full: t("wizard.quiz.full", { max: quizLimits.questions }),
-        more: t("wizard.quiz.more"),
+        more: (count) => t("wizard.quiz.more", { count }),
         add: t("wizard.quiz.add"),
         moveUp: (n) => t("wizard.quiz.moveUp", { n }),
         moveDown: (n) => t("wizard.quiz.moveDown", { n }),
