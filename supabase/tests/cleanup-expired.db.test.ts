@@ -17,6 +17,7 @@ type Counts = {
   events: number;
   codes_retired: number;
   rate_limits: number;
+  client_errors: number;
   users: number;
 };
 
@@ -25,7 +26,13 @@ function runCleanup(): Counts {
   return JSON.parse(sql("select private.cleanup_expired()")[0] ?? "") as Counts;
 }
 
-const zeros: Counts = { events: 0, codes_retired: 0, rate_limits: 0, users: 0 };
+const zeros: Counts = {
+  events: 0,
+  codes_retired: 0,
+  rate_limits: 0,
+  client_errors: 0,
+  users: 0,
+};
 
 /** Every table with a foreign key to public.events, from the catalog. */
 function eventTables(): string[] {
@@ -119,6 +126,7 @@ describe("private.cleanup_expired", () => {
       events: 1,
       codes_retired: 1,
       rate_limits: 2, // the event's own counter and the old one
+      client_errors: 0,
       users: 0,
     });
     expect(

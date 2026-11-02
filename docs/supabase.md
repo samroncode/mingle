@@ -60,7 +60,7 @@ While the stack is running, Supabase Studio at http://localhost:54323 shows the 
 
 ## Nightly cleanup
 
-Expired events and everything in them are deleted by `private.cleanup_expired()`, which `pg_cron` runs every night at 03:00 UTC under the job name `cleanup-expired-events`. It also deletes old rate-limit counters and anonymous logins that belong to no event and have been unused for 30 days. No client role can run it. The rules are in `decisions.md` (2026-10-22, cleanup of expired events).
+Expired events and everything in them are deleted by `private.cleanup_expired()`, which `pg_cron` runs every night at 03:00 UTC under the job name `cleanup-expired-events`. It also deletes `client_errors` rows older than 14 days and old rate-limit counters and anonymous logins that belong to no event and have been unused for 30 days. No client role can run it. The rules are in `decisions.md` (2026-10-22, cleanup of expired events).
 
 **Check the run history.** In the Supabase dashboard, open the SQL editor and run:
 
@@ -72,7 +72,7 @@ order by start_time desc
 limit 10;
 ```
 
-`status` is `succeeded` or `failed`, and `return_message` holds the error text of a failed run. pg_cron does not keep the function's counts (`events`, `codes_retired`, `rate_limits`, `users`); to see them, run the function by hand as below.
+`status` is `succeeded` or `failed`, and `return_message` holds the error text of a failed run. pg_cron does not keep the function's counts (`events`, `codes_retired`, `rate_limits`, `client_errors`, `users`); to see them, run the function by hand as below.
 
 **Run it by hand.** Only an admin can, in the dashboard's SQL editor:
 
@@ -81,6 +81,19 @@ select private.cleanup_expired();
 ```
 
 It returns the counts as JSON. This deletes data for good, with no undo, so only run it when you mean it. Running it twice in a row is safe; the second run returns zeros.
+
+## Client errors
+
+Browsers write errors to `public.client_errors` only through the function `log_client_error` (signed-in users, anonymous ones included; at most 20 rows a minute per user; text cut to fixed lengths; route stored without query or fragment). The table has RLS on and no policies, so nobody reads it through the API. Read it in the dashboard's Table editor or SQL editor, for example:
+
+```sql
+select area, action, error_code, count(*), max(created_at)
+from public.client_errors
+group by 1, 2, 3
+order by 4 desc;
+```
+
+`event_code` is plain text, not a foreign key. Rows are deleted by age (14 days) in the nightly cleanup. The rules are in `logging.md`.
 
 ## Cloud sessions
 
