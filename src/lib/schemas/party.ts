@@ -48,9 +48,12 @@ function isPlainHost(link: string): boolean {
   }
 }
 
-/** One line of the evening's schedule, such as 19:00 Dinner. */
+/** One line of the evening's schedule: "19:00 Dinner", or just "Darts" with no time. */
 export const ScheduleItemSchema = z.strictObject({
-  time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+  time: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .optional(),
   title: text(partyLimits.line),
 });
 

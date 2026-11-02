@@ -99,6 +99,19 @@ describe("create_event", () => {
     expect(event?.party).toEqual({ musicUrl: stored });
   });
 
+  it("stores schedule lines without a time, in the order sent", async () => {
+    const host = await anonymousUser();
+    const schedule = [{ title: "Darts" }, { time: "19:00", title: "Dinner" }];
+    const response = await callHostActions(
+      { ...createEvent, party: { schedule } },
+      { user: host },
+    );
+
+    expect(response.status).toBe(200);
+    const [event] = await eventsOf(host);
+    expect(event?.party).toEqual({ schedule });
+  });
+
   it("allows an event with no activities and no party content", async () => {
     const host = await anonymousUser();
     const response = await callHostActions(
@@ -711,6 +724,21 @@ describe("invalid requests", () => {
         ...createEvent,
         party: { schedule: [{ time: "25:00", title: "Sent" }] },
       },
+    ],
+    [
+      "a schedule time that isn't padded",
+      {
+        ...createEvent,
+        party: { schedule: [{ time: "7:00", title: "Early" }] },
+      },
+    ],
+    [
+      "a schedule line with only a time",
+      { ...createEvent, party: { schedule: [{ time: "19:00" }] } },
+    ],
+    [
+      "a schedule line with no title",
+      { ...createEvent, party: { schedule: [{}] } },
     ],
     [
       "a music link with a script scheme",
