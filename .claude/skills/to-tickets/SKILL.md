@@ -95,6 +95,7 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 
 - [ ] Criterion 1
 - [ ] Criterion 2
+- [ ] Failures show a visible, translated message and are logged without personal data (CLAUDE.md principle 11), or the ticket says why not applicable
 
 ## Blocked by
 

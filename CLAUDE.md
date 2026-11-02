@@ -84,6 +84,7 @@ One app serves every event. Events are rows in the database identified by a shor
 8. **Theming via CSS variables.** Niche themes set tokens on `:root` or a wrapper element; components use tokens, never hardcoded colors.
 9. **Small, single-purpose functions and components.** Prefer composition. Keep files short.
 10. **TypeScript strict mode.** No `any`. Database types are generated from the Supabase schema.
+11. **Every feature handles and logs its errors.** A failure the user can hit shows a visible, translated "try again" message and is logged (browser: `logError` into `client_errors`; Edge Functions: the structured log line). Log codes only, never names, amounts, phone numbers, the admin key or the URL after `#`. Logging must never break the app. See `docs/logging.md`.
 
 ## Folder structure
 
@@ -148,6 +149,7 @@ These apply to everything under `supabase/`. How Supabase works in this project,
 ## Working agreement
 
 - Before larger changes, propose a short plan and wait for approval.
+- Every spec and ticket has an "Errors and logging" part: which failures can happen, what the user sees, what is logged (principle 11).
 - After changes: run typecheck (`npm run typecheck` and `npm run typecheck:functions`), lint and tests, and report the result.
 - Write a migration for every schema change. Never edit the database by hand.
 - When unsure about a product decision, ask instead of guessing.

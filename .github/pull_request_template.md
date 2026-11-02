@@ -17,6 +17,7 @@ Closes #
 - [ ] Typecheck
 - [ ] Lint and format
 - [ ] Tests
+- [ ] Errors handled and logged (visible message, log row or log line, no personal data), or not applicable
 - [ ] DB tests (`npm run test:db`, desktop only; skip if `supabase/` is unchanged)
 
 ## Decisions and open questions

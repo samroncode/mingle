@@ -12,6 +12,18 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-11-02: Error logging and Swish error handling (#223)
+
+**Decision:** Tickets #224 to #227.
+- Browser errors go to a `client_errors` table that nobody can read or write directly. Browsers write through one `security definer` function, `log_client_error`, which checks the kind, cuts text to fixed lengths and allows about 20 rows a minute per device. The owner reads the table in the Supabase dashboard; there is no admin page. The nightly cleanup deletes rows older than 14 days. The event code is plain text, not a foreign key.
+- Handled failures log codes only (area, action, error code). Only unhandled errors log a truncated message and stack, with query and fragment stripped, because the host key is in the fragment.
+- Every Swish and shared-costs step shows a visible "something went wrong, try again" and logs a row. Never log amounts, Swish numbers, guest names or the admin key.
+- `host-actions` writes one JSON log line per request: action, event code, result code, milliseconds.
+- Process rule: principle 11 in `CLAUDE.md`, `docs/logging.md`, an "Errors and logging" part in every spec and ticket, and a PR template checkbox. Existing features are not retrofitted beyond the above.
+- Sentry and other third-party services are not used; they can be added later in their own plan.
+
+**Why:** Browser errors were recorded nowhere and `host-actions` logged only a few unstructured lines. A table we own is free, adds no dependency and holds no personal data. Direct inserts through RLS were rejected because a function can validate, truncate and rate limit in one place.
+
 ## 2026-10-30: Winners on the TV and host messages to guests (#206)
 
 **Decision:** Two small features, tickets #207 to #213.
