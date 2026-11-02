@@ -1,9 +1,10 @@
-import { Receipt } from "lucide-react";
+import { Receipt, TriangleAlert } from "lucide-react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useMyBill } from "@/hooks/useMyBill";
+import { BillLoadError } from "./BillLoadError";
 import { BillSheet } from "./BillSheet";
 
 interface GuestBillProps {
@@ -32,8 +33,40 @@ export function GuestBill({
   const { t } = useTranslation();
   // Open, and whether the total had changed since the guest last looked.
   const [open, setOpen] = useState<"plain" | "updated">();
-  const { bill, updated, markSeen, reload } = useMyBill(eventId, signal);
-  if (!bill || !slot) return null;
+  const { bill, failed, updated, markSeen, reload } = useMyBill(
+    eventId,
+    signal,
+  );
+  if (!slot) return null;
+  if (!bill && failed) {
+    // The bill couldn't be read: show the icon as a warning and offer a retry.
+    return (
+      <>
+        {createPortal(
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={t("guest.bill.loadFailedOpen")}
+            data-testid="bill-error-icon"
+            onClick={() => setOpen("plain")}
+          >
+            <TriangleAlert aria-hidden />
+          </Button>,
+          slot,
+        )}
+        {open && (
+          <BillLoadError
+            onRetry={() => {
+              reload();
+              setOpen(undefined);
+            }}
+            onClose={() => setOpen(undefined)}
+          />
+        )}
+      </>
+    );
+  }
+  if (!bill) return null;
 
   const owes = bill.owed > 0;
   const label = updated ? t("guest.bill.openUpdated") : t("guest.bill.open");
