@@ -10,7 +10,7 @@ Mingle is a web app for hosting an afterwork, a team event or a bachelor/bachelo
 
 ### The party screen
 
-The TV is useful from the moment it is switched on, even if you never start an activity. It rotates calmly between your welcome message, the join QR code, a QR code for the wifi, a QR code for the music (paste a Spotify Jam or shared playlist link), the menu, the evening's schedule and the guests who have joined.
+The TV is useful from the moment it is switched on, even if you never start an activity. It rotates calmly between your welcome message, the join QR code, a QR code for the wifi, a QR code for the music (paste a Spotify Jam or shared playlist link; it must start with `https://`), the menu, the evening's program and the guests who have joined. Program lines can have a time ("19:00 Dinner") or just a title ("Cake"), so you can list the evening without fixing the clock.
 
 ### Activities, if you want them
 
@@ -18,7 +18,7 @@ The TV is useful from the moment it is switched on, even if you never start an a
 - **Awards**: "Most likely to…" categories. Guests vote on each other, and the TV reveals the winners one by one.
 - **Hot takes**: statements to agree or disagree with. The TV shows how the room split.
 
-Each activity comes with ready-made content for the type of party you picked, in Swedish and English. You can use it as it is, remove what doesn't fit, add your own, or switch an activity off completely. Mingle works fully without AI: all content is either built in or written by you.
+Each activity comes with ready-made content for the type of party you picked, in Swedish and English. The setup wizard keeps long lists short, showing four suggestions to start with and the rest one tap away. You can use them as they are, remove what doesn't fit, add your own, or switch an activity off completely. Mingle works fully without AI: all content is either built in or written by you.
 
 ### Running the evening
 
@@ -108,6 +108,10 @@ npm run db:start
 ```
 
 [docs/supabase.md](docs/supabase.md) explains the local stack, Docker on Windows and the nightly cleanup.
+
+### Logs and errors
+
+When something fails, the app shows a translated try-again message and logs a short code (never names, amounts or the host key). Read the logs in the Supabase dashboard: browser errors in the `client_errors` table, host actions under Edge Functions, Logs. See [docs/logging.md](docs/logging.md).
 
 ### Checks
 
