@@ -101,12 +101,10 @@ describe("toCreateRequest", () => {
     const start = initialDraft("en");
     const draft = run(
       start,
-      ...start.enabledModules.map(
-        (module): WizardAction => ({
-          type: "toggle_module",
-          module,
-        }),
-      ),
+      ...start.enabledModules.map((module): WizardAction => ({
+        type: "toggle_module",
+        module,
+      })),
     );
     expect(draft.enabledModules).toEqual([]);
     expect(
