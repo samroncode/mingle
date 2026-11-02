@@ -85,6 +85,18 @@ describe("update_party_content with the right key", () => {
     expect(await partyAs(host.user, host.code)).toEqual(updated);
   });
 
+  it.each([
+    ["open.spotify.com/jam/x", "https://open.spotify.com/jam/x"],
+    ["http://open.spotify.com/jam/x", "https://open.spotify.com/jam/x"],
+  ])("stores the music link %s as %s", async (musicUrl, stored) => {
+    const host = await createEvent();
+
+    const response = await updateParty(host, { musicUrl });
+
+    expect(response.status).toBe(200);
+    expect(await partyAs(host.user, host.code)).toEqual({ musicUrl: stored });
+  });
+
   it("drops the parts the new content leaves out", async () => {
     const host = await createEvent(updated);
 
@@ -198,7 +210,8 @@ describe("update_party_content: invalid content", () => {
       { schedule: [{ time: "25:00", title: "Late" }] },
     ],
     ["wifi without a network name", { wifi: { password: "x" } }],
-    ["a music link that isn't https", { musicUrl: "http://example.com/x" }],
+    ["a music link with an ftp scheme", { musicUrl: "ftp://example.com/x" }],
+    ["a music link without a dot in the host", { musicUrl: "hello" }],
     ["a music link with a script scheme", { musicUrl: "javascript:alert(1)" }],
     [
       "more than 8 winners",

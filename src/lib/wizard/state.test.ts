@@ -173,7 +173,7 @@ describe("party content in the request", () => {
       initialDraft("en"),
       { type: "set_schedule", schedule: [{ time: "25:99", title: "Late" }] },
       { type: "set_wifi", ssid: "", password: "secret" },
-      { type: "set_music_url", url: "http://open.spotify.com/x" },
+      { type: "set_music_url", url: "ftp://open.spotify.com/x" },
       { type: "set_welcome", text: "x".repeat(501) },
     );
     expect(invalidFields(draft.party).sort()).toEqual([
@@ -202,6 +202,14 @@ describe("party content in the request", () => {
       ),
     ).toBe("wifi");
     expect(firstInvalidStep(initialDraft("en").party)).toBeUndefined();
+  });
+
+  it("accepts a music link without https://", () => {
+    const draft = run(initialDraft("en"), {
+      type: "set_music_url",
+      url: "open.spotify.com/jam/abc",
+    });
+    expect(invalidFields(draft.party)).toEqual([]);
   });
 
   it("accepts a valid https music link", () => {

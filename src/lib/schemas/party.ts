@@ -21,6 +21,33 @@ export const partyLimits = {
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 
+/**
+ * Makes a pasted music link forgiving: removes stray whitespace and
+ * zero-width characters, upgrades http:// to https:// and adds https:// when
+ * there is no scheme. Any other scheme (javascript:, data:, ftp:, ...) is left
+ * as it is, so validation rejects it. Idempotent. The shared schema runs this,
+ * so the client and the Edge Function store the same clean link.
+ */
+export function normalizeMusicUrl(input: string): string {
+  const cleaned = input.replace(/[\s\u200B-\u200D\u2060\uFEFF]/g, "");
+  if (cleaned === "") return "";
+  if (/^https:\/\//i.test(cleaned)) return `https://${cleaned.slice(8)}`;
+  if (/^http:\/\//i.test(cleaned)) return `https://${cleaned.slice(7)}`;
+  if (cleaned.startsWith("//")) return `https:${cleaned}`;
+  if (/^[^/?#]*:/.test(cleaned)) return cleaned;
+  return `https://${cleaned}`;
+}
+
+/** A valid link has a dotted host and no embedded credentials. */
+function isPlainHost(link: string): boolean {
+  try {
+    const url = new URL(link);
+    return url.hostname.includes(".") && !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
 /** One line of the evening's schedule, such as 19:00 Dinner. */
 export const ScheduleItemSchema = z.strictObject({
   time: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
@@ -51,8 +78,13 @@ export const PartySchema = z.strictObject({
   wifi: WifiSchema.optional(),
   /** A Spotify Jam or shared playlist link, shown as a QR code. */
   musicUrl: z
-    .url({ protocol: /^https$/ })
-    .max(partyLimits.musicUrl)
+    .preprocess(
+      (value) => (typeof value === "string" ? normalizeMusicUrl(value) : value),
+      z
+        .url({ protocol: /^https$/ })
+        .max(partyLimits.musicUrl)
+        .refine(isPlainHost),
+    )
     .optional(),
   /** Small contests the host announces, such as the dart tournament. */
   winners: z.array(WinnerSchema).max(partyLimits.winners).optional(),

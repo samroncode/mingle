@@ -106,7 +106,7 @@ describe("the awards step", () => {
     const draft = run(
       initialDraft("en"),
       { type: "awards", action: { type: "add_own", key: "k" } },
-      { type: "set_music_url", url: "http://not-https.example" },
+      { type: "set_music_url", url: "javascript:alert(1)" },
     );
     expect(stepIsInvalid(draft, "awards")).toBe(true);
     expect(firstInvalidDraftStep(draft)).toBe("awards");

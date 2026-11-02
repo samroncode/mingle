@@ -115,7 +115,7 @@ describe("the hot takes step", () => {
     const draft = run(
       initialDraft("en"),
       { type: "hottakes", action: { type: "add_own", key: "k" } },
-      { type: "set_music_url", url: "http://not-https.example" },
+      { type: "set_music_url", url: "javascript:alert(1)" },
     );
     expect(stepIsInvalid(draft, "hottakes")).toBe(true);
     expect(firstInvalidDraftStep(draft)).toBe("hottakes");

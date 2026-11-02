@@ -384,8 +384,8 @@
     },
     "music": {
       "label": "Music link",
-      "hint": "A Spotify Jam or shared playlist link (https).",
-      "placeholder": "https://"
+      "hint": "A Spotify Jam or shared playlist link.",
+      "placeholder": "open.spotify.com/jam/…"
     },
     "lines": {
       "moveUp": "Move line {{n}} up",
@@ -397,7 +397,7 @@
       "menu": "Menu lines can be 80 characters and there can be 20 of them.",
       "schedule": "Each schedule line needs a time like 19:00 and a title of up to 80 characters (20 lines at most).",
       "wifi": "Enter a wifi name of up to 32 characters. The password can be up to 63.",
-      "musicUrl": "The music link must be a valid https link."
+      "musicUrl": "The music link must be a valid link, such as open.spotify.com/…"
     },
     "quiz": {
       "count": "{{count}} of {{max}} questions picked",
