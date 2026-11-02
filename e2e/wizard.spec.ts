@@ -65,6 +65,9 @@ test("creates an event through the wizard", async ({ page }) => {
   await page.getByRole("button", { name: "Add a line" }).click();
   await page.getByLabel("Time for line 1").fill("19:30");
   await page.getByLabel("Title for line 1").fill("Middag");
+  // A second line without a time is fine.
+  await page.getByRole("button", { name: "Add a line" }).click();
+  await page.getByLabel("Title for line 2").fill("Dart");
   await page.getByRole("button", { name: "Next" }).click();
 
   // Wifi and music: a bad link blocks Next until fixed.
@@ -94,7 +97,7 @@ test("creates an event through the wizard", async ({ page }) => {
   const party = {
     welcome: "Välkomna hem till mig!",
     menu: ["Tårta", "Pizza"],
-    schedule: [{ time: "19:30", title: "Middag" }],
+    schedule: [{ time: "19:30", title: "Middag" }, { title: "Dart" }],
     wifi: { ssid: "HomeNet", password: "" },
     musicUrl: "https://open.spotify.com/jam/x",
   };

@@ -9,6 +9,7 @@ import { useHostAction } from "@/hooks/useHostAction";
 import { countPartyParts } from "@/lib/host/host-panel";
 import { partyToForm, savePartyEdit } from "@/lib/host/party-edit";
 import { readParty } from "@/lib/party";
+import { formatScheduleLine } from "@/lib/schedule";
 import type { Party } from "@/lib/schemas/party";
 import type { PartyField, PartyForm } from "@/lib/wizard/state";
 import {
@@ -43,7 +44,7 @@ function PartyView({ party }: { party: Party }) {
         {party.menu?.join("\n") ?? none}
       </Part>
       <Part title={t("wizard.steps.schedule")}>
-        {party.schedule?.map((l) => `${l.time} ${l.title}`).join("\n") ?? none}
+        {party.schedule?.map(formatScheduleLine).join("\n") ?? none}
       </Part>
       <Part title={t("wizard.wifi.ssid")}>{party.wifi?.ssid ?? none}</Part>
       <Part title={t("wizard.music.label")}>{party.musicUrl ?? none}</Part>

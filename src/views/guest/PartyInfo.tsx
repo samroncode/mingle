@@ -5,6 +5,7 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Sticker } from "@/components/ui/sticker";
 import type { NoticeView } from "@/api/notices";
 import type { Party } from "@/lib/schemas/party";
+import { anyLineHasTime } from "@/lib/schedule";
 import { NoticeList } from "./NoticeList";
 
 interface SectionProps {
@@ -32,6 +33,7 @@ export function PartyInfo({
   const { t } = useTranslation();
   const { welcome, menu, schedule, wifi, musicUrl, winners, winnersHidden } =
     party;
+  const hasTimes = anyLineHasTime(schedule ?? []);
   return (
     <div className="space-y-5">
       {welcome ? (
@@ -52,12 +54,19 @@ export function PartyInfo({
           <ul className="space-y-3">
             {schedule.map((item, i) => (
               <li key={i} className="flex items-center gap-3 text-lg">
-                <Sticker
-                  color="champagne"
-                  lean={i % 2 === 0 ? "left" : "right"}
-                >
-                  {item.time}
-                </Sticker>
+                {item.time ? (
+                  <Sticker
+                    color="champagne"
+                    lean={i % 2 === 0 ? "left" : "right"}
+                  >
+                    {item.time}
+                  </Sticker>
+                ) : hasTimes ? (
+                  <span
+                    aria-hidden="true"
+                    className="size-2 shrink-0 rounded-full bg-on-paper-muted"
+                  />
+                ) : null}
                 <span>{item.title}</span>
               </li>
             ))}

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { QrCode } from "@/components/QrCode";
+import { anyLineHasTime } from "@/lib/schedule";
 import { wifiQrText } from "@/lib/tv/wifi-qr";
 import { NAME_MAX_CH, NAMES_AREA, nameSizeRem } from "./name-size";
 import type { Part } from "./parts";
@@ -34,14 +35,24 @@ export function MenuPart({ lines }: Of<"menu">) {
 
 export function SchedulePart({ items }: Of<"schedule">) {
   const { t } = useTranslation();
+  const hasTimes = anyLineHasTime(items);
   return (
     <Panel title={t("tv.schedule")}>
       <ul className="space-y-3 font-display text-5xl font-bold">
         {items.map((item, index) => (
           <li key={index} className="flex gap-6">
-            <span className="font-display font-extrabold text-champagne">
-              {item.time}
-            </span>
+            {hasTimes ? (
+              item.time ? (
+                <span className="font-display font-extrabold text-champagne">
+                  {item.time}
+                </span>
+              ) : (
+                <span
+                  aria-hidden="true"
+                  className="my-auto size-4 shrink-0 rounded-full bg-champagne"
+                />
+              )
+            ) : null}
             <span className="font-body font-medium">{item.title}</span>
           </li>
         ))}

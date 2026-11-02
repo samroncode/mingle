@@ -6,7 +6,7 @@ const target = { code: "ABCD", key: "k" };
 const saved: Party = {
   welcome: "Hi",
   menu: ["Pizza"],
-  schedule: [{ time: "19:00", title: "Dinner" }],
+  schedule: [{ time: "19:00", title: "Dinner" }, { title: "Darts" }],
   wifi: { ssid: "Home", password: "pw" },
   musicUrl: "https://open.spotify.com/jam/1",
 };
