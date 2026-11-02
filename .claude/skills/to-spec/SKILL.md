@@ -56,6 +56,10 @@ Do NOT include specific file paths or code snippets. They may end up being outda
 
 Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
 
+## Errors and Logging
+
+Which failures a user can hit, what they see, and what is logged (CLAUDE.md principle 11, `docs/logging.md`). Write "none" only if the feature cannot fail.
+
 ## Testing Decisions
 
 A list of testing decisions that were made. Include:
