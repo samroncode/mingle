@@ -10,6 +10,7 @@ import {
   type WizardDraft,
   type WizardStep,
 } from "@/lib/wizard/state";
+import { formatScheduleLine } from "@/lib/schedule";
 import { moduleIds, type ModuleId } from "@/modules/registry";
 import { niches, type NicheId } from "@/niches";
 import { nicheIds } from "@/niches/ids";
@@ -142,9 +143,7 @@ function partyRows(draft: WizardDraft, t: TFunction): SummaryRow[] {
     {
       step: "schedule",
       label: t("wizard.steps.schedule"),
-      value:
-        party.schedule?.map((l) => `${l.time} ${l.title}`).join(", ") ??
-        skipped,
+      value: party.schedule?.map(formatScheduleLine).join(", ") ?? skipped,
     },
     {
       step: "wifi",

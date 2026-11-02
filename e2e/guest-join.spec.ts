@@ -95,6 +95,25 @@ test("a guest sees the evening's info after joining", async ({ page }) => {
   await expect(music).toHaveAttribute("rel", "noopener noreferrer");
 });
 
+test("a guest sees untimed schedule lines without a time sticker", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  await fakeEvent(page, {
+    code,
+    joinedAs: "Anna",
+    party: {
+      schedule: [{ time: "19:00", title: "Dinner" }, { title: "Darts" }],
+    },
+  });
+  await page.goto(`/p/${code}`);
+  await expect(page.getByText("19:00")).toBeVisible();
+  await expect(page.getByText("Darts")).toBeVisible();
+  if (process.env.SHOTS) {
+    await page.screenshot({ path: `${process.env.SHOTS}/guest-mixed.png` });
+  }
+});
+
 test("parts the host left out are not shown, and an open network says so", async ({
   page,
 }) => {

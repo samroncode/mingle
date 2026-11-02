@@ -377,7 +377,7 @@
     },
     "schedule": {
       "add": "Lägg till rad",
-      "time": "Tid för rad {{n}}",
+      "time": "Tid för rad {{n}} (valfri)",
       "title": "Titel för rad {{n}}"
     },
     "wifi": {
@@ -398,7 +398,7 @@
     "errors": {
       "welcome": "Välkomsttexten är för lång (högst 500 tecken).",
       "menu": "Menyrader får vara 80 tecken och det får finnas 20 stycken.",
-      "schedule": "Varje programrad behöver en tid som 19:00 och en titel på högst 80 tecken (högst 20 rader).",
+      "schedule": "Varje programrad behöver en titel på högst 80 tecken; tiden är valfri och ser ut som 19:00 (högst 20 rader).",
       "wifi": "Ange ett wifi-namn på högst 32 tecken. Lösenordet får vara högst 63.",
       "musicUrl": "Musiklänken måste vara en giltig länk, till exempel open.spotify.com/…"
     },

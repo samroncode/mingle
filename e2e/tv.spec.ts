@@ -168,3 +168,48 @@ test("the TV congratulates a winner that is added, but not the ones already ther
   await page.screenshot({ path: test.info().outputPath("tv-congrats.png") });
   await expect(popup).toHaveCount(0, { timeout: 6000 });
 });
+
+const mixedSchedule = [
+  { time: "19:00", title: "Dinner" },
+  { title: "Darts" },
+  { title: "Ping pong" },
+];
+
+test("the TV schedule lines up untimed lines with a marker, and drops the time column when none has a time", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  await fakeTv(page, {
+    snapshot: {
+      ...snapshot({ party: { schedule: mixedSchedule } }),
+      members: [],
+    },
+  });
+  await page.goto(`/tv/${code}`);
+  const items = page
+    .locator("li")
+    .filter({ hasText: /Dinner|Darts|Ping pong/ });
+  await expect(items).toHaveCount(3);
+  await expect(items.nth(0)).toContainText("19:00");
+  await expect(items.nth(1).locator("span[aria-hidden]")).toHaveCount(1);
+  if (process.env.SHOTS) {
+    await page.screenshot({ path: `${process.env.SHOTS}/tv-mixed.png` });
+  }
+
+  await fakeTv(page, {
+    snapshot: {
+      ...snapshot({
+        party: { schedule: [{ title: "Darts" }, { title: "Ping pong" }] },
+      }),
+      members: [],
+    },
+  });
+  await page.goto(`/tv/${code}`);
+  await expect(page.getByText("Darts")).toBeVisible();
+  await expect(
+    page.locator("li").filter({ hasText: "Darts" }).locator("span"),
+  ).toHaveCount(1);
+  if (process.env.SHOTS) {
+    await page.screenshot({ path: `${process.env.SHOTS}/tv-untimed.png` });
+  }
+});

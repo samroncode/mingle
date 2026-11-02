@@ -319,7 +319,8 @@ export function toParty(form: PartyForm): Party {
   if (menu.length > 0) party.menu = menu;
   const schedule = form.schedule
     .map((line) => ({ time: line.time.trim(), title: line.title.trim() }))
-    .filter((line) => line.time || line.title);
+    .filter((line) => line.time || line.title)
+    .map(({ time, title }) => (time ? { time, title } : { title }));
   if (schedule.length > 0) party.schedule = schedule;
   const ssid = form.wifiSsid.trim();
   if (ssid || form.wifiPassword) {

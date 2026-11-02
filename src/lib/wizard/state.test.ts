@@ -9,6 +9,7 @@ import {
   stepInvalidFields,
   stepOrder,
   toCreateRequest,
+  toParty,
   wizardReducer,
   type WizardAction,
   type WizardDraft,
@@ -166,6 +167,30 @@ describe("party content in the request", () => {
       schedule: [{ time: "19:00", title: "Dinner" }],
       wifi: { ssid: "Home", password: "" },
     });
+  });
+
+  it("omits an empty time and accepts a line with only a title", () => {
+    const draft = run(initialDraft("en"), {
+      type: "set_schedule",
+      schedule: [
+        { time: " ", title: " Darts " },
+        { time: "19:00", title: "Dinner" },
+        { time: "", title: "" },
+      ],
+    });
+    expect(toParty(draft.party).schedule).toEqual([
+      { title: "Darts" },
+      { time: "19:00", title: "Dinner" },
+    ]);
+    expect(invalidFields(draft.party)).toEqual([]);
+  });
+
+  it("blocks a time with no title", () => {
+    const draft = run(initialDraft("en"), {
+      type: "set_schedule",
+      schedule: [{ time: "19:00", title: "" }],
+    });
+    expect(invalidFields(draft.party)).toEqual(["schedule"]);
   });
 
   it("reports invalid content by field and step", () => {

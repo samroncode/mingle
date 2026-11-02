@@ -377,7 +377,7 @@
     },
     "schedule": {
       "add": "Add a line",
-      "time": "Time for line {{n}}",
+      "time": "Time for line {{n}} (optional)",
       "title": "Title for line {{n}}"
     },
     "wifi": {
@@ -398,7 +398,7 @@
     "errors": {
       "welcome": "The welcome text is too long (500 characters at most).",
       "menu": "Menu lines can be 80 characters and there can be 20 of them.",
-      "schedule": "Each schedule line needs a time like 19:00 and a title of up to 80 characters (20 lines at most).",
+      "schedule": "Each schedule line needs a title of up to 80 characters; the time is optional and looks like 19:00 (20 lines at most).",
       "wifi": "Enter a wifi name of up to 32 characters. The password can be up to 63.",
       "musicUrl": "The music link must be a valid link, such as open.spotify.com/…"
     },
