@@ -95,6 +95,48 @@ export type Database = {
           },
         ];
       };
+      client_errors: {
+        Row: {
+          action: string | null;
+          app_version: string | null;
+          area: string;
+          created_at: string;
+          error_code: string | null;
+          event_code: string | null;
+          id: string;
+          kind: string;
+          message: string | null;
+          route: string | null;
+          stack: string | null;
+        };
+        Insert: {
+          action?: string | null;
+          app_version?: string | null;
+          area: string;
+          created_at?: string;
+          error_code?: string | null;
+          event_code?: string | null;
+          id?: string;
+          kind: string;
+          message?: string | null;
+          route?: string | null;
+          stack?: string | null;
+        };
+        Update: {
+          action?: string | null;
+          app_version?: string | null;
+          area?: string;
+          created_at?: string;
+          error_code?: string | null;
+          event_code?: string | null;
+          id?: string;
+          kind?: string;
+          message?: string | null;
+          route?: string | null;
+          stack?: string | null;
+        };
+        Relationships: [];
+      };
       cost_payments: {
         Row: {
           confirmed_at: string | null;
@@ -727,6 +769,20 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      log_client_error: {
+        Args: {
+          action?: string;
+          app_version?: string;
+          area: string;
+          error_code?: string;
+          event_code?: string;
+          kind: string;
+          message?: string;
+          route?: string;
+          stack?: string;
+        };
+        Returns: string;
       };
       my_award_votes: {
         Args: { target_category_id: string };
