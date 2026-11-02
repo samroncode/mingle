@@ -8,6 +8,7 @@ Where to find what. Start with `CLAUDE.md` in the repo root for the standing rul
 - [workflow.md](workflow.md): how work moves between the desktop, the phone and GitHub
 - [supabase.md](supabase.md): how Mingle uses Supabase, and how to run it locally with Docker
 - [hosting.md](hosting.md): how Mingle runs online, and the launch checklist
+- [logging.md](logging.md): how errors are shown and logged, and where to read the logs
 - [design.md](design.md): the look (forest green and champagne), implemented in `src/app/theme.css`
 - [GLOSSARY.md](GLOSSARY.md): the words used in the product and the code
 - [IDEAS.md](IDEAS.md): parking lot for ideas that are not part of v1
