@@ -564,7 +564,13 @@
         "already_confirmed": "Värden har redan bekräftat din betalning.",
         "not_found": "Det finns inget att betala.",
         "unknown": "Det gick inte att spara. Försök igen."
-      }
+      },
+      "swishNotOpened": "Swish öppnades inte. Tryck på knappen igen eller skanna QR-koden med en annan telefon.",
+      "qrFailed": "Det gick inte att rita QR-koden. Försök igen eller använd knappen.",
+      "retry": "Försök igen",
+      "loadFailed": "Det gick inte att läsa in din räkning. Försök igen.",
+      "loadFailedTitle": "Din räkning",
+      "loadFailedOpen": "Det gick inte att läsa in din räkning, tryck för att försöka igen"
     }
   },
   "hostPanel": {
@@ -708,7 +714,8 @@
       "owesAmount": "Skyldig {{amount}}",
       "removedPaid": "{{name}} betalade {{amount}} innan hen togs bort. Betala tillbaka själv.",
       "removedSaidPaid": "{{name}} sa att hen hade betalat innan hen togs bort. Kolla Swish och betala tillbaka om det stämmer.",
-      "paymentFailed": "Det gick inte att spara. Försök igen."
+      "paymentFailed": "Det gick inte att spara. Försök igen.",
+      "retry": "Försök igen"
     },
     "messages": {
       "title": "Meddelanden",

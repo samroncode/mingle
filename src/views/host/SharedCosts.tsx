@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { type CostsView, getCosts } from "@/api/costs";
 import type { MemberRow } from "@/api/events";
 import { updateCosts } from "@/api/host-actions";
+import { logError } from "@/api/log";
 import { ErrorLine } from "@/components/ErrorLine";
 import { Button } from "@/components/ui/button";
 import { PanelSection } from "@/components/PanelSection";
@@ -160,6 +161,15 @@ export function SharedCosts({
     keepOnError: true,
   });
   const costs = load.status === "ready" ? load.value : null;
+  const loadFailed = load.status === "error";
+  useEffect(() => {
+    if (loadFailed)
+      void logError({
+        area: "costs",
+        action: "load_costs",
+        code: "load_failed",
+      });
+  }, [loadFailed]);
 
   const startEditing = (addPurchase = false) => {
     const form = costsToForm(costs, guestIds);
@@ -197,7 +207,17 @@ export function SharedCosts({
       summary={summary}
     >
       {load.status === "error" && (
-        <ErrorLine>{t("hostPanel.costs.loadFailed")}</ErrorLine>
+        <div className="space-y-2">
+          <ErrorLine>{t("hostPanel.costs.loadFailed")}</ErrorLine>
+          <Button
+            size="sm"
+            variant="outline"
+            data-testid="costs-retry"
+            onClick={() => setRefresh((count) => count + 1)}
+          >
+            {t("hostPanel.costs.retry")}
+          </Button>
+        </div>
       )}
       {load.status === "loading" && (
         <p className="text-on-paper-muted">{t("hostPanel.loading")}</p>

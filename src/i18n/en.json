@@ -564,7 +564,13 @@
         "already_confirmed": "The host has already confirmed your payment.",
         "not_found": "There is nothing to pay.",
         "unknown": "Couldn't save that. Try again."
-      }
+      },
+      "swishNotOpened": "Swish didn't open. Tap the button again, or scan the QR code with another phone.",
+      "qrFailed": "Couldn't draw the QR code. Try again, or use the button.",
+      "retry": "Try again",
+      "loadFailed": "Couldn't load your bill. Try again.",
+      "loadFailedTitle": "Your bill",
+      "loadFailedOpen": "Couldn't load your bill, tap to try again"
     }
   },
   "hostPanel": {
@@ -708,7 +714,8 @@
       "owesAmount": "Owes {{amount}}",
       "removedPaid": "{{name}} paid {{amount}} before being removed. Pay it back yourself.",
       "removedSaidPaid": "{{name}} said they had paid before being removed. Check Swish and pay it back if so.",
-      "paymentFailed": "Couldn't save that. Try again."
+      "paymentFailed": "Couldn't save that. Try again.",
+      "retry": "Try again"
     },
     "messages": {
       "title": "Messages",

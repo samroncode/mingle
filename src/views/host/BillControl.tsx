@@ -20,11 +20,12 @@ interface BillControlProps {
 export function BillControl({ code, hostKey, sent, onDone }: BillControlProps) {
   const { t } = useTranslation();
   const [confirming, setConfirming] = useState(false);
-  const { busy, error, run } = useHostAction();
+  const { busy, error, run } = useHostAction(undefined, "costs");
 
   async function change(next: boolean) {
-    const result = await run(() =>
-      setBillSent({ code, key: hostKey, sent: next }),
+    const result = await run(
+      () => setBillSent({ code, key: hostKey, sent: next }),
+      next ? "send_bill" : "hide_bill",
     );
     if (result.ok) {
       setConfirming(false);

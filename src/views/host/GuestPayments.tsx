@@ -32,13 +32,15 @@ function GuestPaymentRow({
   onDone: () => void;
 }) {
   const { t } = useTranslation();
-  const { busy, error, run } = useHostAction();
+  const { busy, error, run } = useHostAction(undefined, "costs");
   const payment = costs.payments.get(guest.userId);
   const status = paymentStatus(total, payment);
 
   async function change(next: "confirm" | "undo") {
-    const result = await run(() =>
-      setPayment({ code, key: hostKey, userId: guest.userId, change: next }),
+    const result = await run(
+      () =>
+        setPayment({ code, key: hostKey, userId: guest.userId, change: next }),
+      next === "confirm" ? "confirm_payment" : "undo_payment",
     );
     if (result.ok) onDone();
   }
