@@ -97,6 +97,33 @@ describe("update_party_content with the right key", () => {
     expect(await partyAs(host.user, host.code)).toEqual({ musicUrl: stored });
   });
 
+  it("stores schedule lines without a time, in the order sent", async () => {
+    const host = await createEvent(updated);
+    const schedule = [
+      { title: "Darts" },
+      { time: "19:00", title: "Dinner" },
+      { title: "Karaoke" },
+    ];
+
+    const response = await updateParty(host, { schedule });
+
+    expect(response.status).toBe(200);
+    expect(await partyAs(host.user, host.code)).toEqual({ schedule });
+  });
+
+  it("updates an event stored with only timed lines", async () => {
+    const host = await createEvent({ schedule: updated.schedule });
+
+    const response = await updateParty(host, {
+      schedule: [...updated.schedule, { title: "Darts" }],
+    });
+
+    expect(response.status).toBe(200);
+    expect(await partyAs(host.user, host.code)).toEqual({
+      schedule: [...updated.schedule, { title: "Darts" }],
+    });
+  });
+
   it("drops the parts the new content leaves out", async () => {
     const host = await createEvent(updated);
 
@@ -209,6 +236,16 @@ describe("update_party_content: invalid content", () => {
       "a schedule time that isn't a time",
       { schedule: [{ time: "25:00", title: "Late" }] },
     ],
+    [
+      "a schedule time that isn't padded",
+      { schedule: [{ time: "7:00", title: "Early" }] },
+    ],
+    [
+      "a schedule time past 24h",
+      { schedule: [{ time: "25:99", title: "Late" }] },
+    ],
+    ["a schedule line with only a time", { schedule: [{ time: "19:00" }] }],
+    ["a schedule line with no title", { schedule: [{}] }],
     ["wifi without a network name", { wifi: { password: "x" } }],
     ["a music link with an ftp scheme", { musicUrl: "ftp://example.com/x" }],
     ["a music link without a dot in the host", { musicUrl: "hello" }],

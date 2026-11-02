@@ -14,7 +14,10 @@ export function partyToForm(party: Party): PartyForm {
     welcome: party.welcome ?? "",
     welcomeEdited: true,
     menu: [...(party.menu ?? [])],
-    schedule: (party.schedule ?? []).map((line) => ({ ...line })),
+    schedule: (party.schedule ?? []).map((line) => ({
+      time: line.time ?? "",
+      title: line.title,
+    })),
     wifiSsid: party.wifi?.ssid ?? "",
     wifiPassword: party.wifi?.password ?? "",
     musicUrl: party.musicUrl ?? "",
