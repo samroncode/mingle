@@ -4,6 +4,7 @@
 // admin key (as-host.ts). Add an action by adding its schema to
 // HostActionRequestSchema and a case to `runAction`.
 import {
+  type HostActionErrorCode,
   type HostActionRequest,
   HostActionRequestSchema,
 } from "../../../src/lib/schemas/host-actions.ts";
@@ -14,6 +15,12 @@ import { corsHeaders } from "./cors.ts";
 import { createEvent } from "./create-event.ts";
 import type { Db } from "./db.ts";
 import { type ActionResult, errorResponse, resultResponse } from "./http.ts";
+import {
+  eventCodeOf,
+  type LogSink,
+  type RequestLog,
+  writeRequestLog,
+} from "./request-log.ts";
 import { removeGuest } from "./remove-guest.ts";
 import { deleteNotice } from "./delete-notice.ts";
 import { renameGuest } from "./rename-guest.ts";
@@ -32,50 +39,87 @@ import { updateQuiz } from "./update-quiz.ts";
 export type HandlerConfig = {
   db: Db;
   allowedOrigins: Set<string>;
+  /** Where the one log line per request goes. Defaults to the console. */
+  logSink?: LogSink;
 };
 
 export function createHandler(config: HandlerConfig) {
+  const sink = config.logSink ?? ((line: string) => console.log(line));
   return async (request: Request): Promise<Response> => {
-    const cors = corsHeaders(
-      request.headers.get("Origin"),
-      config.allowedOrigins,
-    );
-    if (cors === null) {
-      await request.body?.cancel();
-      return errorResponse("origin_not_allowed", { Vary: "Origin" });
-    }
-    if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: cors });
-    }
-    if (request.method !== "POST") {
-      await request.body?.cancel();
-      return errorResponse("method_not_allowed", cors);
-    }
-
-    const body = await readJsonBody(request);
-    if (!body.ok) return errorResponse(body.error, cors);
-
-    const caller = await authenticate(request, config.db);
-    if (caller === null) return errorResponse("not_authenticated", cors);
-
-    const parsed = HostActionRequestSchema.safeParse(body.json);
-    if (!parsed.success) return errorResponse("invalid_request", cors);
-
+    const started = performance.now();
+    const entry: Omit<RequestLog, "ms"> = {
+      action: null,
+      event: null,
+      result: "ok",
+    };
+    let response: Response;
     try {
-      return resultResponse(
-        await runAction(config.db, caller, parsed.data),
-        cors,
-      );
+      response = await handle(config, request, entry);
     } catch (error) {
       // Only the error's name: messages could echo request data.
-      console.error(
-        "host-actions failed",
-        parsed.data.action,
-        error instanceof Error ? error.name : typeof error,
-      );
-      return errorResponse("internal_error", cors);
+      entry.result = "internal_error";
+      entry.thrown = error instanceof Error ? error.name : typeof error;
+      response = errorResponse("internal_error", {});
     }
+    writeRequestLog(
+      { ...entry, ms: Math.round(performance.now() - started) },
+      sink,
+    );
+    return response;
   };
+}
+
+/** Answers with an error and notes its code for the log line. */
+function refuse(
+  entry: Omit<RequestLog, "ms">,
+  error: HostActionErrorCode,
+  headers: HeadersInit,
+): Response {
+  entry.result = error;
+  return errorResponse(error, headers);
+}
+
+async function handle(
+  config: HandlerConfig,
+  request: Request,
+  entry: Omit<RequestLog, "ms">,
+): Promise<Response> {
+  const cors = corsHeaders(
+    request.headers.get("Origin"),
+    config.allowedOrigins,
+  );
+  if (cors === null) {
+    await request.body?.cancel();
+    return refuse(entry, "origin_not_allowed", { Vary: "Origin" });
+  }
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: cors });
+  }
+  if (request.method !== "POST") {
+    await request.body?.cancel();
+    return refuse(entry, "method_not_allowed", cors);
+  }
+
+  const body = await readJsonBody(request);
+  if (!body.ok) return refuse(entry, body.error, cors);
+  entry.event = eventCodeOf(body.json);
+
+  const caller = await authenticate(request, config.db);
+  if (caller === null) return refuse(entry, "not_authenticated", cors);
+
+  const parsed = HostActionRequestSchema.safeParse(body.json);
+  if (!parsed.success) return refuse(entry, "invalid_request", cors);
+  entry.action = parsed.data.action;
+
+  try {
+    const result = await runAction(config.db, caller, parsed.data);
+    if (!result.ok) entry.result = result.error;
+    return resultResponse(result, cors);
+  } catch (error) {
+    // Only the error's name: messages could echo request data.
+    entry.thrown = error instanceof Error ? error.name : typeof error;
+    return refuse(entry, "internal_error", cors);
+  }
 }
 
 async function runAction(

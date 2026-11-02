@@ -1,5 +1,6 @@
 // Responses. Every error is `{ "error": code }` with a code from the shared
 // list, never free text (CLAUDE.md "Database rules").
+import { logFailure } from "./request-log.ts";
 import type { HostActionErrorCode } from "../../../src/lib/schemas/host-actions.ts";
 
 const statusByError: Record<HostActionErrorCode, number> = {
@@ -36,7 +37,7 @@ export function databaseFailed(
   operation: string,
   error: { code: string },
 ): ActionResult {
-  console.error(`${operation} failed`, error.code);
+  logFailure(`${operation} failed`, error.code);
   return { ok: false, error: "internal_error" };
 }
 

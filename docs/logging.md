@@ -7,7 +7,7 @@ Rule (CLAUDE.md principle 11): every feature handles and logs its errors. Mingle
 | Where | What | How to read |
 |---|---|---|
 | `client_errors` table | Errors from guests' phones, the host and the TV | Supabase dashboard, Table editor or SQL. Rows older than 14 days are deleted nightly. |
-| Edge Functions, host-actions, Logs | One JSON line per host action: action, event code, result code, milliseconds | Supabase dashboard, Edge Functions. Short retention. |
+| Edge Functions, host-actions, Logs | One JSON line per request: `action`, `event` (code), `result` (`ok` or error code), `ms`; plus `thrown` (error name) when it crashed. A failure inside an action adds a `failure: true` line with a fixed description and database error code | Supabase dashboard, Edge Functions. Short retention. |
 | Database and API logs | Blocked queries, slow queries | Supabase dashboard, Logs. |
 
 Nothing is logged for a phone with no signal at all; nothing reaches us.

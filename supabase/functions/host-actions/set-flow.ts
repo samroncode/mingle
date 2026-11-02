@@ -2,6 +2,7 @@
 // step, open, reveal, end the event). flow.ts decides whether the move is
 // allowed, with the step bounds of the activity it concerns (step-bounds.ts);
 // the write only lands if nothing else moved the event meanwhile.
+import { logFailure } from "./request-log.ts";
 import type { ModuleId } from "../../../src/modules/registry.ts";
 import {
   type FlowMove,
@@ -85,7 +86,7 @@ async function readFlow(
     .eq("id", eventId)
     .maybeSingle();
   if (error || data === null) {
-    console.error("reading the flow failed", error?.code);
+    logFailure("reading the flow failed", error?.code);
     return null;
   }
   const state = FlowStateSchema.safeParse({
@@ -95,7 +96,7 @@ async function readFlow(
     phase: data.phase,
   });
   if (!state.success) {
-    console.error("the stored flow has an unknown shape");
+    logFailure("the stored flow has an unknown shape");
     return null;
   }
   return {
