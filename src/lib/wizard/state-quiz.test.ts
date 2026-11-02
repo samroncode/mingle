@@ -103,7 +103,7 @@ describe("the quiz step", () => {
     const draft = run(
       initialDraft("en"),
       { type: "quiz", action: { type: "add_own", key: "k" } },
-      { type: "set_music_url", url: "http://not-https.example" },
+      { type: "set_music_url", url: "javascript:alert(1)" },
     );
     expect(firstInvalidDraftStep(draft)).toBe("quiz");
     expect(firstInvalidDraftStep(quizOff(draft))).toBe("wifi");

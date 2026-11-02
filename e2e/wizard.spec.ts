@@ -69,8 +69,8 @@ test("creates an event through the wizard", async ({ page }) => {
 
   // Wifi and music: a bad link blocks Next until fixed.
   await page.getByLabel("Wifi name").fill("HomeNet");
-  await page.getByLabel("Music link").fill("http://open.spotify.com/jam/x");
-  await expect(page.getByRole("alert")).toContainText("valid https link");
+  await page.getByLabel("Music link").fill("ftp://open.spotify.com/jam/x");
+  await expect(page.getByRole("alert")).toContainText("valid link");
   await expect(page.getByRole("button", { name: "Next" })).toBeDisabled();
   await page.getByLabel("Music link").fill("https://open.spotify.com/jam/x");
   await page.getByRole("button", { name: "Next" }).click();
@@ -217,14 +217,14 @@ test("Create sends the host to an invalid step instead of sending", async ({
           schedule: [],
           wifiSsid: "",
           wifiPassword: "",
-          musicUrl: "http://not-https.example",
+          musicUrl: "javascript:alert(1)",
         },
       }),
     );
   });
   await page.goto("/new");
   await page.getByRole("button", { name: "Create event" }).click();
-  await expect(page.getByRole("alert")).toContainText("valid https link");
+  await expect(page.getByRole("alert")).toContainText("valid link");
   await expect(page.getByLabel("Music link")).toBeVisible();
   expect(bodies).toEqual([]);
 });

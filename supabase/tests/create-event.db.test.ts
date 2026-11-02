@@ -84,6 +84,21 @@ describe("create_event", () => {
     ]);
   });
 
+  it.each([
+    ["open.spotify.com/jam/x", "https://open.spotify.com/jam/x"],
+    ["http://open.spotify.com/jam/x", "https://open.spotify.com/jam/x"],
+  ])("stores the music link %s as %s", async (musicUrl, stored) => {
+    const host = await anonymousUser();
+    const response = await callHostActions(
+      { ...createEvent, party: { musicUrl } },
+      { user: host },
+    );
+
+    expect(response.status).toBe(200);
+    const [event] = await eventsOf(host);
+    expect(event?.party).toEqual({ musicUrl: stored });
+  });
+
   it("allows an event with no activities and no party content", async () => {
     const host = await anonymousUser();
     const response = await callHostActions(
@@ -698,7 +713,7 @@ describe("invalid requests", () => {
       },
     ],
     [
-      "a music link that isn't https",
+      "a music link with a script scheme",
       { ...createEvent, party: { musicUrl: "javascript:alert(1)" } },
     ],
     ["a JSON array", [createEvent]],

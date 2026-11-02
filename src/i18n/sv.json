@@ -384,8 +384,8 @@
     },
     "music": {
       "label": "Musiklänk",
-      "hint": "En Spotify Jam eller delad spellista (https).",
-      "placeholder": "https://"
+      "hint": "En Spotify Jam eller delad spellista.",
+      "placeholder": "open.spotify.com/jam/…"
     },
     "lines": {
       "moveUp": "Flytta rad {{n}} uppåt",
@@ -397,7 +397,7 @@
       "menu": "Menyrader får vara 80 tecken och det får finnas 20 stycken.",
       "schedule": "Varje programrad behöver en tid som 19:00 och en titel på högst 80 tecken (högst 20 rader).",
       "wifi": "Ange ett wifi-namn på högst 32 tecken. Lösenordet får vara högst 63.",
-      "musicUrl": "Musiklänken måste vara en giltig https-länk."
+      "musicUrl": "Musiklänken måste vara en giltig länk, till exempel open.spotify.com/…"
     },
     "quiz": {
       "count": "{{count}} av {{max}} frågor valda",
