@@ -188,3 +188,16 @@ test("a guest sees no winners card when the list is hidden", async ({
   ).toBeVisible();
   await expect(page.getByTestId("guest-winners")).toHaveCount(0);
 });
+
+test("the logo takes a guest to the start page", async ({ page }) => {
+  await fakeSupabase(page, []);
+  await fakeEvent(page, { code, joinAnswers: ["ok"] });
+
+  await page.goto(`/p/${code}`);
+  await page.getByRole("link", { name: "Mingle" }).click();
+
+  await expect(page).toHaveURL("/");
+  await expect(
+    page.getByRole("link", { name: "Create an event" }),
+  ).toBeVisible();
+});
