@@ -123,7 +123,7 @@ test("the TV uses the niche's theme, and the day theme in a bright room", async 
   await page.goto(`/tv/${code}`);
   await expect(page.locator("[data-niche]")).toHaveAttribute(
     "data-theme",
-    "loud",
+    "lounge",
   );
   if (process.env.SHOTS) {
     await page.screenshot({ path: `${process.env.SHOTS}/tv-before.png` });

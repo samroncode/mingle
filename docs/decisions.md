@@ -12,6 +12,12 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-11-04: The lounge look, for every niche
+
+**Decision:** A new theme, `lounge`, is the default and the theme of every niche (afterwork, team event, bachelor). Its colours come from the office lounge where the first real event is held: charcoal, greige, brass, rust, rose and fig-tree green. The parts stay the same as before: logo, Bricolage and Figtree, answer tiles with letters, and chunky pressables. The TV gets a greige mat round the picture, like a Frame TV showing art. The party screen keeps the welcome, the join card and the guests in place, and only one part (menu, schedule, winners, wifi or music) rotates under the welcome, every 30 seconds instead of every 12. Award winners show as a wine-red diploma with soft light dots and a thin serif title, using the new dependency `@fontsource-variable/bodoni-moda`, which the owner approved. `garden`, `loud` and `day` stay in the code, and a bright room still uses `day`.
+
+**Why:** The owner found the old look too generic, too much like an AI-made app. Five rounds of sketches went too far from the app, so this one keeps its parts and changes only colours, the frame and a few layouts. A rotation of the whole screen every 12 seconds was too busy for a lounge; the join code and who is here should always be visible.
+
 ## 2026-11-02: Error logging and Swish error handling (#223)
 
 **Decision:** Tickets #224 to #227.

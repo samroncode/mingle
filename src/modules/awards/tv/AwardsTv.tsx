@@ -26,12 +26,15 @@ export function AwardsTv({ event, members }: ModuleViewProps) {
     run.version,
   );
 
+  const award = !!revealedCategory || screen.kind === "winners";
+
   return (
     <TvStage
       data-testid="awards-tv"
       data-screen={screen.kind}
-      moment={!!revealedCategory || screen.kind === "winners"}
+      moment={award}
       momentKey={`${screen.kind}-${revealedCategory?.id ?? ""}`}
+      tone={award ? "award" : "stage"}
     >
       {screen.kind === "loading" && (
         <p className="font-display text-6xl font-extrabold">
@@ -51,32 +54,19 @@ export function AwardsTv({ event, members }: ModuleViewProps) {
           </p>
         </>
       )}
-      {screen.kind === "category" && (
+      {revealedCategory && (
         <>
-          <TvCounter>
-            {t("modules.awards.counter", {
-              number: screen.number,
-              total: screen.total,
-            })}
-          </TvCounter>
-          <h2 className="font-display text-6xl leading-tight font-extrabold">
-            {screen.category.text}
+          <p className="relative font-serif text-5xl">
+            {t("modules.awards.tv.diploma")}
+          </p>
+          <span aria-hidden className="relative h-px w-24 bg-champagne" />
+          <h2 className="relative font-body text-6xl leading-tight font-semibold">
+            {revealedCategory.text}
           </h2>
-          {!screen.revealed && (
-            <p
-              data-testid="awards-voted"
-              className="font-display text-5xl font-bold text-champagne-text"
-            >
-              {t("modules.awards.voted", {
-                count: screen.category.voteCount,
-                total: guests,
-              })}
-            </p>
-          )}
-          {screen.revealed && winners.status === "ready" && (
+          {winners.status === "ready" && (
             <p
               data-testid="awards-winner"
-              className="font-display text-8xl leading-none font-extrabold text-champagne"
+              className="relative font-body text-8xl leading-none font-light tracking-[0.1em] uppercase"
             >
               <WinnerText
                 winners={winners.value}
@@ -87,9 +77,31 @@ export function AwardsTv({ event, members }: ModuleViewProps) {
           )}
         </>
       )}
+      {screen.kind === "category" && !screen.revealed && (
+        <>
+          <TvCounter>
+            {t("modules.awards.counter", {
+              number: screen.number,
+              total: screen.total,
+            })}
+          </TvCounter>
+          <h2 className="font-display text-6xl leading-tight font-extrabold">
+            {screen.category.text}
+          </h2>
+          <p
+            data-testid="awards-voted"
+            className="font-display text-5xl font-bold text-champagne-text"
+          >
+            {t("modules.awards.voted", {
+              count: screen.category.voteCount,
+              total: guests,
+            })}
+          </p>
+        </>
+      )}
       {screen.kind === "winners" && (
         <>
-          <h2 className="font-display text-7xl font-extrabold">
+          <h2 className="relative font-serif text-7xl">
             {t("modules.awards.winnersTitle")}
           </h2>
           {results.status === "ready" && (

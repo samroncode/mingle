@@ -1,7 +1,6 @@
 import type { MemberRow } from "@/api/events";
 import type { Party } from "@/lib/schemas/party";
 import {
-  GuestsPart,
   MenuPart,
   MusicPart,
   SchedulePart,
@@ -12,10 +11,15 @@ import { partsOf, type Part } from "./parts";
 import { useRotation } from "./rotation";
 import { WelcomePart } from "./WelcomePart";
 
-function PartView({ part }: { part: Part }) {
+/** The parts that take turns under the welcome; welcome and guests stay put. */
+type SlotPart = Exclude<Part, { kind: "welcome" } | { kind: "guests" }>;
+
+function isSlotPart(part: Part): part is SlotPart {
+  return part.kind !== "welcome" && part.kind !== "guests";
+}
+
+function PartView({ part }: { part: SlotPart }) {
   switch (part.kind) {
-    case "welcome":
-      return <WelcomePart welcome={part.text} />;
     case "menu":
       return <MenuPart {...part} />;
     case "schedule":
@@ -26,12 +30,13 @@ function PartView({ part }: { part: Part }) {
       return <WifiPart {...part} />;
     case "music":
       return <MusicPart {...part} />;
-    case "guests":
-      return <GuestsPart {...part} />;
   }
 }
 
-/** The left side of the party screen: the filled-in parts, one at a time. */
+/**
+ * The left side of the party screen: the welcome always, and under it the
+ * filled-in parts (menu, schedule, winners, wifi, music), one at a time.
+ */
 export function PartRotation({
   party,
   members,
@@ -39,13 +44,17 @@ export function PartRotation({
   party: Party;
   members: MemberRow[];
 }) {
-  const parts = partsOf(party, members);
+  const parts = partsOf(party, members).filter(isSlotPart);
   const shown = useRotation(parts.map((part) => part.kind));
   const part = parts.find((candidate) => candidate.kind === shown);
-  // With nothing filled in, fall back to the app name like the welcome part.
-  return part ? (
-    <PartView key={part.kind} part={part} />
-  ) : (
-    <WelcomePart welcome={undefined} />
+  return (
+    <div className="flex h-full flex-col gap-(--space-6)">
+      <WelcomePart welcome={party.welcome} />
+      {part && (
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <PartView key={part.kind} part={part} />
+        </div>
+      )}
+    </div>
   );
 }

@@ -31,3 +31,15 @@ export function newGuests(
   const known = new Set(previous.map((member) => member.user_id));
   return namedGuests(next).filter((guest) => !known.has(guest.user_id));
 }
+
+/**
+ * The names the TV's guest strip has room for: the latest `max` to join, so a
+ * new arrival always shows, and how many earlier guests are left out.
+ */
+export function stripNames(
+  names: string[],
+  max: number,
+): { shown: string[]; hidden: number } {
+  const hidden = Math.max(0, names.length - max);
+  return { shown: names.slice(hidden), hidden };
+}

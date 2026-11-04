@@ -3,18 +3,20 @@ import { useTranslation } from "react-i18next";
 import { QrCode } from "@/components/QrCode";
 import { anyLineHasTime } from "@/lib/schedule";
 import { wifiQrText } from "@/lib/tv/wifi-qr";
-import { NAME_MAX_CH, NAMES_AREA, nameSizeRem } from "./name-size";
 import type { Part } from "./parts";
 
 type Of<K extends Part["kind"]> = Extract<Part, { kind: K }>;
 
+/** A rotating part under the welcome: a brass heading over a thin line. */
 function Panel({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section
       aria-label={title}
-      className="flex h-full flex-col items-center justify-center gap-(--space-6) rounded-xl border-[length:var(--border-thin)] border-edge bg-forest p-(--space-7) text-center text-on-forest"
+      className="fun-pop flex flex-col gap-(--space-4) border-t-[length:var(--border-thin)] border-line pt-(--space-5)"
     >
-      <h2 className="font-display text-6xl font-extrabold">{title}</h2>
+      <h2 className="font-display text-3xl font-extrabold text-champagne-text">
+        {title}
+      </h2>
       {children}
     </section>
   );
@@ -24,9 +26,11 @@ export function MenuPart({ lines }: Of<"menu">) {
   const { t } = useTranslation();
   return (
     <Panel title={t("tv.menu")}>
-      <ul className="space-y-3 font-display text-5xl font-bold">
+      <ul className="columns-2 gap-(--space-7) space-y-2 font-display text-4xl font-bold">
         {lines.map((line, index) => (
-          <li key={index}>{line}</li>
+          <li key={index} className="break-inside-avoid">
+            {line}
+          </li>
         ))}
       </ul>
     </Panel>
@@ -38,18 +42,18 @@ export function SchedulePart({ items }: Of<"schedule">) {
   const hasTimes = anyLineHasTime(items);
   return (
     <Panel title={t("tv.schedule")}>
-      <ul className="space-y-3 font-display text-5xl font-bold">
+      <ul className="grid grid-cols-2 gap-x-(--space-7) gap-y-3 font-display text-4xl font-bold">
         {items.map((item, index) => (
-          <li key={index} className="flex gap-6">
+          <li key={index} className="flex items-baseline gap-5">
             {hasTimes ? (
               item.time ? (
-                <span className="font-display font-extrabold text-champagne">
+                <span className="font-display font-extrabold text-champagne-text">
                   {item.time}
                 </span>
               ) : (
                 <span
                   aria-hidden="true"
-                  className="my-auto size-4 shrink-0 rounded-full bg-champagne"
+                  className="my-auto size-3 shrink-0 rounded-full bg-champagne"
                 />
               )
             ) : null}
@@ -72,10 +76,10 @@ export function WinnersPart({ winners }: Of<"winners">) {
         {winners.map((winner, index) => (
           <li
             key={index}
-            className="rounded-lg border-[length:var(--border-thin)] border-edge bg-champagne p-(--space-5) text-on-bright"
+            className="rounded-lg border-[length:var(--border-thin)] border-edge bg-champagne px-(--space-5) py-(--space-4) text-on-bright"
           >
             <p className="font-body text-2xl font-medium">{winner.title}</p>
-            <p className="truncate font-display text-5xl font-extrabold">
+            <p className="truncate font-display text-4xl font-extrabold">
               {winner.name}
             </p>
           </li>
@@ -89,32 +93,34 @@ export function WifiPart({ ssid, password }: Of<"wifi">) {
   const { t } = useTranslation();
   return (
     <Panel title={t("tv.wifi.title")}>
-      <QrCode
-        value={wifiQrText({ ssid, password })}
-        label={t("tv.wifi.qrLabel")}
-        size={320}
-      />
-      <dl className="font-display text-5xl">
-        <dt className="font-body text-2xl text-on-forest/80">
-          {t("tv.wifi.network")}
-        </dt>
-        <dd data-testid="wifi-ssid" className="font-extrabold">
-          {ssid}
-        </dd>
-        {password !== "" && (
-          <>
-            <dt className="mt-4 font-body text-2xl text-on-forest/80">
-              {t("tv.wifi.password")}
-            </dt>
-            <dd
-              data-testid="wifi-password"
-              className="font-extrabold tracking-wider text-champagne"
-            >
-              {password}
-            </dd>
-          </>
-        )}
-      </dl>
+      <div className="flex items-center gap-(--space-7)">
+        <QrCode
+          value={wifiQrText({ ssid, password })}
+          label={t("tv.wifi.qrLabel")}
+          size={200}
+        />
+        <dl className="font-display text-5xl">
+          <dt className="font-body text-2xl text-ink-muted">
+            {t("tv.wifi.network")}
+          </dt>
+          <dd data-testid="wifi-ssid" className="font-extrabold">
+            {ssid}
+          </dd>
+          {password !== "" && (
+            <>
+              <dt className="mt-4 font-body text-2xl text-ink-muted">
+                {t("tv.wifi.password")}
+              </dt>
+              <dd
+                data-testid="wifi-password"
+                className="font-extrabold tracking-wider text-champagne-text"
+              >
+                {password}
+              </dd>
+            </>
+          )}
+        </dl>
+      </div>
     </Panel>
   );
 }
@@ -123,35 +129,10 @@ export function MusicPart({ url }: Of<"music">) {
   const { t } = useTranslation();
   return (
     <Panel title={t("tv.music.title")}>
-      <QrCode value={url} label={t("tv.music.qrLabel")} size={320} />
-      <p className="font-body text-3xl">{t("tv.music.text")}</p>
-    </Panel>
-  );
-}
-
-export function GuestsPart({ names }: Of<"guests">) {
-  const { t } = useTranslation();
-  return (
-    <Panel title={t("tv.guests")}>
-      <ul
-        data-testid="guest-names"
-        className="flex flex-wrap content-start justify-center gap-x-8 gap-y-2 overflow-hidden font-display font-bold"
-        style={{
-          fontSize: `${nameSizeRem(names)}rem`,
-          maxWidth: `${NAMES_AREA.width}rem`,
-          maxHeight: `${NAMES_AREA.height}rem`,
-        }}
-      >
-        {names.map((name, index) => (
-          <li
-            key={index}
-            className="truncate whitespace-nowrap"
-            style={{ maxWidth: `${NAME_MAX_CH}ch` }}
-          >
-            {name}
-          </li>
-        ))}
-      </ul>
+      <div className="flex items-center gap-(--space-7)">
+        <QrCode value={url} label={t("tv.music.qrLabel")} size={200} />
+        <p className="font-body text-4xl">{t("tv.music.text")}</p>
+      </div>
     </Panel>
   );
 }

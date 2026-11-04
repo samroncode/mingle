@@ -68,7 +68,9 @@
     "welcome": "Welcome",
     "menu": "Menu",
     "schedule": "Tonight",
-    "guests": "Who's here",
+    "hereTonight": "Here tonight",
+    "moreGuests_one": "+{{count}} more",
+    "moreGuests_other": "+{{count}} more",
     "winners": "Winners",
     "wifi": {
       "title": "Wifi",
@@ -202,7 +204,8 @@
         "backToParty": "Back to party screen"
       },
       "tv": {
-        "ready": "Get ready!"
+        "ready": "Get ready!",
+        "diploma": "Tonight's award"
       },
       "guest": {
         "coming": "Next award coming",

@@ -7,7 +7,7 @@ export const aw: NicheConfig = {
   id: "aw",
   nameKey: "niches.aw.name",
   descriptionKey: "niches.aw.description",
-  theme: { id: "garden", overrides: {} },
+  theme: { id: "lounge", overrides: {} },
   defaultModules: ["quiz", "awards", "hottakes"],
   defaultSharedCosts: false,
   welcome: {
