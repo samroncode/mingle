@@ -27,12 +27,10 @@ describe("swishMessage", () => {
 });
 
 describe("swishAppLink", () => {
-  it("matches the link Swish's own generator makes", () => {
+  it("matches the format in Swish's documentation", () => {
     expect(
       swishAppLink({ number: "46730222222", amount: 12, message: "ssss" }),
-    ).toBe(
-      "https://app.swish.nu/1/p/sw/?sw=0730222222&amt=12&cur=SEK&msg=ssss&src=qr",
-    );
+    ).toBe("https://app.swish.nu/1/p/sw/?sw=46730222222&amt=12.0&msg=ssss");
   });
   it("encodes the message and accepts any way of writing the number", () => {
     expect(
@@ -42,7 +40,7 @@ describe("swishAppLink", () => {
         message: "Mingle K7Q2 Åsa & co",
       }),
     ).toBe(
-      "https://app.swish.nu/1/p/sw/?sw=0701234567&amt=120&cur=SEK&msg=Mingle%20K7Q2%20%C3%85sa%20%26%20co&src=qr",
+      "https://app.swish.nu/1/p/sw/?sw=46701234567&amt=120.0&msg=Mingle%20K7Q2%20%C3%85sa%20%26%20co",
     );
   });
 });
@@ -55,6 +53,6 @@ describe("swishQrText", () => {
         amount: 120,
         message: "Mingle K7Q2 Åsa",
       }),
-    ).toBe("C46701234567;120,00;Mingle%20K7Q2%20%C3%85sa;2");
+    ).toBe("C46701234567;120,00;Mingle%20K7Q2%20%C3%85sa;0");
   });
 });
