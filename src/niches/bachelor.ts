@@ -9,7 +9,7 @@ export const bachelor: NicheConfig = {
   descriptionKey: "niches.bachelor.description",
   // Blush leads instead of coral.
   theme: {
-    id: "garden",
+    id: "lounge",
     overrides: {
       primary: "var(--blush)",
       "primary-foreground": "var(--on-bright)",

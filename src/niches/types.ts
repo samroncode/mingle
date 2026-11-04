@@ -7,7 +7,7 @@ import { QuizQuestionTextSchema } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
 
 /** The look a niche uses; each is a `data-theme` block in src/app/theme.css. */
-export const themeIds = ["garden", "loud", "day"] as const;
+export const themeIds = ["lounge", "garden", "loud", "day"] as const;
 
 /**
  * The shadcn tokens from `:root` in src/app/theme.css that a niche may override.

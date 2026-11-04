@@ -68,7 +68,9 @@
     "welcome": "Välkommen",
     "menu": "Meny",
     "schedule": "Ikväll",
-    "guests": "Vilka är här",
+    "hereTonight": "Här ikväll",
+    "moreGuests_one": "+{{count}} till",
+    "moreGuests_other": "+{{count}} till",
     "winners": "Vinnare",
     "wifi": {
       "title": "Wifi",
@@ -202,7 +204,8 @@
         "backToParty": "Tillbaka till festskärmen"
       },
       "tv": {
-        "ready": "Gör er redo!"
+        "ready": "Gör er redo!",
+        "diploma": "Kvällens pris"
       },
       "guest": {
         "coming": "Nästa utmärkelse kommer",

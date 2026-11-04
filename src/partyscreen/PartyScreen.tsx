@@ -1,10 +1,13 @@
 import type { ReactNode } from "react";
 import type { EventRow, MemberRow } from "@/api/events";
 import { FunZone } from "@/components/FunZone";
+import { Logo } from "@/components/Logo";
 import { countGuests } from "./guests";
+import { GuestStrip } from "./GuestStrip";
 import { GuestWelcome } from "./GuestWelcome";
 import { JoinPanel } from "./JoinPanel";
 import { PartRotation } from "./PartRotation";
+import { TvFrame } from "./TvFrame";
 import { WinnerCongrats } from "./WinnerCongrats";
 import { readParty } from "@/lib/party";
 
@@ -15,19 +18,28 @@ interface PartyScreenProps {
   left?: ReactNode;
 }
 
-/** The TV's idle state: a left slot for content and the fixed join panel. */
+/**
+ * The TV, framed: the logo on top, the left side (welcome and one rotating
+ * part, or a running activity), the join card, and who is here along the bottom.
+ */
 export function PartyScreen({ event, members, left }: PartyScreenProps) {
   const party = readParty(event.party);
   return (
     <FunZone level="playful">
-      <div className="tv-backdrop -m-(--space-6) grid min-h-svh grid-cols-[1fr_32rem] gap-(--space-7) p-(--space-6)">
-        <div data-testid="party-left" className="relative">
-          {left ?? <PartRotation party={party} members={members} />}
-          <GuestWelcome members={members} />
-          <WinnerCongrats party={party} />
+      <TvFrame>
+        <header className="border-b border-champagne pb-(--space-3)">
+          <Logo className="text-5xl" />
+        </header>
+        <div className="grid min-h-0 flex-1 grid-cols-[1fr_30rem] gap-(--space-7)">
+          <div data-testid="party-left" className="relative min-h-0">
+            {left ?? <PartRotation party={party} members={members} />}
+            <GuestWelcome members={members} />
+            <WinnerCongrats party={party} />
+          </div>
+          <JoinPanel code={event.code} guestCount={countGuests(members)} />
         </div>
-        <JoinPanel code={event.code} guestCount={countGuests(members)} />
-      </div>
+        <GuestStrip members={members} />
+      </TvFrame>
     </FunZone>
   );
 }

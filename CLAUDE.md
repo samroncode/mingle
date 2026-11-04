@@ -205,4 +205,4 @@ Single context: `docs/GLOSSARY.md` and `docs/decisions.md`. See `docs/agents/dom
 
 ## Design
 
-The look is defined in `docs/design.md` and implemented in one file, `src/app/theme.css`. Components use its tokens (`bg-coral`, `bg-paper`, `border-edge`, `shadow-pop-md`, `font-display`) and never hardcode colors, fonts or sizes. A niche names its theme (`garden`, `loud`, `day`) in its config. Every UI PR includes a before/after screenshot.
+The look is defined in `docs/design.md` and implemented in one file, `src/app/theme.css`. Components use its tokens (`bg-coral`, `bg-paper`, `border-edge`, `shadow-pop-md`, `font-display`) and never hardcode colors, fonts or sizes. A niche names its theme (`lounge`, `garden`, `loud`, `day`; every niche uses `lounge` today) in its config. Every UI PR includes a before/after screenshot.

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { MemberRow } from "@/api/events";
-import { countGuests, guestNames, newGuests } from "./guests";
+import { countGuests, guestNames, newGuests, stripNames } from "./guests";
 
 function member(role: string, name: string | null): MemberRow {
   return {
@@ -57,5 +57,21 @@ describe("newGuests", () => {
 
   it("ignores guests without a name", () => {
     expect(newGuests([anna], [anna, member("guest", null)])).toEqual([]);
+  });
+});
+
+describe("stripNames", () => {
+  it("shows every name when they fit", () => {
+    expect(stripNames(["Anna", "Bo"], 3)).toEqual({
+      shown: ["Anna", "Bo"],
+      hidden: 0,
+    });
+  });
+
+  it("keeps the latest names and counts the rest", () => {
+    expect(stripNames(["Anna", "Bo", "Cissi", "Dan"], 2)).toEqual({
+      shown: ["Cissi", "Dan"],
+      hidden: 2,
+    });
   });
 });

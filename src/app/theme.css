@@ -6,11 +6,12 @@
  * To change the look, edit this file and docs/design.md.
  *
  * A theme is chosen with data-theme on <html> or on a wrapper element:
- * garden (default), loud, day. The device's dark-mode setting is ignored.
+ * lounge (default), garden, loud, day. The device's dark-mode setting is ignored.
  */
 
 @import "@fontsource-variable/bricolage-grotesque";
 @import "@fontsource-variable/figtree";
+@import "@fontsource-variable/bodoni-moda";
 
 /* Theme-independent tokens. Tailwind emits these as CSS variables with the same names Kalas uses. */
 @theme {
@@ -19,6 +20,8 @@
     system-ui, sans-serif;
   --font-body: "Figtree Variable", Figtree, system-ui, sans-serif;
   --font-sans: "Figtree Variable", Figtree, system-ui, sans-serif;
+  /* Only for award titles, like a printed diploma. */
+  --font-serif: "Bodoni Moda Variable", "Bodoni Moda", Didot, Georgia, serif;
   --font-heading:
     "Bricolage Grotesque Variable", "Bricolage Grotesque", "Arial Narrow",
     system-ui, sans-serif;
@@ -33,7 +36,60 @@
 }
 
 /* Kalas colours and shadows */
+/* Lounge: colours from the room the evening is held in. Charcoal floor and
+   velvet, greige walls, a brass chandelier, a rust rug, rose, fig-tree green.
+   The bright names stay (coral, blush, champagne, sage) so components keep
+   their roles: coral is rust, champagne is brass, blush is rose, sage is green. */
 :root,
+[data-theme="lounge"] {
+  --surface: #1f1d1c;
+  --paper: #f2ece2;
+  --surface-sunken: #161514;
+  --line: #45413d;
+  --line-strong: #8c847b;
+  --edge: #0f0e0d;
+  --ink: #f2ece2;
+  --ink-muted: #c9bfb2;
+  --on-paper: #1f1d1c;
+  --on-paper-muted: #5a534c;
+  --press: #0a0909;
+  --coral: #d2694f;
+  --coral-soft: #4a2a22;
+  --coral-soft-fill: #ebb09f;
+  --coral-text: #e88a72;
+  --blush: #e3b1aa;
+  --blush-soft: #4a2e30;
+  --blush-soft-fill: #f0d3ce;
+  --blush-text: #edb9b2;
+  --champagne: #d9b56e;
+  --champagne-soft: #3d3220;
+  --champagne-soft-fill: #ebd7ae;
+  --champagne-text: #d9b56e;
+  --sage: #8db896;
+  --sage-soft: #1f3a2a;
+  --sage-soft-fill: #c6dcc9;
+  --sage-text: #9cc6a4;
+  --forest: #26473a;
+  --danger: #e5675e;
+  --danger-text: #f09a92;
+  --on-bright: #1f1d1c;
+  --on-forest: #f2ece2;
+  --focus: #d9b56e;
+  --focus-on-paper: #1f1d1c;
+  --disabled: #3a3633;
+  --on-disabled: #cfc6ba;
+  --frame: #d8d1c6;
+  --stage: #262321;
+  --on-stage: #f2ece2;
+  --award: #5a2433;
+  --on-award: #f6eee8;
+  --on-award-muted: #ebcfcb;
+  --award-glow: #f2b1a6;
+  --link: var(--coral-text);
+  --pop-sm: 3px 3px 0 0 #0a0909;
+  --glow: 0 0 0 6px rgba(217, 181, 110, 0.35);
+}
+
 [data-theme="garden"] {
   --surface: #0f2a1f;
   --paper: #f6efdc;
@@ -71,6 +127,13 @@
   --focus-on-paper: #1f4d3a;
   --disabled: #2f5242;
   --on-disabled: #c9d6c6;
+  --frame: #0a1d15;
+  --stage: #1f4d3a;
+  --on-stage: #f6efdc;
+  --award: #5a2433;
+  --on-award: #f6eee8;
+  --on-award-muted: #ebcfcb;
+  --award-glow: #f2b1a6;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #04100a;
   --glow: 0 0 0 6px rgba(233, 201, 127, 0.35);
@@ -113,6 +176,13 @@
   --focus-on-paper: #e6c27a;
   --disabled: #264a3c;
   --on-disabled: #c4cfc2;
+  --frame: #08150f;
+  --stage: #1b4536;
+  --on-stage: #f1ead8;
+  --award: #5a2433;
+  --on-award: #f6eee8;
+  --on-award-muted: #ebcfcb;
+  --award-glow: #f2b1a6;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #ff6f4f;
   --glow: 0 0 0 6px rgba(230, 194, 122, 0.35);
@@ -155,6 +225,13 @@
   --focus-on-paper: #11301f;
   --disabled: #d8c68f;
   --on-disabled: #2f4337;
+  --frame: #e6d6aa;
+  --stage: #11301f;
+  --on-stage: #f6efdc;
+  --award: #5a2433;
+  --on-award: #f6eee8;
+  --on-award-muted: #ebcfcb;
+  --award-glow: #f2b1a6;
   --link: var(--coral-text);
   --pop-sm: 3px 3px 0 0 #11301f;
   --glow: 0 0 0 6px rgba(255, 122, 89, 0.3);
@@ -248,6 +325,13 @@
   --color-disabled: var(--disabled);
   --color-on-disabled: var(--on-disabled);
   --color-on-forest: var(--on-forest);
+  --color-frame: var(--frame);
+  --color-stage: var(--stage);
+  --color-on-stage: var(--on-stage);
+  --color-award: var(--award);
+  --color-on-award: var(--on-award);
+  --color-on-award-muted: var(--on-award-muted);
+  --color-award-glow: var(--award-glow);
   --color-focus: var(--focus);
   --color-link: var(--link);
   --color-background: var(--background);
@@ -408,6 +492,17 @@
   }
 }
 
+/* The soft light dots on an award, like the diploma: a slow glow, no movement. */
+@keyframes award-glow {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.42;
+  }
+}
+
 @keyframes tv-float {
   0%,
   100% {
@@ -419,16 +514,6 @@
 }
 
 @layer components {
-  /* TV ground: the surface with a soft forest glow, as in Kalas's .ks-backdrop-tv. */
-  .tv-backdrop {
-    background:
-      radial-gradient(
-        ellipse 70% 60% at 30% 25%,
-        color-mix(in srgb, var(--forest) 80%, transparent),
-        transparent 70%
-      ),
-      var(--surface);
-  }
   /* The one gentle loop on the TV party screen; calm and reduced motion keep it still. */
   [data-fun="playful"] .tv-float,
   [data-fun="party"] .tv-float {
@@ -436,6 +521,18 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .tv-float {
+      animation: none !important;
+    }
+  }
+  .award-dot {
+    opacity: 0.25;
+  }
+  [data-fun="playful"] .award-dot,
+  [data-fun="party"] .award-dot {
+    animation: award-glow 5s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .award-dot {
       animation: none !important;
     }
   }

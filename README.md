@@ -49,7 +49,7 @@ Guests only give a display name. No emails, phone numbers or other personal data
 
 ![The TV showing a revealed quiz question with the votes per answer](docs/screenshots/tv-quiz.png)
 
-The screenshots use example data in the afterwork theme. Each type of party has its own look.
+The screenshots use example data. Every type of party uses the same warm lounge look for now.
 
 ---
 

@@ -42,6 +42,9 @@ const pairs: [string, string][] = [
   ["on-paper", "paper"],
   ["on-paper-muted", "paper"],
   ["on-forest", "forest"],
+  ["on-stage", "stage"],
+  ["on-award", "award"],
+  ["on-award-muted", "award"],
   ["on-disabled", "disabled"],
   ...brights.map((b): [string, string] => ["on-bright", b]),
   ...soft.map((c): [string, string] => ["ink", `${c}-soft`]),
@@ -77,10 +80,10 @@ describe.each(themeIds)("theme %s", (id) => {
 });
 
 describe("token coverage", () => {
-  const garden = themeTokens("garden");
+  const lounge = themeTokens("lounge");
 
   it("declares the same color tokens in every theme", () => {
-    const names = Object.keys(garden).sort();
+    const names = Object.keys(lounge).sort();
     for (const id of themeIds) {
       expect(Object.keys(themeTokens(id)).sort(), id).toEqual(names);
     }
@@ -88,7 +91,7 @@ describe("token coverage", () => {
 
   it("checks every text-bearing token a theme declares", () => {
     const checked = new Set(pairs.flat());
-    const textBearing = Object.keys(garden).filter((name) =>
+    const textBearing = Object.keys(lounge).filter((name) =>
       /^(ink|on-|.*-text$|.*-soft$|.*-soft-fill$)/.test(name),
     );
     // Add new text tokens to `pairs` above so the 4.5:1 rule covers them.

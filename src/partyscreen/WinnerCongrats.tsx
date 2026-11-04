@@ -1,8 +1,12 @@
 import { useTranslation } from "react-i18next";
 import type { Party } from "@/lib/schemas/party";
+import { AwardDots } from "@/modules/AwardDots";
 import { useWinnerCongrats } from "./useWinnerCongrats";
 
-/** Congratulates each new winner for a few seconds over the left side only. */
+/**
+ * Congratulates each new winner for a few seconds over the left side only,
+ * as a diploma: the title in serif, a brass line, then the name.
+ */
 export function WinnerCongrats({ party }: { party: Party }) {
   const { t } = useTranslation();
   const winner = useWinnerCongrats(party);
@@ -12,12 +16,14 @@ export function WinnerCongrats({ party }: { party: Party }) {
       <div
         role="status"
         data-testid="winner-congrats"
-        className="fun-pop -rotate-2 rounded-xl border-[length:var(--border-thin)] border-edge bg-coral px-(--space-7) py-(--space-6) text-center font-display font-extrabold text-on-bright"
+        className="fun-pop relative flex flex-col items-center gap-(--space-5) overflow-hidden rounded-xl border-[length:var(--border-thin)] border-edge bg-award px-(--space-8) py-(--space-7) text-center text-on-award"
       >
-        <p className="text-8xl">
+        <AwardDots />
+        <p className="relative font-serif text-6xl">{winner.title}</p>
+        <span aria-hidden className="relative h-px w-24 bg-champagne" />
+        <p className="relative font-body text-7xl font-light tracking-wide">
           {t("tv.congratulations", { name: winner.name })}
         </p>
-        <p className="mt-(--space-4) text-5xl">{winner.title}</p>
       </div>
     </div>
   );

@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
-/** How long each part of the party screen stays before the next one. */
-export const ROTATION_MS = 12_000;
+/**
+ * How long each rotating part of the party screen stays before the next one.
+ * Slow on purpose: the welcome, the join card and the guests never move, so
+ * the rotation is a calm change of scene, not something to keep up with.
+ */
+export const ROTATION_MS = 30_000;
 
 /** The key to show: `key` if it is still in the list, else the first. */
 export function resolveKey(keys: string[], key: string): string | undefined {
@@ -47,7 +51,7 @@ export function startRotation(
   return () => clearInterval(timer);
 }
 
-/** The key to show now, rotating through `keys` every 12 seconds. */
+/** The key to show now, rotating through `keys` every 30 seconds. */
 export function useRotation(keys: string[]): string | undefined {
   const [key, setKey] = useState(keys[0] ?? "");
   const keysRef = useRef(keys);

@@ -7,7 +7,7 @@ export const team: NicheConfig = {
   id: "team",
   nameKey: "niches.team.name",
   descriptionKey: "niches.team.description",
-  theme: { id: "loud", overrides: {} },
+  theme: { id: "lounge", overrides: {} },
   defaultModules: ["quiz", "hottakes"],
   defaultSharedCosts: false,
   welcome: {

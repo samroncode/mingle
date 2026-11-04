@@ -17,7 +17,7 @@ import {
 
 // Checks the rules in docs/design.md that a browser can prove: no sideways
 // scroll on any screen and phone tap targets of at least 48px, in every niche
-// theme (aw = garden, team = loud, bachelor = garden with blush leading).
+// theme (all on lounge; bachelor has blush leading).
 // The quiz, awards and hot takes screens are checked on the phone and the TV in
 // each niche, for an open item, a revealed one and the closing step.
 
