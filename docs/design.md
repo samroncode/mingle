@@ -42,6 +42,11 @@ The token names are kept from Kalas so components keep their roles. In `lounge` 
 - `edge` is the chunky outline, `press` the hard shadow and bottom edge. `line` is decoration only; `line-strong` is for input borders.
 - At most three bright fills in one view, plus forest.
 
+## Logo
+
+- The wordmark "mingle" is brass (`champagne-text`) display type with a tilted rust (`coral`) square as the dot on the i (`src/components/Logo.tsx`), so it matches the brass line under it on the TV.
+- It is always a link to the start page, wherever it shows.
+
 ## Typography
 
 - **Bricolage Grotesque** (`font-display`) for everything that shouts: headings, buttons, answers, names, scores, join codes. Weight 700 to 800.
