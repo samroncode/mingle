@@ -45,10 +45,14 @@ Förankra i dokumentationen som finns innan hypoteserna formuleras. Ett klassisk
 
 PR 246 ändrade `version` till strängen `"1"` och la till `editable: false` på `payee`. Swish visade fortfarande "Felaktig länk: Länken som användes för att öppna appen har ett felaktigt format." på en riktig iPhone. Både tal och sträng för `version` hade nu testats med `46…`-nummer, så felet låg troligen i själva `swish://payment?data=`-formatet.
 
-Swish dokumentation (developer.swish.nu) gick inte att nå från agentens miljö, och den som Sam klistrade in beskriver handlar-API:et, inte app-länken. Därför byter vi till den länk som Swish egen QR-generator (swish.nu/marknadsmaterial/qr-generator) skapar, och som Sam har sett fungera:
+Swish dokumentation var inte nåbar från agentens miljö (developer.swish.nu blockerades av nätverket). Därför byttes först till den länk som Swish egen QR-generator skapar, med `sw=0730222222&amt=12&cur=SEK&msg=ssss&src=qr`.
 
-`https://app.swish.nu/1/p/sw/?sw=0730222222&amt=12&cur=SEK&msg=ssss&src=qr`
+## Slutlig länk (2026-11-04)
 
-`sw` är numret i nationell form (`07…`), `amt` beloppet i hela kronor, `msg` URL-kodat meddelande. Testet låser exakt den URL:en. QR-koden i appen är oförändrad.
+Sam klistrade in Swish officiella dokumentation för `https://app.swish.nu/1/p/sw/`. Den visar att `sw` skrivs med landskod (`sw=46701234567`), att `amt` har `.` som decimaltecken (`170.0`), att `msg` är URL-kodat, och att belopp och meddelande är låsta som standard om inte `edit=amt`, `edit=msg` eller `edit=amt,msg` finns med. `cur` och `src` finns inte i dokumentationen och är borttagna. Länken är nu:
 
-**Ej verifierat på telefon från appen.** Länken är Swish egen, men ingen har ännu öppnat den ur Mingle på en iPhone. Testa "Betala med Swish" i en räkning och berätta hur det går.
+`https://app.swish.nu/1/p/sw/?sw=46730222222&amt=12.0&msg=ssss`
+
+Räkningen ska inte kunna ändras, så vi skickar ingen `edit`. Vill man tillåta ändring läggs `edit=amt,msg` till i `swishAppLink`. QR-koden har också mask 0 (inget fält redigerbart), så beloppet är låst även där.
+
+**Ej verifierat på telefon från appen.** Testa "Betala med Swish" i en räkning på en riktig iPhone och berätta hur det går.

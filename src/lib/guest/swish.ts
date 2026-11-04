@@ -35,19 +35,10 @@ export function swishPayee(stored: string): string {
 }
 
 /**
- * The number as Swish's own link generator writes it: Swedish mobiles in
- * national form ("0730222222"). The QR code keeps the 46 form from `swishPayee`.
- */
-export function swishLinkPayee(stored: string): string {
-  const full = swishPayee(stored);
-  return full.startsWith("46") ? `0${full.slice(2)}` : full;
-}
-
-/**
- * The link that opens the Swish app with the payment filled in. It is the
- * web link Swish's own QR generator makes (it hands over to the app on a
- * phone): `https://app.swish.nu/1/p/sw/?sw=<number>&amt=<kr>&cur=SEK&msg=<text>&src=qr`.
- * The payer can still change the amount in Swish.
+ * The link that opens the Swish app with the payment filled in, as Swish's
+ * documentation describes it: `https://app.swish.nu/1/p/sw/?sw=<46…number>&amt=<kr>.0&msg=<text>`.
+ * With `amt` and `msg` present and no `edit` parameter, both fields are
+ * locked in the payment form. Add `edit=amt,msg` to let the payer change them.
  */
 export function swishAppLink(args: {
   number: string;
@@ -55,11 +46,9 @@ export function swishAppLink(args: {
   message: string;
 }): string {
   const query = [
-    `sw=${swishLinkPayee(args.number)}`,
-    `amt=${args.amount}`,
-    "cur=SEK",
+    `sw=${swishPayee(args.number)}`,
+    `amt=${args.amount.toFixed(1)}`,
     `msg=${encodeURIComponent(args.message)}`,
-    "src=qr",
   ].join("&");
   return `https://app.swish.nu/1/p/sw/?${query}`;
 }
@@ -67,7 +56,7 @@ export function swishAppLink(args: {
 /**
  * The text of a Swish QR code: `C<payee>;<amount>;<message>;<mask>`. The
  * mask is a bit sum of the fields the payer may edit (payee 1, amount 2,
- * message 4); we open only the amount, so 2.
+ * message 4); the bill is not editable, so 0.
  */
 export function swishQrText(args: {
   number: string;
@@ -75,5 +64,5 @@ export function swishQrText(args: {
   message: string;
 }): string {
   const payee = swishPayee(args.number);
-  return `C${payee};${args.amount.toFixed(2).replace(".", ",")};${encodeURIComponent(args.message)};2`;
+  return `C${payee};${args.amount.toFixed(2).replace(".", ",")};${encodeURIComponent(args.message)};0`;
 }

@@ -62,7 +62,7 @@ test("once the bill is sent the icon shows, and the sheet opens only on a tap", 
   await expect(button).toHaveText("Pay with Swish");
   const href = (await button.getAttribute("href")) ?? "";
   expect(href).toMatch(
-    /^https:\/\/app\.swish\.nu\/1\/p\/sw\/\?sw=0701234567&amt=345&/,
+    /^https:\/\/app\.swish\.nu\/1\/p\/sw\/\?sw=46701234567&amt=345\.0&/,
   );
   expect(decodeURIComponent(href)).toContain("Mingle");
   await expect(sheet.getByRole("img", { name: /Swish QR/ })).toBeVisible();
