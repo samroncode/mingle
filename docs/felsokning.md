@@ -43,19 +43,12 @@ Förankra i dokumentationen som finns innan hypoteserna formuleras. Ett klassisk
 
 ## Uppföljning efter PR 246 (felet kvarstod)
 
-PR 246 ändrade `version` till strängen `"1"` och la till `editable: false` på `payee`. Swish visade fortfarande "Felaktig länk: Länken som användes för att öppna appen har ett felaktigt format." på en riktig iPhone.
+PR 246 ändrade `version` till strängen `"1"` och la till `editable: false` på `payee`. Swish visade fortfarande "Felaktig länk: Länken som användes för att öppna appen har ett felaktigt format." på en riktig iPhone. Både tal och sträng för `version` hade nu testats med `46…`-nummer, så felet låg troligen i själva `swish://payment?data=`-formatet.
 
-Vad som går att belägga: Swish egen dokumentation (developer.swish.nu) gick inte att nå från agentens miljö. Det enda som kunde läsas var en tredjeparts-snutt som bygger länken så här och som är känd att fungera: `swish://payment?data=` + URL-kodad JSON `{"version":1,"payee":{"value":"0701234567"},"amount":{"value":100,"editable":true},"message":{"value":"Thanks"}}`. Skillnaderna mot vår länk: `version` är talet `1` (inte strängen), och numret står i nationell form `07…` (inte `46…`). `46…`-formatet hör till QR-koden och handlarlänkar, inte till den här privatlänken.
+Swish dokumentation (developer.swish.nu) gick inte att nå från agentens miljö, och den som Sam klistrade in beskriver handlar-API:et, inte app-länken. Därför byter vi till den länk som Swish egen QR-generator (swish.nu/marknadsmaterial/qr-generator) skapar, och som Sam har sett fungera:
 
-Ändring: `swishAppLink` skickar nu `version: 1` och numret som `0701234567`, utan `editable` på `payee`. QR-koden är oförändrad. Testet låser exakt URL.
+`https://app.swish.nu/1/p/sw/?sw=0730222222&amt=12&cur=SEK&msg=ssss&src=qr`
 
-**Ej verifierat utan telefon.** Testa i ordning på iPhonen (skriv in ditt eget nummer; öppna länken från Safari, t.ex. som ett Notes-/meddelandelänk):
+`sw` är numret i nationell form (`07…`), `amt` beloppet i hela kronor, `msg` URL-kodat meddelande. Testet låser exakt den URL:en. QR-koden i appen är oförändrad.
 
-1. Appens nya länk (`07…`, version 1):
-   `swish://payment?data=%7B%22version%22%3A1%2C%22payee%22%3A%7B%22value%22%3A%220701234567%22%7D%2C%22amount%22%3A%7B%22value%22%3A100%2C%22editable%22%3Atrue%7D%2C%22message%22%3A%7B%22value%22%3A%22Mingle%20test%22%7D%7D`
-2. Samma med landskod (`46…`, version 1):
-   `swish://payment?data=%7B%22version%22%3A1%2C%22payee%22%3A%7B%22value%22%3A%2246701234567%22%7D%2C%22amount%22%3A%7B%22value%22%3A100%2C%22editable%22%3Atrue%7D%2C%22message%22%3A%7B%22value%22%3A%22Mingle%20test%22%7D%7D`
-3. Minimal, bara nummer:
-   `swish://payment?data=%7B%22version%22%3A1%2C%22payee%22%3A%7B%22value%22%3A%220701234567%22%7D%7D`
-
-Byt `0701234567` mot det riktiga numret. Berätta vilken som fungerar, så låser vi den.
+**Ej verifierat på telefon från appen.** Länken är Swish egen, men ingen har ännu öppnat den ur Mingle på en iPhone. Testa "Betala med Swish" i en räkning och berätta hur det går.

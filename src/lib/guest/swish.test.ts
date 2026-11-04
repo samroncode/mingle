@@ -27,34 +27,23 @@ describe("swishMessage", () => {
 });
 
 describe("swishAppLink", () => {
-  const link = swishAppLink({
-    number: "070-123 45 67",
-    amount: 120,
-    message: "Mingle K7Q2 Anna & co",
-  });
-  it("opens the Swish app with encoded JSON", () => {
-    expect(link.startsWith("swish://payment?data=")).toBe(true);
-    expect(link).not.toContain("&");
-    expect(link).not.toContain(" ");
-  });
-  it("produces exactly this URL", () => {
-    expect(link).toBe(
-      "swish://payment?data=" +
-        encodeURIComponent(
-          '{"version":1,"payee":{"value":"0701234567"},"amount":{"value":120,"editable":true},"message":{"value":"Mingle K7Q2 Anna & co"}}',
-        ),
+  it("matches the link Swish's own generator makes", () => {
+    expect(
+      swishAppLink({ number: "46730222222", amount: 12, message: "ssss" }),
+    ).toBe(
+      "https://app.swish.nu/1/p/sw/?sw=0730222222&amt=12&cur=SEK&msg=ssss&src=qr",
     );
   });
-  it("carries the number, a numeric amount the payer can edit, and the message", () => {
-    const data: unknown = JSON.parse(
-      decodeURIComponent(link.slice("swish://payment?data=".length)),
+  it("encodes the message and accepts any way of writing the number", () => {
+    expect(
+      swishAppLink({
+        number: "070-123 45 67",
+        amount: 120,
+        message: "Mingle K7Q2 Åsa & co",
+      }),
+    ).toBe(
+      "https://app.swish.nu/1/p/sw/?sw=0701234567&amt=120&cur=SEK&msg=Mingle%20K7Q2%20%C3%85sa%20%26%20co&src=qr",
     );
-    expect(data).toEqual({
-      version: 1,
-      payee: { value: "0701234567" },
-      amount: { value: 120, editable: true },
-      message: { value: "Mingle K7Q2 Anna & co" },
-    });
   });
 });
 
