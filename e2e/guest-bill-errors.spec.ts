@@ -127,7 +127,14 @@ test("when the Swish app doesn't open the guest is told and it is logged", async
   await fakeEvent(page, { code, joinedAs: "Anna", bill });
   const logged = await recordLogs(page);
 
+  // The button is a normal https link now; keep the page from leaving, as it
+  // would not on a phone where the Swish app does not take over.
+  await page.route("https://app.swish.nu/**", (route) => route.abort());
   await page.goto(`/p/${code}`);
+  await page.addScriptTag({
+    content:
+      "document.addEventListener('click', (e) => e.preventDefault(), true)",
+  });
   await page.getByTestId("bill-icon").click();
   const sheet = page.getByTestId("bill-sheet");
   await sheet.getByTestId("swish-button").click();
