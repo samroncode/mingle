@@ -44,8 +44,8 @@ export function swishAppLink(args: {
   message: string;
 }): string {
   const data = {
-    version: 1,
-    payee: { value: swishPayee(args.number) },
+    version: "1",
+    payee: { value: swishPayee(args.number), editable: false },
     amount: { value: args.amount, editable: true },
     message: { value: args.message },
   };

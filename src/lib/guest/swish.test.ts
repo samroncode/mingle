@@ -42,8 +42,8 @@ describe("swishAppLink", () => {
       decodeURIComponent(link.slice("swish://payment?data=".length)),
     );
     expect(data).toEqual({
-      version: 1,
-      payee: { value: "46701234567" },
+      version: "1",
+      payee: { value: "46701234567", editable: false },
       amount: { value: 120, editable: true },
       message: { value: "Mingle K7Q2 Anna & co" },
     });
