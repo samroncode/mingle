@@ -35,6 +35,16 @@ export function swishPayee(stored: string): string {
 }
 
 /**
+ * The number as the Swish app link wants it: Swedish mobiles in national
+ * form ("0701234567"), as in every link known to work. The QR code keeps the
+ * 46 form from `swishPayee`.
+ */
+export function swishLinkPayee(stored: string): string {
+  const full = swishPayee(stored);
+  return full.startsWith("46") ? `0${full.slice(2)}` : full;
+}
+
+/**
  * The link that opens the Swish app with the payment filled in. The amount
  * stays editable in Swish, so a guest can pay a different sum.
  */
@@ -44,8 +54,8 @@ export function swishAppLink(args: {
   message: string;
 }): string {
   const data = {
-    version: "1",
-    payee: { value: swishPayee(args.number), editable: false },
+    version: 1,
+    payee: { value: swishLinkPayee(args.number) },
     amount: { value: args.amount, editable: true },
     message: { value: args.message },
   };

@@ -37,13 +37,21 @@ describe("swishAppLink", () => {
     expect(link).not.toContain("&");
     expect(link).not.toContain(" ");
   });
+  it("produces exactly this URL", () => {
+    expect(link).toBe(
+      "swish://payment?data=" +
+        encodeURIComponent(
+          '{"version":1,"payee":{"value":"0701234567"},"amount":{"value":120,"editable":true},"message":{"value":"Mingle K7Q2 Anna & co"}}',
+        ),
+    );
+  });
   it("carries the number, a numeric amount the payer can edit, and the message", () => {
     const data: unknown = JSON.parse(
       decodeURIComponent(link.slice("swish://payment?data=".length)),
     );
     expect(data).toEqual({
-      version: "1",
-      payee: { value: "46701234567", editable: false },
+      version: 1,
+      payee: { value: "0701234567" },
       amount: { value: 120, editable: true },
       message: { value: "Mingle K7Q2 Anna & co" },
     });

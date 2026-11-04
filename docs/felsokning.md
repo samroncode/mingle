@@ -40,3 +40,22 @@ Båda ändringarna finns i PR 246. Ej testat på riktig telefon.
 ## Lärdom
 
 Förankra i dokumentationen som finns innan hypoteserna formuleras. Ett klassiskt fel vid integrationer mot andra tjänster: formatet antas från minnet eller från en näraliggande lösning (här QR-formatet) i stället för att slås upp i tjänstens egen dokumentation. En uppslagning hade här visat både `version` som sträng och `editable` på `payee` direkt.
+
+## Uppföljning efter PR 246 (felet kvarstod)
+
+PR 246 ändrade `version` till strängen `"1"` och la till `editable: false` på `payee`. Swish visade fortfarande "Felaktig länk: Länken som användes för att öppna appen har ett felaktigt format." på en riktig iPhone.
+
+Vad som går att belägga: Swish egen dokumentation (developer.swish.nu) gick inte att nå från agentens miljö. Det enda som kunde läsas var en tredjeparts-snutt som bygger länken så här och som är känd att fungera: `swish://payment?data=` + URL-kodad JSON `{"version":1,"payee":{"value":"0701234567"},"amount":{"value":100,"editable":true},"message":{"value":"Thanks"}}`. Skillnaderna mot vår länk: `version` är talet `1` (inte strängen), och numret står i nationell form `07…` (inte `46…`). `46…`-formatet hör till QR-koden och handlarlänkar, inte till den här privatlänken.
+
+Ändring: `swishAppLink` skickar nu `version: 1` och numret som `0701234567`, utan `editable` på `payee`. QR-koden är oförändrad. Testet låser exakt URL.
+
+**Ej verifierat utan telefon.** Testa i ordning på iPhonen (skriv in ditt eget nummer; öppna länken från Safari, t.ex. som ett Notes-/meddelandelänk):
+
+1. Appens nya länk (`07…`, version 1):
+   `swish://payment?data=%7B%22version%22%3A1%2C%22payee%22%3A%7B%22value%22%3A%220701234567%22%7D%2C%22amount%22%3A%7B%22value%22%3A100%2C%22editable%22%3Atrue%7D%2C%22message%22%3A%7B%22value%22%3A%22Mingle%20test%22%7D%7D`
+2. Samma med landskod (`46…`, version 1):
+   `swish://payment?data=%7B%22version%22%3A1%2C%22payee%22%3A%7B%22value%22%3A%2246701234567%22%7D%2C%22amount%22%3A%7B%22value%22%3A100%2C%22editable%22%3Atrue%7D%2C%22message%22%3A%7B%22value%22%3A%22Mingle%20test%22%7D%7D`
+3. Minimal, bara nummer:
+   `swish://payment?data=%7B%22version%22%3A1%2C%22payee%22%3A%7B%22value%22%3A%220701234567%22%7D%7D`
+
+Byt `0701234567` mot det riktiga numret. Berätta vilken som fungerar, så låser vi den.
