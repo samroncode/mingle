@@ -28,7 +28,7 @@ export function JoinPanel({ code, guestCount }: JoinPanelProps) {
       </p>
       <p
         data-testid="join-address"
-        className="font-body text-xl break-all text-on-forest"
+        className="font-body text-lg break-all text-on-forest"
       >
         {address}
       </p>
