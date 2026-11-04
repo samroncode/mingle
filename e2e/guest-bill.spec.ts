@@ -134,7 +134,7 @@ test("after a later purchase the guest owes only the rest", async ({
   await expect(sheet).toContainText("90 kr");
   const href =
     (await sheet.getByTestId("swish-button").getAttribute("href")) ?? "";
-  expect(href).toContain("&amt=90&");
+  expect(href).toContain("&amt=90.0&");
 });
 
 test("after the evening has ended the icon stays and the guest can still say they paid", async ({
