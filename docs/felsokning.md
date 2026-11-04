@@ -36,3 +36,7 @@ Båda ändringarna finns i PR 246. Ej testat på riktig telefon.
 - Rätt: felet låg i hur `swishAppLink` bygger `data`, inte i beloppet, lagringen av numret eller loggningen. Den pekade också på det saknade `editable`-fältet (hypotes 2), som visade sig behövas.
 - Fel: hypotes 1, att `46…` var fel format. Agenten gissade från minnet och hade inte kollat Swishs dokumentation. Du gjorde det och visade att numret var rätt.
 - Missade: `version` som sträng. Den kom från dig, och agentens testlänkar hade alltid talet `1`.
+
+## Lärdom
+
+Förankra i dokumentationen som finns innan hypoteserna formuleras. Ett klassiskt fel vid integrationer mot andra tjänster: formatet antas från minnet eller från en näraliggande lösning (här QR-formatet) i stället för att slås upp i tjänstens egen dokumentation. En uppslagning hade här visat både `version` som sträng och `editable` på `payee` direkt.
