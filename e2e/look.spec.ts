@@ -152,7 +152,8 @@ const annaId = "00000000-0000-4000-8000-0000000000a1";
 const bertilId = "00000000-0000-4000-8000-0000000000b2";
 
 test.describe("shared costs, phone size", () => {
-  test.use({ viewport: phone });
+  // No stored choice, so each event's language decides.
+  test.use({ viewport: phone, storageState: { cookies: [], origins: [] } });
 
   for (const niche of costsNiches) {
     for (const { language, sheetTitle } of costsLanguages) {
