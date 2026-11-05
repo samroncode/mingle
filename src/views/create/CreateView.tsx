@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { NicheTheme } from "@/components/NicheTheme";
 import { Button } from "@/components/ui/button";
 import { useCreateEvent } from "@/hooks/useCreateEvent";
-import { isLanguage } from "@/i18n/language";
+import { defaultLanguage, isLanguage } from "@/i18n/language";
 import type { CreateEventResponse } from "@/lib/schemas/host-actions";
 import { addMyEvent } from "@/lib/guest/my-events";
 import { moduleDefinitions } from "@/modules/definitions";
@@ -33,7 +33,9 @@ export function CreateView() {
     () =>
       loadDraft() ??
       initialDraft(
-        isLanguage(i18n.resolvedLanguage) ? i18n.resolvedLanguage : "en",
+        isLanguage(i18n.resolvedLanguage)
+          ? i18n.resolvedLanguage
+          : defaultLanguage,
       ),
   );
   const [created, setCreated] = useState<CreateEventResponse>();
@@ -168,12 +170,12 @@ export function CreateView() {
           {error && <ErrorLine>{t(createErrorKey(error))}</ErrorLine>}
         </div>
 
-        <div className="sticky bottom-0 -mx-4 flex gap-3 border-t-[length:var(--border-thin)] border-line bg-surface px-4 py-3">
+        <div className="sticky bottom-0 -mx-4 flex gap-2 border-t-[length:var(--border-thin)] border-line bg-surface px-4 py-3">
           {!isFirst && (
             <Button
               variant="outline"
               size="lg"
-              className="w-auto"
+              className="w-auto px-4 text-base"
               disabled={busy}
               onClick={() => dispatch({ type: "back" })}
             >
@@ -183,7 +185,7 @@ export function CreateView() {
           {isLast ? (
             <Button
               size="lg"
-              className="flex-1"
+              className="min-w-0 flex-1 px-4 text-base"
               disabled={busy}
               onClick={() => {
                 const step = firstInvalidDraftStep(draft);
@@ -199,7 +201,7 @@ export function CreateView() {
                 <Button
                   variant="ghost"
                   size="lg"
-                  className="w-auto"
+                  className="w-auto px-4 text-base"
                   onClick={() => dispatch({ type: "skip" })}
                 >
                   {t("wizard.skip")}
@@ -207,7 +209,7 @@ export function CreateView() {
               )}
               <Button
                 size="lg"
-                className="flex-1"
+                className="min-w-0 flex-1 px-4 text-base"
                 disabled={blocked}
                 onClick={() => dispatch({ type: "next" })}
               >

@@ -20,7 +20,6 @@ await i18n.use(initReactI18next).init({
   },
   lng: resolveLanguage({
     stored: loadStoredLanguage(),
-    browserLanguages: navigator.languages,
   }),
   fallbackLng: defaultLanguage,
   supportedLngs: supportedLanguages,

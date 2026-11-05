@@ -1,6 +1,6 @@
 export const supportedLanguages = ["sv", "en"] as const;
 export type Language = (typeof supportedLanguages)[number];
-export const defaultLanguage: Language = "en";
+export const defaultLanguage: Language = "sv";
 
 const storageKey = "mingle.language";
 
@@ -11,33 +11,22 @@ export function isLanguage(value: unknown): value is Language {
   );
 }
 
-/** Maps a browser locale such as "sv-SE" to a supported language. */
-function fromLocale(locale: string): Language | undefined {
-  const base = locale.toLowerCase().split("-")[0];
-  return isLanguage(base) ? base : undefined;
-}
-
 interface LanguageSources {
   stored?: string | null;
   eventLanguage?: string | null;
-  browserLanguages?: readonly string[];
 }
 
 /**
  * Picks the UI language: the user's own choice on this device wins, then the
- * event's language, then the browser's, then English.
+ * event's language, then Swedish. The browser's language is deliberately
+ * ignored: Swedish is the default for everyone.
  */
 export function resolveLanguage({
   stored,
   eventLanguage,
-  browserLanguages = [],
 }: LanguageSources): Language {
   if (isLanguage(stored)) return stored;
   if (isLanguage(eventLanguage)) return eventLanguage;
-  for (const locale of browserLanguages) {
-    const language = fromLocale(locale);
-    if (language) return language;
-  }
   return defaultLanguage;
 }
 

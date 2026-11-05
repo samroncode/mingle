@@ -13,7 +13,6 @@ export function useEventLanguage(eventLanguage: string | undefined) {
     const language = resolveLanguage({
       stored: loadStoredLanguage(),
       eventLanguage,
-      browserLanguages: navigator.languages,
     });
     void i18n.changeLanguage(language);
     // i18n is a stable singleton; run only when the event's language arrives.
