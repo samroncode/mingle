@@ -488,7 +488,6 @@ export type Database = {
           name: string;
           note: string | null;
           pizza: string;
-          pizza_number: string;
         };
         Insert: {
           created_at?: string;
@@ -496,7 +495,6 @@ export type Database = {
           name: string;
           note?: string | null;
           pizza: string;
-          pizza_number: string;
         };
         Update: {
           created_at?: string;
@@ -504,7 +502,6 @@ export type Database = {
           name?: string;
           note?: string | null;
           pizza?: string;
-          pizza_number?: string;
         };
         Relationships: [];
       };
@@ -918,7 +915,6 @@ export type Database = {
           name: string;
           note?: string;
           pizza: string;
-          pizza_number: string;
         };
         Returns: string;
       };

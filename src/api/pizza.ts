@@ -9,7 +9,6 @@ export type PizzaOrderErrorCode =
 
 export interface PizzaOrder {
   name: string;
-  pizzaNumber: string;
   pizza: string;
   note?: string;
 }
@@ -29,7 +28,6 @@ export async function submitPizzaOrder(
   }
   const { data, error } = await client.rpc("submit_pizza_order", {
     name: order.name,
-    pizza_number: order.pizzaNumber,
     pizza: order.pizza,
     note: order.note,
   });

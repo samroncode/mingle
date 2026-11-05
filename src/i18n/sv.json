@@ -64,14 +64,13 @@
       "title": "Beställ pizza",
       "menuLink": "Se menyn hos pizzerian",
       "name": "Ditt namn",
-      "number": "Pizzans nummer",
-      "pizza": "Pizzans namn",
+      "pizza": "Vilken pizza?",
       "note": "Något mer? (valfritt)",
       "send": "Skicka beställning",
       "thanksTitle": "Tack, din beställning är mottagen!",
       "thanksText": "Din beställning har kommit in.",
       "errors": {
-        "invalid": "Fyll i ditt namn, pizzans nummer och pizzans namn.",
+        "invalid": "Fyll i ditt namn och vilken pizza du vill ha.",
         "rate_limited": "För många beställningar. Vänta en stund och försök igen.",
         "network_error": "Beställningen gick inte att skicka. Kontrollera din uppkoppling och försök igen.",
         "unknown": "Något gick fel. Försök igen."

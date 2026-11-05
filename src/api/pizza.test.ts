@@ -13,7 +13,7 @@ function fakeClient(rpc: ReturnType<typeof vi.fn>) {
   } as unknown as AppClient;
 }
 
-const order = { name: "Anna", pizzaNumber: "12", pizza: "Capricciosa" };
+const order = { name: "Anna", pizza: "Capricciosa" };
 
 describe("submitPizzaOrder", () => {
   it("sends the order and returns ok", async () => {
@@ -24,7 +24,6 @@ describe("submitPizzaOrder", () => {
     });
     expect(rpc).toHaveBeenCalledWith("submit_pizza_order", {
       name: "Anna",
-      pizza_number: "12",
       pizza: "Capricciosa",
       note: undefined,
     });
