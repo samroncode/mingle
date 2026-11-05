@@ -9,13 +9,12 @@ import { PIZZA_MENU_URL } from "@/lib/pizza";
 export function PizzaView() {
   const { t } = useTranslation();
   const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
   const [pizza, setPizza] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<PizzaOrderErrorCode | null>(null);
   const [sent, setSent] = useState(false);
-  const ready = name.trim() && number.trim() && pizza.trim();
+  const ready = name.trim() && pizza.trim();
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -24,7 +23,6 @@ export function PizzaView() {
     setError(null);
     const result = await submitPizzaOrder({
       name,
-      pizzaNumber: number,
       pizza,
       note: note.trim() || undefined,
     });
@@ -65,14 +63,6 @@ export function PizzaView() {
         placeholder={t("views.pizza.name")}
         aria-label={t("views.pizza.name")}
         maxLength={40}
-        autoComplete="off"
-      />
-      <Input
-        value={number}
-        onChange={(e) => setNumber(e.target.value)}
-        placeholder={t("views.pizza.number")}
-        aria-label={t("views.pizza.number")}
-        maxLength={10}
         autoComplete="off"
       />
       <Input

@@ -64,16 +64,35 @@
       "title": "Order pizza",
       "menuLink": "See the menu at the pizzeria",
       "name": "Your name",
-      "number": "Pizza number",
-      "pizza": "Pizza name",
+      "pizza": "Which pizza?",
       "note": "Anything else? (optional)",
       "send": "Send order",
       "thanksTitle": "Thanks, your order is in!",
       "thanksText": "Your order has been received.",
       "errors": {
-        "invalid": "Fill in your name, the pizza number and the pizza name.",
+        "invalid": "Fill in your name and the pizza.",
         "rate_limited": "Too many orders. Wait a while and try again.",
         "network_error": "Couldn't send the order. Check your connection and try again.",
+        "unknown": "Something went wrong. Try again."
+      }
+    },
+    "pizzaAdmin": {
+      "title": "Pizza orders",
+      "refresh": "Refresh",
+      "empty": "No orders yet.",
+      "toOrder": "To order",
+      "markOrdered": "Mark as ordered",
+      "markNotOrdered": "Not ordered after all",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "deleteConfirm": "Delete the order from {{name}}?",
+      "clear": "Delete all orders",
+      "clearConfirm": "Delete every order? This can't be undone.",
+      "errors": {
+        "forbidden": "This link doesn't work. Open the full pizza admin link.",
+        "rate_limited": "Too many requests. Wait a moment and try again.",
+        "not_found": "That order is already gone. Refresh the list.",
+        "network_error": "Couldn't reach the server. Check your connection and try again.",
         "unknown": "Something went wrong. Try again."
       }
     }

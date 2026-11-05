@@ -484,27 +484,27 @@ export type Database = {
       pizza_orders: {
         Row: {
           created_at: string;
+          done: boolean;
           id: string;
           name: string;
           note: string | null;
           pizza: string;
-          pizza_number: string;
         };
         Insert: {
           created_at?: string;
+          done?: boolean;
           id?: string;
           name: string;
           note?: string | null;
           pizza: string;
-          pizza_number: string;
         };
         Update: {
           created_at?: string;
+          done?: boolean;
           id?: string;
           name?: string;
           note?: string | null;
           pizza?: string;
-          pizza_number?: string;
         };
         Relationships: [];
       };
@@ -826,6 +826,16 @@ export type Database = {
         }[];
       };
       ping: { Args: Record<PropertyKey, never>; Returns: boolean };
+      pizza_admin_clear: { Args: { admin_key: string }; Returns: string };
+      pizza_admin_delete: {
+        Args: { admin_key: string; order_id: string };
+        Returns: string;
+      };
+      pizza_admin_orders: { Args: { admin_key: string }; Returns: Json };
+      pizza_admin_set_done: {
+        Args: { admin_key: string; done: boolean; order_id: string };
+        Returns: string;
+      };
       quiz_progress: {
         Args: { target_event_id: string };
         Returns: {
@@ -918,7 +928,6 @@ export type Database = {
           name: string;
           note?: string;
           pizza: string;
-          pizza_number: string;
         };
         Returns: string;
       };

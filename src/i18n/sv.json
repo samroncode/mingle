@@ -64,16 +64,35 @@
       "title": "Beställ pizza",
       "menuLink": "Se menyn hos pizzerian",
       "name": "Ditt namn",
-      "number": "Pizzans nummer",
-      "pizza": "Pizzans namn",
+      "pizza": "Vilken pizza?",
       "note": "Något mer? (valfritt)",
       "send": "Skicka beställning",
       "thanksTitle": "Tack, din beställning är mottagen!",
       "thanksText": "Din beställning har kommit in.",
       "errors": {
-        "invalid": "Fyll i ditt namn, pizzans nummer och pizzans namn.",
+        "invalid": "Fyll i ditt namn och vilken pizza du vill ha.",
         "rate_limited": "För många beställningar. Vänta en stund och försök igen.",
         "network_error": "Beställningen gick inte att skicka. Kontrollera din uppkoppling och försök igen.",
+        "unknown": "Något gick fel. Försök igen."
+      }
+    },
+    "pizzaAdmin": {
+      "title": "Pizzabeställningar",
+      "refresh": "Uppdatera",
+      "empty": "Inga beställningar än.",
+      "toOrder": "Att beställa",
+      "markOrdered": "Markera som beställd",
+      "markNotOrdered": "Inte beställd ändå",
+      "delete": "Radera",
+      "cancel": "Avbryt",
+      "deleteConfirm": "Radera beställningen från {{name}}?",
+      "clear": "Radera alla beställningar",
+      "clearConfirm": "Radera alla beställningar? Det går inte att ångra.",
+      "errors": {
+        "forbidden": "Länken fungerar inte. Öppna hela admin-länken till pizzasidan.",
+        "rate_limited": "För många förfrågningar. Vänta en stund och försök igen.",
+        "not_found": "Beställningen är redan borttagen. Uppdatera listan.",
+        "network_error": "Det gick inte att nå servern. Kontrollera uppkopplingen och försök igen.",
         "unknown": "Något gick fel. Försök igen."
       }
     }
