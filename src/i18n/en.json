@@ -59,6 +59,23 @@
       "joinTitle": "Join with code",
       "joinPlaceholder": "Event code",
       "join": "Join"
+    },
+    "pizza": {
+      "title": "Order pizza",
+      "menuLink": "See the menu at the pizzeria",
+      "name": "Your name",
+      "number": "Pizza number",
+      "pizza": "Pizza name",
+      "note": "Anything else? (optional)",
+      "send": "Send order",
+      "thanksTitle": "Thanks, your order is in!",
+      "thanksText": "Your order has been received.",
+      "errors": {
+        "invalid": "Fill in your name, the pizza number and the pizza name.",
+        "rate_limited": "Too many orders. Wait a while and try again.",
+        "network_error": "Couldn't send the order. Check your connection and try again.",
+        "unknown": "Something went wrong. Try again."
+      }
     }
   },
   "tv": {

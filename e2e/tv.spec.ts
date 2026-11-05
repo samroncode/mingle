@@ -58,13 +58,18 @@ test("the TV joins and shows the code, the join address and the welcome text", a
   expect(new Set(joined)).toEqual(new Set([code]));
 });
 
-test("the TV starts in the event's language", async ({ page }) => {
-  await fakeSupabase(page, []);
-  await fakeTv(page, { snapshot: snapshot({ language: "sv" }) });
-  await page.goto(`/tv/${code}`);
-  await expect(page.getByTestId("guest-count")).toHaveText(
-    "2 gäster har gått med",
-  );
+test.describe("without a chosen language", () => {
+  // No stored choice, so the event's language decides.
+  test.use({ storageState: { cookies: [], origins: [] } });
+
+  test("the TV starts in the event's language", async ({ page }) => {
+    await fakeSupabase(page, []);
+    await fakeTv(page, { snapshot: snapshot({ language: "sv" }) });
+    await page.goto(`/tv/${code}`);
+    await expect(page.getByTestId("guest-count")).toHaveText(
+      "2 gäster har gått med",
+    );
+  });
 });
 
 test("an ended event shows a thank-you", async ({ page }) => {

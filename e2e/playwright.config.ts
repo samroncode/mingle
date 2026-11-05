@@ -17,6 +17,17 @@ export default defineConfig({
     ...devices["Pixel 7"],
     baseURL: `http://localhost:${port}`,
     launchOptions: { executablePath },
+    // The app starts in Swedish for everyone; the tests read English texts, so
+    // each test starts with English chosen, as a user would with the switcher.
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: `http://localhost:${port}`,
+          localStorage: [{ name: "mingle.language", value: "en" }],
+        },
+      ],
+    },
   },
   webServer: {
     cwd: path.resolve(import.meta.dirname, ".."),
