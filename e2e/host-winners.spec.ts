@@ -45,9 +45,10 @@ test("the host adds a winner and hides the slide; the party fields stay", async 
   });
 
   await section.getByRole("button", { name: "Hide winners slide" }).click();
-  expect(bodies.at(-1)).toMatchObject({
-    party: { welcome: "Welcome", winnersHidden: true },
-  });
+  // The request leaves after the click, so wait for it instead of reading at once.
+  await expect
+    .poll(() => bodies.at(-1))
+    .toMatchObject({ party: { welcome: "Welcome", winnersHidden: true } });
 });
 
 test("the winners section is gone once the evening has ended", async ({
