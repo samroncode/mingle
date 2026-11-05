@@ -481,6 +481,33 @@ export type Database = {
           },
         ];
       };
+      pizza_orders: {
+        Row: {
+          created_at: string;
+          id: string;
+          name: string;
+          note: string | null;
+          pizza: string;
+          pizza_number: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          name: string;
+          note?: string | null;
+          pizza: string;
+          pizza_number: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          name?: string;
+          note?: string | null;
+          pizza?: string;
+          pizza_number?: string;
+        };
+        Relationships: [];
+      };
       quiz_answer_keys: {
         Row: {
           correct: number;
@@ -883,6 +910,15 @@ export type Database = {
           change: string;
           target_event_id: string;
           target_user_id: string;
+        };
+        Returns: string;
+      };
+      submit_pizza_order: {
+        Args: {
+          name: string;
+          note?: string;
+          pizza: string;
+          pizza_number: string;
         };
         Returns: string;
       };
