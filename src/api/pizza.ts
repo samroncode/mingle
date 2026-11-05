@@ -15,7 +15,7 @@ export interface PizzaOrder {
 
 /**
  * Sends one pizza order. The page has no event, so the device signs in
- * anonymously first. The owner reads orders in the Supabase table editor.
+ * anonymously first. The owner reads them on /pizza/admin.
  */
 export async function submitPizzaOrder(
   order: PizzaOrder,

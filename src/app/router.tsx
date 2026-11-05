@@ -8,6 +8,7 @@ import { ErrorView } from "@/views/shared/ErrorView";
 import { GuestView } from "@/views/guest/GuestView";
 import { HostView } from "@/views/host/HostView";
 import { LandingView } from "@/views/landing/LandingView";
+import { PizzaAdminView } from "@/views/pizza/PizzaAdminView";
 import { PizzaView } from "@/views/pizza/PizzaView";
 import { NotFoundView } from "@/views/shared/NotFoundView";
 import { SummaryView } from "@/views/summary/SummaryView";
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
           { path: "/p/:code", element: <GuestView /> },
           { path: "/p/:code/summary", element: <SummaryView /> },
           { path: "/pizza", element: <PizzaView /> },
+          { path: "/pizza/admin", element: <PizzaAdminView /> },
           { path: "*", element: <NotFoundView /> },
         ],
       },
