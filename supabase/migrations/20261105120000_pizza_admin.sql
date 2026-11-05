@@ -162,7 +162,8 @@ begin
   if verdict <> 'ok' then
     return verdict;
   end if;
-  delete from public.pizza_orders;
+  -- `where true` because the API roles refuse a delete without a where clause.
+  delete from public.pizza_orders o where true;
   return 'ok';
 end;
 $$;
