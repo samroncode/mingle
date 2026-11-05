@@ -3,39 +3,19 @@ import { loadStoredLanguage, resolveLanguage, storeLanguage } from "./language";
 
 describe("resolveLanguage", () => {
   it("prefers the user's stored choice over everything else", () => {
-    expect(
-      resolveLanguage({
-        stored: "en",
-        eventLanguage: "sv",
-        browserLanguages: ["sv-SE"],
-      }),
-    ).toBe("en");
+    expect(resolveLanguage({ stored: "en", eventLanguage: "sv" })).toBe("en");
   });
 
   it("uses the event language when there is no stored choice", () => {
-    expect(
-      resolveLanguage({ eventLanguage: "sv", browserLanguages: ["en-US"] }),
-    ).toBe("sv");
+    expect(resolveLanguage({ eventLanguage: "en" })).toBe("en");
   });
 
-  it("uses the first supported browser language when there is no event", () => {
-    expect(
-      resolveLanguage({ browserLanguages: ["de-DE", "sv-SE", "en-US"] }),
-    ).toBe("sv");
-  });
-
-  it("falls back to English when nothing is supported", () => {
-    expect(resolveLanguage({ browserLanguages: ["de-DE", "fr"] })).toBe("en");
+  it("defaults to Swedish when nothing is chosen", () => {
+    expect(resolveLanguage({})).toBe("sv");
   });
 
   it("ignores unsupported stored and event values", () => {
-    expect(
-      resolveLanguage({
-        stored: "fr",
-        eventLanguage: "xx",
-        browserLanguages: ["sv"],
-      }),
-    ).toBe("sv");
+    expect(resolveLanguage({ stored: "fr", eventLanguage: "xx" })).toBe("sv");
   });
 });
 
