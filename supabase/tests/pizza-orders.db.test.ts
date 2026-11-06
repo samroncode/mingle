@@ -91,13 +91,13 @@ describe("submit_pizza_order", () => {
     }
   });
 
-  it("answers rate_limited after 5 orders in an hour", async () => {
+  it("answers rate_limited after 12 orders in an hour", async () => {
     const user = await anonymousUser();
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 12; i++) {
       expect((await order(user, { name: "Limited" })).data).toBe("ok");
     }
     expect((await order(user, { name: "Limited" })).data).toBe("rate_limited");
-    expect(rowsOf("Limited")).toHaveLength(5);
+    expect(rowsOf("Limited")).toHaveLength(12);
   });
 
   it("cuts long texts to their limits", async () => {
