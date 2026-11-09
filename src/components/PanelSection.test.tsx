@@ -15,15 +15,13 @@ describe("PanelSection", () => {
     expect(html).not.toContain("secret list");
   });
 
-  it("renders the content when it starts open or openWhen is true", () => {
-    for (const props of [{ defaultOpen: true }, { openWhen: true }]) {
-      const html = renderToStaticMarkup(
-        <PanelSection title="Quiz" {...props}>
-          <p>secret list</p>
-        </PanelSection>,
-      );
-      expect(html).toContain('aria-expanded="true"');
-      expect(html).toContain("secret list");
-    }
+  it("renders the content when it starts open", () => {
+    const html = renderToStaticMarkup(
+      <PanelSection title="Quiz" defaultOpen>
+        <p>secret list</p>
+      </PanelSection>,
+    );
+    expect(html).toContain('aria-expanded="true"');
+    expect(html).toContain("secret list");
   });
 });

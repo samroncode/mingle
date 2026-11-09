@@ -107,4 +107,15 @@ Do not use: blue-purple gradients, emoji cards, cards with a colored left border
 
 ## Host control panel
 
-The panel is a stack of `PanelSection`s (`src/components/PanelSection.tsx`): paper cards that are shut by default, with a title and one calm summary line on the header. The content is only rendered while the section is open, so long lists cost nothing until asked for. A running activity's section opens by itself (`openWhen`). A new panel section uses `PanelSection`; an activity gets its header summary from `useSummary` in its module definition.
+The panel is a stack of `PanelSection`s (`src/components/PanelSection.tsx`): paper cards that are shut by default, with a title and one calm summary line on the header. The content is only rendered while the section is open, so long lists cost nothing until asked for. A new panel section uses `PanelSection`; an activity gets its header summary from `useSummary` in its module definition.
+
+## Host dashboard
+
+From 1024 px (`lg`) the control panel becomes a dashboard (`HostFrame`, `src/views/host/dashboard/`). Below that it stays the one-column phone list above. The breakpoint is the same in CSS (`lg:`) and in code (`useIsPhone`), so the two never disagree.
+
+- **Flat.** No cards in cards. The three columns are separated by thin lines (`divide-line`), sections are headed by a title and a thin rule, and the only paper surface is the place an editor folds out in (`EditFold`), because the existing editors are made for paper.
+- **Left column (13rem):** section navigation with a count on each entry (activities, guests). It scrolls to a section and marks the one in view (`aria-current="location"`), plus a link to End the evening.
+- **Middle:** the Now panel first, then one row of activities (a cell each: summary and Start), the party program, shared costs, guests, messages and the evening's end. Edit opens an activity's editor in a fold under the row; nothing is shut behind a header.
+- **Right column (22rem):** a live copy of the TV, the guest list with removal, and a one-line message to the guests. The copy is the TV's own screen laid out at 1920 px and scaled down (`TvMirror`). It is read-only (`inert`, `aria-hidden`) and never joins as a TV.
+- **Phone.** The running activity's status is on top, its main buttons are fixed to the bottom (`BottomBar`, at least 48 px high, above the safe area, errors shown inside the bar), and the other sections are flat rows. With nothing running there is no bottom bar.
+- **Tests.** `e2e/host-dashboard.spec.ts`, `host-side-column.spec.ts` and `host-phone.spec.ts` cover each layout. The main host specs run at both widths through the `phone` and `desktop` projects in `e2e/playwright.config.ts`; add a new host spec to `bothWidths` there.

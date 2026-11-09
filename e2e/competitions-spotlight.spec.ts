@@ -6,7 +6,7 @@ import {
   fakeTv,
   supabase,
 } from "./fake-supabase.ts";
-import { openSection } from "./panel.ts";
+import { openActivity } from "./panel.ts";
 
 const code = "ABC234";
 const key = "c".repeat(43);
@@ -49,8 +49,8 @@ test.describe("the control panel", () => {
       competitions,
     });
     await page.goto(`/host/${code}#key=${key}`);
-    await openSection(page, "activity-competitions");
-    const spot = page.getByTestId("competitions-spotlight");
+    const fold = await openActivity(page, "competitions", "Competitions");
+    const spot = fold.getByTestId("competitions-spotlight");
 
     await expect(spot.getByTestId("competitions-spotlight-state")).toHaveText(
       "Nothing is on the TV. Pick a table to show it in full screen.",
@@ -91,17 +91,10 @@ test.describe("the control panel", () => {
       flow: spotlight(1),
     });
     await page.goto(`/host/${code}#key=${key}`);
-    await openSection(page, "activity-competitions");
-    const spot = page.getByTestId("competitions-spotlight");
-
-    await expect(spot.getByTestId("competitions-spotlight-state")).toHaveText(
-      "On the TV now: Darts",
-    );
-    if (process.env.SHOTS) {
-      await spot.scrollIntoViewIfNeeded();
-      await spot.screenshot({ path: `${process.env.SHOTS}/after-host.png` });
-    }
-    await spot.getByRole("button", { name: "Stop showing" }).click();
+    // The Now panel (desktop) or the activity row (phone) says what is shown.
+    const state = page.getByTestId("competitions-spotlight-state").first();
+    await expect(state).toHaveText("On the TV now: Darts");
+    await page.getByRole("button", { name: "Stop showing" }).first().click();
     expect(bodies[1]).toEqual({
       action: "set_flow",
       code,

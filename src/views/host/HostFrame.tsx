@@ -3,27 +3,19 @@ import type { ReactNode } from "react";
 interface HostFrameProps {
   /** Accessible name of the navigation landmark. */
   navLabel?: string;
-  /** Left column on wide screens. Filled by the "Dashboard middle" ticket (section navigation). */
+  /** Left column on wide screens: the section navigation. */
   nav?: ReactNode;
-  /** The work area. Today it holds every section in the old order; later tickets move them out. */
+  /** The work area: the phone's section list, or the dashboard's middle column. */
   main: ReactNode;
-  /** Right column on wide screens. Filled by the "Dashboard right column" ticket (TV mirror, guests, message). */
+  /** Right column on wide screens: TV mirror, guests and message to the TV. */
   side?: ReactNode;
-  /** Phone-only area above the sections. Filled by the "Phone" ticket (running activity first). */
-  phoneTop?: ReactNode;
 }
 
 /**
  * The layout of the control panel, with no data of its own. One column on a
  * phone; from `lg` a flat three-column frame separated by thin lines.
  */
-export function HostFrame({
-  nav,
-  navLabel,
-  main,
-  side,
-  phoneTop,
-}: HostFrameProps) {
+export function HostFrame({ nav, navLabel, main, side }: HostFrameProps) {
   return (
     <div
       data-testid="host-frame"
@@ -38,7 +30,6 @@ export function HostFrame({
         {nav}
       </nav>
       <div data-testid="host-main" className="space-y-6 lg:px-6 lg:py-4">
-        {phoneTop && <div className="lg:hidden">{phoneTop}</div>}
         {main}
       </div>
       <aside

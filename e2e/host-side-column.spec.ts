@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { memberRow } from "./fake-rows.ts";
+import { eventRow, memberRow } from "./fake-rows.ts";
 import {
   fakeHostPanel,
   fakeSupabase,
+  fakeTv,
   recordRequestUrls,
 } from "./fake-supabase.ts";
 
@@ -83,4 +84,36 @@ test("guest tools and the message field work from the column", async ({
     key,
     text: "Food is ready!",
   });
+});
+
+test("the mirror says the same as the real TV", async ({ page, context }) => {
+  const welcome = "Welcome to Friday!";
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    guests,
+    party: { welcome },
+  });
+  await page.goto(`/host/${code}#key=${key}`);
+  const mirror = page.getByTestId("tv-mirror");
+  await expect(mirror).toContainText(welcome);
+
+  // The same evening on a real TV, in a second tab.
+  const tv = await context.newPage();
+  await tv.setViewportSize({ width: 1920, height: 1080 });
+  await fakeSupabase(tv, []);
+  await fakeTv(tv, {
+    snapshot: {
+      ...eventRow({ id: "e1", code, party: { welcome } }),
+      members: [{ ...memberRow({ user_id: "t", role: "tv" }) }, ...guests],
+    },
+  });
+  await tv.goto(`/tv/${code}`);
+  await expect(tv.getByTestId("welcome-text")).toHaveText(welcome);
+
+  for (const id of ["welcome-text", "tv-code", "join-address", "guest-count"]) {
+    const onTv = await tv.getByTestId(id).first().innerText();
+    await expect(mirror.getByTestId(id).first()).toHaveText(onTv);
+  }
 });

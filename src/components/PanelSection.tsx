@@ -23,8 +23,6 @@ interface PanelSectionProps {
   badge?: ReactNode;
   testId?: string;
   defaultOpen?: boolean;
-  /** Opens the section whenever this turns true; the host can still shut it. */
-  openWhen?: boolean;
   children: ReactNode;
 }
 
@@ -39,19 +37,11 @@ export function PanelSection({
   badge,
   testId,
   defaultOpen = false,
-  openWhen = false,
   children,
 }: PanelSectionProps) {
   const bodyId = useId();
   const flat = useContext(FlatContext);
-  const [open, setOpen] = useState(defaultOpen || openWhen);
-
-  // Open when `openWhen` turns true (adjusting state while rendering).
-  const [wasOpenWhen, setWasOpenWhen] = useState(openWhen);
-  if (openWhen !== wasOpenWhen) {
-    setWasOpenWhen(openWhen);
-    if (openWhen) setOpen(true);
-  }
+  const [open, setOpen] = useState(defaultOpen);
 
   return (
     <section
