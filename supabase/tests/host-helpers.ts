@@ -6,7 +6,11 @@ import { callHostActions } from "./functions";
 
 /** The secret admin link of an event: its code and key. */
 export type HostLink = { code: string; key: string };
-export type Move = { type: string; module?: string };
+export type Move = {
+  type: string;
+  module?: string;
+  competition?: number;
+};
 
 /** A valid-looking key that differs from `key`. */
 export function otherKey(key: string): string {

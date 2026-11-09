@@ -16,6 +16,7 @@ import {
 import type { ModuleHostProps } from "../../types";
 import { useCompetitions } from "../useCompetitions";
 import { MatchesHost } from "./MatchesHost";
+import { Spotlight } from "./Spotlight";
 
 /** The competitions section of the control panel: list, add, rename, remove, reorder. */
 export function CompetitionsHost({
@@ -23,6 +24,7 @@ export function CompetitionsHost({
   members,
   code,
   hostKey,
+  startDisabled,
 }: ModuleHostProps) {
   const { t } = useTranslation();
   const { competitions, reload } = useCompetitions(event.id);
@@ -244,6 +246,15 @@ export function CompetitionsHost({
             </Button>
           </form>
         ))}
+      {list.length > 0 && (
+        <Spotlight
+          event={event}
+          code={code}
+          hostKey={hostKey}
+          startDisabled={startDisabled}
+          competitions={list}
+        />
+      )}
       {list.length > 0 && (
         <MatchesHost
           event={event}

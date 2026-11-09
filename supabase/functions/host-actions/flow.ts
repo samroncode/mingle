@@ -18,6 +18,12 @@
 // TV to the party screen (live with no activity). The `events_flow_check`
 // constraint holds the same shape in the database.
 //
+// Competitions is the exception: its step is the position of the competition
+// whose table is on the TV (start_module names it, default the first). It has
+// no open, reveal or next_step (invalid_transition); the host stops it and
+// starts another competition to change the table. With no competitions
+// start_module answers `module_empty`.
+//
 // * Step bounds. An activity with a fixed list of steps (the quiz: one per
 //   question, awards: one per category, hot takes: one per hot take) gives
 //   its StepBounds (step-bounds.ts). It starts at its first unplayed step;
@@ -70,31 +76,26 @@ export function applyMove(
   if (state.status === "ended") return refused();
   const running = state.currentModule !== null;
   const onStep = running && (!bounds || state.currentStep < bounds.steps);
+  // Competitions is a spotlight on one table: it has no open, reveal or next.
+  const spotlight = state.currentModule === "competitions";
 
   switch (move.type) {
     case "start_module":
       if (running) return refused();
-      // Competitions has no screen of its own yet (the spotlight comes later).
-      if (move.module === "competitions") return refused();
       if (!enabledModules.includes(move.module)) {
         return { ok: false, error: "module_disabled" };
       }
       if (bounds?.steps === 0) return { ok: false, error: "module_empty" };
       if (bounds?.finished) return { ok: false, error: "module_finished" };
-      return moved({
-        status: "live",
-        currentModule: move.module,
-        currentStep: bounds?.firstUnplayed ?? 0,
-        phase: "idle",
-      });
+      return startedAt(move, bounds);
     case "open":
-      if (!onStep || state.phase !== "idle") return refused();
+      if (!onStep || spotlight || state.phase !== "idle") return refused();
       return moved({ ...state, phase: "open" });
     case "reveal":
-      if (!onStep || state.phase !== "open") return refused();
+      if (!onStep || spotlight || state.phase !== "open") return refused();
       return moved({ ...state, phase: "revealed" });
     case "next_step":
-      if (!onStep || state.phase === "open") return refused();
+      if (!onStep || spotlight || state.phase === "open") return refused();
       return moved({
         ...state,
         currentStep: state.currentStep + 1,
@@ -106,6 +107,24 @@ export function applyMove(
     case "end_event":
       return moved({ status: "ended", currentModule: null, ...idle });
   }
+}
+
+/** The state after start_module; the step is the competition, for Competitions. */
+function startedAt(
+  move: Extract<FlowMove, { type: "start_module" }>,
+  bounds: StepBounds | null,
+): FlowTransition {
+  const spotlit = move.module === "competitions";
+  // A competition is only meaningful for Competitions, and must exist.
+  if (!spotlit && move.competition !== undefined) return refused();
+  const step = spotlit ? (move.competition ?? 0) : (bounds?.firstUnplayed ?? 0);
+  if (spotlit && step >= (bounds?.steps ?? 0)) return refused();
+  return moved({
+    status: "live",
+    currentModule: move.module,
+    currentStep: step,
+    phase: "idle",
+  });
 }
 
 function moved(state: FlowState): FlowTransition {

@@ -115,6 +115,11 @@ export const FlowMoveSchema = z.discriminatedUnion("type", [
   z.strictObject({
     type: z.literal("start_module"),
     module: ModuleIdSchema,
+    /**
+     * Competitions only: the position of the competition whose table goes on
+     * the TV (from 0). Left out, the first one.
+     */
+    competition: z.number().int().min(0).max(4).optional(),
   }),
   z.strictObject({ type: z.literal("stop_module") }),
   z.strictObject({ type: z.literal("next_step") }),

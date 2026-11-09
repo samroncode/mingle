@@ -149,7 +149,9 @@ export async function claimHost(
  * Moves the event's flow: start or stop an activity, next step, open, reveal
  * or end the event. Returns the flow after the move. A move the event's state
  * doesn't allow fails with `invalid_transition`, an activity the host turned
- * off with `module_disabled`.
+ * off with `module_disabled`. Competitions starts with `competition` (the
+ * position of the table to show, default the first); no competitions fail with
+ * `module_empty`, a position that does not exist with `invalid_transition`.
  */
 export async function setFlow(
   input: Omit<SetFlowRequest, "action">,
