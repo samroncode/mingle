@@ -443,6 +443,21 @@
         "losses": "F",
         "difference": "+/−",
         "someone": "en gäst"
+      },
+      "standings": {
+        "title": "Tabeller",
+        "player": "Spelare",
+        "played": "S",
+        "wins": "V",
+        "losses": "F",
+        "diff": "+/−",
+        "you": "du",
+        "someone": "en gäst",
+        "playedFull": "Spelade",
+        "winsFull": "Vinster",
+        "lossesFull": "Förluster",
+        "diffFull": "Poängskillnad",
+        "tableLabel": "Tabell för {{name}}"
       }
     }
   },

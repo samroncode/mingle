@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { listMyMatches, subscribeToMatchChanges } from "@/api/competitions";
 import { useLoad } from "@/hooks/useLoad";
 import type { ModuleGuestViewProps } from "../../types";
+import { StandingsTable } from "../StandingsTable";
+import { useStandings } from "../useStandings";
 import { useCompetitions } from "../useCompetitions";
 import { MyMatches } from "./MyMatches";
 import { ReportMatch, type Opponent } from "./ReportMatch";
@@ -14,6 +16,7 @@ import { ReportMatch, type Opponent } from "./ReportMatch";
 export function GuestMatches({ event, members, userId }: ModuleGuestViewProps) {
   const { t } = useTranslation();
   const { competitions } = useCompetitions(event.id);
+  const { tables, reload: reloadTables } = useStandings(event, members);
   const [changes, setChanges] = useState(0);
   const reload = () => setChanges((n) => n + 1);
   useEffect(() => subscribeToMatchChanges(event.id, reload), [event.id]);
@@ -50,7 +53,10 @@ export function GuestMatches({ event, members, userId }: ModuleGuestViewProps) {
         userId={userId}
         competitions={competitions.value}
         opponents={opponents}
-        onReported={reload}
+        onReported={() => {
+          reload();
+          reloadTables();
+        }}
       />
       <MyMatches
         userId={userId}
@@ -59,6 +65,19 @@ export function GuestMatches({ event, members, userId }: ModuleGuestViewProps) {
         names={names}
         onRetry={reload}
       />
+      {tables.length > 0 && (
+        <section data-testid="guest-standings" className="space-y-3">
+          <h2 className="font-display text-3xl font-extrabold">
+            {t("modules.competitions.standings.title")}
+          </h2>
+          {tables.map((table) => (
+            <div key={table.competitionId} className="space-y-1">
+              <h3 className="font-display text-xl font-bold">{table.name}</h3>
+              <StandingsTable table={table} size="phone" highlightId={userId} />
+            </div>
+          ))}
+        </section>
+      )}
     </section>
   );
 }

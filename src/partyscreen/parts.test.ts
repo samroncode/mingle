@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { MemberRow } from "@/api/events";
-import { partsOf } from "./parts";
+import { partKey, partsOf } from "./parts";
 
 function member(role: string, name: string | null): MemberRow {
   return {
@@ -49,6 +49,26 @@ describe("partsOf", () => {
     ]);
     expect(kinds({ winners: [] })).not.toContain("winners");
     expect(kinds({ winners, winnersHidden: true })).not.toContain("winners");
+  });
+
+  it("adds one part per competition table after the winners, before wifi", () => {
+    const table = (id: string) => ({ competitionId: id, name: id, rows: [] });
+    const parts = partsOf(full, [], [table("c1"), table("c2")]);
+    expect(parts.map(partKey)).toEqual([
+      "welcome",
+      "menu",
+      "schedule",
+      "standings:c1",
+      "standings:c2",
+      "wifi",
+      "music",
+    ]);
+  });
+
+  it("has no table part without tables", () => {
+    expect(partsOf(full, []).map((part) => part.kind)).not.toContain(
+      "standings",
+    );
   });
 
   it("leaves out parts the host left empty, and guests when nobody joined", () => {

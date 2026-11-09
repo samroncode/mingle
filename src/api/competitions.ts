@@ -172,6 +172,20 @@ function toMatchView(row: {
   };
 }
 
+/** Every match of the event, for the tables; any member can read them. */
+export async function listAllMatches(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<MatchView[], "unknown">> {
+  const { data, error } = await client
+    .from("competition_matches")
+    .select(matchColumns)
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: false });
+  if (error) return fail("unknown");
+  return ok(data.map(toMatchView));
+}
+
 /** The most matches one table is built from; far above a real evening. */
 export const standingsMatchLimit = 1000;
 

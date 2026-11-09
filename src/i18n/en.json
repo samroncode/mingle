@@ -443,6 +443,21 @@
         "losses": "L",
         "difference": "+/−",
         "someone": "a guest"
+      },
+      "standings": {
+        "title": "Standings",
+        "player": "Player",
+        "played": "P",
+        "wins": "W",
+        "losses": "L",
+        "diff": "+/−",
+        "you": "you",
+        "someone": "a guest",
+        "playedFull": "Played",
+        "winsFull": "Wins",
+        "lossesFull": "Losses",
+        "diffFull": "Score difference",
+        "tableLabel": "{{name}} standings"
       }
     }
   },

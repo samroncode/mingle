@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { QrCode } from "@/components/QrCode";
 import { anyLineHasTime } from "@/lib/schedule";
+import { StandingsTable } from "@/modules/competitions/StandingsTable";
 import { wifiQrText } from "@/lib/tv/wifi-qr";
 import type { Part } from "./parts";
 
@@ -133,6 +134,17 @@ export function MusicPart({ url }: Of<"music">) {
         <QrCode value={url} label={t("tv.music.qrLabel")} size={200} />
         <p className="font-body text-4xl">{t("tv.music.text")}</p>
       </div>
+    </Panel>
+  );
+}
+
+/** Most rows a table shows on the TV; the rest do not fit the room. */
+const TV_TABLE_ROWS = 6;
+
+export function StandingsPart({ table }: Of<"standings">) {
+  return (
+    <Panel title={table.name}>
+      <StandingsTable table={table} size="tv" limit={TV_TABLE_ROWS} />
     </Panel>
   );
 }

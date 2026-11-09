@@ -32,7 +32,9 @@ export function PartyScreen({ event, members, left }: PartyScreenProps) {
         </header>
         <div className="grid min-h-0 flex-1 grid-cols-[1fr_30rem] gap-(--space-7)">
           <div data-testid="party-left" className="relative min-h-0">
-            {left ?? <PartRotation party={party} members={members} />}
+            {left ?? (
+              <PartRotation event={event} party={party} members={members} />
+            )}
             <GuestWelcome members={members} />
             <WinnerCongrats party={party} />
           </div>
