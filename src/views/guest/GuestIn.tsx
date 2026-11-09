@@ -11,6 +11,7 @@ import { idsSignal } from "@/lib/guest/bill";
 import { pickSnapshotState } from "@/lib/guest/guest-page";
 import { pickBanner } from "@/lib/guest/notices";
 import { readParty } from "@/lib/party";
+import { GuestMatches } from "@/modules/competitions/guest/GuestMatches";
 import { pickScreen } from "@/modules/screen";
 import { GuestBill } from "./GuestBill";
 import { GuestNameButton } from "./GuestNameButton";
@@ -132,7 +133,14 @@ export function GuestIn({
           userId={userId}
         />
       ) : (
-        <PartyInfo party={readParty(state.event.party)} notices={notices} />
+        <>
+          <PartyInfo party={readParty(state.event.party)} notices={notices} />
+          <GuestMatches
+            event={state.event}
+            members={state.members}
+            userId={userId}
+          />
+        </>
       )}
     </div>
   );

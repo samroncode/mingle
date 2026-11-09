@@ -356,6 +356,43 @@
           "not_found": "Tävlingen finns redan inte kvar. Ladda om sidan för att se listan.",
           "invalid_request": "Kolla namnet: det ska vara 1 till 40 tecken."
         }
+      },
+      "guest": {
+        "title": "Rapportera en match",
+        "competition": "Vilken tävling?",
+        "opponent": "Vem spelade du mot?",
+        "result": "Hur gick det?",
+        "won": "Jag vann",
+        "lost": "Jag förlorade",
+        "scoreTitle": "Resultat (valfritt)",
+        "myScore": "Ditt resultat",
+        "theirScore": "Deras resultat",
+        "submit": "Rapportera matchen",
+        "sending": "Rapporterar…",
+        "reported": "Matchen är rapporterad!",
+        "another": "Rapportera en match till",
+        "noOpponents": "Ingen annan har gått med än. När en kompis gått med kan du rapportera din match här.",
+        "mine": "Mina matcher",
+        "mineEmpty": "Inga matcher rapporterade än.",
+        "mineLoadFailed": "Vi kunde inte hämta dina matcher.",
+        "mineRetry": "Försök igen",
+        "matchWon": "{{competition}}: du slog {{name}}",
+        "matchLost": "{{competition}}: {{name}} slog dig",
+        "score": "{{mine}}–{{theirs}}",
+        "someone": "en gäst",
+        "errors": {
+          "not_found": "Du är inte med i eventet längre. Ladda om sidan.",
+          "ended": "Eventet är slut, så matcher kan inte rapporteras.",
+          "disabled": "Tävlingar är avstängda för det här eventet.",
+          "same_player": "Välj någon annan som motståndare.",
+          "not_a_participant": "Du kan bara rapportera en match du själv spelat.",
+          "unknown_competition": "Den tävlingen finns inte längre. Välj en annan.",
+          "unknown_player": "Den gästen har lämnat eventet. Välj en annan motståndare.",
+          "invalid_score": "Skriv båda resultaten som tal från 0 till 999, eller lämna båda tomma.",
+          "score_mismatch": "Vinnarens resultat måste vara högre än förlorarens.",
+          "rate_limited": "Du har rapporterat många matcher. Vänta en stund och försök igen.",
+          "unknown": "Matchen gick inte igenom. Försök igen."
+        }
       }
     }
   },
