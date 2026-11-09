@@ -198,54 +198,7 @@ export function CompetitionsHost({
   }
 
   return (
-    <section
-      data-testid="competitions-host"
-      aria-label={t("modules.competitions.name")}
-      className="space-y-3"
-    >
-      {competitions.status === "error" && (
-        <ErrorLine>{t("modules.competitions.host.loadFailed")}</ErrorLine>
-      )}
-      {competitions.status === "ready" && list.length === 0 && (
-        <p className="text-sm text-ink-muted">
-          {t("modules.competitions.host.empty")}
-        </p>
-      )}
-      {list.length > 0 && (
-        <ul className="space-y-2">
-          {list.map((competition, index) => (
-            <li key={competition.id}>
-              <Card className="p-3">{row(competition, index)}</Card>
-            </li>
-          ))}
-        </ul>
-      )}
-      {error && <ErrorLine>{error}</ErrorLine>}
-      {!ended &&
-        (full ? (
-          <p className="text-sm text-ink-muted">
-            {t("modules.competitions.host.full", {
-              max: competitionsLimits.perEvent,
-            })}
-          </p>
-        ) : (
-          <form
-            className="flex flex-wrap items-center gap-2"
-            onSubmit={(submit) => void add(submit)}
-          >
-            <Input
-              className="min-w-0 flex-1"
-              value={draftName}
-              maxLength={competitionsLimits.name}
-              aria-label={t("modules.competitions.host.newName")}
-              placeholder={t("modules.competitions.host.newPlaceholder")}
-              onChange={(e) => setDraftName(e.target.value)}
-            />
-            <Button type="submit" disabled={busy || !addName.success}>
-              {t("modules.competitions.host.add")}
-            </Button>
-          </form>
-        ))}
+    <div className="space-y-3">
       {list.length > 0 && (
         <Spotlight
           event={event}
@@ -255,15 +208,64 @@ export function CompetitionsHost({
           competitions={list}
         />
       )}
-      {list.length > 0 && (
-        <MatchesHost
-          event={event}
-          members={members}
-          code={code}
-          hostKey={hostKey}
-          competitions={list}
-        />
-      )}
-    </section>
+      <section
+        data-testid="competitions-host"
+        aria-label={t("modules.competitions.name")}
+        className="space-y-3"
+      >
+        {competitions.status === "error" && (
+          <ErrorLine>{t("modules.competitions.host.loadFailed")}</ErrorLine>
+        )}
+        {competitions.status === "ready" && list.length === 0 && (
+          <p className="text-sm text-ink-muted">
+            {t("modules.competitions.host.empty")}
+          </p>
+        )}
+        {list.length > 0 && (
+          <ul className="space-y-2">
+            {list.map((competition, index) => (
+              <li key={competition.id}>
+                <Card className="p-3">{row(competition, index)}</Card>
+              </li>
+            ))}
+          </ul>
+        )}
+        {error && <ErrorLine>{error}</ErrorLine>}
+        {!ended &&
+          (full ? (
+            <p className="text-sm text-ink-muted">
+              {t("modules.competitions.host.full", {
+                max: competitionsLimits.perEvent,
+              })}
+            </p>
+          ) : (
+            <form
+              className="flex flex-wrap items-center gap-2"
+              onSubmit={(submit) => void add(submit)}
+            >
+              <Input
+                className="min-w-0 flex-1"
+                value={draftName}
+                maxLength={competitionsLimits.name}
+                aria-label={t("modules.competitions.host.newName")}
+                placeholder={t("modules.competitions.host.newPlaceholder")}
+                onChange={(e) => setDraftName(e.target.value)}
+              />
+              <Button type="submit" disabled={busy || !addName.success}>
+                {t("modules.competitions.host.add")}
+              </Button>
+            </form>
+          ))}
+        {list.length > 0 && (
+          <MatchesHost
+            event={event}
+            members={members}
+            code={code}
+            hostKey={hostKey}
+            competitions={list}
+          />
+        )}
+      </section>
+    </div>
   );
 }
