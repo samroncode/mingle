@@ -13,6 +13,7 @@ import {
   type CostsAction,
   type CostsDraft,
 } from "./costs";
+import { competitionsSlice } from "./competitions";
 import { hotTakesSlice } from "./hottakes";
 import { quizSlice } from "./quiz";
 import type { WizardSlice } from "./slice";
@@ -25,6 +26,7 @@ export const stepOrder = [
   "quiz",
   "awards",
   "hottakes",
+  "competitions",
   "costs",
   "welcome",
   "menu",
@@ -50,6 +52,7 @@ const slices = {
   quiz: quizSlice,
   awards: awardsSlice,
   hottakes: hotTakesSlice,
+  competitions: competitionsSlice,
 };
 type SliceId = keyof typeof slices;
 const sliceIds = Object.keys(slices) as SliceId[];

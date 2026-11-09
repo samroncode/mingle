@@ -12,6 +12,17 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-11-09: Competitions are a fourth activity, set up first (#262, #263)
+
+**Decision:** Competitions ("Ping pong", "Darts") is a fourth activity id, `competitions`, that the host can switch on or off like the other three. This first ticket (#263) only sets them up; matches and tables follow in #264 to #268.
+- A competition is a row in `competitions` (event, position 0 to 4, name 1 to 40 characters, host-written and never translated). At most 5 per event. Members read the table through RLS; nobody writes it from the client. The host adds, renames, removes and reorders through one `host-actions` action, `update_competitions`, which checks the admin key and then calls one `security definer` function per change. Errors are codes: `too_many`, `module_disabled`, `invalid_transition` (event ended), `not_found` (not this event's competition), `invalid_request` (bad name or reorder list).
+- Unlike the quiz, Competitions has no steps and does not take over the TV, so `start_module` for it is refused (`invalid_transition`) until the full-screen spotlight (#267) exists. Its section in the control panel is a plain list.
+- The wizard gets a step that appears while Competitions is on. The niche config names the suggested competitions in Swedish and English (a few per niche); nothing is picked until the host ticks a suggestion or writes their own. `create_event` takes the picked ones.
+- Defaults: on for the team event and the bachelor party, off for afterwork. Existing events have it off.
+- Switching Competitions off keeps its competitions; switching it on again shows them.
+
+**Why:** The score of ping pong and darts lives in someone's head today. Keeping the foundation separate lets the match-reporting tickets build on a tested table and host actions. A numbered limit of 5 keeps the TV readable, and one function per change under a row lock keeps the count and positions right when taps arrive together.
+
 ## 2026-11-04: A brass logo that links to the start page
 
 **Decision:** The logo is brass with a rust dot (the colours of the lounge look swapped round from rust text and a brass dot), and it is a link to the start page everywhere: the landing page, guest and host headers and the TV.

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { supportedLanguages } from "@/i18n/language";
+import { CompetitionNameSchema } from "@/lib/schemas/competitions";
 import { AwardCategorySchema } from "@/lib/schemas/awards";
 import { HotTakeSchema } from "@/lib/schemas/hottakes";
 import { PartySchema } from "@/lib/schemas/party";
@@ -59,6 +60,19 @@ export const HotTakeContentSchema = z.strictObject({
 
 export type HotTakeContent = z.infer<typeof HotTakeContentSchema>;
 
+/**
+ * A suggested competition: its name in every supported language. The name is
+ * copied into the event in the event language when the host picks it, and
+ * the host may rename it. The id is stable, so a saved wizard draft can refer
+ * to it.
+ */
+export const CompetitionContentSchema = z.strictObject({
+  id: z.string().regex(/^[a-z]+-[a-z0-9-]+$/),
+  names: z.record(z.enum(supportedLanguages), CompetitionNameSchema),
+});
+
+export type CompetitionContent = z.infer<typeof CompetitionContentSchema>;
+
 export const NicheConfigSchema = z.strictObject({
   id: z.string().regex(/^[a-z]+$/),
   /** i18n keys, never literal text, so the copy exists in sv and en. */
@@ -93,6 +107,8 @@ export const NicheConfigSchema = z.strictObject({
   awards: z.array(AwardContentSchema),
   /** Ready-made hot takes the host picks from. */
   hottakes: z.array(HotTakeContentSchema),
+  /** Competitions the wizard suggests, such as ping pong or darts. */
+  competitions: z.array(CompetitionContentSchema),
   /** Guidance for AI suggestions. English, never shown in the UI. */
   promptHints: z.string().min(1),
 });

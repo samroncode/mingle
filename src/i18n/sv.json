@@ -328,6 +328,35 @@
         "sided_one": "Du höll med majoriteten {{sided}} av {{count}} gång",
         "sided_other": "Du höll med majoriteten {{sided}} av {{count}} gånger"
       }
+    },
+    "competitions": {
+      "name": "Tävlingar",
+      "items_one": "{{count}} tävling",
+      "items_other": "{{count}} tävlingar",
+      "description": "Pingis, dart eller vilket spel som helst, med en tabell i realtid.",
+      "host": {
+        "empty": "Inga tävlingar än. Lägg till en, till exempel pingis eller dart.",
+        "loadFailed": "Det gick inte att hämta tävlingarna. Ladda om sidan och försök igen.",
+        "newName": "Namn på den nya tävlingen",
+        "newPlaceholder": "Pingis",
+        "add": "Lägg till tävling",
+        "full": "Du har {{max}} tävlingar, det mesta en kväll rymmer. Ta bort en för att lägga till en ny.",
+        "save": "Spara",
+        "cancel": "Avbryt",
+        "renameLabel": "Nytt namn för {{name}}",
+        "rename": "Byt namn på {{name}}",
+        "remove": "Ta bort {{name}}",
+        "moveUp": "Flytta upp {{name}}",
+        "moveDown": "Flytta ned {{name}}",
+        "removeTitle": "Ta bort {{name}}",
+        "removeConfirm": "Ta bort {{name}}? Matcherna försvinner med den och det går inte att ångra.",
+        "removeAction": "Ta bort tävlingen",
+        "errors": {
+          "too_many": "En kväll kan ha högst 5 tävlingar. Ta bort en först.",
+          "not_found": "Tävlingen finns redan inte kvar. Ladda om sidan för att se listan.",
+          "invalid_request": "Kolla namnet: det ska vara 1 till 40 tecken."
+        }
+      }
     }
   },
   "links": {
@@ -355,6 +384,7 @@
       "quiz": "Quizfrågor",
       "awards": "Kategorier för utmärkelser",
       "hottakes": "Heta åsikter",
+      "competitions": "Tävlingar",
       "costs": "Gemensamma kostnader",
       "welcome": "Välkomsttext",
       "menu": "Meny",
@@ -377,7 +407,9 @@
       "hotTakes_one": "{{count}} het åsikt",
       "hotTakes_other": "{{count}} heta åsikter",
       "costs_one": "Gäster betalar {{name}} · {{count}} inköp",
-      "costs_other": "Gäster betalar {{name}} · {{count}} inköp"
+      "costs_other": "Gäster betalar {{name}} · {{count}} inköp",
+      "competitions_one": "{{count}} tävling",
+      "competitions_other": "{{count}} tävlingar"
     },
     "costs": {
       "name": "Gemensamma kostnader",
@@ -495,6 +527,23 @@
       "takePlaceholder": "Ananas hör hemma på pizza",
       "errors": {
         "empty": "Het åsikt {{n}} behöver en text på 1 till {{max}} tecken."
+      }
+    },
+    "competitions": {
+      "count": "{{count}} av {{max}} tävlingar valda",
+      "empty": "Inga tävlingar valda. Lägg till ett förslag nedan eller skriv en egen.",
+      "addOwn": "Lägg till egen tävling",
+      "full": "Tävlingarna är fulla ({{max}}). Ta bort en för att lägga till en ny.",
+      "more": "Föreslagna tävlingar ({{count}})",
+      "add": "Lägg till",
+      "addCompetition": "Lägg till tävlingen: {{name}}",
+      "moveUp": "Flytta tävling {{n}} uppåt",
+      "moveDown": "Flytta tävling {{n}} nedåt",
+      "remove": "Ta bort tävling {{n}}",
+      "nameLabel": "Namn på tävling {{n}}",
+      "namePlaceholder": "Pingis",
+      "errors": {
+        "empty": "Tävling {{n}} behöver ett namn på 1 till {{max}} tecken."
       }
     }
   },

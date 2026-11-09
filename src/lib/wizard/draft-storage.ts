@@ -2,12 +2,14 @@ import { z } from "zod";
 import { supportedLanguages } from "@/i18n/language";
 import { partyLimits } from "@/lib/schemas/party";
 import { awardsLimits } from "@/lib/schemas/awards";
+import { competitionsLimits } from "@/lib/schemas/competitions";
 import { hottakesLimits } from "@/lib/schemas/hottakes";
 import { quizLimits } from "@/lib/schemas/quiz";
 import { moduleIds } from "@/modules/registry";
 import { nicheIds } from "@/niches/ids";
 import { emptyAwards } from "./awards";
 import { costsLimits } from "@/lib/schemas/costs";
+import { emptyCompetitions } from "./competitions";
 import { emptyHotTakes } from "./hottakes";
 import { emptyQuiz } from "./quiz";
 import { stepOrder, type WizardDraft } from "./state";
@@ -43,6 +45,16 @@ const AwardsItemSchema = z.discriminatedUnion("kind", [
 ]);
 
 // A hot take being typed may be unfinished, so its text can be empty.
+// A competition being typed may be unfinished, so its name can be empty.
+const CompetitionsItemSchema = z.discriminatedUnion("kind", [
+  z.strictObject({ kind: z.literal("builtin"), id: z.string().max(100) }),
+  z.strictObject({
+    kind: z.literal("own"),
+    key: z.string().max(100),
+    name: typedText,
+  }),
+]);
+
 const HotTakesItemSchema = z.discriminatedUnion("kind", [
   z.strictObject({ kind: z.literal("builtin"), id: z.string().max(100) }),
   z.strictObject({
@@ -78,6 +90,13 @@ const DraftSchema = z.strictObject({
       items: z.array(HotTakesItemSchema).max(hottakesLimits.takes),
     })
     .default(emptyHotTakes),
+  // Drafts saved before the competitions step existed have none.
+  competitions: z
+    .strictObject({
+      seeded: z.boolean(),
+      items: z.array(CompetitionsItemSchema).max(competitionsLimits.perEvent),
+    })
+    .default(emptyCompetitions),
   // Drafts saved before the shared costs step existed have none: switched off.
   costs: z
     .strictObject({

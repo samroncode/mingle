@@ -124,4 +124,6 @@ export const defaultPicks: Record<ModuleId, DefaultPick> = {
           ),
         ),
     ),
+  // Competitions has no default pick: the host adds the ones they play.
+  competitions: () => Promise.resolve({ ok: true, picked: false }),
 };

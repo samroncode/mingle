@@ -5,7 +5,7 @@ import type {
 } from "../../../src/lib/schemas/host-actions.ts";
 import { applyMove, type StepBounds } from "./flow.ts";
 
-const all = ["quiz", "awards", "hottakes"] as const;
+const all = ["quiz", "awards", "hottakes", "competitions"] as const;
 const lobby: FlowState = {
   status: "lobby",
   currentModule: null,
@@ -42,6 +42,14 @@ describe("applyMove without step bounds", () => {
       ok: true,
       state: quizAt(42),
     });
+  });
+});
+
+describe("competitions", () => {
+  it("can't be started yet, even when enabled", () => {
+    expect(
+      applyMove(lobby, all, { type: "start_module", module: "competitions" }),
+    ).toEqual({ ok: false, error: "invalid_transition" });
   });
 });
 

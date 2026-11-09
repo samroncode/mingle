@@ -109,6 +109,7 @@ export type Database = {
           route: string | null;
           stack: string | null;
         };
+        ComputedFields: never;
         Insert: {
           action?: string | null;
           app_version?: string | null;
@@ -136,6 +137,39 @@ export type Database = {
           stack?: string | null;
         };
         Relationships: [];
+      };
+      competitions: {
+        Row: {
+          created_at: string;
+          event_id: string;
+          id: string;
+          name: string;
+          position: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          name: string;
+          position: number;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          name?: string;
+          position?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "competitions_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       cost_payments: {
         Row: {
@@ -490,6 +524,7 @@ export type Database = {
           note: string | null;
           pizza: string;
         };
+        ComputedFields: never;
         Insert: {
           created_at?: string;
           done?: boolean;
@@ -723,12 +758,17 @@ export type Database = {
         };
         Returns: boolean;
       };
+      create_competition: {
+        Args: { competition_name: string; target_event_id: string };
+        Returns: string;
+      };
       create_event: {
         Args: {
           admin_key_hash: string;
           awards?: Json;
           caller: string;
           code: string;
+          competitions?: Json;
           costs?: Json;
           enabled_modules: string[];
           hottakes?: Json;
@@ -737,6 +777,10 @@ export type Database = {
           party: Json;
           quiz?: Json;
         };
+        Returns: string;
+      };
+      delete_competition: {
+        Args: { competition_id: string; target_event_id: string };
         Returns: string;
       };
       delete_notice: {
@@ -873,12 +917,24 @@ export type Database = {
         Returns: string;
       };
       removed_payers: { Args: { target_event_id: string }; Returns: Json };
+      rename_competition: {
+        Args: {
+          competition_id: string;
+          competition_name: string;
+          target_event_id: string;
+        };
+        Returns: string;
+      };
       rename_guest: {
         Args: {
           new_name: string;
           target_event_id: string;
           target_user_id: string;
         };
+        Returns: string;
+      };
+      reorder_competitions: {
+        Args: { competition_ids: string[]; target_event_id: string };
         Returns: string;
       };
       send_notice: {
@@ -924,11 +980,7 @@ export type Database = {
         Returns: string;
       };
       submit_pizza_order: {
-        Args: {
-          name: string;
-          note?: string;
-          pizza: string;
-        };
+        Args: { name: string; note?: string; pizza: string };
         Returns: string;
       };
       update_award_categories: {

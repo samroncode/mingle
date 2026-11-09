@@ -1,6 +1,7 @@
 import { bachelorAwards } from "./awards/bachelor";
 import { bachelorHotTakes } from "./hottakes/bachelor";
 import { bachelorQuiz } from "./quiz/bachelor";
+import { bachelorCompetitions } from "./competitions/bachelor";
 import type { NicheConfig } from "./types";
 
 export const bachelor: NicheConfig = {
@@ -17,7 +18,7 @@ export const bachelor: NicheConfig = {
       "sidebar-primary-foreground": "var(--on-bright)",
     },
   },
-  defaultModules: ["quiz", "awards", "hottakes"],
+  defaultModules: ["quiz", "awards", "hottakes", "competitions"],
   defaultSharedCosts: false,
   welcome: {
     sv: "Välkomna till kvällen! Nu ska vi fira ordentligt. Skanna koden, skriv ditt namn och gör er redo för skratt och bus.",
@@ -26,6 +27,7 @@ export const bachelor: NicheConfig = {
   quiz: bachelorQuiz,
   awards: bachelorAwards,
   hottakes: bachelorHotTakes,
+  competitions: bachelorCompetitions,
   promptHints:
     "Bachelor or bachelorette party with close friends. Playful and teasing but affectionate, never cruel, and nothing that could truly embarrass the guest of honour.",
 };

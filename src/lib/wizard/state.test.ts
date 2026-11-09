@@ -8,6 +8,7 @@ import {
   isSkippable,
   stepInvalidFields,
   stepOrder,
+  stepsFor,
   toCreateRequest,
   toParty,
   wizardReducer,
@@ -36,8 +37,9 @@ describe("steps", () => {
       draft = wizardReducer(draft, { type: "next" });
       seen.push(draft.step);
     }
-    // The shared costs step is off by default, so it is not walked through.
-    const walked = stepOrder.filter((step) => step !== "costs");
+    // The steps of activities and costs that are off by default are not
+    // walked through.
+    const walked = stepsFor(initialDraft("en"));
     expect(seen.slice(0, walked.length)).toEqual(walked);
     expect(draft.step).toBe(stepOrder.at(-1));
 

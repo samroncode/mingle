@@ -207,6 +207,14 @@ _Avoid_: Nomination, pick
 A title and a name the host types in ("Dart tournament", "Anna"), shown in the party screen rotation and on guests' phones. Free text, not linked to a guest.
 _Avoid_: Result, champion, leaderboard entry
 
+**Competition**:
+A game the host sets up for the evening, such as "Ping pong" or "Darts", with a name of 1 to 40 characters the host wrote. An event has at most 5. Each will get its own table of results. Called "Tävling" in Swedish.
+_Avoid_: Tournament (brackets are out of scope), game, league
+
+**Match**:
+One played game in a competition: a winner and a loser among the guests, with an optional score, reported by a guest who took part. Matches are built after the competitions themselves (spec #262).
+_Avoid_: Result, round, fixture
+
 **Notice**:
 A short text the host sends to every guest's phone, shown as a dismissible banner and listed under "You're in". Called "Messages" in the UI.
 _Avoid_: Notification (it implies push), announcement, alert
