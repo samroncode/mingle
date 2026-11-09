@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { EventRow, MemberRow } from "@/api/events";
 import type { Party } from "@/lib/schemas/party";
 import {
@@ -52,13 +53,28 @@ export function PartRotation({
 }) {
   const { tables } = useStandings(event, members);
   const parts = partsOf(party, members, tables).filter(isSlotPart);
-  const shown = useRotation(parts.map(partKey));
+  const { shown, step } = useRotation(parts.map(partKey));
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.key === "ArrowRight" || e.key === " ") step(1);
+      else if (e.key === "ArrowLeft") step(-1);
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [step]);
   const part = parts.find((candidate) => partKey(candidate) === shown);
   return (
     <div className="flex h-full flex-col gap-(--space-6)">
       <WelcomePart welcome={party.welcome} />
       {part && (
-        <div className="min-h-0 flex-1 overflow-hidden">
+        <div
+          data-testid="part-click"
+          className="min-h-0 flex-1 cursor-pointer overflow-hidden"
+          onClick={() => step(1)}
+        >
           <PartView key={partKey(part)} part={part} />
         </div>
       )}

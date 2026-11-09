@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * How long each rotating part of the party screen stays before the next one.
@@ -17,6 +17,13 @@ export function advance(keys: string[], key: string): string | undefined {
   const current = resolveKey(keys, key);
   if (current === undefined) return undefined;
   return keys[(keys.indexOf(current) + 1) % keys.length];
+}
+
+/** The key before `key`, wrapping around; a vanished key restarts the list. */
+export function retreat(keys: string[], key: string): string | undefined {
+  const current = resolveKey(keys, key);
+  if (current === undefined) return undefined;
+  return keys[(keys.indexOf(current) - 1 + keys.length) % keys.length];
 }
 
 /**
@@ -51,10 +58,21 @@ export function startRotation(
   return () => clearInterval(timer);
 }
 
-/** The key to show now, rotating through `keys` every 30 seconds. */
-export function useRotation(keys: string[]): string | undefined {
+/**
+ * The key to show now, rotating through `keys` every 30 seconds, plus `step`
+ * to move one part forward (1) or back (-1) by hand. A manual move restarts
+ * the timer, so the automatic rotation carries on from the part shown.
+ */
+export function useRotation(keys: string[]): {
+  shown: string | undefined;
+  step: (direction: 1 | -1) => void;
+} {
   const [key, setKey] = useState(keys[0] ?? "");
   const keysRef = useRef(keys);
+  const keyRef = useRef(key);
+  useEffect(() => {
+    keyRef.current = key;
+  }, [key]);
   useEffect(() => {
     const next = successor(keysRef.current, keys, key);
     keysRef.current = keys;
@@ -66,5 +84,10 @@ export function useRotation(keys: string[]): string | undefined {
     // Restarted on each change so the timer counts from what is shown.
     [key],
   );
-  return resolveKey(keys, key);
+  const step = useCallback((direction: 1 | -1) => {
+    const move = direction === 1 ? advance : retreat;
+    const next = move(keysRef.current, keyRef.current);
+    if (next !== undefined) setKey(next);
+  }, []);
+  return { shown: resolveKey(keys, key), step };
 }

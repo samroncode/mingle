@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { PanelSection } from "@/components/PanelSection";
 import { EventLinks } from "@/components/EventLinks";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
+import type { EventRow, MemberRow } from "@/api/events";
 import { useEventState } from "@/hooks/useEventState";
 import { useHostEventId } from "@/hooks/useHostEventId";
 import type { HostLinkParts } from "@/lib/host/host-door";
@@ -11,6 +12,7 @@ import { Activities } from "./Activities";
 import { BrightRoom } from "./BrightRoom";
 import { EndEvent } from "./EndEvent";
 import { Guests } from "./Guests";
+import { HostFrame } from "./HostFrame";
 import { Messages } from "./Messages";
 import { NowPanel } from "./NowPanel";
 import { PartyScreen } from "./PartyScreen";
@@ -41,35 +43,27 @@ function EventSection({
   );
 }
 
-function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
-  const { t } = useTranslation();
-  const state = useEventState(eventId);
-  useEventLanguage(state.event?.language);
-  const { event, members } = state;
-  // Right after End, until the snapshot catches up.
-  const [endedHere, setEndedHere] = useState(false);
+interface SectionsProps {
+  eventId: string;
+  link: HostLinkParts;
+  event: EventRow;
+  members: MemberRow[];
+  ended: boolean;
+  onEnded: () => void;
+}
 
-  if (!event) {
-    return (
-      <p
-        role={state.status === "error" ? "alert" : undefined}
-        className="text-ink-muted"
-      >
-        {t(
-          state.status === "error"
-            ? "hostPanel.loadFailed"
-            : "hostPanel.loading",
-        )}
-      </p>
-    );
-  }
-  const ended = event.status === "ended" || endedHere;
+/** Every section in today's order; the dashboard tickets move them into slots. */
+function Sections({
+  eventId,
+  link,
+  event,
+  members,
+  ended,
+  onEnded,
+}: SectionsProps) {
+  const { t } = useTranslation();
   return (
     <>
-      <TopBar event={event} members={members} hostKey={link.key} />
-      {state.status === "error" && (
-        <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
-      )}
       <NowPanel
         event={event}
         members={members}
@@ -112,13 +106,54 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
       )}
       <EventSection link={link}>
         {!ended && (
-          <EndEvent
-            code={event.code}
-            hostKey={link.key}
-            onEnded={() => setEndedHere(true)}
-          />
+          <EndEvent code={event.code} hostKey={link.key} onEnded={onEnded} />
         )}
       </EventSection>
+    </>
+  );
+}
+
+function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
+  const { t } = useTranslation();
+  const state = useEventState(eventId);
+  useEventLanguage(state.event?.language);
+  const { event, members } = state;
+  // Right after End, until the snapshot catches up.
+  const [endedHere, setEndedHere] = useState(false);
+
+  if (!event) {
+    return (
+      <p
+        role={state.status === "error" ? "alert" : undefined}
+        className="text-ink-muted"
+      >
+        {t(
+          state.status === "error"
+            ? "hostPanel.loadFailed"
+            : "hostPanel.loading",
+        )}
+      </p>
+    );
+  }
+  const ended = event.status === "ended" || endedHere;
+  return (
+    <>
+      <TopBar event={event} members={members} hostKey={link.key} />
+      {state.status === "error" && (
+        <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
+      )}
+      <HostFrame
+        main={
+          <Sections
+            eventId={eventId}
+            link={link}
+            event={event}
+            members={members}
+            ended={ended}
+            onEnded={() => setEndedHere(true)}
+          />
+        }
+      />
     </>
   );
 }

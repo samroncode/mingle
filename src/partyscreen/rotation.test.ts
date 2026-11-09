@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { advance, resolveKey, startRotation, successor } from "./rotation";
+import {
+  advance,
+  resolveKey,
+  retreat,
+  startRotation,
+  successor,
+} from "./rotation";
 
 describe("advance and resolveKey", () => {
   it("moves to the next key and wraps around", () => {
@@ -96,5 +102,18 @@ describe("startRotation", () => {
     stop();
     vi.advanceTimersByTime(60_000);
     expect(seen).toEqual([]);
+  });
+});
+
+describe("retreat", () => {
+  it("goes back one and wraps to the last", () => {
+    expect(retreat(["a", "b", "c"], "b")).toBe("a");
+    expect(retreat(["a", "b", "c"], "a")).toBe("c");
+  });
+  it("restarts from the first part when the key is gone", () => {
+    expect(retreat(["a", "b", "c"], "x")).toBe("c");
+  });
+  it("is undefined for an empty list", () => {
+    expect(retreat([], "a")).toBeUndefined();
   });
 });

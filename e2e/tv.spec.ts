@@ -218,3 +218,44 @@ test("the TV schedule lines up untimed lines with a marker, and drops the time c
     await page.screenshot({ path: `${process.env.SHOTS}/tv-untimed.png` });
   }
 });
+
+test("the TV stacks menu and schedule lines and switches part by key or click", async ({
+  page,
+}) => {
+  await fakeSupabase(page, []);
+  await fakeTv(page, {
+    snapshot: {
+      ...snapshot({
+        party: {
+          menu: ["Tacos", "Nachos", "Churros"],
+          schedule: mixedSchedule,
+        },
+      }),
+      members: [],
+    },
+  });
+  await page.goto(`/tv/${code}`);
+  const dinner = page.getByRole("listitem").filter({ hasText: "Tacos" });
+  await expect(dinner).toBeVisible();
+  const first = await page.getByText("Tacos").boundingBox();
+  const second = await page.getByText("Nachos").boundingBox();
+  expect(second!.y).toBeGreaterThan(first!.y);
+  expect(Math.abs(second!.x - first!.x)).toBeLessThan(2);
+  if (process.env.SHOTS) {
+    await page.screenshot({ path: `${process.env.SHOTS}/tv-menu.png` });
+  }
+
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByText("Darts")).toBeVisible();
+  const dinnerRow = await page.getByText("Dinner").boundingBox();
+  const dartsRow = await page.getByText("Darts").boundingBox();
+  expect(dartsRow!.y).toBeGreaterThan(dinnerRow!.y);
+  if (process.env.SHOTS) {
+    await page.screenshot({ path: `${process.env.SHOTS}/tv-schedule.png` });
+  }
+
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.getByText("Tacos")).toBeVisible();
+  await page.getByTestId("part-click").click();
+  await expect(page.getByText("Darts")).toBeVisible();
+});
