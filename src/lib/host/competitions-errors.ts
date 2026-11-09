@@ -33,3 +33,18 @@ export function matchErrorKey(error: HostActionError) {
       return hostPanelErrorKey(error);
   }
 }
+
+/**
+ * i18n key of the message for a failed "Show on TV" or stop. An empty list or
+ * a competition that is gone have their own wording; the rest is the panel's.
+ */
+export function spotlightErrorKey(error: HostActionError) {
+  switch (error) {
+    case "module_empty":
+      return "modules.competitions.host.spotlight.errors.module_empty" as const;
+    case "invalid_transition":
+      return "modules.competitions.host.spotlight.errors.invalid_transition" as const;
+    default:
+      return hostPanelErrorKey(error);
+  }
+}

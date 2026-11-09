@@ -381,6 +381,18 @@
           "too_many": "An evening can have at most 5 competitions. Remove one first.",
           "not_found": "That competition is already gone. Reload the page to see the list.",
           "invalid_request": "Check the name: it needs 1 to 40 characters."
+        },
+        "spotlight": {
+          "title": "Show on TV",
+          "off": "Nothing is on the TV. Pick a table to show it in full screen.",
+          "onTv": "On the TV now: {{name}}",
+          "stop": "Stop showing",
+          "show": "Show {{name}} on TV",
+          "showShort": "Show on TV",
+          "errors": {
+            "module_empty": "Add a competition first.",
+            "invalid_transition": "The table can't be shown right now. Stop the running activity first, or check that the evening hasn't ended."
+          }
         }
       },
       "guest": {
@@ -419,6 +431,18 @@
           "rate_limited": "You've reported a lot of matches. Wait a while and try again.",
           "unknown": "Your match didn't go through. Try again."
         }
+      },
+      "tv": {
+        "empty": "No matches yet. Report one from your phone!"
+      },
+      "table": {
+        "place": "#",
+        "player": "Player",
+        "played": "P",
+        "wins": "W",
+        "losses": "L",
+        "difference": "+/−",
+        "someone": "a guest"
       }
     }
   },

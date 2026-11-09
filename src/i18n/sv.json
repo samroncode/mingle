@@ -381,6 +381,18 @@
           "too_many": "En kväll kan ha högst 5 tävlingar. Ta bort en först.",
           "not_found": "Tävlingen finns redan inte kvar. Ladda om sidan för att se listan.",
           "invalid_request": "Kolla namnet: det ska vara 1 till 40 tecken."
+        },
+        "spotlight": {
+          "title": "Visa på TV",
+          "off": "Inget visas på TV:n. Välj en tabell för att visa den i helskärm.",
+          "onTv": "På TV:n nu: {{name}}",
+          "stop": "Sluta visa",
+          "show": "Visa {{name}} på TV",
+          "showShort": "Visa på TV",
+          "errors": {
+            "module_empty": "Lägg till en tävling först.",
+            "invalid_transition": "Tabellen kan inte visas just nu. Stoppa aktiviteten som pågår först, eller kolla att kvällen inte är slut."
+          }
         }
       },
       "guest": {
@@ -419,6 +431,18 @@
           "rate_limited": "Du har rapporterat många matcher. Vänta en stund och försök igen.",
           "unknown": "Matchen gick inte igenom. Försök igen."
         }
+      },
+      "tv": {
+        "empty": "Inga matcher än. Rapportera en från mobilen!"
+      },
+      "table": {
+        "place": "#",
+        "player": "Spelare",
+        "played": "S",
+        "wins": "V",
+        "losses": "F",
+        "difference": "+/−",
+        "someone": "en gäst"
       }
     }
   },
