@@ -458,6 +458,10 @@
         "lossesFull": "Losses",
         "diffFull": "Score difference",
         "tableLabel": "{{name}} standings"
+      },
+      "summary": {
+        "title": "Competitions",
+        "winner": "Winner: {{name}}"
       }
     }
   },

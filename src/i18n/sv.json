@@ -458,6 +458,10 @@
         "lossesFull": "Förluster",
         "diffFull": "Poängskillnad",
         "tableLabel": "Tabell för {{name}}"
+      },
+      "summary": {
+        "title": "Tävlingar",
+        "winner": "Vinnare: {{name}}"
       }
     }
   },

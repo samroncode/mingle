@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { tablesOf } from "./tables";
+import { tablesOf, winnerName } from "./tables";
 
 const names = new Map([
   ["a", "Anna"],
@@ -31,5 +31,25 @@ describe("tablesOf", () => {
 
   it("is empty when no match exists", () => {
     expect(tablesOf(competitions, [], names)).toEqual([]);
+  });
+});
+
+describe("winnerName", () => {
+  const match = {
+    competitionId: "c1",
+    winnerId: "b",
+    loserId: "a",
+    winnerScore: null,
+    loserScore: null,
+  };
+
+  it("is the name on top of the table", () => {
+    const [table] = tablesOf(competitions, [match], names);
+    expect(winnerName(table!)).toBe("Bertil");
+  });
+
+  it("is empty when the winner has no known name", () => {
+    const [table] = tablesOf(competitions, [match], new Map());
+    expect(winnerName(table!)).toBe("");
   });
 });

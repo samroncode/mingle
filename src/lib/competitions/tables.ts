@@ -24,3 +24,8 @@ export function tablesOf(
     }))
     .filter((table) => table.rows.length > 0);
 }
+
+/** The name on top of a table; empty when that player has no known name. */
+export function winnerName(table: CompetitionTable): string {
+  return table.rows[0]?.name ?? "";
+}
