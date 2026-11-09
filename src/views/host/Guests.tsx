@@ -19,7 +19,7 @@ interface GuestsProps {
   ended: boolean;
 }
 
-function RenameForm({
+export function RenameForm({
   guest,
   code,
   hostKey,

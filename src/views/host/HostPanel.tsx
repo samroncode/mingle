@@ -16,6 +16,7 @@ import { HostFrame } from "./HostFrame";
 import { Messages } from "./Messages";
 import { NowPanel } from "./NowPanel";
 import { PartyScreen } from "./PartyScreen";
+import { SideColumn } from "./SideColumn";
 import { SharedCosts } from "./SharedCosts";
 import { TopBar } from "./TopBar";
 import { Winners } from "./Winners";
@@ -151,6 +152,14 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
             members={members}
             ended={ended}
             onEnded={() => setEndedHere(true)}
+          />
+        }
+        side={
+          <SideColumn
+            event={event}
+            members={members}
+            hostKey={link.key}
+            ended={ended}
           />
         }
       />

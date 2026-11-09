@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 interface CopyButtonProps {
   text: string;
   label: string;
+  size?: "default" | "sm";
 }
 
 /** Copies `text` to the clipboard and says so for a moment. */
-export function CopyButton({ text, label }: CopyButtonProps) {
+export function CopyButton({ text, label, size }: CopyButtonProps) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
 
@@ -23,7 +24,12 @@ export function CopyButton({ text, label }: CopyButtonProps) {
   }
 
   return (
-    <Button variant="outline" aria-label={label} onClick={() => void copy()}>
+    <Button
+      variant="outline"
+      size={size}
+      aria-label={label}
+      onClick={() => void copy()}
+    >
       {copied ? t("common.copied") : t("common.copy")}
     </Button>
   );
