@@ -85,6 +85,10 @@ export function applyMove(
       if (!enabledModules.includes(move.module)) {
         return { ok: false, error: "module_disabled" };
       }
+      // A competition is only meaningful for Competitions.
+      if (move.module !== "competitions" && move.competition !== undefined) {
+        return refused();
+      }
       if (bounds?.steps === 0) return { ok: false, error: "module_empty" };
       if (bounds?.finished) return { ok: false, error: "module_finished" };
       return startedAt(move, bounds);
@@ -115,8 +119,6 @@ function startedAt(
   bounds: StepBounds | null,
 ): FlowTransition {
   const spotlit = move.module === "competitions";
-  // A competition is only meaningful for Competitions, and must exist.
-  if (!spotlit && move.competition !== undefined) return refused();
   const step = spotlit ? (move.competition ?? 0) : (bounds?.firstUnplayed ?? 0);
   if (spotlit && step >= (bounds?.steps ?? 0)) return refused();
   return moved({

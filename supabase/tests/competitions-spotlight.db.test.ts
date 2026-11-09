@@ -109,7 +109,10 @@ describe("start_module for competitions", () => {
   });
 
   it("refuses with module_disabled when Competitions is off", async () => {
-    const host = await createHost(["Ping pong"], ["quiz"]);
+    const host = await createHost(["Ping pong"]);
+    sql(
+      `update public.events set enabled_modules = '{quiz}' where id = '${host.eventId}'`,
+    );
     const response = await setFlow(host, show());
     expect(response.status).toBe(409);
     expect(response.body).toEqual({ error: "module_disabled" });

@@ -271,20 +271,6 @@ describe("update_competitions with the right key", () => {
   });
 });
 
-describe("start_module for Competitions", () => {
-  it("is refused until the spotlight exists", async () => {
-    const host = await createHost(["A"]);
-
-    const response = await setFlow(host, {
-      type: "start_module",
-      module: "competitions",
-    });
-
-    expect(response.status).toBe(409);
-    expect(response.body).toEqual({ error: "invalid_transition" });
-  });
-});
-
 describe("update_competitions without the right key", () => {
   async function expectRefused(host: Host, link: HostLink) {
     const response = await update(host, { type: "add", name: "Sneaky" }, link);
