@@ -1,5 +1,6 @@
 import { ErrorLine } from "@/components/ErrorLine";
-import { useEffect, useState } from "react";
+import { useLoad } from "@/hooks/useLoad";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { answerHotTake, getMyHotTakeAnswer } from "@/api/hottakes";
 import type { HotTakeView } from "@/api/hottakes";
@@ -41,20 +42,11 @@ export function GuestTake({
   version,
 }: GuestTakeProps) {
   const { t } = useTranslation();
-  const [chosen, setChosen] = useState<boolean | null>(null);
+  // A tap made before the stored answer is read wins over it.
+  const stored = useLoad(take.id, () => getMyHotTakeAnswer(take.id, userId));
+  const [tapped, setTapped] = useState<boolean | null>();
   const [error, setError] = useState<string>();
-
-  useEffect(() => {
-    let stale = false;
-    void getMyHotTakeAnswer(take.id, userId).then((result) => {
-      // A tap made before this arrived wins over the stored answer.
-      if (stale || !result.ok) return;
-      setChosen((current) => current ?? result.value);
-    });
-    return () => {
-      stale = true;
-    };
-  }, [take.id, userId]);
+  const chosen = tapped ?? (stored.status === "ready" ? stored.value : null);
 
   const result = useHotTakeResult(take.id, revealed, version);
   const standing =
@@ -64,7 +56,7 @@ export function GuestTake({
 
   async function choose(agree: boolean) {
     const before = chosen;
-    setChosen(agree);
+    setTapped(agree);
     setError(undefined);
     const result = await answerHotTake({
       eventId,
@@ -73,7 +65,7 @@ export function GuestTake({
       agree,
     });
     if (result.ok) return;
-    setChosen(before);
+    setTapped(before);
     setError(t(`modules.hottakes.guest.errors.${result.error}`));
   }
 
