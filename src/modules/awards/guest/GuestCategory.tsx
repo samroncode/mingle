@@ -1,5 +1,6 @@
 import { ErrorLine } from "@/components/ErrorLine";
-import { useEffect, useState } from "react";
+import { useLoad } from "@/hooks/useLoad";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getMyAwardVote, voteForGuest } from "@/api/awards";
 import type { AwardCategoryView } from "@/api/awards";
@@ -44,27 +45,20 @@ export function GuestCategory({
   version,
 }: GuestCategoryProps) {
   const { t } = useTranslation();
-  const [chosen, setChosen] = useState<string | null>(null);
+  // A tap made before the stored vote is read wins over it.
+  const stored = useLoad(category.id, () =>
+    getMyAwardVote(category.id, userId),
+  );
+  const [tapped, setTapped] = useState<string | null>();
   const [error, setError] = useState<string>();
+  const chosen = tapped ?? (stored.status === "ready" ? stored.value : null);
   const candidates = voteCandidates(members, userId, language);
   const winners = useAwardWinners(category.id, revealed, version);
   const myVotes = useMyAwardVotes(category.id, revealed, version);
 
-  useEffect(() => {
-    let stale = false;
-    void getMyAwardVote(category.id, userId).then((result) => {
-      // A tap made before this arrived wins over the stored vote.
-      if (stale || !result.ok) return;
-      setChosen((current) => current ?? result.value);
-    });
-    return () => {
-      stale = true;
-    };
-  }, [category.id, userId]);
-
   async function choose(votedForId: string) {
     const before = chosen;
-    setChosen(votedForId);
+    setTapped(votedForId);
     setError(undefined);
     const result = await voteForGuest({
       eventId,
@@ -73,7 +67,7 @@ export function GuestCategory({
       votedForId,
     });
     if (result.ok) return;
-    setChosen(before);
+    setTapped(before);
     setError(t(`modules.awards.guest.errors.${result.error}`));
   }
 

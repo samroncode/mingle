@@ -1,5 +1,6 @@
 import { ErrorLine } from "@/components/ErrorLine";
-import { useEffect, useState } from "react";
+import { useLoad } from "@/hooks/useLoad";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { answerQuizQuestion, getMyQuizAnswer } from "@/api/quiz";
 import type { QuizQuestionView } from "@/api/quiz";
@@ -42,26 +43,24 @@ export function GuestQuestion({
 }: GuestQuestionProps) {
   const { t } = useTranslation();
   // undefined until the stored answer is read, so a reload right after the
-  // reveal never flashes "wrong" for a guest who was right.
-  const [chosen, setChosen] = useState<number | null | undefined>();
+  // reveal never flashes "wrong" for a guest who was right. A tap made before
+  // the read finishes wins over the stored answer.
+  const stored = useLoad(question.id, () =>
+    getMyQuizAnswer(question.id, userId),
+  );
+  const [tapped, setTapped] = useState<number | null>();
   const [error, setError] = useState<string>();
-
-  useEffect(() => {
-    let stale = false;
-    void getMyQuizAnswer(question.id, userId).then((result) => {
-      // A tap made before this arrived wins over the stored answer.
-      if (stale) return;
-      const stored = result.ok ? result.value : null;
-      setChosen((current) => current ?? stored);
-    });
-    return () => {
-      stale = true;
-    };
-  }, [question.id, userId]);
+  const chosen =
+    tapped ??
+    (stored.status === "loading"
+      ? undefined
+      : stored.status === "ready"
+        ? stored.value
+        : null);
 
   async function choose(index: number) {
     const before = chosen;
-    setChosen(index);
+    setTapped(index);
     setError(undefined);
     const result = await answerQuizQuestion({
       eventId,
@@ -70,7 +69,7 @@ export function GuestQuestion({
       chosen: index,
     });
     if (result.ok) return;
-    setChosen(before);
+    setTapped(before);
     setError(t(`modules.quiz.guest.errors.${result.error}`));
   }
 
