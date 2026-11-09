@@ -29,6 +29,11 @@ export interface ModuleHostProps extends ModuleViewProps {
   hostKey: string;
   /** True while another activity runs; the panel shows the reason itself. */
   startDisabled: boolean;
+  /**
+   * The dashboard shows Start and the running controls itself, so the section
+   * leaves them out and keeps only the list and its editing.
+   */
+  compact?: boolean;
 }
 
 /**
@@ -38,6 +43,12 @@ export interface ModuleHostProps extends ModuleViewProps {
  */
 export interface ModuleLiveProps extends ModuleHostProps {
   part?: "all" | "status" | "actions";
+}
+
+/** How far an activity has come: items in total and items played. */
+export interface ActivityCounts {
+  total: number;
+  done: number;
 }
 
 /** One activity (module in code): its id, name and the views it plugs in. */
@@ -68,6 +79,11 @@ export interface ModuleDefinition {
    * "8 questions, not started". Left out when the activity has none.
    */
   useSummary?: (event: EventRow) => string | undefined;
+  /**
+   * Hook giving how many items the activity has and how many are done, for
+   * the dashboard's progress bar. Left out when the activity has none.
+   */
+  useCounts?: (event: EventRow) => ActivityCounts | undefined;
   /** An extra setup wizard step, for activities that need one. */
   WizardStep?: ComponentType<ModuleWizardStepProps>;
 }

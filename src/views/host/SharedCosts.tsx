@@ -36,6 +36,8 @@ interface SharedCostsProps {
   language: string;
   /** The event's `costs_version`; it changes when a guest says they paid. */
   costsVersion: number;
+  /** Starts open, for a parent that already asked to see it. */
+  defaultOpen?: boolean;
 }
 
 function PurchaseList({
@@ -148,6 +150,7 @@ export function SharedCosts({
   members,
   language,
   costsVersion,
+  defaultOpen,
 }: SharedCostsProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState<CostsForm>();
@@ -205,6 +208,7 @@ export function SharedCosts({
       testId="host-costs"
       title={t("hostPanel.costs.title")}
       summary={summary}
+      defaultOpen={defaultOpen}
     >
       {load.status === "error" && (
         <div className="space-y-2">

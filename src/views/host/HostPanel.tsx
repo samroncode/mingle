@@ -3,6 +3,7 @@ import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { PanelSection } from "@/components/PanelSection";
 import { EventLinks } from "@/components/EventLinks";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import type { EventRow, MemberRow } from "@/api/events";
 import { useEventState } from "@/hooks/useEventState";
@@ -11,6 +12,8 @@ import type { HostLinkParts } from "@/lib/host/host-door";
 import { Activities } from "./Activities";
 import { BrightRoom } from "./BrightRoom";
 import { EndEvent } from "./EndEvent";
+import { DashboardMain } from "./dashboard/DashboardMain";
+import { DashboardNav } from "./dashboard/DashboardNav";
 import { Guests } from "./Guests";
 import { HostFrame } from "./HostFrame";
 import { Messages } from "./Messages";
@@ -120,6 +123,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
   const { event, members } = state;
   // Right after End, until the snapshot catches up.
   const [endedHere, setEndedHere] = useState(false);
+  const wide = useMediaQuery("(min-width: 1024px)");
 
   if (!event) {
     return (
@@ -143,15 +147,30 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
       )}
       <HostFrame
+        navLabel={t("hostPanel.dashboard.nav.label")}
+        nav={
+          wide ? <DashboardNav event={event} members={members} /> : undefined
+        }
         main={
-          <Sections
-            eventId={eventId}
-            link={link}
-            event={event}
-            members={members}
-            ended={ended}
-            onEnded={() => setEndedHere(true)}
-          />
+          wide ? (
+            <DashboardMain
+              eventId={eventId}
+              link={link}
+              event={event}
+              members={members}
+              ended={ended}
+              onEnded={() => setEndedHere(true)}
+            />
+          ) : (
+            <Sections
+              eventId={eventId}
+              link={link}
+              event={event}
+              members={members}
+              ended={ended}
+              onEnded={() => setEndedHere(true)}
+            />
+          )
         }
       />
     </>

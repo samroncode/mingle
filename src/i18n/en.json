@@ -955,6 +955,30 @@
         "name": "Enter the winner's name, 1 to 40 characters.",
         "full": "You can add up to 8 winners. Delete one first."
       }
+    },
+    "dashboard": {
+      "nav": {
+        "label": "Sections",
+        "live": "Live",
+        "activities": "Activities",
+        "program": "Program",
+        "messages": "Messages",
+        "guests": "Guests",
+        "costs": "Shared costs",
+        "party": "Party screen",
+        "brightRoom": "Bright room",
+        "end": "End the evening"
+      },
+      "showTable": "Show table on TV",
+      "edit": "Edit {{name}}",
+      "editShort": "Edit",
+      "close": "Close",
+      "progress": "{{name}} progress",
+      "progressText": "{{done}} of {{total}}",
+      "programEmpty": "No program yet.",
+      "programNow": "now",
+      "programEdit": "Edit program",
+      "costsOpen": "Open shared costs"
     }
   }
 }

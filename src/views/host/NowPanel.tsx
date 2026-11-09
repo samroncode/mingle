@@ -27,7 +27,7 @@ export function NowPanel({ event, members, hostKey, ended }: NowPanelProps) {
     <section
       data-testid="now-panel"
       aria-label={t("hostPanel.now.title")}
-      className="space-y-3"
+      className="space-y-2 lg:[&_button]:w-auto lg:[&_button]:px-8"
     >
       <h2 className="font-display text-sm font-bold uppercase tracking-wide text-ink-muted">
         {t("hostPanel.now.title")}

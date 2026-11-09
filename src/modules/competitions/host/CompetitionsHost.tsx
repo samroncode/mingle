@@ -25,6 +25,7 @@ export function CompetitionsHost({
   code,
   hostKey,
   startDisabled,
+  compact,
 }: ModuleHostProps) {
   const { t } = useTranslation();
   const { competitions, reload } = useCompetitions(event.id);
@@ -206,6 +207,7 @@ export function CompetitionsHost({
           code={code}
           hostKey={hostKey}
           startDisabled={startDisabled}
+          compact={compact}
           competitions={list}
         />
       )}

@@ -19,6 +19,7 @@ export function HotTakesHost({
   code,
   hostKey,
   startDisabled,
+  compact,
 }: ModuleHostProps) {
   const { t } = useTranslation();
   const run = useHotTakesRun(event);
@@ -45,34 +46,35 @@ export function HotTakesHost({
       {run.failed && !running && (
         <ErrorLine>{t("modules.hottakes.host.loadFailed")}</ErrorLine>
       )}
-      {running ? (
-        <HotTakesLive
-          event={event}
-          members={members}
-          code={code}
-          hostKey={hostKey}
-          startDisabled={startDisabled}
-        />
-      ) : (
-        run.progress && (
-          <div className="space-y-3">
-            {finished && (
-              <p className="text-sm text-ink-muted">
-                {t("modules.hottakes.run.finished")}
-              </p>
-            )}
-            <RunControls
+      {running
+        ? !compact && (
+            <HotTakesLive
+              event={event}
+              members={members}
               code={code}
               hostKey={hostKey}
-              module="hottakes"
-              running={false}
               startDisabled={startDisabled}
-              startLabelKey="modules.hottakes.run.start"
-              next={null}
             />
-          </div>
-        )
-      )}
+          )
+        : run.progress &&
+          !compact && (
+            <div className="space-y-3">
+              {finished && (
+                <p className="text-sm text-ink-muted">
+                  {t("modules.hottakes.run.finished")}
+                </p>
+              )}
+              <RunControls
+                code={code}
+                hostKey={hostKey}
+                module="hottakes"
+                running={false}
+                startDisabled={startDisabled}
+                startLabelKey="modules.hottakes.run.start"
+                next={null}
+              />
+            </div>
+          )}
       {editing && niche && language ? (
         <HotTakesEdit
           event={event}

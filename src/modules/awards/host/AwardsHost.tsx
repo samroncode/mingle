@@ -19,6 +19,7 @@ export function AwardsHost({
   code,
   hostKey,
   startDisabled,
+  compact,
 }: ModuleHostProps) {
   const { t } = useTranslation();
   const run = useAwardsRun(event);
@@ -45,34 +46,35 @@ export function AwardsHost({
       {run.failed && !running && (
         <ErrorLine>{t("modules.awards.host.loadFailed")}</ErrorLine>
       )}
-      {running ? (
-        <AwardsLive
-          event={event}
-          members={members}
-          code={code}
-          hostKey={hostKey}
-          startDisabled={startDisabled}
-        />
-      ) : (
-        run.progress && (
-          <div className="space-y-3">
-            {finished && (
-              <p className="text-sm text-ink-muted">
-                {t("modules.awards.run.finished")}
-              </p>
-            )}
-            <RunControls
+      {running
+        ? !compact && (
+            <AwardsLive
+              event={event}
+              members={members}
               code={code}
               hostKey={hostKey}
-              module="awards"
-              running={false}
               startDisabled={startDisabled}
-              startLabelKey="modules.awards.run.start"
-              next={null}
             />
-          </div>
-        )
-      )}
+          )
+        : run.progress &&
+          !compact && (
+            <div className="space-y-3">
+              {finished && (
+                <p className="text-sm text-ink-muted">
+                  {t("modules.awards.run.finished")}
+                </p>
+              )}
+              <RunControls
+                code={code}
+                hostKey={hostKey}
+                module="awards"
+                running={false}
+                startDisabled={startDisabled}
+                startLabelKey="modules.awards.run.start"
+                next={null}
+              />
+            </div>
+          )}
       {editing && niche && language ? (
         <AwardsEdit
           event={event}

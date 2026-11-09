@@ -1,4 +1,5 @@
 import type { EventRow } from "@/api/events";
+import type { ActivityCounts } from "../types";
 import { useActivitySummary } from "../useActivitySummary";
 import { useAwardsRun } from "./useAwardsRun";
 
@@ -10,4 +11,12 @@ export function useAwardsSummary(event: EventRow): string | undefined {
     event,
     progress && { total: progress.total, done: progress.revealed },
   );
+}
+
+/** Items and items played, for the dashboard's progress bar. */
+export function useAwardsCounts(event: EventRow): ActivityCounts | undefined {
+  const { progress } = useAwardsRun(event);
+  return progress
+    ? { total: progress.total, done: progress.revealed }
+    : undefined;
 }
