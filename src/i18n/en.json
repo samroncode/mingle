@@ -419,6 +419,21 @@
           "rate_limited": "You've reported a lot of matches. Wait a while and try again.",
           "unknown": "Your match didn't go through. Try again."
         }
+      },
+      "standings": {
+        "title": "Standings",
+        "player": "Player",
+        "played": "P",
+        "wins": "W",
+        "losses": "L",
+        "diff": "+/−",
+        "you": "you",
+        "someone": "a guest",
+        "playedFull": "Played",
+        "winsFull": "Wins",
+        "lossesFull": "Losses",
+        "diffFull": "Score difference",
+        "tableLabel": "{{name}} standings"
       }
     }
   },

@@ -419,6 +419,21 @@
           "rate_limited": "Du har rapporterat många matcher. Vänta en stund och försök igen.",
           "unknown": "Matchen gick inte igenom. Försök igen."
         }
+      },
+      "standings": {
+        "title": "Tabeller",
+        "player": "Spelare",
+        "played": "S",
+        "wins": "V",
+        "losses": "F",
+        "diff": "+/−",
+        "you": "du",
+        "someone": "en gäst",
+        "playedFull": "Spelade",
+        "winsFull": "Vinster",
+        "lossesFull": "Förluster",
+        "diffFull": "Poängskillnad",
+        "tableLabel": "Tabell för {{name}}"
       }
     }
   },
