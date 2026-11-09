@@ -49,6 +49,7 @@
       "title": "Sidan finns inte",
       "home": "Till startsidan"
     },
+    "loading": "Laddar…",
     "error": {
       "title": "Något gick fel",
       "reload": "Ladda om sidan"
