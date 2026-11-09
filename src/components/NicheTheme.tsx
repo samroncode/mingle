@@ -10,6 +10,8 @@ interface NicheThemeProps {
   niche: string;
   /** The host switched on the light theme for a bright room. */
   bright?: boolean;
+  /** False for a copy inside another page: keep the bright theme off the page root. */
+  themeRoot?: boolean;
   children: ReactNode;
 }
 
@@ -20,18 +22,19 @@ interface NicheThemeProps {
 export function NicheTheme({
   niche,
   bright = false,
+  themeRoot = true,
   children,
 }: NicheThemeProps) {
   // The layouts' own controls (the language switcher) sit outside this wrapper,
   // so a bright room also themes the page root until it is switched off.
   useEffect(() => {
-    if (!bright) return;
+    if (!bright || !themeRoot) return;
     const root = document.documentElement;
     root.dataset.theme = brightThemeId;
     return () => {
       delete root.dataset.theme;
     };
-  }, [bright]);
+  }, [bright, themeRoot]);
   if (!isNicheId(niche)) return <>{children}</>;
   const { theme } = getNiche(niche);
   return (

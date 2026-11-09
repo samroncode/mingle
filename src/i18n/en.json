@@ -955,6 +955,22 @@
         "name": "Enter the winner's name, 1 to 40 characters.",
         "full": "You can add up to 8 winners. Delete one first."
       }
+    },
+    "side": {
+      "latest": "+ latest: {{name}}",
+      "messageTitle": "Message",
+      "messageLabel": "Message to the guests",
+      "messagePlaceholder": "Food is ready!",
+      "messageSend": "Send",
+      "messageSent": "Sent: {{text}}",
+      "guestLink": "Guest link",
+      "copyGuest": "Copy guest link",
+      "openTv": "Open TV"
+    },
+    "mirror": {
+      "title": "On the TV",
+      "unavailable": "Preview not available.",
+      "retry": "Try again"
     }
   }
 }
