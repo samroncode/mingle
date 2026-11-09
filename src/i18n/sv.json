@@ -956,6 +956,22 @@
         "full": "Du kan lägga till högst 8 vinnare. Ta bort en först."
       }
     },
+    "side": {
+      "latest": "+ senast: {{name}}",
+      "messageTitle": "Meddelande",
+      "messageLabel": "Meddelande till gästerna",
+      "messagePlaceholder": "Maten är klar!",
+      "messageSend": "Skicka",
+      "messageSent": "Skickat: {{text}}",
+      "guestLink": "Gästlänk",
+      "copyGuest": "Kopiera gästlänk",
+      "openTv": "Öppna TV"
+    },
+    "mirror": {
+      "title": "På TV:n",
+      "unavailable": "Förhandsvisningen är inte tillgänglig.",
+      "retry": "Försök igen"
+    },
     "dashboard": {
       "nav": {
         "label": "Sektioner",

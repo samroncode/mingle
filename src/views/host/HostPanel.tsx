@@ -1,15 +1,16 @@
 import { ErrorLine } from "@/components/ErrorLine";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { PanelSection } from "@/components/PanelSection";
+import { FlatSections, PanelSection } from "@/components/PanelSection";
 import { EventLinks } from "@/components/EventLinks";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import type { EventRow, MemberRow } from "@/api/events";
+import { useIsPhone } from "@/hooks/useIsPhone";
 import { useEventState } from "@/hooks/useEventState";
 import { useHostEventId } from "@/hooks/useHostEventId";
 import type { HostLinkParts } from "@/lib/host/host-door";
 import { Activities } from "./Activities";
+import { BottomBar } from "./BottomBar";
 import { BrightRoom } from "./BrightRoom";
 import { EndEvent } from "./EndEvent";
 import { DashboardMain } from "./dashboard/DashboardMain";
@@ -19,6 +20,7 @@ import { HostFrame } from "./HostFrame";
 import { Messages } from "./Messages";
 import { NowPanel } from "./NowPanel";
 import { PartyScreen } from "./PartyScreen";
+import { SideColumn } from "./SideColumn";
 import { SharedCosts } from "./SharedCosts";
 import { TopBar } from "./TopBar";
 import { Winners } from "./Winners";
@@ -53,6 +55,7 @@ interface SectionsProps {
   members: MemberRow[];
   ended: boolean;
   onEnded: () => void;
+  phone: boolean;
 }
 
 /** Every section in today's order; the dashboard tickets move them into slots. */
@@ -63,15 +66,17 @@ function Sections({
   members,
   ended,
   onEnded,
+  phone,
 }: SectionsProps) {
   const { t } = useTranslation();
   return (
-    <>
+    <FlatSections value={phone}>
       <NowPanel
         event={event}
         members={members}
         hostKey={link.key}
         ended={ended}
+        phone={phone}
       />
       {ended ? (
         <p className="rounded-md border-[length:var(--border-thin)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright">
@@ -112,7 +117,7 @@ function Sections({
           <EndEvent code={event.code} hostKey={link.key} onEnded={onEnded} />
         )}
       </EventSection>
-    </>
+    </FlatSections>
   );
 }
 
@@ -123,7 +128,8 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
   const { event, members } = state;
   // Right after End, until the snapshot catches up.
   const [endedHere, setEndedHere] = useState(false);
-  const wide = useMediaQuery("(min-width: 1024px)");
+  const phone = useIsPhone();
+  const wide = !phone;
 
   if (!event) {
     return (
@@ -140,9 +146,10 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
     );
   }
   const ended = event.status === "ended" || endedHere;
+  const barShown = phone && !ended && !!event.current_module;
   return (
-    <>
-      <TopBar event={event} members={members} hostKey={link.key} />
+    <div className={barShown ? "pb-32" : undefined}>
+      <TopBar event={event} members={members} hostKey={link.key} slim={phone} />
       {state.status === "error" && (
         <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
       )}
@@ -169,11 +176,23 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
               members={members}
               ended={ended}
               onEnded={() => setEndedHere(true)}
+              phone={phone}
             />
           )
         }
+        side={
+          <SideColumn
+            event={event}
+            members={members}
+            hostKey={link.key}
+            ended={ended}
+          />
+        }
       />
-    </>
+      {barShown && (
+        <BottomBar event={event} members={members} hostKey={link.key} />
+      )}
+    </div>
   );
 }
 

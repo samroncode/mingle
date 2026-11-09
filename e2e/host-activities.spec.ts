@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "e".repeat(43);
@@ -83,6 +84,8 @@ test("the running activity can't be switched off", async ({ page }) => {
 
   const quiz = page.getByTestId("activity-quiz");
   await expect(quiz.getByText("Running", { exact: true })).toBeVisible();
+  // On the phone the running activity is on top, so its row starts shut.
+  await openSection(page, "activity-quiz");
   await expect(
     quiz.getByRole("switch", { name: "Use this activity" }),
   ).toBeDisabled();

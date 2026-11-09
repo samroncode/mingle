@@ -1,14 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";
-import { NicheTheme } from "@/components/NicheTheme";
 import { Button } from "@/components/ui/button";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
 import { useEventState } from "@/hooks/useEventState";
 import { useTvJoin } from "@/hooks/useTvJoin";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { tvErrorKey } from "@/lib/tv/tv-error";
-import { pickScreen } from "@/modules/screen";
-import { PartyScreen } from "@/partyscreen/PartyScreen";
+import { ThankYou, TvScreen } from "./TvScreen";
 
 function Message({ text, alert }: { text: string; alert?: boolean }) {
   return (
@@ -30,16 +28,6 @@ function TvNotFound() {
   );
 }
 
-function ThankYou() {
-  const { t } = useTranslation();
-  return (
-    <section className="flex min-h-[80svh] flex-col items-center justify-center gap-4 text-center">
-      <h1 className="text-7xl font-semibold">{t("tv.ended.title")}</h1>
-      <p className="text-4xl">{t("tv.ended.text")}</p>
-    </section>
-  );
-}
-
 /** Follows a joined event and shows the party screen, or the thank-you. */
 function TvEvent({ eventId }: { eventId: string }) {
   const { t } = useTranslation();
@@ -57,23 +45,7 @@ function TvEvent({ eventId }: { eventId: string }) {
     );
   }
 
-  // A running activity with views takes the left side; the join panel stays.
-  const choice = pickScreen(state.event.current_module);
-  const left =
-    choice.kind === "module" ? (
-      <choice.definition.Tv event={state.event} members={state.members} />
-    ) : undefined;
-  const screen =
-    state.event.status === "ended" ? (
-      <ThankYou />
-    ) : (
-      <PartyScreen event={state.event} members={state.members} left={left} />
-    );
-  return (
-    <NicheTheme niche={state.event.niche} bright={state.event.bright_room}>
-      {screen}
-    </NicheTheme>
-  );
+  return <TvScreen event={state.event} members={state.members} />;
 }
 
 /** The shared big-screen view: joins the event as its TV. */

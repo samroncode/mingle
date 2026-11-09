@@ -15,6 +15,8 @@ interface TopBarProps {
   event: EventRow;
   members: MemberRow[];
   hostKey: string;
+  /** Phone: only logo, code and guests; the TV line moves into the Now panel. */
+  slim?: boolean;
 }
 
 function definitionOf(event: EventRow): ModuleDefinition | undefined {
@@ -48,7 +50,7 @@ function WithProgress({
   return <TvText event={event} progress={progress} />;
 }
 
-function TvNow({ event }: { event: EventRow }) {
+export function TvNow({ event }: { event: EventRow }) {
   const definition = definitionOf(event);
   return definition && definition.useProgress ? (
     <WithProgress event={event} definition={definition} />
@@ -58,7 +60,7 @@ function TvNow({ event }: { event: EventRow }) {
 }
 
 /** Always-visible bar: code, guests, what the TV shows and Stop. */
-export function TopBar({ event, members, hostKey }: TopBarProps) {
+export function TopBar({ event, members, hostKey, slim }: TopBarProps) {
   const { t } = useTranslation();
   const { busy, error, run } = useHostAction();
   const running = !!event.current_module && event.status !== "ended";
@@ -86,21 +88,26 @@ export function TopBar({ event, members, hostKey }: TopBarProps) {
           {t("hostPanel.guests", { count: countGuests(members) })}
         </span>
       </div>
-      <div className="flex items-center justify-between gap-2">
-        <p data-testid="tv-now" className="font-body text-base text-on-forest">
-          {t("hostPanel.tvNow")} <TvNow event={event} />
-        </p>
-        {running && (
-          <Button
-            size="sm"
-            variant="secondary"
-            disabled={busy}
-            onClick={() => void stop()}
+      {!slim && (
+        <div className="flex items-center justify-between gap-2">
+          <p
+            data-testid="tv-now"
+            className="font-body text-base text-on-forest"
           >
-            {t("hostPanel.stop")}
-          </Button>
-        )}
-      </div>
+            {t("hostPanel.tvNow")} <TvNow event={event} />
+          </p>
+          {running && (
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={busy}
+              onClick={() => void stop()}
+            >
+              {t("hostPanel.stop")}
+            </Button>
+          )}
+        </div>
+      )}
       {error && <ErrorLine>{error}</ErrorLine>}
     </div>
   );

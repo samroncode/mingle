@@ -5,6 +5,7 @@ import { PanelSection } from "@/components/PanelSection";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Sticker } from "@/components/ui/sticker";
 import { Switch } from "@/components/ui/switch";
+import { useIsPhone } from "@/hooks/useIsPhone";
 import { orderActivities } from "@/lib/host/host-panel";
 import { moduleDefinitions } from "@/modules/definitions";
 import { isModuleId, type ModuleId } from "@/modules/registry";
@@ -90,12 +91,14 @@ function Section({ summary, ...section }: SectionProps & { summary?: string }) {
     ? moduleDefinitions[id]
     : undefined;
   const blocked = running !== null && running !== id;
+  // On the phone the running activity is already on top; no second copy.
+  const phone = useIsPhone();
   return (
     <PanelSection
       testId={`activity-${id}`}
       title={t(`modules.${id}.name`)}
       summary={summary}
-      openWhen={running === id}
+      openWhen={running === id && !phone}
       badge={
         running === id && (
           <Sticker color="sage" lean="left">

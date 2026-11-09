@@ -1,13 +1,13 @@
 import { useSyncExternalStore } from "react";
 
-/** Whether a CSS media query matches now, and again when it changes. False where the browser has no `matchMedia`. */
+/** Whether a CSS media query matches now, and again whenever it changes. */
 export function useMediaQuery(query: string): boolean {
   return useSyncExternalStore(
-    (notify) => {
-      if (typeof window.matchMedia !== "function") return () => undefined;
+    (onChange) => {
+      if (typeof window.matchMedia !== "function") return () => {};
       const list = window.matchMedia(query);
-      list.addEventListener("change", notify);
-      return () => list.removeEventListener("change", notify);
+      list.addEventListener("change", onChange);
+      return () => list.removeEventListener("change", onChange);
     },
     () =>
       typeof window.matchMedia === "function" &&
