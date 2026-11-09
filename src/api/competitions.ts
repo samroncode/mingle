@@ -141,23 +141,59 @@ export async function listMyMatches(
 ): Promise<Result<MatchView[], "unknown">> {
   const { data, error } = await client
     .from("competition_matches")
-    .select(
-      "id, competition_id, winner_id, loser_id, winner_score, loser_score, created_at",
-    )
+    .select(matchColumns)
     .eq("event_id", eventId)
     .or(`winner_id.eq.${userId},loser_id.eq.${userId}`)
     .order("created_at", { ascending: false });
   if (error) return fail("unknown");
+  return ok(data.map(toMatchView));
+}
+
+const matchColumns =
+  "id, competition_id, winner_id, loser_id, winner_score, loser_score, created_at";
+
+function toMatchView(row: {
+  id: string;
+  competition_id: string;
+  winner_id: string;
+  loser_id: string;
+  winner_score: number | null;
+  loser_score: number | null;
+  created_at: string;
+}): MatchView {
+  return {
+    id: row.id,
+    competitionId: row.competition_id,
+    winnerId: row.winner_id,
+    loserId: row.loser_id,
+    winnerScore: row.winner_score,
+    loserScore: row.loser_score,
+    createdAt: row.created_at,
+  };
+}
+
+/** A match as the host reads it: also who reported it. */
+export interface HostMatchView extends MatchView {
+  reporterId: string;
+}
+
+/** The most recent matches the host panel lists. */
+export const hostMatchLimit = 50;
+
+/** The event's most recent matches, newest first, for the host's panel. */
+export async function listEventMatches(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<HostMatchView[], "unknown">> {
+  const { data, error } = await client
+    .from("competition_matches")
+    .select(`${matchColumns}, reporter_id`)
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: false })
+    .limit(hostMatchLimit);
+  if (error) return fail("unknown");
   return ok(
-    data.map((row) => ({
-      id: row.id,
-      competitionId: row.competition_id,
-      winnerId: row.winner_id,
-      loserId: row.loser_id,
-      winnerScore: row.winner_score,
-      loserScore: row.loser_score,
-      createdAt: row.created_at,
-    })),
+    data.map((row) => ({ ...toMatchView(row), reporterId: row.reporter_id })),
   );
 }
 

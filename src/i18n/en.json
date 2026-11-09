@@ -351,6 +351,32 @@
         "removeTitle": "Remove {{name}}",
         "removeConfirm": "Remove {{name}}? Its matches go with it, and this can't be undone.",
         "removeAction": "Remove competition",
+        "matches": {
+          "title": "Reported matches",
+          "empty": "No matches reported yet.",
+          "loadFailed": "Couldn't load the matches. Reload to try again.",
+          "retry": "Try again",
+          "line": "{{winner}} beat {{loser}}",
+          "reportedBy": "Reported by {{name}}",
+          "someone": "a guest",
+          "score": "{{winner}}–{{loser}}",
+          "edit": "Edit the {{competition}} match: {{winner}} beat {{loser}}",
+          "delete": "Delete the {{competition}} match: {{winner}} beat {{loser}}",
+          "editTitle": "Who won?",
+          "winnerScore": "Score of {{name}}",
+          "loserScore": "Score of {{name}}",
+          "scoreHint": "Leave both scores empty for no score.",
+          "save": "Save",
+          "cancel": "Cancel",
+          "deleteConfirm": "Delete the match where {{winner}} beat {{loser}}? This can't be undone.",
+          "deleteAction": "Delete match",
+          "errors": {
+            "not_found": "That match is already gone. It has been removed from the list.",
+            "invalid_request": "The match wasn't saved. Check the winner and the scores.",
+            "invalid_score": "Enter both scores as numbers from 0 to 999, or leave both empty.",
+            "score_mismatch": "The winner's score must be higher than the loser's."
+          }
+        },
         "errors": {
           "too_many": "An evening can have at most 5 competitions. Remove one first.",
           "not_found": "That competition is already gone. Reload the page to see the list.",

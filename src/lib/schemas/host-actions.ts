@@ -270,6 +270,49 @@ export type UpdateCompetitionsResponse = z.infer<
   typeof UpdateCompetitionsResponseSchema
 >;
 
+/** A match's score: whole numbers from 0 to 999, the winner's the higher. */
+const MatchScoreSchema = z.strictObject({
+  winner: z.number().int().min(0).max(999),
+  loser: z.number().int().min(0).max(999),
+});
+
+/**
+ * One fix to a reported match. An edit names the winner (one of the match's
+ * two players, so naming the other swaps them) and the score, or no score to
+ * clear it. The database checks the rest.
+ */
+export const MatchChangeSchema = z.discriminatedUnion("type", [
+  z.strictObject({
+    type: z.literal("edit"),
+    id: z.uuid(),
+    winnerId: z.uuid(),
+    score: MatchScoreSchema.optional(),
+  }),
+  z.strictObject({ type: z.literal("delete"), id: z.uuid() }),
+]);
+
+export type MatchChange = z.infer<typeof MatchChangeSchema>;
+
+/**
+ * Fixes or deletes a match reported in the event. Fails with `not_found` for
+ * a match that isn't the event's, `module_disabled` while Competitions is
+ * switched off, `invalid_transition` once the event has ended, and
+ * `invalid_request` for a winner who didn't play the match or a score that
+ * doesn't agree with the winner.
+ */
+export const UpdateMatchRequestSchema = z.strictObject({
+  action: z.literal("update_match"),
+  ...hostLinkFields,
+  change: MatchChangeSchema,
+});
+
+export type UpdateMatchRequest = z.infer<typeof UpdateMatchRequestSchema>;
+
+/** Empty: the host and members read the matches again. */
+export const UpdateMatchResponseSchema = z.strictObject({});
+
+export type UpdateMatchResponse = z.infer<typeof UpdateMatchResponseSchema>;
+
 /**
  * Gives a guest of the event a new display name. The name is cleaned and
  * checked by the database (1 to 30 characters, unique among the guests), the
@@ -447,6 +490,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdateAwardsRequestSchema,
   UpdateHotTakesRequestSchema,
   UpdateCompetitionsRequestSchema,
+  UpdateMatchRequestSchema,
   RenameGuestRequestSchema,
   RemoveGuestRequestSchema,
   UpdateCostsRequestSchema,
@@ -489,7 +533,7 @@ export const hostActionErrorCodes = [
   "module_empty",
   /** start_module for an activity whose steps have all been played. */
   "module_finished",
-  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed), delete_notice for an unknown notice or another event's, update_competitions for a competition that isn't the event's. */
+  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed), delete_notice for an unknown notice or another event's, update_competitions for a competition that isn't the event's, update_match for a match that isn't the event's. */
   "not_found",
   /** rename_guest to a name another guest of the event has. */
   "name_taken",

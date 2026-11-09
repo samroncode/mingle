@@ -15,9 +15,15 @@ import {
 } from "@/lib/schemas/competitions";
 import type { ModuleHostProps } from "../../types";
 import { useCompetitions } from "../useCompetitions";
+import { MatchesHost } from "./MatchesHost";
 
 /** The competitions section of the control panel: list, add, rename, remove, reorder. */
-export function CompetitionsHost({ event, code, hostKey }: ModuleHostProps) {
+export function CompetitionsHost({
+  event,
+  members,
+  code,
+  hostKey,
+}: ModuleHostProps) {
   const { t } = useTranslation();
   const { competitions, reload } = useCompetitions(event.id);
   const { busy, error, run } = useHostAction(competitionErrorKey, "host");
@@ -238,6 +244,15 @@ export function CompetitionsHost({ event, code, hostKey }: ModuleHostProps) {
             </Button>
           </form>
         ))}
+      {list.length > 0 && (
+        <MatchesHost
+          event={event}
+          members={members}
+          code={code}
+          hostKey={hostKey}
+          competitions={list}
+        />
+      )}
     </section>
   );
 }

@@ -37,6 +37,9 @@ import {
   type UpdateCompetitionsRequest,
   type UpdateCompetitionsResponse,
   UpdateCompetitionsResponseSchema,
+  type UpdateMatchRequest,
+  type UpdateMatchResponse,
+  UpdateMatchResponseSchema,
   type UpdateCostsRequest,
   type UpdateCostsResponse,
   UpdateCostsResponseSchema,
@@ -229,6 +232,22 @@ export async function updateCompetitions(
   return toHostActionResult(
     UpdateCompetitionsResponseSchema,
     await invokeHostActions({ action: "update_competitions", ...input }),
+  );
+}
+
+/**
+ * Fixes the winner or score of a reported match, or deletes it. Fails with
+ * `not_found` for a match that isn't the event's, `module_disabled` while
+ * Competitions is switched off, `invalid_transition` once the event has
+ * ended, and `invalid_request` for a winner who didn't play the match or a
+ * score that doesn't agree with the winner.
+ */
+export async function updateMatch(
+  input: Omit<UpdateMatchRequest, "action">,
+): Promise<HostActionResult<UpdateMatchResponse>> {
+  return toHostActionResult(
+    UpdateMatchResponseSchema,
+    await invokeHostActions({ action: "update_match", ...input }),
   );
 }
 
