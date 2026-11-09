@@ -91,6 +91,7 @@ test.describe("the control panel", () => {
       flow: spotlight(1),
     });
     await page.goto(`/host/${code}#key=${key}`);
+    await openSection(page, "activity-competitions");
     const spot = page.getByTestId("competitions-spotlight");
 
     await expect(spot.getByTestId("competitions-spotlight-state")).toHaveText(
