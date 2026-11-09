@@ -769,6 +769,10 @@
     }
   },
   "hostPanel": {
+    "now": {
+      "title": "Just nu",
+      "empty": "Inget pågår. Välj en aktivitet att starta."
+    },
     "loading": "Laddar kvällen…",
     "loadFailed": "Kunde inte ladda kvällen. Ladda om sidan.",
     "offline": "Anslutningen föll bort. Visar senast kända läge.",

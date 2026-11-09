@@ -14,6 +14,7 @@ import { EndEvent } from "./EndEvent";
 import { Guests } from "./Guests";
 import { HostFrame } from "./HostFrame";
 import { Messages } from "./Messages";
+import { NowPanel } from "./NowPanel";
 import { PartyScreen } from "./PartyScreen";
 import { SharedCosts } from "./SharedCosts";
 import { TopBar } from "./TopBar";
@@ -63,6 +64,12 @@ function Sections({
   const { t } = useTranslation();
   return (
     <>
+      <NowPanel
+        event={event}
+        members={members}
+        hostKey={link.key}
+        ended={ended}
+      />
       {ended ? (
         <p className="rounded-md border-[length:var(--border-thin)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright">
           {t("hostPanel.ended")}

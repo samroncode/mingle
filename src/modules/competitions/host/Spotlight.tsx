@@ -7,10 +7,11 @@ import { useHostAction } from "@/hooks/useHostAction";
 import { spotlightErrorKey } from "@/lib/host/competitions-errors";
 import type { FlowMove } from "@/lib/schemas/host-actions";
 import type { ModuleHostProps } from "../../types";
+import { CompetitionsLive } from "./CompetitionsLive";
 
 interface SpotlightProps extends Pick<
   ModuleHostProps,
-  "event" | "code" | "hostKey" | "startDisabled"
+  "event" | "members" | "code" | "hostKey" | "startDisabled"
 > {
   competitions: CompetitionView[];
 }
@@ -22,6 +23,7 @@ interface SpotlightProps extends Pick<
  */
 export function Spotlight({
   event,
+  members,
   code,
   hostKey,
   startDisabled,
@@ -30,9 +32,6 @@ export function Spotlight({
   const { t } = useTranslation();
   const { busy, error, run } = useHostAction(spotlightErrorKey, "host");
   const running = event.current_module === "competitions";
-  const shown = running
-    ? competitions.find((c) => c.position === event.current_step)
-    : undefined;
   const ended = event.status === "ended";
 
   function send(move: FlowMove) {
@@ -48,24 +47,13 @@ export function Spotlight({
         {t("modules.competitions.host.spotlight.title")}
       </h3>
       {running ? (
-        <div className="flex flex-wrap items-center gap-2">
-          <p
-            data-testid="competitions-spotlight-state"
-            className="min-w-0 flex-1 break-words text-sm"
-          >
-            {t("modules.competitions.host.spotlight.onTv", {
-              name: shown?.name ?? t("modules.competitions.name"),
-            })}
-          </p>
-          <Button
-            size="lg"
-            variant="outline"
-            disabled={busy}
-            onClick={() => send({ type: "stop_module" })}
-          >
-            {t("modules.competitions.host.spotlight.stop")}
-          </Button>
-        </div>
+        <CompetitionsLive
+          event={event}
+          members={members}
+          code={code}
+          hostKey={hostKey}
+          startDisabled={startDisabled}
+        />
       ) : (
         <>
           <p

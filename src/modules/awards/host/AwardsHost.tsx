@@ -8,11 +8,9 @@ import { canEditAwards } from "@/lib/host/awards-edit";
 import { isNicheId } from "@/niches";
 import type { ModuleHostProps } from "../../types";
 import { RunControls } from "../../RunControls";
-import { awardsNextMove } from "../screen";
 import { useAwardsRun } from "../useAwardsRun";
 import { AwardsEdit } from "./AwardsEdit";
-import { Tally } from "./Tally";
-import { VoteStatus } from "./VoteStatus";
+import { AwardsLive } from "./AwardsLive";
 
 /** The awards' section in the control panel: run them, and the categories. */
 export function AwardsHost({
@@ -27,10 +25,6 @@ export function AwardsHost({
   const [editing, setEditing] = useState(false);
   const running = event.current_module === "awards";
   const total = run.progress?.total ?? 0;
-  const next = awardsNextMove(event, total);
-  const current = running
-    ? run.categories.find((c) => c.position === event.current_step)
-    : undefined;
   const finished =
     !!run.progress && total > 0 && run.progress.revealed >= total;
 
@@ -48,58 +42,36 @@ export function AwardsHost({
       aria-label={t("modules.awards.name")}
       className="space-y-3"
     >
-      {run.failed && (
+      {run.failed && !running && (
         <ErrorLine>{t("modules.awards.host.loadFailed")}</ErrorLine>
       )}
-      {run.progress && (
-        <div className="space-y-3">
-          {running ? (
-            <p data-testid="awards-progress" className="text-sm text-ink-muted">
-              {next
-                ? t("modules.awards.counter", {
-                    number: event.current_step + 1,
-                    total,
-                  })
-                : t("modules.awards.winnersStep")}
-            </p>
-          ) : (
-            finished && (
+      {running ? (
+        <AwardsLive
+          event={event}
+          members={members}
+          code={code}
+          hostKey={hostKey}
+          startDisabled={startDisabled}
+        />
+      ) : (
+        run.progress && (
+          <div className="space-y-3">
+            {finished && (
               <p className="text-sm text-ink-muted">
                 {t("modules.awards.run.finished")}
               </p>
-            )
-          )}
-          {current && next && (
-            <Card className="p-3">
-              <p className="font-display font-bold">{current.text}</p>
-              {event.phase === "open" && (
-                <VoteStatus
-                  category={current}
-                  members={members}
-                  version={run.version}
-                />
-              )}
-              {event.phase === "revealed" && (
-                <Tally
-                  category={current}
-                  members={members}
-                  language={event.language}
-                  version={run.version}
-                />
-              )}
-            </Card>
-          )}
-          <RunControls
-            code={code}
-            hostKey={hostKey}
-            module="awards"
-            running={running}
-            startDisabled={startDisabled}
-            startLabelKey="modules.awards.run.start"
-            next={next}
-            stopLabelKey={next ? undefined : "modules.awards.run.backToParty"}
-          />
-        </div>
+            )}
+            <RunControls
+              code={code}
+              hostKey={hostKey}
+              module="awards"
+              running={false}
+              startDisabled={startDisabled}
+              startLabelKey="modules.awards.run.start"
+              next={null}
+            />
+          </div>
+        )
       )}
       {editing && niche && language ? (
         <AwardsEdit

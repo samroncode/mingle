@@ -202,6 +202,7 @@ export function CompetitionsHost({
       {list.length > 0 && (
         <Spotlight
           event={event}
+          members={members}
           code={code}
           hostKey={hostKey}
           startDisabled={startDisabled}

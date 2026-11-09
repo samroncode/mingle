@@ -10,7 +10,8 @@ import { useQuizScores } from "@/modules/quiz/useQuizScores";
 import type { ModuleHostProps } from "../../types";
 import { ScoreList } from "../ScoreList";
 import { QuestionList } from "./QuestionList";
-import { QuizControls } from "./QuizControls";
+import { QuizLive } from "./QuizLive";
+import { RunControls } from "../../RunControls";
 import { QuizEdit } from "./QuizEdit";
 
 /** The quiz's section in the control panel: run it, and its questions. */
@@ -38,14 +39,30 @@ export function QuizHost(props: ModuleHostProps) {
       aria-label={t("modules.quiz.name")}
       className="space-y-3"
     >
-      {run.failed && <ErrorLine>{t("modules.quiz.host.loadFailed")}</ErrorLine>}
-      {run.progress && (
-        <QuizControls
-          {...props}
-          progress={run.progress}
-          questions={run.questions}
-          version={run.version}
-        />
+      {run.failed && !running && (
+        <ErrorLine>{t("modules.quiz.host.loadFailed")}</ErrorLine>
+      )}
+      {running ? (
+        <QuizLive {...props} />
+      ) : (
+        run.progress && (
+          <div className="space-y-3">
+            {finished && (
+              <p className="text-sm text-ink-muted">
+                {t("modules.quiz.run.finished")}
+              </p>
+            )}
+            <RunControls
+              code={props.code}
+              hostKey={props.hostKey}
+              module="quiz"
+              running={false}
+              startDisabled={props.startDisabled}
+              startLabelKey="modules.quiz.run.start"
+              next={null}
+            />
+          </div>
+        )
       )}
       {finished && scores && (
         <div className="space-y-2">

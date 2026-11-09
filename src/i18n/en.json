@@ -769,6 +769,10 @@
     }
   },
   "hostPanel": {
+    "now": {
+      "title": "Now",
+      "empty": "Nothing is running. Pick an activity to start."
+    },
     "loading": "Loading the evening…",
     "loadFailed": "Couldn't load the evening. Reload the page.",
     "offline": "Connection lost. Showing the last known state.",
