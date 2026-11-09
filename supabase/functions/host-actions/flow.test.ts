@@ -45,11 +45,90 @@ describe("applyMove without step bounds", () => {
   });
 });
 
-describe("competitions", () => {
-  it("can't be started yet, even when enabled", () => {
+describe("competitions (the spotlight)", () => {
+  const start: FlowMove = { type: "start_module", module: "competitions" };
+  const spot = (step: number): FlowState => ({
+    status: "live",
+    currentModule: "competitions",
+    currentStep: step,
+    phase: "idle",
+  });
+  const three: StepBounds = { steps: 3, firstUnplayed: 0, finished: false };
+
+  it("starts on the first competition", () => {
+    expect(applyMove(lobby, all, start, three)).toEqual({
+      ok: true,
+      state: spot(0),
+    });
+  });
+
+  it("starts on the competition the host names", () => {
+    expect(applyMove(lobby, all, { ...start, competition: 2 }, three)).toEqual({
+      ok: true,
+      state: spot(2),
+    });
+  });
+
+  it("refuses a competition that doesn't exist", () => {
+    expect(applyMove(lobby, all, { ...start, competition: 3 }, three)).toEqual({
+      ok: false,
+      error: "invalid_transition",
+    });
+  });
+
+  it("answers module_empty with no competitions", () => {
     expect(
-      applyMove(lobby, all, { type: "start_module", module: "competitions" }),
+      applyMove(lobby, all, start, {
+        steps: 0,
+        firstUnplayed: 0,
+        finished: false,
+      }),
+    ).toEqual({ ok: false, error: "module_empty" });
+  });
+
+  it("answers module_disabled when the host turned it off", () => {
+    expect(applyMove(lobby, ["quiz"], start, three)).toEqual({
+      ok: false,
+      error: "module_disabled",
+    });
+  });
+
+  it("is refused while another activity runs", () => {
+    expect(applyMove(quizAt(0), all, start, three)).toEqual({
+      ok: false,
+      error: "invalid_transition",
+    });
+  });
+
+  it("refuses starting another activity while the spotlight runs", () => {
+    expect(applyMove(spot(0), all, startQuiz, bounds(5, 0))).toEqual({
+      ok: false,
+      error: "invalid_transition",
+    });
+  });
+
+  it("refuses a competition for any other activity", () => {
+    expect(
+      applyMove(lobby, all, { ...startQuiz, competition: 0 }, bounds(5, 0)),
     ).toEqual({ ok: false, error: "invalid_transition" });
+  });
+
+  it.each<FlowMove>([
+    { type: "open" },
+    { type: "reveal" },
+    { type: "next_step" },
+  ])("has no $type", (move) => {
+    expect(applyMove(spot(0), all, move, three)).toEqual({
+      ok: false,
+      error: "invalid_transition",
+    });
+  });
+
+  it("stops back to the party screen", () => {
+    expect(applyMove(spot(1), all, { type: "stop_module" }, three)).toEqual({
+      ok: true,
+      state: { ...lobby, status: "live" },
+    });
   });
 });
 

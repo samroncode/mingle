@@ -83,10 +83,30 @@ async function hotTakesBounds(db: Db, eventId: string): Promise<BoundsResult> {
   };
 }
 
+/**
+ * Competitions: a step is a competition by position, the one whose table is
+ * on the TV. Nothing is ever "played", so it can always be started again.
+ */
+async function competitionsBounds(
+  db: Db,
+  eventId: string,
+): Promise<BoundsResult> {
+  const { count, error } = await db
+    .from("competitions")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", eventId);
+  if (error) {
+    logFailure("reading the competitions bounds failed", error.code);
+    return "error";
+  }
+  return { steps: count ?? 0, firstUnplayed: 0, finished: false };
+}
+
 const readers: Partial<Record<ModuleId, BoundsReader>> = {
   quiz: quizBounds,
   awards: awardsBounds,
   hottakes: hotTakesBounds,
+  competitions: competitionsBounds,
 };
 
 /** The step bounds of `module` in the event; null for an activity without. */

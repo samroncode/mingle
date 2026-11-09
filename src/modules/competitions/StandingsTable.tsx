@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { CompetitionTable } from "@/lib/competitions/standings";
+import type { CompetitionTable } from "@/lib/competitions/tables";
 import { cn } from "@/lib/utils";
 
 interface StandingsTableProps {
@@ -66,10 +66,10 @@ export function StandingsTable({
       </thead>
       <tbody>
         {rows.map((row) => {
-          const mine = row.playerId === highlightId;
+          const mine = row.userId === highlightId;
           return (
             <tr
-              key={row.playerId}
+              key={row.userId}
               data-mine={mine || undefined}
               className={cn(
                 "border-b-[length:var(--border-thin)] border-line",
@@ -87,7 +87,7 @@ export function StandingsTable({
               <td className={numeric}>{row.played}</td>
               <td className={numeric}>{row.wins}</td>
               <td className={numeric}>{row.losses}</td>
-              <td className={numeric}>{signed(row.diff)}</td>
+              <td className={numeric}>{signed(row.difference)}</td>
             </tr>
           );
         })}

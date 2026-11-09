@@ -1,5 +1,5 @@
 import type { MemberRow } from "@/api/events";
-import type { CompetitionTable } from "@/lib/competitions/standings";
+import type { CompetitionTable } from "@/lib/competitions/tables";
 import type { Party } from "@/lib/schemas/party";
 import { guestNames } from "./guests";
 

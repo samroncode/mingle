@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { listAllMatches, subscribeToMatchChanges } from "@/api/competitions";
 import type { EventRow, MemberRow } from "@/api/events";
 import { useLoad } from "@/hooks/useLoad";
-import { tablesOf, type CompetitionTable } from "@/lib/competitions/standings";
+import { tablesOf, type CompetitionTable } from "@/lib/competitions/tables";
 import { useCompetitions } from "./useCompetitions";
 
 /**

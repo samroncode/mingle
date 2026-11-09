@@ -186,6 +186,29 @@ export async function listAllMatches(
   return ok(data.map(toMatchView));
 }
 
+/** The most matches one table is built from; far above a real evening. */
+export const standingsMatchLimit = 1000;
+
+/**
+ * Every match of one competition, for its table. Any member of the event can
+ * read them; a failed read is `unknown`.
+ */
+export async function listCompetitionMatches(
+  eventId: string,
+  competitionId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<MatchView[], "unknown">> {
+  const { data, error } = await client
+    .from("competition_matches")
+    .select(matchColumns)
+    .eq("event_id", eventId)
+    .eq("competition_id", competitionId)
+    .order("created_at")
+    .limit(standingsMatchLimit);
+  if (error) return fail("unknown");
+  return ok(data.map(toMatchView));
+}
+
 /** A match as the host reads it: also who reported it. */
 export interface HostMatchView extends MatchView {
   reporterId: string;

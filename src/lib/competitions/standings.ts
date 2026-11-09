@@ -1,4 +1,4 @@
-/** The part of a reported match a table needs. */
+/** One reported match, reduced to what a table needs. */
 export interface StandingsMatch {
   winnerId: string;
   loserId: string;
@@ -6,92 +6,66 @@ export interface StandingsMatch {
   loserScore: number | null;
 }
 
-/** One player's line in a competition's table. */
+/** One player's row in a competition's table. */
 export interface StandingsRow {
-  playerId: string;
+  userId: string;
   name: string;
   played: number;
   wins: number;
   losses: number;
-  /** Points scored minus points conceded; matches without scores add zero. */
-  diff: number;
+  /** Points scored minus points conceded; matches without scores count as 0. */
+  difference: number;
 }
 
-/** A competition's ranked table; only competitions with a match have one. */
-export interface CompetitionTable {
-  competitionId: string;
-  name: string;
-  rows: StandingsRow[];
-}
-
-/** The score difference of a match for its winner (zero without scores). */
-function margin(match: StandingsMatch): number {
-  if (match.winnerScore === null || match.loserScore === null) return 0;
-  return match.winnerScore - match.loserScore;
-}
-
-function rowFor(
-  rows: Map<string, StandingsRow>,
-  playerId: string,
-  names: ReadonlyMap<string, string>,
-): StandingsRow {
-  const existing = rows.get(playerId);
-  if (existing) return existing;
-  const row = {
-    playerId,
-    name: names.get(playerId) ?? "",
-    played: 0,
-    wins: 0,
-    losses: 0,
-    diff: 0,
-  };
-  rows.set(playerId, row);
-  return row;
-}
+/** Display names compare the same way for every viewer. */
+const byName = new Intl.Collator("sv", { sensitivity: "base" });
 
 /**
- * Ranks the players of one competition: most wins first, then fewest losses,
- * then best score difference, then display name. Only players with a match
- * appear, so nobody played gives an empty table.
+ * A competition's table: wins (most first), then fewer losses, then score
+ * difference (highest first), then display name. Only players with at least one
+ * match appear. `names` maps a member id to their display name.
  */
 export function standings(
-  matches: StandingsMatch[],
+  matches: readonly StandingsMatch[],
   names: ReadonlyMap<string, string>,
 ): StandingsRow[] {
   const rows = new Map<string, StandingsRow>();
+  const row = (userId: string): StandingsRow => {
+    const existing = rows.get(userId);
+    if (existing) return existing;
+    const created = {
+      userId,
+      name: names.get(userId) ?? "",
+      played: 0,
+      wins: 0,
+      losses: 0,
+      difference: 0,
+    };
+    rows.set(userId, created);
+    return created;
+  };
+
   for (const match of matches) {
-    const winner = rowFor(rows, match.winnerId, names);
-    const loser = rowFor(rows, match.loserId, names);
+    const margin =
+      match.winnerScore !== null && match.loserScore !== null
+        ? match.winnerScore - match.loserScore
+        : 0;
+    const winner = row(match.winnerId);
     winner.played += 1;
     winner.wins += 1;
-    winner.diff += margin(match);
+    winner.difference += margin;
+    const loser = row(match.loserId);
     loser.played += 1;
     loser.losses += 1;
-    loser.diff -= margin(match);
+    loser.difference -= margin;
   }
+
   return [...rows.values()].sort(
     (a, b) =>
       b.wins - a.wins ||
       a.losses - b.losses ||
-      b.diff - a.diff ||
-      a.name.localeCompare(b.name),
+      b.difference - a.difference ||
+      byName.compare(a.name, b.name) ||
+      a.userId.localeCompare(b.userId),
   );
-}
-
-/** One ranked table per competition that has at least one match, in list order. */
-export function tablesOf(
-  competitions: Array<{ id: string; name: string }>,
-  matches: Array<StandingsMatch & { competitionId: string }>,
-  names: ReadonlyMap<string, string>,
-): CompetitionTable[] {
-  return competitions
-    .map((competition) => ({
-      competitionId: competition.id,
-      name: competition.name,
-      rows: standings(
-        matches.filter((match) => match.competitionId === competition.id),
-        names,
-      ),
-    }))
-    .filter((table) => table.rows.length > 0);
 }

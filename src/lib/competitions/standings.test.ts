@@ -1,84 +1,90 @@
 import { describe, expect, it } from "vitest";
-import { standings, tablesOf, type StandingsMatch } from "./standings";
+import { standings, type StandingsMatch } from "./standings";
 
 const names = new Map([
   ["a", "Anna"],
-  ["b", "Bertil"],
+  ["b", "Bo"],
   ["c", "Cecilia"],
 ]);
 
-function m(
+function match(
   winnerId: string,
   loserId: string,
-  winnerScore: number | null = null,
-  loserScore: number | null = null,
+  scores?: [number, number],
 ): StandingsMatch {
-  return { winnerId, loserId, winnerScore, loserScore };
+  return {
+    winnerId,
+    loserId,
+    winnerScore: scores?.[0] ?? null,
+    loserScore: scores?.[1] ?? null,
+  };
 }
 
 describe("standings", () => {
-  it("is empty when nobody played", () => {
+  it("is empty when nobody has played", () => {
     expect(standings([], names)).toEqual([]);
   });
 
-  it("counts one match for both players", () => {
-    expect(standings([m("a", "b")], names)).toEqual([
-      { playerId: "a", name: "Anna", played: 1, wins: 1, losses: 0, diff: 0 },
-      { playerId: "b", name: "Bertil", played: 1, wins: 0, losses: 1, diff: 0 },
+  it("shows both players of a single match", () => {
+    const rows = standings([match("a", "b", [21, 15])], names);
+    expect(rows).toEqual([
+      {
+        userId: "a",
+        name: "Anna",
+        played: 1,
+        wins: 1,
+        losses: 0,
+        difference: 6,
+      },
+      {
+        userId: "b",
+        name: "Bo",
+        played: 1,
+        wins: 0,
+        losses: 1,
+        difference: -6,
+      },
     ]);
   });
 
   it("ranks by wins first", () => {
-    const rows = standings([m("b", "a"), m("b", "c"), m("a", "c")], names);
-    expect(rows.map((r) => r.name)).toEqual(["Bertil", "Anna", "Cecilia"]);
-  });
-
-  it("breaks equal wins by fewer losses", () => {
-    // Anna 1-0, Bertil 1-1: Anna first.
-    const rows = standings([m("a", "c"), m("b", "c"), m("c", "b")], names);
-    expect(rows.map((r) => r.name)).toEqual(["Anna", "Bertil", "Cecilia"]);
-  });
-
-  it("breaks equal wins and losses by score difference", () => {
-    const rows = standings([m("a", "c", 11, 9), m("b", "c", 11, 2)], names);
-    expect(rows.map((r) => r.name)).toEqual(["Bertil", "Anna", "Cecilia"]);
-    expect(rows[0]?.diff).toBe(9);
-    expect(rows[2]?.diff).toBe(-11);
-  });
-
-  it("counts matches without scores as zero difference", () => {
-    const rows = standings([m("a", "b", 11, 5), m("a", "c")], names);
-    expect(rows.find((r) => r.playerId === "a")?.diff).toBe(6);
-    expect(rows.find((r) => r.playerId === "c")?.diff).toBe(0);
-  });
-
-  it("falls back to display name on a full tie", () => {
-    const rows = standings([m("b", "c"), m("a", "c")], names);
-    expect(rows.map((r) => r.name)).toEqual(["Anna", "Bertil", "Cecilia"]);
-  });
-
-  it("keeps a player with an unknown name", () => {
-    const rows = standings([m("x", "a")], names);
-    expect(rows[0]).toMatchObject({ playerId: "x", name: "" });
-  });
-});
-
-describe("tablesOf", () => {
-  const competitions = [
-    { id: "c1", name: "Ping pong" },
-    { id: "c2", name: "Darts" },
-  ];
-
-  it("leaves out competitions without a match", () => {
-    const tables = tablesOf(
-      competitions,
-      [{ competitionId: "c2", ...m("a", "b") }],
+    const rows = standings(
+      [match("b", "a", [10, 0]), match("b", "c"), match("a", "c")],
       names,
     );
-    expect(tables.map((t) => t.name)).toEqual(["Darts"]);
+    expect(rows.map((r) => r.userId)).toEqual(["b", "a", "c"]);
   });
 
-  it("is empty when no match exists", () => {
-    expect(tablesOf(competitions, [], names)).toEqual([]);
+  it("breaks a tie on wins by fewer losses", () => {
+    const rows = standings(
+      [match("a", "c"), match("b", "c"), match("c", "a")],
+      names,
+    );
+    // a: 1-1, b: 1-0, c: 1-2
+    expect(rows.map((r) => r.userId)).toEqual(["b", "a", "c"]);
+  });
+
+  it("breaks a tie on wins and losses by score difference", () => {
+    const rows = standings(
+      [match("a", "c", [5, 4]), match("b", "c", [21, 0])],
+      names,
+    );
+    expect(rows.map((r) => r.userId)).toEqual(["b", "a", "c"]);
+  });
+
+  it("counts matches without scores as a difference of zero", () => {
+    const rows = standings([match("a", "b"), match("a", "c", [3, 1])], names);
+    expect(rows.find((r) => r.userId === "a")?.difference).toBe(2);
+    expect(rows.find((r) => r.userId === "b")?.difference).toBe(0);
+  });
+
+  it("falls back to the display name on a full tie", () => {
+    const rows = standings([match("b", "c"), match("a", "c")], names);
+    expect(rows.map((r) => r.name)).toEqual(["Anna", "Bo", "Cecilia"]);
+  });
+
+  it("is stable for a member without a name", () => {
+    const rows = standings([match("x", "y")], new Map());
+    expect(rows.map((r) => r.userId)).toEqual(["x", "y"]);
   });
 });
