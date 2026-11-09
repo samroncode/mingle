@@ -351,6 +351,32 @@
         "removeTitle": "Ta bort {{name}}",
         "removeConfirm": "Ta bort {{name}}? Matcherna försvinner med den och det går inte att ångra.",
         "removeAction": "Ta bort tävlingen",
+        "matches": {
+          "title": "Rapporterade matcher",
+          "empty": "Inga matcher har rapporterats än.",
+          "loadFailed": "Det gick inte att ladda matcherna. Ladda om sidan och försök igen.",
+          "retry": "Försök igen",
+          "line": "{{winner}} slog {{loser}}",
+          "reportedBy": "Rapporterad av {{name}}",
+          "someone": "en gäst",
+          "score": "{{winner}}–{{loser}}",
+          "edit": "Ändra matchen i {{competition}}: {{winner}} slog {{loser}}",
+          "delete": "Ta bort matchen i {{competition}}: {{winner}} slog {{loser}}",
+          "editTitle": "Vem vann?",
+          "winnerScore": "Poäng för {{name}}",
+          "loserScore": "Poäng för {{name}}",
+          "scoreHint": "Lämna båda poängen tomma för att inte ange någon.",
+          "save": "Spara",
+          "cancel": "Avbryt",
+          "deleteConfirm": "Ta bort matchen där {{winner}} slog {{loser}}? Det går inte att ångra.",
+          "deleteAction": "Ta bort matchen",
+          "errors": {
+            "not_found": "Matchen finns redan inte kvar. Den har tagits bort från listan.",
+            "invalid_request": "Matchen sparades inte. Kontrollera vinnaren och poängen.",
+            "invalid_score": "Skriv båda poängen som tal från 0 till 999, eller lämna båda tomma.",
+            "score_mismatch": "Vinnarens poäng måste vara högre än förlorarens."
+          }
+        },
         "errors": {
           "too_many": "En kväll kan ha högst 5 tävlingar. Ta bort en först.",
           "not_found": "Tävlingen finns redan inte kvar. Ladda om sidan för att se listan.",

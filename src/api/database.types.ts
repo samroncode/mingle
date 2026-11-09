@@ -856,8 +856,22 @@ export type Database = {
         Args: { competition_id: string; target_event_id: string };
         Returns: string;
       };
+      delete_match: {
+        Args: { match_id: string; target_event_id: string };
+        Returns: string;
+      };
       delete_notice: {
         Args: { notice_id: string; target_event_id: string };
+        Returns: string;
+      };
+      edit_match: {
+        Args: {
+          match_id: string;
+          new_loser_score?: number;
+          new_winner: string;
+          new_winner_score?: number;
+          target_event_id: string;
+        };
         Returns: string;
       };
       event_admin_key_hash: {
