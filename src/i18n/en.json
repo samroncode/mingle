@@ -356,6 +356,43 @@
           "not_found": "That competition is already gone. Reload the page to see the list.",
           "invalid_request": "Check the name: it needs 1 to 40 characters."
         }
+      },
+      "guest": {
+        "title": "Report a match",
+        "competition": "Which competition?",
+        "opponent": "Who did you play?",
+        "result": "How did it go?",
+        "won": "I won",
+        "lost": "I lost",
+        "scoreTitle": "Score (optional)",
+        "myScore": "Your score",
+        "theirScore": "Their score",
+        "submit": "Report match",
+        "sending": "Reporting…",
+        "reported": "Match reported!",
+        "another": "Report another match",
+        "noOpponents": "Nobody else has joined yet. Once a friend joins, you can report your match here.",
+        "mine": "My matches",
+        "mineEmpty": "No matches reported yet.",
+        "mineLoadFailed": "Couldn't load your matches.",
+        "mineRetry": "Try again",
+        "matchWon": "{{competition}}: you beat {{name}}",
+        "matchLost": "{{competition}}: {{name}} beat you",
+        "score": "{{mine}}–{{theirs}}",
+        "someone": "a guest",
+        "errors": {
+          "not_found": "You're not in this event any more. Reload the page.",
+          "ended": "This event has ended, so matches can't be reported.",
+          "disabled": "Competitions are switched off for this event.",
+          "same_player": "Pick someone else as your opponent.",
+          "not_a_participant": "You can only report a match you played yourself.",
+          "unknown_competition": "That competition is gone. Pick another one.",
+          "unknown_player": "That guest has left the event. Pick another opponent.",
+          "invalid_score": "Enter both scores as numbers from 0 to 999, or leave both empty.",
+          "score_mismatch": "The winner's score must be higher than the loser's.",
+          "rate_limited": "You've reported a lot of matches. Wait a while and try again.",
+          "unknown": "Your match didn't go through. Try again."
+        }
       }
     }
   },

@@ -138,6 +138,79 @@ export type Database = {
         };
         Relationships: [];
       };
+      competition_matches: {
+        Row: {
+          competition_id: string;
+          created_at: string;
+          event_id: string;
+          id: string;
+          loser_id: string;
+          loser_score: number | null;
+          reporter_id: string;
+          winner_id: string;
+          winner_score: number | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          competition_id: string;
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          loser_id: string;
+          loser_score?: number | null;
+          reporter_id: string;
+          winner_id: string;
+          winner_score?: number | null;
+        };
+        Update: {
+          competition_id?: string;
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          loser_id?: string;
+          loser_score?: number | null;
+          reporter_id?: string;
+          winner_id?: string;
+          winner_score?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "competition_matches_competition_id_event_id_fkey";
+            columns: ["competition_id", "event_id"];
+            isOneToOne: false;
+            referencedRelation: "competitions";
+            referencedColumns: ["id", "event_id"];
+          },
+          {
+            foreignKeyName: "competition_matches_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "competition_matches_event_id_loser_id_fkey";
+            columns: ["event_id", "loser_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+          {
+            foreignKeyName: "competition_matches_event_id_reporter_id_fkey";
+            columns: ["event_id", "reporter_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+          {
+            foreignKeyName: "competition_matches_event_id_winner_id_fkey";
+            columns: ["event_id", "winner_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+        ];
+      };
       competitions: {
         Row: {
           created_at: string;
@@ -935,6 +1008,17 @@ export type Database = {
       };
       reorder_competitions: {
         Args: { competition_ids: string[]; target_event_id: string };
+        Returns: string;
+      };
+      report_match: {
+        Args: {
+          loser: string;
+          loser_score?: number;
+          target_competition_id: string;
+          target_event_id: string;
+          winner: string;
+          winner_score?: number;
+        };
         Returns: string;
       };
       send_notice: {

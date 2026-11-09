@@ -32,6 +32,7 @@ const pressables = new Set([
   "components/ui/button.tsx",
   "components/ui/switch.tsx",
   "modules/ChoiceTile.tsx",
+  "modules/competitions/guest/PickTile.tsx",
   "views/create/ChoiceButton.tsx",
 ]);
 const hardShadow = /(?<![\w-])shadow-pop-(?:sm|md|lg)\b/;
