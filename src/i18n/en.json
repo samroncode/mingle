@@ -49,6 +49,7 @@
       "title": "Page not found",
       "home": "Go to the start page"
     },
+    "loading": "Loading…",
     "error": {
       "title": "Something went wrong",
       "reload": "Reload the page"
