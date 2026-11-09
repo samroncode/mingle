@@ -74,6 +74,8 @@ export function applyMove(
   switch (move.type) {
     case "start_module":
       if (running) return refused();
+      // Competitions has no screen of its own yet (the spotlight comes later).
+      if (move.module === "competitions") return refused();
       if (!enabledModules.includes(move.module)) {
         return { ok: false, error: "module_disabled" };
       }

@@ -32,6 +32,7 @@ import { setPayment } from "./set-payment.ts";
 import { updateAwards } from "./update-awards.ts";
 import { sendNotice } from "./send-notice.ts";
 import { updateCosts } from "./update-costs.ts";
+import { updateCompetitions } from "./update-competitions.ts";
 import { updateHotTakes } from "./update-hottakes.ts";
 import { updatePartyContent } from "./update-party-content.ts";
 import { updateQuiz } from "./update-quiz.ts";
@@ -142,6 +143,8 @@ async function runAction(
       return updateAwards(db, caller, request);
     case "update_hottakes":
       return updateHotTakes(db, caller, request);
+    case "update_competitions":
+      return updateCompetitions(db, caller, request);
     case "rename_guest":
       return renameGuest(db, caller, request);
     case "remove_guest":

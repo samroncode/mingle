@@ -40,7 +40,7 @@ describe("orderActivities", () => {
   it("keeps the enabled order and puts the rest last", () => {
     expect(orderActivities(["hottakes", "quiz"])).toEqual({
       enabled: ["hottakes", "quiz"],
-      disabled: ["awards"],
+      disabled: ["awards", "competitions"],
     });
   });
 

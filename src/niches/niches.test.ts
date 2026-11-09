@@ -4,6 +4,10 @@ import sv from "@/i18n/sv.json";
 import themeCss from "@/app/theme.css?raw";
 import { supportedLanguages } from "@/i18n/language";
 import { AwardCategorySchema, awardsLimits } from "@/lib/schemas/awards";
+import {
+  CompetitionNameSchema,
+  competitionsLimits,
+} from "@/lib/schemas/competitions";
 import { HotTakeSchema, hottakesLimits } from "@/lib/schemas/hottakes";
 import { PartySchema } from "@/lib/schemas/party";
 import { QuizQuestionSchema, quizLimits } from "@/lib/schemas/quiz";
@@ -194,6 +198,33 @@ describe.each(Object.values(niches))("niche $id hot takes", (niche) => {
     const texts = niche.hottakes.map((take) => take.texts[language]);
     expect(new Set(texts.map((t) => t.toLowerCase())).size).toBe(texts.length);
   });
+});
+
+describe.each(Object.values(niches))("niche $id competitions", (niche) => {
+  it("suggests a few, within the per-event limit", () => {
+    expect(niche.competitions.length).toBeGreaterThanOrEqual(3);
+    expect(niche.competitions.length).toBeLessThanOrEqual(
+      competitionsLimits.perEvent,
+    );
+  });
+
+  it("has ids that are unique and start with the niche id", () => {
+    const ids = niche.competitions.map((c) => c.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const id of ids) expect(id.startsWith(`${niche.id}-`), id).toBe(true);
+  });
+
+  it.each(supportedLanguages)(
+    "has every name in %s, passing the shared name schema",
+    (language) => {
+      for (const competition of niche.competitions) {
+        const result = CompetitionNameSchema.safeParse(
+          competition.names[language],
+        );
+        expect(result.error, competition.id).toBeUndefined();
+      }
+    },
+  );
 });
 
 describe("NicheConfigSchema", () => {

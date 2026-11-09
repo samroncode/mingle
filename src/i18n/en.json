@@ -328,6 +328,35 @@
         "sided_one": "You sided with the majority {{sided}} of {{count}} time",
         "sided_other": "You sided with the majority {{sided}} of {{count}} times"
       }
+    },
+    "competitions": {
+      "name": "Competitions",
+      "items_one": "{{count}} competition",
+      "items_other": "{{count}} competitions",
+      "description": "Ping pong, darts or any game, with a live table.",
+      "host": {
+        "empty": "No competitions yet. Add one, such as ping pong or darts.",
+        "loadFailed": "Couldn't load the competitions. Reload to try again.",
+        "newName": "Name of the new competition",
+        "newPlaceholder": "Ping pong",
+        "add": "Add competition",
+        "full": "You have {{max}} competitions, the most one evening can hold. Remove one to add another.",
+        "save": "Save",
+        "cancel": "Cancel",
+        "renameLabel": "New name for {{name}}",
+        "rename": "Rename {{name}}",
+        "remove": "Remove {{name}}",
+        "moveUp": "Move {{name}} up",
+        "moveDown": "Move {{name}} down",
+        "removeTitle": "Remove {{name}}",
+        "removeConfirm": "Remove {{name}}? Its matches go with it, and this can't be undone.",
+        "removeAction": "Remove competition",
+        "errors": {
+          "too_many": "An evening can have at most 5 competitions. Remove one first.",
+          "not_found": "That competition is already gone. Reload the page to see the list.",
+          "invalid_request": "Check the name: it needs 1 to 40 characters."
+        }
+      }
     }
   },
   "links": {
@@ -355,6 +384,7 @@
       "quiz": "Quiz questions",
       "awards": "Award categories",
       "hottakes": "Hot takes",
+      "competitions": "Competitions",
       "costs": "Shared costs",
       "welcome": "Welcome text",
       "menu": "Menu",
@@ -377,7 +407,9 @@
       "hotTakes_one": "{{count}} hot take",
       "hotTakes_other": "{{count}} hot takes",
       "costs_one": "Guests pay {{name}} · {{count}} purchase",
-      "costs_other": "Guests pay {{name}} · {{count}} purchases"
+      "costs_other": "Guests pay {{name}} · {{count}} purchases",
+      "competitions_one": "{{count}} competition",
+      "competitions_other": "{{count}} competitions"
     },
     "costs": {
       "name": "Shared costs",
@@ -495,6 +527,23 @@
       "takePlaceholder": "Pineapple belongs on pizza",
       "errors": {
         "empty": "Hot take {{n}} needs a text of 1 to {{max}} characters."
+      }
+    },
+    "competitions": {
+      "count": "{{count}} of {{max}} competitions picked",
+      "empty": "No competitions picked. Add a suggestion below or write your own.",
+      "addOwn": "Add your own competition",
+      "full": "The competitions are full ({{max}}). Remove one to add another.",
+      "more": "Suggested competitions ({{count}})",
+      "add": "Add",
+      "addCompetition": "Add the competition: {{name}}",
+      "moveUp": "Move competition {{n}} up",
+      "moveDown": "Move competition {{n}} down",
+      "remove": "Remove competition {{n}}",
+      "nameLabel": "Name of competition {{n}}",
+      "namePlaceholder": "Ping pong",
+      "errors": {
+        "empty": "Competition {{n}} needs a name of 1 to {{max}} characters."
       }
     }
   },

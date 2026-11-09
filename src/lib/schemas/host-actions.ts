@@ -8,6 +8,11 @@ import { moduleIds } from "../../modules/registry.ts";
 import { nicheIds } from "../../niches/ids.ts";
 import { ADMIN_KEY_PATTERN, EVENT_CODE_PATTERN } from "../formats.ts";
 import { AwardCategoriesSchema } from "./awards.ts";
+import {
+  CompetitionNameSchema,
+  competitionsLimits,
+  CompetitionsSchema,
+} from "./competitions.ts";
 import { CostsSchema, WizardCostsSchema } from "./costs.ts";
 import { HotTakesSchema } from "./hottakes.ts";
 import { PartySchema } from "./party.ts";
@@ -37,6 +42,8 @@ export const CreateEventRequestSchema = z
     awards: AwardCategoriesSchema.optional(),
     /** The hot takes picked in the wizard, in order. Needs hot takes on. */
     hottakes: HotTakesSchema.optional(),
+    /** The competitions picked in the wizard, in order. Needs Competitions on. */
+    competitions: CompetitionsSchema.optional(),
     /**
      * Shared costs switched on in the wizard: the payee, the Swish number and
      * the purchases, which have no sharers yet. Left out when switched off.
@@ -57,6 +64,15 @@ export const CreateEventRequestSchema = z
     (request) =>
       !request.hottakes?.length || request.enabledModules.includes("hottakes"),
     { path: ["hottakes"], message: "hot takes need hot takes switched on" },
+  )
+  .refine(
+    (request) =>
+      !request.competitions?.length ||
+      request.enabledModules.includes("competitions"),
+    {
+      path: ["competitions"],
+      message: "competitions need Competitions switched on",
+    },
   );
 
 export type CreateEventRequest = z.infer<typeof CreateEventRequestSchema>;
@@ -208,6 +224,50 @@ export const UpdateHotTakesResponseSchema = z.strictObject({});
 
 export type UpdateHotTakesResponse = z.infer<
   typeof UpdateHotTakesResponseSchema
+>;
+
+/**
+ * One change to the event's competitions: add one last in the list, rename
+ * one, remove one (the ones after it move up) or put them in a new order.
+ * `ids` of a reorder lists every competition of the event exactly once.
+ */
+export const CompetitionChangeSchema = z.discriminatedUnion("type", [
+  z.strictObject({ type: z.literal("add"), name: CompetitionNameSchema }),
+  z.strictObject({
+    type: z.literal("rename"),
+    id: z.uuid(),
+    name: CompetitionNameSchema,
+  }),
+  z.strictObject({ type: z.literal("remove"), id: z.uuid() }),
+  z.strictObject({
+    type: z.literal("reorder"),
+    ids: z.array(z.uuid()).max(competitionsLimits.perEvent),
+  }),
+]);
+
+export type CompetitionChange = z.infer<typeof CompetitionChangeSchema>;
+
+/**
+ * Changes the event's competitions. Fails with `module_disabled` while
+ * Competitions is switched off, `invalid_transition` once the event has ended,
+ * `too_many` when an add would pass 5, and `not_found` for a competition that
+ * isn't the event's.
+ */
+export const UpdateCompetitionsRequestSchema = z.strictObject({
+  action: z.literal("update_competitions"),
+  ...hostLinkFields,
+  change: CompetitionChangeSchema,
+});
+
+export type UpdateCompetitionsRequest = z.infer<
+  typeof UpdateCompetitionsRequestSchema
+>;
+
+/** Empty: the host and members read the new list on their next read. */
+export const UpdateCompetitionsResponseSchema = z.strictObject({});
+
+export type UpdateCompetitionsResponse = z.infer<
+  typeof UpdateCompetitionsResponseSchema
 >;
 
 /**
@@ -386,6 +446,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdateQuizRequestSchema,
   UpdateAwardsRequestSchema,
   UpdateHotTakesRequestSchema,
+  UpdateCompetitionsRequestSchema,
   RenameGuestRequestSchema,
   RemoveGuestRequestSchema,
   UpdateCostsRequestSchema,
@@ -422,13 +483,13 @@ export const hostActionErrorCodes = [
    * set_bill_sent or set_payment while shared costs are switched off.
    */
   "invalid_transition",
-  /** start_module for an activity the host turned off, quiz questions, award categories or hot takes for it. */
+  /** start_module for an activity the host turned off, quiz questions, award categories, hot takes or competitions for it. */
   "module_disabled",
   /** start_module for an activity with no steps, such as a quiz without questions. */
   "module_empty",
   /** start_module for an activity whose steps have all been played. */
   "module_finished",
-  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed), delete_notice for an unknown notice or another event's. */
+  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed), delete_notice for an unknown notice or another event's, update_competitions for a competition that isn't the event's. */
   "not_found",
   /** rename_guest to a name another guest of the event has. */
   "name_taken",
@@ -436,7 +497,7 @@ export const hostActionErrorCodes = [
   "invalid_name",
   /** send_notice once the event has ended. */
   "ended",
-  /** send_notice when the event already has 30 notices. */
+  /** send_notice when the event already has 30 notices, an add of a sixth competition. */
   "too_many",
   /** send_notice less than 5 seconds after the last notice. */
   "too_soon",

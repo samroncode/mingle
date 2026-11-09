@@ -34,6 +34,9 @@ import {
   SetPaymentResponseSchema,
   type SetBillSentResponse,
   SetBillSentResponseSchema,
+  type UpdateCompetitionsRequest,
+  type UpdateCompetitionsResponse,
+  UpdateCompetitionsResponseSchema,
   type UpdateCostsRequest,
   type UpdateCostsResponse,
   UpdateCostsResponseSchema,
@@ -210,6 +213,22 @@ export async function updateHotTakes(
   return toHostActionResult(
     UpdateHotTakesResponseSchema,
     await invokeHostActions({ action: "update_hottakes", ...input }),
+  );
+}
+
+/**
+ * Adds, renames, removes or reorders the event's competitions. Fails with
+ * `module_disabled` while Competitions is switched off, `invalid_transition`
+ * once the event has ended, `too_many` when an add would pass 5, `not_found`
+ * for a competition that isn't the event's, and `invalid_request` for a name
+ * that isn't 1 to 40 characters or a reorder that doesn't list every one.
+ */
+export async function updateCompetitions(
+  input: Omit<UpdateCompetitionsRequest, "action">,
+): Promise<HostActionResult<UpdateCompetitionsResponse>> {
+  return toHostActionResult(
+    UpdateCompetitionsResponseSchema,
+    await invokeHostActions({ action: "update_competitions", ...input }),
   );
 }
 

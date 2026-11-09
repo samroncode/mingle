@@ -5,9 +5,7 @@ Parking lot for ideas that are **not** part of v1. Agents: do not build anything
 ## Next up (v1.1)
 
 ### Competitions and leaderboard
-- Host creates competitions (e.g. darts, ping pong)
-- Results reported from a phone ("Sam beat Erik 21–15")
-- Live leaderboard on the TV and in the party screen rotation
+- The basics (host creates competitions, guests report matches, live tables) are being built as spec #262 and are no longer an idea.
 - Later: tournament brackets, "king of the table" mode
 - Later: persistent history across events (e.g. the office's all-time ping pong ranking) — requires some form of persistent group/space
 

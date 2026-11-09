@@ -283,6 +283,21 @@ export async function seedHotTake(
   return data.id;
 }
 
+/** Inserts a competition with the service role; returns its id. */
+export async function seedCompetition(
+  eventId: string,
+  position: number,
+  name: string = `Competition ${position + 1}`,
+): Promise<string> {
+  const { data, error } = await serviceClient()
+    .from("competitions")
+    .insert({ event_id: eventId, position, name })
+    .select("id")
+    .single();
+  if (error) throw error;
+  return data.id;
+}
+
 /** Sets an event's flow state with the service role, as host-actions does. */
 export async function setEventFlow(
   eventId: string,

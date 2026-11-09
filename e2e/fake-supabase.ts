@@ -400,6 +400,11 @@ interface FakeHostPanelOptions {
   awards?: string[];
   /** The texts of the hot takes, in order. */
   hottakes?: string[];
+  /**
+   * The event's competitions in order. Read on every request, so a test can
+   * change the array while the panel is open.
+   */
+  competitions?: Array<{ id: string; name: string }>;
   /** The guests of the event, on top of the host. */
   guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
@@ -496,6 +501,17 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
           text,
           vote_count: 0,
           revealed_at: null,
+        })),
+      );
+    }
+    if (url.includes("/rest/v1/competitions")) {
+      return json(
+        route,
+        200,
+        (options.competitions ?? []).map(({ id, name }, position) => ({
+          id,
+          position,
+          name,
         })),
       );
     }
