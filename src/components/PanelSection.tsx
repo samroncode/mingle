@@ -1,6 +1,19 @@
 import { ChevronDown } from "lucide-react";
-import { useId, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useId,
+  useState,
+  type ReactNode,
+} from "react";
 import { cn } from "cn";
+
+/**
+ * Sections inside this provider are flat rows (thin lines, no card). Only the
+ * phone layout of the host panel uses it.
+ */
+const FlatContext = createContext(false);
+export const FlatSections = FlatContext.Provider;
 
 interface PanelSectionProps {
   title: string;
@@ -30,6 +43,7 @@ export function PanelSection({
   children,
 }: PanelSectionProps) {
   const bodyId = useId();
+  const flat = useContext(FlatContext);
   const [open, setOpen] = useState(defaultOpen || openWhen);
 
   // Open when `openWhen` turns true (adjusting state while rendering).
@@ -43,7 +57,11 @@ export function PanelSection({
     <section
       data-testid={testId}
       data-open={open}
-      className="rounded-lg border-[length:var(--border-thin)] border-edge bg-paper text-on-paper"
+      className={cn(
+        flat
+          ? "border-b-[length:var(--border-thin)] border-line"
+          : "rounded-lg border-[length:var(--border-thin)] border-edge bg-paper text-on-paper",
+      )}
     >
       <h2>
         <button
@@ -51,15 +69,30 @@ export function PanelSection({
           aria-expanded={open}
           aria-controls={bodyId}
           onClick={() => setOpen((current) => !current)}
-          className="flex min-h-14 w-full items-center justify-between gap-3 rounded-lg p-4 text-left"
+          className={cn(
+            "flex min-h-14 w-full items-center justify-between gap-3 text-left",
+            flat ? "py-3" : "rounded-lg p-4",
+          )}
         >
           <span className="min-w-0 space-y-0.5">
             <span className="flex flex-wrap items-center gap-2">
-              <span className="font-display text-xl font-bold">{title}</span>
+              <span
+                className={cn(
+                  "font-display font-bold",
+                  flat ? "text-lg" : "text-xl",
+                )}
+              >
+                {title}
+              </span>
               {badge}
             </span>
             {summary && (
-              <span className="block text-sm text-on-paper-muted">
+              <span
+                className={cn(
+                  "block text-sm",
+                  flat ? "text-ink-muted" : "text-on-paper-muted",
+                )}
+              >
                 {summary}
               </span>
             )}
@@ -71,7 +104,10 @@ export function PanelSection({
         </button>
       </h2>
       {open && (
-        <div id={bodyId} className="space-y-3 px-4 pb-4">
+        <div
+          id={bodyId}
+          className={cn("space-y-3", flat ? "pb-4" : "px-4 pb-4")}
+        >
           {children}
         </div>
       )}
