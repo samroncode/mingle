@@ -6,7 +6,10 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 export function HostLayout() {
   return (
     <FunZone level="calm">
-      <div data-layout="host" className="mx-auto min-h-svh max-w-2xl p-4">
+      <div
+        data-layout="host"
+        className="mx-auto min-h-svh max-w-2xl p-4 lg:max-w-[100rem]"
+      >
         <header className="flex justify-end">
           <LanguageSwitcher />
         </header>
