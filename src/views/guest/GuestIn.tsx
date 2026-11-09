@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { renameGuest } from "@/api/events";
+import { ReconnectingNotice } from "@/components/ReconnectingNotice";
 import { NicheTheme } from "@/components/NicheTheme";
 import { Sticker } from "@/components/ui/sticker";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
@@ -90,6 +91,7 @@ export function GuestIn({
   const choice = pickScreen(state.event.current_module);
   const content = (
     <div className="space-y-5">
+      {state.reconnecting && <ReconnectingNotice />}
       {banner && <NoticeBanner banner={banner} onDismiss={dismiss} />}
       {bill}
       <GuestNameButton

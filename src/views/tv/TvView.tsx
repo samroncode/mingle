@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router";
+import { ReconnectingNotice } from "@/components/ReconnectingNotice";
 import { NicheTheme } from "@/components/NicheTheme";
 import { Button } from "@/components/ui/button";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
@@ -72,6 +73,9 @@ function TvEvent({ eventId }: { eventId: string }) {
   return (
     <NicheTheme niche={state.event.niche} bright={state.event.bright_room}>
       {screen}
+      {state.reconnecting && (
+        <ReconnectingNotice className="fixed bottom-[calc(var(--space-7)+var(--space-6))] left-[calc(var(--space-7)+var(--space-6))] z-20 text-xl" />
+      )}
     </NicheTheme>
   );
 }

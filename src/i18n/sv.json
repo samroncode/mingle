@@ -662,6 +662,9 @@
       "loadFailedOpen": "Det gick inte att läsa in din räkning, tryck för att försöka igen"
     }
   },
+  "connection": {
+    "reconnecting": "Återansluter…"
+  },
   "hostPanel": {
     "loading": "Laddar kvällen…",
     "loadFailed": "Kunde inte ladda kvällen. Ladda om sidan.",

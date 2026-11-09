@@ -662,6 +662,9 @@
       "loadFailedOpen": "Couldn't load your bill, tap to try again"
     }
   },
+  "connection": {
+    "reconnecting": "Reconnecting…"
+  },
   "hostPanel": {
     "loading": "Loading the evening…",
     "loadFailed": "Couldn't load the evening. Reload the page.",

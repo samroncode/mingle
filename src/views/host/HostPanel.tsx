@@ -66,7 +66,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
   return (
     <>
       <TopBar event={event} members={members} hostKey={link.key} />
-      {state.status === "error" && (
+      {(state.status === "error" || state.reconnecting) && (
         <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
       )}
       {ended ? (

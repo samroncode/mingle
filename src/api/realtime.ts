@@ -9,6 +9,9 @@ import type { AppClient } from "./session";
 
 export type SnapshotResult = Result<EventSnapshot, SnapshotErrorCode>;
 
+/** Whether the live subscription is working right now. */
+export type ConnectionState = "connected" | "reconnecting";
+
 /** How long to wait before each new attempt after the channel fails. */
 const retryDelaysMs = [1_000, 2_000, 5_000, 10_000, 30_000];
 
@@ -20,14 +23,18 @@ let channelCount = 0;
  * subscription is confirmed, after every change to the event or its members,
  * after a dropped channel comes back and when the tab becomes visible again.
  * Changes are only a signal to refetch, so RLS applies to every read and a
- * missed message doesn't matter. Returns a function that stops it all.
+ * missed message doesn't matter. `onConnection` reports "reconnecting" when
+ * the channel drops and "connected" again once it is back and a fresh
+ * snapshot has arrived. Returns a function that stops it all.
  */
 export function subscribeToEvent(
   eventId: string,
   onChange: (snapshot: SnapshotResult) => void,
   client: AppClient = getSupabase(),
+  onConnection?: (state: ConnectionState) => void,
 ): () => void {
   let stopped = false;
+  let subscribed = false;
   let latestFetch = 0;
   let failures = 0;
   let channel: RealtimeChannel | undefined;
@@ -37,7 +44,9 @@ export function subscribeToEvent(
     const fetchId = ++latestFetch;
     const snapshot = await getEventSnapshot(eventId, client);
     // A slower, older fetch must not overwrite a newer one.
-    if (!stopped && fetchId === latestFetch) onChange(snapshot);
+    if (stopped || fetchId !== latestFetch) return;
+    onChange(snapshot);
+    if (subscribed && snapshot.ok) onConnection?.("connected");
   }
 
   function subscribe(): void {
@@ -49,6 +58,7 @@ export function subscribeToEvent(
       if (stopped || channel !== own) return;
       if (status === REALTIME_SUBSCRIBE_STATES.SUBSCRIBED) {
         failures = 0;
+        subscribed = true;
         void refetch();
       } else {
         retry();
@@ -57,6 +67,8 @@ export function subscribeToEvent(
   }
 
   function retry(): void {
+    subscribed = false;
+    onConnection?.("reconnecting");
     closeChannel();
     const delay = retryDelaysMs[Math.min(failures, retryDelaysMs.length - 1)];
     failures += 1;

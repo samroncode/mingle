@@ -1,4 +1,4 @@
-import type { Page, Route } from "@playwright/test";
+import type { Page, Route, WebSocketRoute } from "@playwright/test";
 import {
   eventRow,
   fakeEventId,
@@ -153,8 +153,23 @@ export async function fakeTv(page: Page, options: TvFakeOptions) {
 }
 
 /** Accepts the realtime socket and confirms every channel it is asked to join. */
-export async function fakeRealtime(page: Page) {
+export async function fakeRealtime(page: Page): Promise<RealtimeControl> {
+  const control: RealtimeControl = {
+    failJoins: false,
+    sockets: [],
+    /** Drops every open socket and refuses new channels until `restore`. */
+    drop() {
+      control.failJoins = true;
+      for (const ws of control.sockets) void ws.close();
+      control.sockets = [];
+    },
+    restore() {
+      control.failJoins = false;
+    },
+  };
+  controls.set(page, control);
   await page.routeWebSocket(/\/realtime\/v1\/websocket/, (ws) => {
+    control.sockets.push(ws);
     ws.onMessage((raw) => {
       // Protocol 2.0.0 frames: [join_ref, ref, topic, event, payload].
       const [joinRef, ref, topic, event, payload] = JSON.parse(String(raw)) as [
@@ -174,6 +189,16 @@ export async function fakeRealtime(page: Page) {
             { status: "ok", response: {} },
           ]),
         );
+      } else if (event === "phx_join" && control.failJoins) {
+        ws.send(
+          JSON.stringify([
+            joinRef,
+            ref,
+            topic,
+            "phx_reply",
+            { status: "error", response: {} },
+          ]),
+        );
       } else if (event === "phx_join") {
         const filters = payload?.config?.postgres_changes ?? [];
         const confirmed = filters.map((filter, id) => ({ ...filter, id }));
@@ -189,6 +214,24 @@ export async function fakeRealtime(page: Page) {
       }
     });
   });
+  return control;
+}
+
+const controls = new WeakMap<Page, RealtimeControl>();
+
+/** The handle on the page's fake realtime socket (after `fakeRealtime`). */
+export function realtimeControl(page: Page): RealtimeControl {
+  const control = controls.get(page);
+  if (!control) throw new Error("fakeRealtime has not been set up");
+  return control;
+}
+
+/** Test handle on the fake realtime socket. */
+export interface RealtimeControl {
+  failJoins: boolean;
+  sockets: WebSocketRoute[];
+  drop(): void;
+  restore(): void;
 }
 
 /** Records the URL of every request the page makes, from now on. */
