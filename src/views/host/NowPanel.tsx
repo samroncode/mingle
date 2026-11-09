@@ -32,7 +32,9 @@ export function NowPanel({
     <section
       data-testid="now-panel"
       aria-label={t("hostPanel.now.title")}
-      className={phone ? "space-y-3 pt-4" : "space-y-3"}
+      className={
+        phone ? "space-y-3 pt-4" : "space-y-2 [&_button]:w-auto [&_button]:px-8"
+      }
     >
       <h2 className="font-display text-sm font-bold uppercase tracking-wide text-ink-muted">
         {phone && live ? (

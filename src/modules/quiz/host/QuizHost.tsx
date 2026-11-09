@@ -42,28 +42,27 @@ export function QuizHost(props: ModuleHostProps) {
       {run.failed && !running && (
         <ErrorLine>{t("modules.quiz.host.loadFailed")}</ErrorLine>
       )}
-      {running ? (
-        <QuizLive {...props} />
-      ) : (
-        run.progress && (
-          <div className="space-y-3">
-            {finished && (
-              <p className="text-sm text-ink-muted">
-                {t("modules.quiz.run.finished")}
-              </p>
-            )}
-            <RunControls
-              code={props.code}
-              hostKey={props.hostKey}
-              module="quiz"
-              running={false}
-              startDisabled={props.startDisabled}
-              startLabelKey="modules.quiz.run.start"
-              next={null}
-            />
-          </div>
-        )
-      )}
+      {running
+        ? !props.compact && <QuizLive {...props} />
+        : run.progress &&
+          !props.compact && (
+            <div className="space-y-3">
+              {finished && (
+                <p className="text-sm text-ink-muted">
+                  {t("modules.quiz.run.finished")}
+                </p>
+              )}
+              <RunControls
+                code={props.code}
+                hostKey={props.hostKey}
+                module="quiz"
+                running={false}
+                startDisabled={props.startDisabled}
+                startLabelKey="modules.quiz.run.start"
+                next={null}
+              />
+            </div>
+          )}
       {finished && scores && (
         <div className="space-y-2">
           <h3 className="font-display font-bold">

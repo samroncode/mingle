@@ -52,7 +52,7 @@ function PartyView({ party }: { party: Party }) {
   );
 }
 
-function PartyEditor({
+export function PartyEditor({
   event,
   hostKey,
   onDone,

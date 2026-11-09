@@ -13,6 +13,8 @@ import { Activities } from "./Activities";
 import { BottomBar } from "./BottomBar";
 import { BrightRoom } from "./BrightRoom";
 import { EndEvent } from "./EndEvent";
+import { DashboardMain } from "./dashboard/DashboardMain";
+import { DashboardNav } from "./dashboard/DashboardNav";
 import { Guests } from "./Guests";
 import { HostFrame } from "./HostFrame";
 import { Messages } from "./Messages";
@@ -127,6 +129,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
   // Right after End, until the snapshot catches up.
   const [endedHere, setEndedHere] = useState(false);
   const phone = useIsPhone();
+  const wide = !phone;
 
   if (!event) {
     return (
@@ -151,16 +154,31 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
         <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
       )}
       <HostFrame
+        navLabel={t("hostPanel.dashboard.nav.label")}
+        nav={
+          wide ? <DashboardNav event={event} members={members} /> : undefined
+        }
         main={
-          <Sections
-            eventId={eventId}
-            link={link}
-            event={event}
-            members={members}
-            ended={ended}
-            onEnded={() => setEndedHere(true)}
-            phone={phone}
-          />
+          wide ? (
+            <DashboardMain
+              eventId={eventId}
+              link={link}
+              event={event}
+              members={members}
+              ended={ended}
+              onEnded={() => setEndedHere(true)}
+            />
+          ) : (
+            <Sections
+              eventId={eventId}
+              link={link}
+              event={event}
+              members={members}
+              ended={ended}
+              onEnded={() => setEndedHere(true)}
+              phone={phone}
+            />
+          )
         }
         side={
           <SideColumn

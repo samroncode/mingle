@@ -971,6 +971,30 @@
       "title": "På TV:n",
       "unavailable": "Förhandsvisningen är inte tillgänglig.",
       "retry": "Försök igen"
+    },
+    "dashboard": {
+      "nav": {
+        "label": "Sektioner",
+        "live": "Live",
+        "activities": "Aktiviteter",
+        "program": "Program",
+        "messages": "Meddelanden",
+        "guests": "Gäster",
+        "costs": "Gemensamma kostnader",
+        "party": "Festskärm",
+        "brightRoom": "Ljust rum",
+        "end": "Avsluta kvällen"
+      },
+      "showTable": "Visa tabell på TV",
+      "edit": "Redigera {{name}}",
+      "editShort": "Redigera",
+      "close": "Stäng",
+      "progress": "Framsteg för {{name}}",
+      "progressText": "{{done}} av {{total}}",
+      "programEmpty": "Inget program än.",
+      "programNow": "nu",
+      "programEdit": "Redigera programmet",
+      "costsOpen": "Öppna gemensamma kostnader"
     }
   }
 }

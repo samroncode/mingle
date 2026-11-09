@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 
 interface HostFrameProps {
+  /** Accessible name of the navigation landmark. */
+  navLabel?: string;
   /** Left column on wide screens. Filled by the "Dashboard middle" ticket (section navigation). */
   nav?: ReactNode;
   /** The work area. Today it holds every section in the old order; later tickets move them out. */
@@ -15,7 +17,13 @@ interface HostFrameProps {
  * The layout of the control panel, with no data of its own. One column on a
  * phone; from `lg` a flat three-column frame separated by thin lines.
  */
-export function HostFrame({ nav, main, side, phoneTop }: HostFrameProps) {
+export function HostFrame({
+  nav,
+  navLabel,
+  main,
+  side,
+  phoneTop,
+}: HostFrameProps) {
   return (
     <div
       data-testid="host-frame"
@@ -24,6 +32,7 @@ export function HostFrame({ nav, main, side, phoneTop }: HostFrameProps) {
       <nav
         data-testid="host-nav"
         className="hidden lg:block lg:px-4 lg:py-4"
+        aria-label={nav ? navLabel : undefined}
         aria-hidden={nav ? undefined : true}
       >
         {nav}

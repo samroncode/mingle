@@ -11,7 +11,7 @@ import { CompetitionsLive } from "./CompetitionsLive";
 
 interface SpotlightProps extends Pick<
   ModuleHostProps,
-  "event" | "members" | "code" | "hostKey" | "startDisabled"
+  "event" | "members" | "code" | "hostKey" | "startDisabled" | "compact"
 > {
   competitions: CompetitionView[];
 }
@@ -27,6 +27,7 @@ export function Spotlight({
   code,
   hostKey,
   startDisabled,
+  compact,
   competitions,
 }: SpotlightProps) {
   const { t } = useTranslation();
@@ -47,13 +48,15 @@ export function Spotlight({
         {t("modules.competitions.host.spotlight.title")}
       </h3>
       {running ? (
-        <CompetitionsLive
-          event={event}
-          members={members}
-          code={code}
-          hostKey={hostKey}
-          startDisabled={startDisabled}
-        />
+        !compact && (
+          <CompetitionsLive
+            event={event}
+            members={members}
+            code={code}
+            hostKey={hostKey}
+            startDisabled={startDisabled}
+          />
+        )
       ) : (
         <>
           <p

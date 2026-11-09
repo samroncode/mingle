@@ -971,6 +971,30 @@
       "title": "On the TV",
       "unavailable": "Preview not available.",
       "retry": "Try again"
+    },
+    "dashboard": {
+      "nav": {
+        "label": "Sections",
+        "live": "Live",
+        "activities": "Activities",
+        "program": "Program",
+        "messages": "Messages",
+        "guests": "Guests",
+        "costs": "Shared costs",
+        "party": "Party screen",
+        "brightRoom": "Bright room",
+        "end": "End the evening"
+      },
+      "showTable": "Show table on TV",
+      "edit": "Edit {{name}}",
+      "editShort": "Edit",
+      "close": "Close",
+      "progress": "{{name}} progress",
+      "progressText": "{{done}} of {{total}}",
+      "programEmpty": "No program yet.",
+      "programNow": "now",
+      "programEdit": "Edit program",
+      "costsOpen": "Open shared costs"
     }
   }
 }
