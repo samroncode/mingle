@@ -8,11 +8,9 @@ import { canEditHotTakes } from "@/lib/host/hottakes-edit";
 import { isNicheId } from "@/niches";
 import type { ModuleHostProps } from "../../types";
 import { RunControls } from "../../RunControls";
-import { answeringGuests, hotTakesNextMove } from "../screen";
-import { SplitBars } from "../SplitBars";
-import { useHotTakeResult } from "../useHotTakeResults";
 import { useHotTakesRun } from "../useHotTakesRun";
 import { HotTakesEdit } from "./HotTakesEdit";
+import { HotTakesLive } from "./HotTakesLive";
 
 /** The hot takes' section in the control panel: run them, and the list. */
 export function HotTakesHost({
@@ -27,12 +25,6 @@ export function HotTakesHost({
   const [editing, setEditing] = useState(false);
   const running = event.current_module === "hottakes";
   const total = run.progress?.total ?? 0;
-  const next = hotTakesNextMove(event, total);
-  const current = running
-    ? run.takes.find((h) => h.position === event.current_step)
-    : undefined;
-  const revealed = !!current && event.phase === "revealed";
-  const result = useHotTakeResult(current?.id ?? "", revealed, run.version);
   const finished =
     !!run.progress && total > 0 && run.progress.revealed >= total;
 
@@ -50,62 +42,36 @@ export function HotTakesHost({
       aria-label={t("modules.hottakes.name")}
       className="space-y-3"
     >
-      {run.failed && (
+      {run.failed && !running && (
         <ErrorLine>{t("modules.hottakes.host.loadFailed")}</ErrorLine>
       )}
-      {run.progress && (
-        <div className="space-y-3">
-          {running ? (
-            <p
-              data-testid="hottakes-progress"
-              className="text-sm text-ink-muted"
-            >
-              {next
-                ? t("modules.hottakes.counter", {
-                    number: event.current_step + 1,
-                    total,
-                  })
-                : t("modules.hottakes.summaryStep")}
-            </p>
-          ) : (
-            finished && (
+      {running ? (
+        <HotTakesLive
+          event={event}
+          members={members}
+          code={code}
+          hostKey={hostKey}
+          startDisabled={startDisabled}
+        />
+      ) : (
+        run.progress && (
+          <div className="space-y-3">
+            {finished && (
               <p className="text-sm text-ink-muted">
                 {t("modules.hottakes.run.finished")}
               </p>
-            )
-          )}
-          {current && next && (
-            <Card className="p-3">
-              <p className="font-display font-bold">{current.text}</p>
-              {event.phase === "open" && (
-                <p
-                  data-testid="hottakes-answered"
-                  className="mt-1 text-sm font-medium"
-                >
-                  {t("modules.hottakes.answered", {
-                    count: current.answerCount,
-                    total: answeringGuests(members),
-                  })}
-                </p>
-              )}
-              {revealed && result.status === "ready" && result.value && (
-                <div className="mt-2">
-                  <SplitBars split={result.value} />
-                </div>
-              )}
-            </Card>
-          )}
-          <RunControls
-            code={code}
-            hostKey={hostKey}
-            module="hottakes"
-            running={running}
-            startDisabled={startDisabled}
-            startLabelKey="modules.hottakes.run.start"
-            next={next}
-            stopLabelKey={next ? undefined : "modules.hottakes.run.backToParty"}
-          />
-        </div>
+            )}
+            <RunControls
+              code={code}
+              hostKey={hostKey}
+              module="hottakes"
+              running={false}
+              startDisabled={startDisabled}
+              startLabelKey="modules.hottakes.run.start"
+              next={null}
+            />
+          </div>
+        )
       )}
       {editing && niche && language ? (
         <HotTakesEdit

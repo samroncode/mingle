@@ -1,22 +1,26 @@
 import { AwardsGuest } from "./awards/guest/AwardsGuest";
 import { AwardsHost } from "./awards/host/AwardsHost";
+import { AwardsLive } from "./awards/host/AwardsLive";
 import { AwardsTv } from "./awards/tv/AwardsTv";
 import { useAwardsProgressText } from "./awards/useAwardsProgressText";
 import { useAwardsSummary } from "./awards/useAwardsSummary";
 import { AwardsStep } from "./awards/wizard/AwardsStep";
 import { CompetitionsGuest } from "./competitions/guest/CompetitionsGuest";
 import { CompetitionsHost } from "./competitions/host/CompetitionsHost";
+import { CompetitionsLive } from "./competitions/host/CompetitionsLive";
 import { CompetitionsTv } from "./competitions/tv/CompetitionsTv";
 import { useCompetitionsSummary } from "./competitions/useCompetitionsSummary";
 import { CompetitionsStep } from "./competitions/wizard/CompetitionsStep";
 import { HotTakesGuest } from "./hottakes/guest/HotTakesGuest";
 import { HotTakesHost } from "./hottakes/host/HotTakesHost";
+import { HotTakesLive } from "./hottakes/host/HotTakesLive";
 import { HotTakesTv } from "./hottakes/tv/HotTakesTv";
 import { useHotTakesProgressText } from "./hottakes/useHotTakesProgressText";
 import { useHotTakesSummary } from "./hottakes/useHotTakesSummary";
 import { HotTakesStep } from "./hottakes/wizard/HotTakesStep";
 import { QuizGuest } from "./quiz/guest/QuizGuest";
 import { QuizHost } from "./quiz/host/QuizHost";
+import { QuizLive } from "./quiz/host/QuizLive";
 import { QuizTv } from "./quiz/tv/QuizTv";
 import { useQuizProgressText } from "./quiz/useQuizProgressText";
 import { useQuizSummary } from "./quiz/useQuizSummary";
@@ -36,6 +40,7 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Tv: QuizTv,
     Guest: QuizGuest,
     Host: QuizHost,
+    Live: QuizLive,
     useProgress: useQuizProgressText,
     useSummary: useQuizSummary,
     WizardStep: QuizStep,
@@ -46,6 +51,7 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Tv: AwardsTv,
     Guest: AwardsGuest,
     Host: AwardsHost,
+    Live: AwardsLive,
     useProgress: useAwardsProgressText,
     useSummary: useAwardsSummary,
     WizardStep: AwardsStep,
@@ -56,6 +62,7 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Tv: HotTakesTv,
     Guest: HotTakesGuest,
     Host: HotTakesHost,
+    Live: HotTakesLive,
     useProgress: useHotTakesProgressText,
     useSummary: useHotTakesSummary,
     WizardStep: HotTakesStep,
@@ -66,6 +73,7 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Tv: CompetitionsTv,
     Guest: CompetitionsGuest,
     Host: CompetitionsHost,
+    Live: CompetitionsLive,
     useSummary: useCompetitionsSummary,
     WizardStep: CompetitionsStep,
   },

@@ -12,6 +12,7 @@ import { BrightRoom } from "./BrightRoom";
 import { EndEvent } from "./EndEvent";
 import { Guests } from "./Guests";
 import { Messages } from "./Messages";
+import { NowPanel } from "./NowPanel";
 import { PartyScreen } from "./PartyScreen";
 import { SharedCosts } from "./SharedCosts";
 import { TopBar } from "./TopBar";
@@ -69,6 +70,12 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
       {state.status === "error" && (
         <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
       )}
+      <NowPanel
+        event={event}
+        members={members}
+        hostKey={link.key}
+        ended={ended}
+      />
       {ended ? (
         <p className="rounded-md border-[length:var(--border-thin)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright">
           {t("hostPanel.ended")}

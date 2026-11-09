@@ -31,6 +31,15 @@ export interface ModuleHostProps extends ModuleViewProps {
   startDisabled: boolean;
 }
 
+/**
+ * The running activity's controls. `part` lets the phone split them: the
+ * status (question, answers) scrolls with the page, the actions (the one
+ * "next" button and Stop) are pinned at the bottom. Defaults to both.
+ */
+export interface ModuleLiveProps extends ModuleHostProps {
+  part?: "all" | "status" | "actions";
+}
+
 /** One activity (module in code): its id, name and the views it plugs in. */
 export interface ModuleDefinition {
   id: ModuleId;
@@ -40,6 +49,13 @@ export interface ModuleDefinition {
   Tv: ComponentType<ModuleViewProps>;
   /** The guest page while the activity runs. */
   Guest: ComponentType<ModuleGuestViewProps>;
+  /**
+   * Only the running state and its main actions (primary: the one "next"
+   * button, secondary: Stop), shown first on the dashboard and the phone.
+   * Renders nothing while the activity is not running. The `Host` section
+   * reuses it, so the controls exist once.
+   */
+  Live?: ComponentType<ModuleLiveProps>;
   /** The activity's section in the control panel. */
   Host: ComponentType<ModuleHostProps>;
   /**
