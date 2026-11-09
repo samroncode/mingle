@@ -27,11 +27,9 @@ export function MenuPart({ lines }: Of<"menu">) {
   const { t } = useTranslation();
   return (
     <Panel title={t("tv.menu")}>
-      <ul className="columns-2 gap-(--space-7) space-y-2 font-display text-4xl font-bold">
+      <ul className="space-y-2 font-display text-4xl font-bold">
         {lines.map((line, index) => (
-          <li key={index} className="break-inside-avoid">
-            {line}
-          </li>
+          <li key={index}>{line}</li>
         ))}
       </ul>
     </Panel>
@@ -43,7 +41,7 @@ export function SchedulePart({ items }: Of<"schedule">) {
   const hasTimes = anyLineHasTime(items);
   return (
     <Panel title={t("tv.schedule")}>
-      <ul className="grid grid-cols-2 gap-x-(--space-7) gap-y-3 font-display text-4xl font-bold">
+      <ul className="flex flex-col gap-3 font-display text-4xl font-bold">
         {items.map((item, index) => (
           <li key={index} className="flex items-baseline gap-5">
             {hasTimes ? (
