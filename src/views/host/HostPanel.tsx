@@ -156,7 +156,7 @@ export function HostPanel({ link }: { link: HostLinkParts }) {
   const { t } = useTranslation();
   const eventId = useHostEventId(link.code, true);
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {eventId ? (
         <Live eventId={eventId} link={link} />
       ) : (
