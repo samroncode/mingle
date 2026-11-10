@@ -726,6 +726,7 @@
     }
   },
   "captcha": {
+    "hint": "Snabb kontroll: kryssa i rutan för att fortsätta.",
     "failed": "Vi kunde inte kontrollera att du är en riktig person. Försök igen.",
     "retry": "Försök igen"
   },
