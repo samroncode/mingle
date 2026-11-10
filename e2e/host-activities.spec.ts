@@ -34,7 +34,7 @@ test("the host switches an activity on and gets the ready-made list", async ({
 }) => {
   const bodies = await openPanel(page, [() => [200, {}], () => [200, {}]]);
 
-  await page.getByText("Switched off (3)").click();
+  await page.getByText("Switched off (4)").click();
   await page.screenshot({ path: "test-results/host-activities-off.png" });
   await page.getByRole("switch", { name: "Awards" }).click();
 
@@ -59,7 +59,7 @@ test("an activity stays on with a plain message when its list can't be added", a
     () => [500, { error: "internal_error" }],
   ]);
 
-  await page.getByText("Switched off (3)").click();
+  await page.getByText("Switched off (4)").click();
   await page.getByRole("switch", { name: "Awards" }).click();
 
   await expect(page.getByRole("alert")).toContainText(
@@ -70,7 +70,7 @@ test("an activity stays on with a plain message when its list can't be added", a
 test("the panel says why a switch was refused", async ({ page }) => {
   await openPanel(page, [() => [409, { error: "invalid_transition" }]]);
 
-  await page.getByText("Switched off (3)").click();
+  await page.getByText("Switched off (4)").click();
   await page.getByRole("switch", { name: "Hot takes" }).click();
 
   await expect(page.getByRole("alert")).toBeVisible();

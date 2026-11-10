@@ -17,6 +17,7 @@ import { CostsSchema, WizardCostsSchema } from "./costs.ts";
 import { HotTakesSchema } from "./hottakes.ts";
 import { PartySchema } from "./party.ts";
 import { QuizQuestionsSchema } from "./quiz.ts";
+import { WheelGuestIdsSchema, WheelLabelSchema } from "./wheel.ts";
 
 /** 6 characters without look-alikes (no 0/O, no 1/I/L), as in the database. */
 export const EventCodeSchema = z.string().regex(EVENT_CODE_PATTERN);
@@ -275,6 +276,42 @@ export type UpdateCompetitionsResponse = z.infer<
   typeof UpdateCompetitionsResponseSchema
 >;
 
+/**
+ * One change to the Lucky wheel's entries: put several guests on it, add an
+ * entry with the host's own text, take one off the wheel (the row stays),
+ * put one back, or delete one for good.
+ */
+export const WheelChangeSchema = z.discriminatedUnion("type", [
+  z.strictObject({ type: z.literal("add_guests"), ids: WheelGuestIdsSchema }),
+  z.strictObject({ type: z.literal("add_custom"), label: WheelLabelSchema }),
+  z.strictObject({ type: z.literal("take_off"), id: z.uuid() }),
+  z.strictObject({ type: z.literal("put_back"), id: z.uuid() }),
+  z.strictObject({ type: z.literal("remove"), id: z.uuid() }),
+]);
+
+export type WheelChange = z.infer<typeof WheelChangeSchema>;
+
+/**
+ * Changes the Lucky wheel's entries. Fails with `module_disabled` while the
+ * wheel is switched off, `invalid_transition` once the event has ended,
+ * `too_many` past 24 entries, `invalid_name` for custom text that isn't 1 to
+ * 30 characters, `already_added` for a guest who is on the wheel, and
+ * `not_found` for an entry that isn't the event's or a guest who isn't a
+ * current guest of it.
+ */
+export const UpdateWheelRequestSchema = z.strictObject({
+  action: z.literal("update_wheel"),
+  ...hostLinkFields,
+  change: WheelChangeSchema,
+});
+
+export type UpdateWheelRequest = z.infer<typeof UpdateWheelRequestSchema>;
+
+/** Empty: the host and members read the new list on their next read. */
+export const UpdateWheelResponseSchema = z.strictObject({});
+
+export type UpdateWheelResponse = z.infer<typeof UpdateWheelResponseSchema>;
+
 /** A match's score: whole numbers from 0 to 999, the winner's the higher. */
 const MatchScoreSchema = z.strictObject({
   winner: z.number().int().min(0).max(999),
@@ -495,6 +532,7 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdateAwardsRequestSchema,
   UpdateHotTakesRequestSchema,
   UpdateCompetitionsRequestSchema,
+  UpdateWheelRequestSchema,
   UpdateMatchRequestSchema,
   RenameGuestRequestSchema,
   RemoveGuestRequestSchema,
@@ -538,16 +576,18 @@ export const hostActionErrorCodes = [
   "module_empty",
   /** start_module for an activity whose steps have all been played. */
   "module_finished",
-  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed), delete_notice for an unknown notice or another event's, update_competitions for a competition that isn't the event's, update_match for a match that isn't the event's. */
+  /** rename_guest, remove_guest or set_payment for a user who isn't a guest of the event (or is already removed), delete_notice for an unknown notice or another event's, update_competitions for a competition that isn't the event's, update_wheel for an entry that isn't the event's or a guest who isn't a current guest of it, update_match for a match that isn't the event's. */
   "not_found",
   /** rename_guest to a name another guest of the event has. */
   "name_taken",
-  /** rename_guest to a name that isn't 1 to 30 characters once cleaned. */
+  /** rename_guest to a name that isn't 1 to 30 characters once cleaned, update_wheel with custom text that isn't. */
   "invalid_name",
   /** send_notice once the event has ended. */
   "ended",
-  /** send_notice when the event already has 30 notices, an add of a sixth competition. */
+  /** send_notice when the event already has 30 notices, an add of a sixth competition, an add that would put more than 24 entries on the wheel. */
   "too_many",
+  /** update_wheel to put a guest on the wheel who already is on it. */
+  "already_added",
   /** send_notice less than 5 seconds after the last notice. */
   "too_soon",
   /** update_costs with a purchase nobody shares, or a sharer who isn't a current guest. */

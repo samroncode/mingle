@@ -463,6 +463,21 @@
         "title": "Competitions",
         "winner": "Winner: {{name}}"
       }
+    },
+    "wheel": {
+      "name": "Lucky wheel",
+      "items_one": "{{count}} entry",
+      "items_other": "{{count}} entries",
+      "description": "Spin a wheel to draw a guest, a dare or a prize.",
+      "host": {
+        "soon": "The wheel's entries are set up here soon.",
+        "errors": {
+          "too_many": "The wheel holds at most 24 entries. Remove one first.",
+          "already_added": "That guest is already on the wheel.",
+          "invalid_name": "Write an entry of 1 to 30 characters.",
+          "not_found": "That entry or guest is already gone. Reload the page to see the list."
+        }
+      }
     }
   },
   "links": {
@@ -849,7 +864,8 @@
       "invalid_sharer": "That purchase has a guest who isn't part of this evening any more. Check who shares it.",
       "ended": "That evening has ended, so nothing more can be sent.",
       "too_many": "You have sent the most messages one evening allows. Delete an old one first.",
-      "too_soon": "Wait a few seconds before sending the next message."
+      "too_soon": "Wait a few seconds before sending the next message.",
+      "already_added": "That guest is already on the wheel."
     },
     "guestList": {
       "empty": "No guests have joined yet.",

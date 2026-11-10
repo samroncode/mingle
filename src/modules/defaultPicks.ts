@@ -126,4 +126,6 @@ export const defaultPicks: Record<ModuleId, DefaultPick> = {
     ),
   // Competitions has no default pick: the host adds the ones they play.
   competitions: () => Promise.resolve({ ok: true, picked: false }),
+  // The Lucky wheel has no default pick: the host ticks who takes part.
+  wheel: () => Promise.resolve({ ok: true, picked: false }),
 };

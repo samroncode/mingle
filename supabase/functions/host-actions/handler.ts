@@ -37,6 +37,7 @@ import { updateMatch } from "./update-match.ts";
 import { updateHotTakes } from "./update-hottakes.ts";
 import { updatePartyContent } from "./update-party-content.ts";
 import { updateQuiz } from "./update-quiz.ts";
+import { updateWheel } from "./update-wheel.ts";
 
 export type HandlerConfig = {
   db: Db;
@@ -146,6 +147,8 @@ async function runAction(
       return updateHotTakes(db, caller, request);
     case "update_competitions":
       return updateCompetitions(db, caller, request);
+    case "update_wheel":
+      return updateWheel(db, caller, request);
     case "update_match":
       return updateMatch(db, caller, request);
     case "rename_guest":

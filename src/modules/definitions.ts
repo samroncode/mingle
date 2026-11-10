@@ -28,6 +28,9 @@ import { QuizTv } from "./quiz/tv/QuizTv";
 import { useQuizProgressText } from "./quiz/useQuizProgressText";
 import { useQuizCounts, useQuizSummary } from "./quiz/useQuizSummary";
 import { QuizStep } from "./quiz/wizard/QuizStep";
+import { WheelGuest } from "./wheel/guest/WheelGuest";
+import { WheelHost } from "./wheel/host/WheelHost";
+import { WheelTv } from "./wheel/tv/WheelTv";
 import type { ModuleDefinition } from "./types";
 import type { ModuleId } from "./registry";
 
@@ -82,5 +85,12 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Live: CompetitionsLive,
     useSummary: useCompetitionsSummary,
     WizardStep: CompetitionsStep,
+  },
+  wheel: {
+    id: "wheel",
+    nameKey: "modules.wheel.name",
+    Tv: WheelTv,
+    Guest: WheelGuest,
+    Host: WheelHost,
   },
 };

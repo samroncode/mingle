@@ -18,7 +18,7 @@ export const bachelor: NicheConfig = {
       "sidebar-primary-foreground": "var(--on-bright)",
     },
   },
-  defaultModules: ["quiz", "awards", "hottakes", "competitions"],
+  defaultModules: ["quiz", "awards", "hottakes", "competitions", "wheel"],
   defaultSharedCosts: false,
   welcome: {
     sv: "Välkomna till kvällen! Nu ska vi fira ordentligt. Skanna koden, skriv ditt namn och gör er redo för skratt och bus.",
