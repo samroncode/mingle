@@ -164,3 +164,25 @@ test("the automatic take-off switch and Clear list send their actions", async ({
   await expect(live.getByTestId("wheel-no-result")).toBeVisible();
   expect(bodies[2]).toEqual({ action: "clear_wheel_spins", code, key });
 });
+
+test("an idle wheel has a Start button that starts it", async ({ page }) => {
+  const bodies = await fakeSupabase(page, [
+    () => [200, {}],
+    () => [200, { ok: true }],
+  ]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: ["wheel"],
+    status: "live",
+    flow: { current_module: null, current_step: 0, phase: "idle" },
+    guests: [memberRow({ user_id: anna, display_name: "Anna" })],
+  });
+  await page.goto(`/host/${code}#key=${key}`);
+  await page
+    .getByTestId("activity-wheel")
+    .getByText("Lucky wheel")
+    .first()
+    .click();
+  await page.getByRole("button", { name: "Start the wheel" }).click();
+  await expect.poll(() => JSON.stringify(bodies)).toContain('"start_module"');
+});

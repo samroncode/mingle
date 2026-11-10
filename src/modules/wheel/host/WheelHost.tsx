@@ -19,6 +19,7 @@ import {
   type SelectionStep,
 } from "@/lib/wheel/participants";
 import { getNiche, isNicheId } from "@/niches";
+import { RunControls } from "../../RunControls";
 import type { ModuleHostProps } from "../../types";
 import { useWheelEntries } from "../useWheelEntries";
 import { GuestChoices } from "./GuestChoices";
@@ -30,7 +31,14 @@ import { TakenOff } from "./TakenOff";
  * host ticks guests, adds own or suggested entries, and takes entries off
  * and puts them back, before Start and while the wheel runs.
  */
-export function WheelHost({ event, members, code, hostKey }: ModuleHostProps) {
+export function WheelHost({
+  event,
+  members,
+  code,
+  hostKey,
+  startDisabled,
+  compact,
+}: ModuleHostProps) {
   const { t } = useTranslation();
   const { entries, reload } = useWheelEntries(event.id);
   const { busy, error, run } = useHostAction(wheelErrorKey, "host");
@@ -97,6 +105,17 @@ export function WheelHost({ event, members, code, hostKey }: ModuleHostProps) {
       aria-label={t("modules.wheel.name")}
       className="space-y-4"
     >
+      {!compact && event.current_module !== "wheel" && !ended && (
+        <RunControls
+          code={code}
+          hostKey={hostKey}
+          module="wheel"
+          running={false}
+          startDisabled={startDisabled}
+          startLabelKey="modules.wheel.run.start"
+          next={null}
+        />
+      )}
       {entries.status === "error" && (
         <ErrorLine>{t("modules.wheel.host.loadFailed")}</ErrorLine>
       )}

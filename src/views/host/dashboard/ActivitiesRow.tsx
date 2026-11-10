@@ -38,6 +38,7 @@ const startLabelKeys = {
   quiz: "modules.quiz.run.start",
   awards: "modules.awards.run.start",
   hottakes: "modules.hottakes.run.start",
+  wheel: "modules.wheel.run.start",
 } as const;
 
 function definitionOf(id: ModuleId): ModuleDefinition | undefined {
@@ -103,8 +104,7 @@ function StartButton({
       </Button>
     );
   }
-  // The Lucky wheel gets its Start button with the spin ticket.
-  if (id === "wheel" || !Object.hasOwn(startLabelKeys, id)) return null;
+  if (!Object.hasOwn(startLabelKeys, id)) return null;
   return (
     <RunControls
       code={event.code}
