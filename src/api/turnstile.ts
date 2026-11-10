@@ -59,11 +59,11 @@ function loadTurnstile(): Promise<TurnstileApi> {
 function createDialog(): { root: HTMLElement; slot: HTMLElement } {
   const root = document.createElement("div");
   root.style.cssText =
-    "display:none;position:fixed;inset:0;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.6);z-index:2147483647";
+    "display:none;position:fixed;inset:0;align-items:center;justify-content:center;padding:16px;background:color-mix(in srgb,var(--edge) 70%,transparent);z-index:2147483647";
   const card = document.createElement("div");
   card.setAttribute("role", "dialog");
   card.style.cssText =
-    "display:flex;flex-direction:column;align-items:center;gap:16px;max-width:360px;padding:24px;text-align:center;background:var(--paper);color:var(--on-paper);border:var(--border-chunky) solid var(--edge);border-radius:var(--radius-md);box-shadow:6px 6px 0 var(--edge);font-family:var(--font-display);font-weight:700";
+    "display:flex;flex-direction:column;align-items:center;gap:16px;max-width:360px;padding:24px;text-align:center;background:var(--paper);color:var(--on-paper);border:var(--border-chunky) solid var(--edge);border-radius:var(--radius-md);box-shadow:6px 6px 0 var(--edge);font:700 1rem var(--font-display)";
   const hint = document.createElement("p");
   hint.textContent = i18n.t("captcha.hint");
   hint.style.margin = "0";
