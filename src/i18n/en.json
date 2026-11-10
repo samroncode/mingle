@@ -511,6 +511,12 @@
         "putBackShort": "Put back",
         "removeOff": "Delete {{name}} for good",
         "removeShort": "Delete"
+      },
+      "tv": {
+        "waiting": "Waiting for the host to add entries",
+        "spinning": "Spinning…",
+        "drawn": "Draw {{number}}",
+        "wheelLabel": "The Lucky wheel with {{count}} entries"
       }
     }
   },
