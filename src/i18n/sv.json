@@ -469,6 +469,18 @@
       "items_one": "{{count}} post",
       "items_other": "{{count}} poster",
       "description": "Snurra ett hjul för att lotta en gäst, en utmaning eller ett pris.",
+      "guest": {
+        "itsYou": "Det är du!",
+        "drawn": "Hjulet valde",
+        "spinning": "Hjulet snurrar … titta på TV:n!",
+        "recent": "Senaste dragningar",
+        "notOnWheel": "Du är inte med på hjulet den här gången.",
+        "waitingForHost": "Väntar på värden",
+        "nextSpin": "Titta på TV:n för nästa snurr.",
+        "lookAtTv": "Titta på TV:n: värden snurrar snart.",
+        "loadFailed": "Det gick inte att läsa hjulet. Försök igen.",
+        "retry": "Försök igen"
+      },
       "host": {
         "loadFailed": "Det gick inte att läsa hjulets rader. Ladda om och försök igen.",
         "guestsTitle": "Vilka är med på hjulet",
