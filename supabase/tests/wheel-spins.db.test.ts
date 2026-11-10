@@ -12,7 +12,6 @@ import {
   seedMember,
   serviceClient,
   setEventFlow,
-  setEventStatus,
   signedOutClient,
   sql,
   type Cast,
@@ -327,7 +326,7 @@ describe("spin_wheel", () => {
     await setEventFlow(idle.event.id, { current_module: null });
     expect((await spin(idle.event.id)).data).toBe("not_running");
 
-    const other = await runningWheel(2);
+    const other = await runningWheel(2, { enabled_modules: ["quiz", "wheel"] });
     await setEventFlow(other.event.id, { current_module: "quiz" });
     expect((await spin(other.event.id)).data).toBe("not_running");
 
@@ -344,11 +343,18 @@ describe("spin_wheel", () => {
   });
 
   it("refuses with the wheel off, after the end and for an unknown or expired event", async () => {
-    const off = await runningWheel(2, { enabled_modules: ["quiz"] });
+    const off = await runningWheel(0, {
+      enabled_modules: ["quiz"],
+      status: "lobby",
+      current_module: null,
+    });
     expect((await spin(off.event.id)).data).toBe("disabled");
 
     const ended = await runningWheel(2);
-    await setEventStatus(ended.event.id, "ended");
+    await setEventFlow(ended.event.id, {
+      status: "ended",
+      current_module: null,
+    });
     expect((await spin(ended.event.id)).data).toBe("ended");
 
     const expired = await runningWheel(2);
@@ -421,12 +427,19 @@ describe("set_wheel_auto_take_off", () => {
   });
 
   it("refuses with the wheel off, after the end and for an unknown or expired event", async () => {
-    const off = await runningWheel(0, { enabled_modules: ["quiz"] });
+    const off = await runningWheel(0, {
+      enabled_modules: ["quiz"],
+      status: "lobby",
+      current_module: null,
+    });
     expect((await set(off.event.id, true)).data).toBe("disabled");
     expect(await settingOf(off.event.id)).toBe(false);
 
     const ended = await runningWheel(0);
-    await setEventStatus(ended.event.id, "ended");
+    await setEventFlow(ended.event.id, {
+      status: "ended",
+      current_module: null,
+    });
     expect((await set(ended.event.id, true)).data).toBe("ended");
 
     const expired = await runningWheel(0);
@@ -458,11 +471,18 @@ describe("clear_wheel_spins", () => {
   });
 
   it("refuses with the wheel off, after the end and for an unknown or expired event", async () => {
-    const off = await runningWheel(0, { enabled_modules: ["quiz"] });
+    const off = await runningWheel(0, {
+      enabled_modules: ["quiz"],
+      status: "lobby",
+      current_module: null,
+    });
     expect((await clear(off.event.id)).data).toBe("disabled");
 
     const ended = await runningWheel(0);
-    await setEventStatus(ended.event.id, "ended");
+    await setEventFlow(ended.event.id, {
+      status: "ended",
+      current_module: null,
+    });
     expect((await clear(ended.event.id)).data).toBe("ended");
 
     const expired = await runningWheel(0);
