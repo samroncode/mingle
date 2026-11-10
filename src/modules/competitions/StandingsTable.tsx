@@ -40,8 +40,9 @@ export function StandingsTable({
       <thead>
         <tr
           className={cn(
-            "border-b-[length:var(--border-thin)] border-line text-ink-muted",
-            tv ? "font-body text-2xl font-medium" : "text-sm",
+            tv
+              ? "border-b-[length:var(--border-thin)] border-line font-body text-2xl font-medium text-ink-muted"
+              : "border-b-[length:var(--border-chunky)] border-edge text-sm font-bold text-on-paper-muted",
           )}
         >
           <th scope="col" className={cn(cell, "font-medium")}>
@@ -72,14 +73,21 @@ export function StandingsTable({
               key={row.userId}
               data-mine={mine || undefined}
               className={cn(
-                "border-b-[length:var(--border-thin)] border-line",
-                mine && "bg-champagne-soft",
+                tv
+                  ? "border-b-[length:var(--border-thin)] border-line"
+                  : "border-b-[length:var(--border-thin)] border-on-paper-muted/30",
+                mine && (tv ? "bg-champagne-soft" : "bg-champagne-soft-fill"),
               )}
             >
               <th scope="row" className={cn(cell, "truncate font-bold")}>
                 {row.name || t("modules.competitions.standings.someone")}
                 {mine && (
-                  <span className="ml-2 font-body text-sm font-medium text-champagne-text">
+                  <span
+                    className={cn(
+                      "ml-2 font-body text-sm font-medium",
+                      tv ? "text-champagne-text" : "text-on-paper-muted",
+                    )}
+                  >
                     ({t("modules.competitions.standings.you")})
                   </span>
                 )}
