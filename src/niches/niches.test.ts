@@ -11,6 +11,7 @@ import {
 import { HotTakeSchema, hottakesLimits } from "@/lib/schemas/hottakes";
 import { PartySchema } from "@/lib/schemas/party";
 import { QuizQuestionSchema, quizLimits } from "@/lib/schemas/quiz";
+import { WheelLabelSchema, wheelLimits } from "@/lib/schemas/wheel";
 import { nicheIds } from "./ids";
 import { isNicheId, niches } from "./index";
 import { nicheThemeStyle } from "./theme";
@@ -273,4 +274,27 @@ describe("isNicheId", () => {
     expect(isNicheId("toString")).toBe(false);
     expect(isNicheId(42)).toBe(false);
   });
+});
+
+describe.each(Object.values(niches))("niche $id wheel suggestions", (niche) => {
+  it("has a few, within the wheel limit", () => {
+    expect(niche.wheel.length).toBeGreaterThan(0);
+    expect(niche.wheel.length).toBeLessThanOrEqual(wheelLimits.perEvent);
+  });
+
+  it("has ids that are unique and start with the niche id", () => {
+    const ids = niche.wheel.map((entry) => entry.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const id of ids) expect(id.startsWith(`${niche.id}-`), id).toBe(true);
+  });
+
+  it.each(supportedLanguages)(
+    "has every entry in %s as a valid label",
+    (language) => {
+      for (const entry of niche.wheel) {
+        const result = WheelLabelSchema.safeParse(entry.texts[language]);
+        expect(result.error, entry.id).toBeUndefined();
+      }
+    },
+  );
 });

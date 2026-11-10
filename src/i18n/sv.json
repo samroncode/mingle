@@ -470,13 +470,35 @@
       "items_other": "{{count}} poster",
       "description": "Snurra ett hjul för att lotta en gäst, en utmaning eller ett pris.",
       "host": {
-        "soon": "Hjulets poster ställer du in här inom kort.",
+        "loadFailed": "Det gick inte att läsa hjulets rader. Ladda om och försök igen.",
+        "guestsTitle": "Vilka är med på hjulet",
+        "guestsEmpty": "Inga gäster har anslutit än. Lägg till egna rader nedan, eller vänta på gästerna.",
+        "selectAll": "Markera alla",
+        "selectNone": "Avmarkera alla",
+        "count": "{{count}} av {{max}} rader på hjulet",
+        "guestCheck": "{{name}} är med på hjulet",
+        "ownTitle": "Egna rader",
+        "ownEmpty": "Inga egna rader än.",
+        "ownLabel": "Skriv en rad till hjulet",
+        "ownPlaceholder": "Ta en shot",
+        "ownCounter": "{{count}}/{{max}}",
+        "ownAdd": "Lägg till rad",
+        "takeOff": "Ta bort {{name}} från hjulet",
+        "suggestionsTitle": "Förslag",
+        "suggestionAdd": "Lägg till raden: {{name}}",
+        "full": "Hjulet är fullt ({{max}} rader, borttagna räknas också). Radera en borttagen rad för att få plats.",
+        "offTitle": "Borttagna",
+        "putBack": "Lägg tillbaka {{name}} på hjulet",
+        "guestNote": "Gäster som ansluter senare läggs inte till automatiskt. Markera dem här.",
         "errors": {
           "too_many": "Hjulet rymmer högst 24 poster. Ta bort en först.",
           "already_added": "Den gästen finns redan på hjulet.",
           "invalid_name": "Skriv en post på 1 till 30 tecken.",
           "not_found": "Den posten eller gästen finns redan inte kvar. Ladda om sidan för att se listan."
-        }
+        },
+        "putBackShort": "Lägg tillbaka",
+        "removeOff": "Radera {{name}} helt",
+        "removeShort": "Radera"
       }
     }
   },

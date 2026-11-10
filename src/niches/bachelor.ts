@@ -2,6 +2,7 @@ import { bachelorAwards } from "./awards/bachelor";
 import { bachelorHotTakes } from "./hottakes/bachelor";
 import { bachelorQuiz } from "./quiz/bachelor";
 import { bachelorCompetitions } from "./competitions/bachelor";
+import { bachelorWheel } from "./wheel/bachelor";
 import type { NicheConfig } from "./types";
 
 export const bachelor: NicheConfig = {
@@ -28,6 +29,7 @@ export const bachelor: NicheConfig = {
   awards: bachelorAwards,
   hottakes: bachelorHotTakes,
   competitions: bachelorCompetitions,
+  wheel: bachelorWheel,
   promptHints:
     "Bachelor or bachelorette party with close friends. Playful and teasing but affectionate, never cruel, and nothing that could truly embarrass the guest of honour.",
 };
