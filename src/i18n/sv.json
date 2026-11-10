@@ -517,6 +517,9 @@
       "onWheel_other": "{{count}} rader på hjulet",
       "spins_one": "{{count}} snurr",
       "spins_other": "{{count}} snurr",
+      "run": {
+        "start": "Starta lyckohjulet"
+      },
       "live": {
         "spin": "Snurra",
         "spinning": "Snurrar…",

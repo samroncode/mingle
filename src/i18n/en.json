@@ -517,6 +517,9 @@
       "onWheel_other": "{{count}} entries on the wheel",
       "spins_one": "{{count}} spin",
       "spins_other": "{{count}} spins",
+      "run": {
+        "start": "Start the wheel"
+      },
       "live": {
         "spin": "Spin",
         "spinning": "Spinning…",
