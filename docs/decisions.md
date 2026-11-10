@@ -12,6 +12,48 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-11-10: The Lucky wheel is a fifth activity (#292)
+
+**Decision:** The Lucky wheel (Swedish: lyckohjulet) is a fifth activity id, `wheel`, that the host switches on or off in the setup wizard; the niche sets the default. Built as tickets #293 to #298.
+- **Exclusive, like the quiz.** While it runs it takes the TV (`current_module`). It has no steps and no results phase; spinning is the only thing that happens.
+- **One wheel per event**, max 24 entries. An entry is a joined guest (label follows renames) or host-written text (1 to 30 characters, not translated). Entries are taken off the wheel, never deleted, so the host can put them back. A removed guest's entry goes with the guest.
+- **The host picks who takes part** before starting (everyone ticked by default) and can change it during the evening. Later joiners are not added automatically.
+- **The server draws.** The host presses Spin; `host-actions` (admin key checked, rate-limited per event) picks the winner at random and stores a spin. Every screen renders from that record. The TV animates once per new spin (fixed duration, shared with phones through `spinDurationMs`); phones show the winner after the animation, and a viewer who loads later sees the latest result without a replay. Reduced motion jumps to the result.
+- **Take-off.** A per-event setting "take drawn entries off automatically" (default off), or a one-tap "Take off the wheel" on the result.
+- **No direct client writes.** Tables have `event_id ... on delete cascade` and RLS; members read, only `host-actions` writes. Guests cannot spin.
+- Drawing the players of a competition match is done by spinning twice; a dedicated button, several wheels, guests spinning, summary-page history and AI entries are out of scope.
+
+**Why:** Parties need small moments of chance (who goes first, who takes the dare, which two play next) and today the host draws lots on paper. The server-side draw means no phone can influence it and all screens show the same winner. It replaces the "Challenge wheel" parking-lot idea in `docs/IDEAS.md`.
+
+## 2026-11-09: Host dashboard, direction A "Kontrollrummet" (#279)
+
+**Decision:** The host panel gets a control-room layout. What is happening now comes first and is biggest. Frontend only; nothing under `supabase/` changed.
+- **Desktop (from 1024 px, Tailwind `lg`):** three columns. Left: navigation with counts (it scrolls to a section, no new routes). Middle: the running activity with its buttons, then all activities in one row, then program and costs. Right: "next to the TV" with code and link, a TV mirror, guests and a message field.
+- **Phone:** one column. Running activity first, its main buttons fixed at the bottom (safe area respected, hidden when nothing runs), everything else as flat rows that open on tap. One component tree; layout by CSS, not two apps.
+- **Each activity gets an optional `Live` part** in `ModuleDefinition` (controls and status of the running activity only); the dashboard and the phone top both render it.
+- **The TV mirror is the TV's own screen, scaled.** It renders `PartyScreen` and the running activity's `Tv` view from the host's own event snapshot in a 16:9 box, read-only, hidden from the accessibility tree, and never joins as a TV. If it fails, an error boundary shows a small "preview not available" line and the rest of the dashboard keeps working.
+- **Flat styling:** thin lines and space instead of cards in cards; a hard shadow only on buttons and switches. Colours and sizes from `theme.css` tokens.
+- Playwright runs the host specs at a phone (390 px) and a desktop (1440 px) project.
+
+**Why:** The old panel was one narrow column made for a phone; on a laptop it wasted the screen and buried the quiz buttons. Direction A was chosen over B (play/prepare tabs) and C (program timeline) from the mockups in the project files; the program has no required times, which ruled out C. Reusing the party screen for the mirror avoids a second TV connection and any backend change.
+
+## 2026-11-09: Competitions: matches, tables, spotlight and summary (#262, #264 to #268)
+
+**Decision:** Follows the set-up entry below. The rest of the fourth activity works like this.
+- **Guests report matches** through one `security definer` RPC. There is no confirmation step in v1. Instead the database only lets a guest report a match they took part in, the reporter is stored and visible to the host, reports are rate-limited per guest, and the host can edit or delete any match (`update_match`). A match has one winner and one loser (never the same member) and optional whole-number scores that must agree with the winner. No draws. Only joined guests compete; opponents are picked from the guest list.
+- **The table** is ranked by wins, then fewer losses, then score difference, then display name, by one pure function used by TV, phone, host panel and summary. Removing a guest removes that guest's matches.
+- **Spotlight.** Competitions does not take the TV by itself. The host can put one table on the TV in full screen (`current_module` is used only for this) and stop it again. Otherwise each table joins the party screen rotation once a match has been played, and also shows on guests' phones.
+- **Summary page** shows the winner and final table per competition.
+- No history across events, brackets or "king of the table"; those stay in `docs/IDEAS.md`.
+
+**Why:** Sam was unsure a confirmation step was needed, so the safeguards live in the database and with the host instead of slowing guests down. If pranks become a problem, opponent confirmation can be added later.
+
+## 2026-11-09: Lighter app and one shared run hook (#257, #258, #259)
+
+**Decision:** The router splits the app into route chunks so a guest's phone downloads only the guest view (#258). The three activities share one hook for their run data instead of three copies (#259). No product change. The ticket for a reconnecting notice (#260) and an automated accessibility check (#261, needs a new dev dependency) were not built; see the open questions on #257.
+
+**Why:** Findings from the repo review on 2026-11-09: guests are on party wifi, and a fourth and fifth activity are cheaper to add on one shared hook.
+
 ## 2026-11-09: Competitions are a fourth activity, set up first (#262, #263)
 
 **Decision:** Competitions ("Ping pong", "Darts") is a fourth activity id, `competitions`, that the host can switch on or off like the other three. This first ticket (#263) only sets them up; matches and tables follow in #264 to #268.
