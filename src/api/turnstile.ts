@@ -1,7 +1,9 @@
+import i18n from "i18next";
+
 const SCRIPT_URL =
   "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 /** Gives a person time to tick the checkbox when Cloudflare asks for one. */
-const TOKEN_TIMEOUT_MS = 120_000;
+const TOKEN_TIMEOUT_MS = 60_000;
 
 interface TurnstileApi {
   render(
@@ -12,6 +14,8 @@ interface TurnstileApi {
       callback: (token: string) => void;
       "error-callback": () => void;
       "expired-callback": () => void;
+      "before-interactive-callback": () => void;
+      "after-interactive-callback": () => void;
       "timeout-callback": () => void;
     },
   ): string;
@@ -47,13 +51,27 @@ function loadTurnstile(): Promise<TurnstileApi> {
   return scriptLoad;
 }
 
-/** A box that stays out of the way until Cloudflare needs a checkbox. */
-function createContainer(): HTMLElement {
-  const container = document.createElement("div");
-  container.style.cssText =
-    "position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2147483647";
-  document.body.append(container);
-  return container;
+/**
+ * A themed dialog that stays hidden (and out of the way) until Cloudflare
+ * needs a checkbox. The widget sits in `slot`; the dialog must stay clickable
+ * (pointer-events:none would be inherited by the iframe and block the box).
+ */
+function createDialog(): { root: HTMLElement; slot: HTMLElement } {
+  const root = document.createElement("div");
+  root.style.cssText =
+    "display:none;position:fixed;inset:0;align-items:center;justify-content:center;padding:16px;background:color-mix(in srgb,var(--edge) 70%,transparent);z-index:2147483647";
+  const card = document.createElement("div");
+  card.setAttribute("role", "dialog");
+  card.style.cssText =
+    "display:flex;flex-direction:column;align-items:center;gap:16px;max-width:360px;padding:24px;text-align:center;background:var(--paper);color:var(--on-paper);border:var(--border-chunky) solid var(--edge);border-radius:var(--radius-md);box-shadow:6px 6px 0 var(--edge);font:700 1rem var(--font-display)";
+  const hint = document.createElement("p");
+  hint.textContent = i18n.t("captcha.hint");
+  hint.style.margin = "0";
+  const slot = document.createElement("div");
+  card.append(hint, slot);
+  root.append(card);
+  document.body.append(root);
+  return { root, slot };
 }
 
 /**
@@ -63,18 +81,24 @@ function createContainer(): HTMLElement {
  */
 export async function getCaptchaToken(siteKey: string): Promise<string> {
   const api = await loadTurnstile();
-  const container = createContainer();
+  const { root, slot } = createDialog();
   let widgetId: string | undefined;
   try {
     return await new Promise<string>((resolve, reject) => {
       const fail = () => reject(new Error("The CAPTCHA check failed."));
       const timer = setTimeout(fail, TOKEN_TIMEOUT_MS);
-      widgetId = api.render(container, {
+      widgetId = api.render(slot, {
         sitekey: siteKey,
         appearance: "interaction-only",
         callback: (token) => {
           clearTimeout(timer);
           resolve(token);
+        },
+        "before-interactive-callback": () => {
+          root.style.display = "flex";
+        },
+        "after-interactive-callback": () => {
+          root.style.display = "none";
         },
         "error-callback": fail,
         "expired-callback": fail,
@@ -83,6 +107,6 @@ export async function getCaptchaToken(siteKey: string): Promise<string> {
     });
   } finally {
     if (widgetId !== undefined) api.remove(widgetId);
-    container.remove();
+    root.remove();
   }
 }

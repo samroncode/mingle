@@ -726,6 +726,7 @@
     }
   },
   "captcha": {
+    "hint": "Quick check: tick the box to continue.",
     "failed": "We couldn't check that you're a real person. Try again.",
     "retry": "Try again"
   },
