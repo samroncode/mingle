@@ -25,6 +25,7 @@ In scope:
 - Setup wizard: niche, language, welcome message, menu, schedule, wifi details, music link, and **which activities to use** (niche config sets the defaults; the host can turn any activity on or off). When AI is enabled, it may suggest welcome text, menu wording and schedule; the host approves.
 - Three modules: **Quiz**, **Awards** ("most likely to…" voting on guest names), **Hot takes** (agree/disagree polls)
 - A fourth activity, **Competitions** (ping pong, darts…): the host sets them up; guests report matches and a live table follows (spec #262)
+- A fifth activity, the **Lucky wheel**: a wheel on the TV that the host spins to draw a guest, a dare or a prize (spec #292)
 - Optional **music link**: the host can paste a Spotify Jam or shared playlist link, shown as a QR code in the TV lobby (link only, no Spotify API integration)
 - **Built-in content per niche**: quiz questions, award categories and hot takes in Swedish and English. The host picks from it and adds their own.
 - **Optional AI suggestions** (a bonus, never required): generated on request and hidden when no AI key is configured. The host reviews, edits, deletes and approves before anything is shown.
@@ -95,7 +96,7 @@ src/          # the app, with its own tsconfig.json
   hooks/        # shared React hooks that call src/api/
   app/          # app shell: main.tsx, router, global CSS, layouts/ (host, TV and guest page shells)
   partyscreen/  # TV idle state: welcome, QR codes, menu, schedule, guests
-  modules/      # quiz/, awards/, hottakes/, competitions/ — each with host/, tv/, guest/ parts; registry.ts lists them
+  modules/      # quiz/, awards/, hottakes/, competitions/, wheel/ — each with host/, tv/, guest/ parts; registry.ts lists them
   niches/       # aw.ts, team.ts, bachelor.ts — config objects and their built-in content
   views/        # route-level pages, one folder each: create, host, tv, guest, landing, summary, shared
   components/   # shared UI (shadcn/ui lives in components/ui)

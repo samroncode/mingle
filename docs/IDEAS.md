@@ -14,7 +14,6 @@ Parking lot for ideas that are **not** part of v1. Agents: do not build anything
 - **Get to know the group**: guests answer 2–3 fun questions when joining ("been to Japan?", "hidden talent?"). AI builds a quiz from the answers: "Which of us has gone skydiving?" Strong fit for groups that don't know each other.
 - **People bingo**: each guest gets a "find someone who…" card and has to mingle to fill it.
 - **Shoutouts**: guests send short messages that scroll across the TV (host-approved). Great for bachelor parties.
-- **Challenge wheel**: spin a wheel on the TV for challenges or to pick who goes next.
 - **Draw and guess**: one guest draws on their phone, the TV shows it, the rest guess.
 - **Photo wall / slideshow**: host uploads photos beforehand, guests upload during the evening, host approves, slideshow on the TV. Needs client-side compression and auto-deletion.
 
