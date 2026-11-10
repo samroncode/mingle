@@ -1,9 +1,10 @@
+import { spinDurationMs } from "./geometry";
+
 /**
- * How long the TV's wheel takes to land. Phones show the winner only after
- * this time has passed since the server recorded the spin, so a phone never
- * spoils the wheel for the room.
+ * The same time as `spinDurationMs`, under the name the host view imports:
+ * phones and the host's own screen show the winner once the TV has landed.
  */
-export const SPIN_ANIMATION_MS = 6000;
+export const SPIN_ANIMATION_MS = spinDurationMs;
 
 /** A spin as far as the reveal cares: when the server recorded it. */
 export interface TimedSpin {
@@ -12,7 +13,7 @@ export interface TimedSpin {
 
 /** Milliseconds until the spin may be shown; 0 or less once it may. */
 export function revealDelay(spin: TimedSpin, now: number): number {
-  return Date.parse(spin.spunAt) + SPIN_ANIMATION_MS - now;
+  return Date.parse(spin.spunAt) + spinDurationMs - now;
 }
 
 /** The spins whose animation has finished at `now`, in the order given. */

@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  nextRevealIn,
-  revealDelay,
-  revealedSpins,
-  SPIN_ANIMATION_MS,
-} from "./reveal";
+import { nextRevealIn, revealDelay, revealedSpins } from "./reveal";
+import { spinDurationMs } from "./geometry";
 
 const at = (ms: number) => new Date(ms).toISOString();
 const base = Date.parse("2026-11-10T20:00:00Z");
@@ -12,8 +8,8 @@ const base = Date.parse("2026-11-10T20:00:00Z");
 describe("revealedSpins", () => {
   it("hides a spin until the animation time has passed", () => {
     const spins = [{ spunAt: at(base) }];
-    expect(revealedSpins(spins, base + SPIN_ANIMATION_MS - 1)).toEqual([]);
-    expect(revealedSpins(spins, base + SPIN_ANIMATION_MS)).toEqual(spins);
+    expect(revealedSpins(spins, base + spinDurationMs - 1)).toEqual([]);
+    expect(revealedSpins(spins, base + spinDurationMs)).toEqual(spins);
   });
 
   it("shows an old spin at once, as on a late load", () => {
@@ -31,7 +27,7 @@ describe("revealedSpins", () => {
 describe("nextRevealIn", () => {
   it("gives the shortest wait among hidden spins", () => {
     const spins = [{ spunAt: at(base) }, { spunAt: at(base - 2000) }];
-    expect(nextRevealIn(spins, base)).toBe(SPIN_ANIMATION_MS - 2000);
+    expect(nextRevealIn(spins, base)).toBe(spinDurationMs - 2000);
   });
 
   it("is null when everything is shown", () => {
@@ -42,6 +38,6 @@ describe("nextRevealIn", () => {
 
 describe("revealDelay", () => {
   it("is the animation time right after the spin", () => {
-    expect(revealDelay({ spunAt: at(base) }, base)).toBe(SPIN_ANIMATION_MS);
+    expect(revealDelay({ spunAt: at(base) }, base)).toBe(spinDurationMs);
   });
 });
