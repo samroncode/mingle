@@ -470,13 +470,35 @@
       "items_other": "{{count}} entries",
       "description": "Spin a wheel to draw a guest, a dare or a prize.",
       "host": {
-        "soon": "The wheel's entries are set up here soon.",
+        "loadFailed": "Couldn't load the wheel's entries. Reload to try again.",
+        "guestsTitle": "Who is on the wheel",
+        "guestsEmpty": "No guests have joined yet. Add your own entries below, or wait for guests.",
+        "selectAll": "Select all",
+        "selectNone": "Select none",
+        "count": "{{count}} of {{max}} entries on the wheel",
+        "guestCheck": "{{name}} is on the wheel",
+        "ownTitle": "Own entries",
+        "ownEmpty": "No own entries yet.",
+        "ownLabel": "Write an entry for the wheel",
+        "ownPlaceholder": "Take a shot",
+        "ownCounter": "{{count}}/{{max}}",
+        "ownAdd": "Add entry",
+        "takeOff": "Take {{name}} off the wheel",
+        "suggestionsTitle": "Suggestions",
+        "suggestionAdd": "Add the entry: {{name}}",
+        "full": "The wheel is full ({{max}} entries, taken-off ones count too). Delete a taken-off entry to make room.",
+        "offTitle": "Taken off",
+        "putBack": "Put {{name}} back on the wheel",
+        "guestNote": "Guests who join later are not added automatically. Tick them here.",
         "errors": {
           "too_many": "The wheel holds at most 24 entries. Remove one first.",
           "already_added": "That guest is already on the wheel.",
           "invalid_name": "Write an entry of 1 to 30 characters.",
           "not_found": "That entry or guest is already gone. Reload the page to see the list."
-        }
+        },
+        "putBackShort": "Put back",
+        "removeOff": "Delete {{name}} for good",
+        "removeShort": "Delete"
       }
     }
   },

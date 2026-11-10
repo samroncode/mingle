@@ -2,6 +2,7 @@ import { teamAwards } from "./awards/team";
 import { teamHotTakes } from "./hottakes/team";
 import { teamQuiz } from "./quiz/team";
 import { teamCompetitions } from "./competitions/team";
+import { teamWheel } from "./wheel/team";
 import type { NicheConfig } from "./types";
 
 export const team: NicheConfig = {
@@ -19,6 +20,7 @@ export const team: NicheConfig = {
   awards: teamAwards,
   hottakes: teamHotTakes,
   competitions: teamCompetitions,
+  wheel: teamWheel,
   promptHints:
     "Team event with colleagues from the same workplace. Keep it friendly and inclusive, work-appropriate, and never put an individual on the spot.",
 };

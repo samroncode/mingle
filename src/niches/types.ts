@@ -5,6 +5,7 @@ import { AwardCategorySchema } from "@/lib/schemas/awards";
 import { HotTakeSchema } from "@/lib/schemas/hottakes";
 import { PartySchema } from "@/lib/schemas/party";
 import { QuizQuestionTextSchema } from "@/lib/schemas/quiz";
+import { WheelLabelSchema } from "@/lib/schemas/wheel";
 import { moduleIds } from "@/modules/registry";
 
 /** The look a niche uses; each is a `data-theme` block in src/app/theme.css. */
@@ -73,6 +74,18 @@ export const CompetitionContentSchema = z.strictObject({
 
 export type CompetitionContent = z.infer<typeof CompetitionContentSchema>;
 
+/**
+ * A suggested Lucky wheel entry, such as a dare: its text in every supported
+ * language. The text is copied into the event in the event language when the
+ * host taps it, and is then the host's own. The id is stable.
+ */
+export const WheelContentSchema = z.strictObject({
+  id: z.string().regex(/^[a-z]+-[a-z0-9-]+$/),
+  texts: z.record(z.enum(supportedLanguages), WheelLabelSchema),
+});
+
+export type WheelContent = z.infer<typeof WheelContentSchema>;
+
 export const NicheConfigSchema = z.strictObject({
   id: z.string().regex(/^[a-z]+$/),
   /** i18n keys, never literal text, so the copy exists in sv and en. */
@@ -109,6 +122,8 @@ export const NicheConfigSchema = z.strictObject({
   hottakes: z.array(HotTakeContentSchema),
   /** Competitions the wizard suggests, such as ping pong or darts. */
   competitions: z.array(CompetitionContentSchema),
+  /** Entries the host can add to the Lucky wheel with one tap; may be empty. */
+  wheel: z.array(WheelContentSchema),
   /** Guidance for AI suggestions. English, never shown in the UI. */
   promptHints: z.string().min(1),
 });

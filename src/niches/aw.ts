@@ -2,6 +2,7 @@ import { awAwards } from "./awards/aw";
 import { awHotTakes } from "./hottakes/aw";
 import { awQuiz } from "./quiz/aw";
 import { awCompetitions } from "./competitions/aw";
+import { awWheel } from "./wheel/aw";
 import type { NicheConfig } from "./types";
 
 export const aw: NicheConfig = {
@@ -19,6 +20,7 @@ export const aw: NicheConfig = {
   awards: awAwards,
   hottakes: awHotTakes,
   competitions: awCompetitions,
+  wheel: awWheel,
   promptHints:
     "Relaxed after-work with colleagues. Keep it light and inclusive, and avoid anything that could embarrass someone in front of their manager.",
 };

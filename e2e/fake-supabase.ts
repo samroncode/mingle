@@ -405,6 +405,17 @@ interface FakeHostPanelOptions {
    * change the array while the panel is open.
    */
   competitions?: Array<{ id: string; name: string }>;
+  /**
+   * The Lucky wheel's entries in order. Read on every request, so a test can
+   * change the array while the panel is open.
+   */
+  wheelEntries?: Array<{
+    id: string;
+    kind: "guest" | "custom";
+    member_id: string | null;
+    label: string | null;
+    state: "on" | "off";
+  }>;
   /** The guests of the event, on top of the host. */
   guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
@@ -512,6 +523,16 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
           id,
           position,
           name,
+        })),
+      );
+    }
+    if (url.includes("/rest/v1/wheel_entries")) {
+      return json(
+        route,
+        200,
+        (options.wheelEntries ?? []).map((entry, position) => ({
+          ...entry,
+          position,
         })),
       );
     }
