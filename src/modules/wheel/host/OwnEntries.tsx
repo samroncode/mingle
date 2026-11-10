@@ -46,7 +46,7 @@ export function OwnEntries({
           {entries.map((entry) => (
             <li
               key={entry.id}
-              className="flex items-center gap-1 rounded-md border border-edge bg-paper pl-3 text-on-paper"
+              className="flex items-center gap-3 rounded-md border border-edge bg-paper pl-3 text-on-paper"
             >
               <span className="break-words">{entry.label}</span>
               <Button

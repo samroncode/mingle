@@ -287,7 +287,8 @@ export function ActivitiesRow(props: RowProps) {
       <ul
         className="grid gap-x-6 gap-y-4"
         style={{
-          gridTemplateColumns: `repeat(${Math.max(enabled.length, 1)}, minmax(0, 1fr))`,
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(min(100%, 13rem), 1fr))",
         }}
       >
         {enabled.map((id) => (
