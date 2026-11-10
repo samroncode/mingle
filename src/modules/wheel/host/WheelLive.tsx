@@ -11,15 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useHostAction } from "@/hooks/useHostAction";
 import { wheelErrorKey } from "@/lib/host/wheel-errors";
+import { SPIN_ANIMATION_MS } from "@/lib/wheel/reveal";
 import type { ModuleLiveProps } from "../../types";
 import { useWheelEntries } from "../useWheelEntries";
 import { announceSpinsChanged, useWheelSpins } from "../useWheelSpins";
-
-/**
- * How long the TV and phones animate a spin. The host's Spin button stays
- * busy for this long so a new spin never starts over a running animation.
- */
-export const spinAnimationMs = 6000;
 
 /** The most spins listed at once; older ones are behind "Clear list". */
 const listedSpins = 10;
@@ -38,7 +33,7 @@ export function WheelLive({
   const { t } = useTranslation();
   const running = event.current_module === "wheel";
   const { entries, reload } = useWheelEntries(event.id, running);
-  const spins = useWheelSpins(event.id);
+  const { spins } = useWheelSpins(event.id);
   const spin = useHostAction(wheelErrorKey, "host");
   const other = useHostAction(wheelErrorKey, "host");
   const [animating, setAnimating] = useState(false);
@@ -61,7 +56,7 @@ export function WheelLive({
     if (!result.ok) return;
     announceSpinsChanged();
     setAnimating(true);
-    timer.current = setTimeout(() => setAnimating(false), spinAnimationMs);
+    timer.current = setTimeout(() => setAnimating(false), SPIN_ANIMATION_MS);
   }
 
   async function change(

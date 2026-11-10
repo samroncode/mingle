@@ -469,6 +469,18 @@
       "items_one": "{{count}} entry",
       "items_other": "{{count}} entries",
       "description": "Spin a wheel to draw a guest, a dare or a prize.",
+      "guest": {
+        "itsYou": "It's you!",
+        "drawn": "The wheel picked",
+        "spinning": "The wheel is spinning… look at the TV!",
+        "recent": "Recent draws",
+        "notOnWheel": "You're not on the wheel this time.",
+        "waitingForHost": "Waiting for the host",
+        "nextSpin": "Watch the TV for the next spin.",
+        "lookAtTv": "Look at the TV: the host spins soon.",
+        "loadFailed": "Couldn't load the wheel. Try again.",
+        "retry": "Try again"
+      },
       "host": {
         "loadFailed": "Couldn't load the wheel's entries. Reload to try again.",
         "guestsTitle": "Who is on the wheel",
@@ -516,6 +528,12 @@
         "auto": "Take drawn entries off automatically",
         "drawnTitle": "Drawn this evening",
         "clear": "Clear list"
+      },
+      "tv": {
+        "waiting": "Waiting for the host to add entries",
+        "spinning": "Spinning…",
+        "drawn": "Draw {{number}}",
+        "wheelLabel": "The Lucky wheel with {{count}} entries"
       }
     }
   },

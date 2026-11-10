@@ -7,7 +7,7 @@ import { useWheelSpins } from "./useWheelSpins";
 export function useWheelSummary(event: EventRow): string | undefined {
   const { t } = useTranslation();
   const { entries } = useWheelEntries(event.id);
-  const spins = useWheelSpins(event.id);
+  const { spins } = useWheelSpins(event.id);
   if (entries.status !== "ready") return undefined;
   const onWheel = entries.value.filter((e) => e.state === "on").length;
   const spun = spins.status === "ready" ? spins.value.length : 0;
