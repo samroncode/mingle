@@ -1,5 +1,11 @@
 import { getSupabase } from "./client";
 import { fail, ok, type Result } from "./errors";
+import {
+  clearWheelSpinsAction,
+  type HostActionResult,
+  setWheelAutoTakeOffAction,
+  spinWheelAction,
+} from "./host-actions";
 import type { AppClient } from "./session";
 
 /**
@@ -75,6 +81,134 @@ export function subscribeToWheelChanges(
     .subscribe();
   return () => {
     clearTimeout(timer);
+    void client.removeChannel(channel);
+  };
+}
+
+/** The host link every wheel action needs. */
+export interface HostLink {
+  code: string;
+  key: string;
+}
+
+/**
+ * Spins the wheel. The server draws the winner; read it back with
+ * `getLatestSpin`. Fails with `not_enough_entries` (fewer than two entries on
+ * the wheel), `invalid_transition` (the wheel isn't running, or the evening
+ * ended), `module_disabled` and `rate_limited`.
+ */
+export async function spinWheel(
+  link: HostLink,
+): Promise<HostActionResult<Record<string, never>>> {
+  return spinWheelAction(link);
+}
+
+/** Switches "take drawn entries off automatically" on or off. */
+export async function setAutoTakeOff(
+  link: HostLink,
+  enabled: boolean,
+): Promise<HostActionResult<Record<string, never>>> {
+  return setWheelAutoTakeOffAction({ ...link, enabled });
+}
+
+/** Clears the list of spins drawn this evening. */
+export async function clearSpins(
+  link: HostLink,
+): Promise<HostActionResult<Record<string, never>>> {
+  return clearWheelSpinsAction(link);
+}
+
+/** One spin as a member of the event reads it. */
+export interface WheelSpinView {
+  id: string;
+  /** Running number within the event, from 1. */
+  number: number;
+  /** The drawn entry; null once it has been deleted. */
+  entryId: string | null;
+  /** What the entry was called when it was drawn. */
+  label: string;
+  /** When the server recorded the spin. */
+  spunAt: string;
+}
+
+const spinColumns = "id, number, entry_id, label, spun_at";
+
+function toSpinView(row: {
+  id: string;
+  number: number;
+  entry_id: string | null;
+  label: string;
+  spun_at: string;
+}): WheelSpinView {
+  return {
+    id: row.id,
+    number: row.number,
+    entryId: row.entry_id,
+    label: row.label,
+    spunAt: row.spun_at,
+  };
+}
+
+/** The latest spin of the event, or null when nothing has been drawn. */
+export async function getLatestSpin(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<WheelSpinView | null, "unknown">> {
+  const { data, error } = await client
+    .from("wheel_spins")
+    .select(spinColumns)
+    .eq("event_id", eventId)
+    .order("number", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) return fail("unknown");
+  return ok(data === null ? null : toSpinView(data));
+}
+
+/** The most spins one read returns; the list is for the host's memory. */
+export const spinListLimit = 100;
+
+/** The event's spins, newest first. Any member of the event can read them. */
+export async function listWheelSpins(
+  eventId: string,
+  client: AppClient = getSupabase(),
+): Promise<Result<WheelSpinView[], "unknown">> {
+  const { data, error } = await client
+    .from("wheel_spins")
+    .select(spinColumns)
+    .eq("event_id", eventId)
+    .order("number", { ascending: false })
+    .limit(spinListLimit);
+  if (error) return fail("unknown");
+  return ok(data.map(toSpinView));
+}
+
+/**
+ * Calls `onChange` when a spin of the event is recorded or the list is
+ * cleared. A signal to refetch, so RLS applies to every read; there is no
+ * delay, because the TV starts its animation from the new spin. Returns a
+ * function that stops it.
+ */
+export function subscribeToLatestSpin(
+  eventId: string,
+  onChange: () => void,
+  client: AppClient = getSupabase(),
+): () => void {
+  // A random suffix: two views of one event must not share a channel.
+  const channel = client
+    .channel(`wheel-spins:${eventId}:${Math.random().toString(36).slice(2)}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "wheel_spins",
+        filter: `event_id=eq.${eventId}`,
+      },
+      onChange,
+    )
+    .subscribe();
+  return () => {
     void client.removeChannel(channel);
   };
 }

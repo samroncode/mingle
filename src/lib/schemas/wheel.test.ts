@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { UpdateWheelRequestSchema, WheelChangeSchema } from "./host-actions";
+import {
+  ClearWheelSpinsRequestSchema,
+  SetWheelAutoTakeOffRequestSchema,
+  SpinWheelRequestSchema,
+  UpdateWheelRequestSchema,
+  WheelChangeSchema,
+} from "./host-actions";
 import { WheelLabelSchema, wheelLimits } from "./wheel";
 
 const id = "6f1d2e0a-8f3c-4c52-9a43-2f1b7b1c9e10";
@@ -63,5 +69,36 @@ describe("UpdateWheelRequestSchema", () => {
       UpdateWheelRequestSchema.safeParse({ action: "update_wheel", change })
         .success,
     ).toBe(false);
+  });
+});
+
+describe("the spin requests", () => {
+  it("need the host link and nothing else", () => {
+    for (const schema of [
+      SpinWheelRequestSchema,
+      ClearWheelSpinsRequestSchema,
+    ]) {
+      const action =
+        schema === SpinWheelRequestSchema ? "spin_wheel" : "clear_wheel_spins";
+      expect(schema.safeParse({ action, ...link }).success).toBe(true);
+      expect(schema.safeParse({ action }).success).toBe(false);
+      expect(schema.safeParse({ action, ...link, extra: 1 }).success).toBe(
+        false,
+      );
+    }
+  });
+
+  it("takes a boolean for the automatic take-off", () => {
+    const request = { action: "set_wheel_auto_take_off", ...link };
+    expect(
+      SetWheelAutoTakeOffRequestSchema.safeParse({ ...request, enabled: true })
+        .success,
+    ).toBe(true);
+    for (const enabled of ["true", 1, null, undefined]) {
+      expect(
+        SetWheelAutoTakeOffRequestSchema.safeParse({ ...request, enabled })
+          .success,
+      ).toBe(false);
+    }
   });
 });

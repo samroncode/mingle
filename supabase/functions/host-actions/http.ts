@@ -22,6 +22,7 @@ const statusByError: Record<HostActionErrorCode, number> = {
   ended: 409,
   too_many: 409,
   already_added: 409,
+  not_enough_entries: 409,
   too_soon: 429,
   internal_error: 500,
 };

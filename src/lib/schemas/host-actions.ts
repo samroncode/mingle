@@ -312,6 +312,68 @@ export const UpdateWheelResponseSchema = z.strictObject({});
 
 export type UpdateWheelResponse = z.infer<typeof UpdateWheelResponseSchema>;
 
+/**
+ * Spins the Lucky wheel: the server draws one entry at random among those on
+ * the wheel and stores the spin. Fails with `not_enough_entries` when fewer
+ * than two entries are on the wheel, `invalid_transition` when the wheel is
+ * not the running activity or the event has ended, `module_disabled` while
+ * the wheel is switched off, and `rate_limited` on a flood of spins.
+ */
+export const SpinWheelRequestSchema = z.strictObject({
+  action: z.literal("spin_wheel"),
+  ...hostLinkFields,
+});
+
+export type SpinWheelRequest = z.infer<typeof SpinWheelRequestSchema>;
+
+/** Empty: the host and members read the new spin on their next read. */
+export const SpinWheelResponseSchema = z.strictObject({});
+
+export type SpinWheelResponse = z.infer<typeof SpinWheelResponseSchema>;
+
+/**
+ * Switches "take drawn entries off automatically" on or off. It can change
+ * while the wheel runs. Fails with `module_disabled` while the wheel is
+ * switched off and `invalid_transition` once the event has ended.
+ */
+export const SetWheelAutoTakeOffRequestSchema = z.strictObject({
+  action: z.literal("set_wheel_auto_take_off"),
+  ...hostLinkFields,
+  enabled: z.boolean(),
+});
+
+export type SetWheelAutoTakeOffRequest = z.infer<
+  typeof SetWheelAutoTakeOffRequestSchema
+>;
+
+/** Empty: the host and the screens read the new setting from the event. */
+export const SetWheelAutoTakeOffResponseSchema = z.strictObject({});
+
+export type SetWheelAutoTakeOffResponse = z.infer<
+  typeof SetWheelAutoTakeOffResponseSchema
+>;
+
+/**
+ * Clears the list of spins drawn this evening. The entries stay as they are.
+ * Fails with `module_disabled` while the wheel is switched off and
+ * `invalid_transition` once the event has ended.
+ */
+export const ClearWheelSpinsRequestSchema = z.strictObject({
+  action: z.literal("clear_wheel_spins"),
+  ...hostLinkFields,
+});
+
+export type ClearWheelSpinsRequest = z.infer<
+  typeof ClearWheelSpinsRequestSchema
+>;
+
+/** Empty: the host and members read the empty list on their next read. */
+export const ClearWheelSpinsResponseSchema = z.strictObject({});
+
+export type ClearWheelSpinsResponse = z.infer<
+  typeof ClearWheelSpinsResponseSchema
+>;
+
 /** A match's score: whole numbers from 0 to 999, the winner's the higher. */
 const MatchScoreSchema = z.strictObject({
   winner: z.number().int().min(0).max(999),
@@ -533,6 +595,9 @@ export const HostActionRequestSchema = z.discriminatedUnion("action", [
   UpdateHotTakesRequestSchema,
   UpdateCompetitionsRequestSchema,
   UpdateWheelRequestSchema,
+  SpinWheelRequestSchema,
+  SetWheelAutoTakeOffRequestSchema,
+  ClearWheelSpinsRequestSchema,
   UpdateMatchRequestSchema,
   RenameGuestRequestSchema,
   RemoveGuestRequestSchema,
@@ -567,10 +632,11 @@ export const hostActionErrorCodes = [
    * edit while a question is open or revealed, once the quiz is finished or
    * once the event has ended; and the same for an awards or hot takes edit.
    * Also renaming or removing a guest once the event has ended, and
-   * set_bill_sent or set_payment while shared costs are switched off.
+   * set_bill_sent or set_payment while shared costs are switched off, and
+   * spin_wheel while the wheel is not the running activity.
    */
   "invalid_transition",
-  /** start_module for an activity the host turned off, quiz questions, award categories, hot takes or competitions for it. */
+  /** start_module for an activity the host turned off, spin_wheel or a wheel setting while the wheel is off, quiz questions, award categories, hot takes or competitions for it. */
   "module_disabled",
   /** start_module for an activity with no steps, such as a quiz without questions. */
   "module_empty",
@@ -588,6 +654,8 @@ export const hostActionErrorCodes = [
   "too_many",
   /** update_wheel to put a guest on the wheel who already is on it. */
   "already_added",
+  /** spin_wheel with fewer than two entries on the wheel. */
+  "not_enough_entries",
   /** send_notice less than 5 seconds after the last notice. */
   "too_soon",
   /** update_costs with a purchase nobody shares, or a sharer who isn't a current guest. */
