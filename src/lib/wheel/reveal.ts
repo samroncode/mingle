@@ -1,5 +1,11 @@
 import { spinDurationMs } from "./geometry";
 
+/**
+ * The same time as `spinDurationMs`, under the name the host view imports:
+ * phones and the host's own screen show the winner once the TV has landed.
+ */
+export const SPIN_ANIMATION_MS = spinDurationMs;
+
 /** A spin as far as the reveal cares: when the server recorded it. */
 export interface TimedSpin {
   spunAt: string;
