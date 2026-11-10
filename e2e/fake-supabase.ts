@@ -416,6 +416,11 @@ interface FakeHostPanelOptions {
     label: string | null;
     state: "on" | "off";
   }>;
+  /**
+   * The Lucky wheel's spins, oldest first. Read on every request, so a test
+   * can change the array while the panel is open.
+   */
+  wheelSpins?: Array<{ id: string; entry_id: string | null; label: string }>;
   /** The guests of the event, on top of the host. */
   guests?: MemberRow[];
   /** The event's flow, on top of the lobby. */
@@ -534,6 +539,19 @@ export async function fakeHostPanel(page: Page, options: FakeHostPanelOptions) {
           ...entry,
           position,
         })),
+      );
+    }
+    if (url.includes("/rest/v1/wheel_spins")) {
+      return json(
+        route,
+        200,
+        (options.wheelSpins ?? [])
+          .map((spin, index) => ({
+            ...spin,
+            number: index + 1,
+            spun_at: "2026-11-10T20:00:00Z",
+          }))
+          .reverse(),
       );
     }
     if (url.includes("/rest/v1/notices")) {

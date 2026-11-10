@@ -30,7 +30,9 @@ import { useQuizCounts, useQuizSummary } from "./quiz/useQuizSummary";
 import { QuizStep } from "./quiz/wizard/QuizStep";
 import { WheelGuest } from "./wheel/guest/WheelGuest";
 import { WheelHost } from "./wheel/host/WheelHost";
+import { WheelLive } from "./wheel/host/WheelLive";
 import { WheelTv } from "./wheel/tv/WheelTv";
+import { useWheelSummary } from "./wheel/useWheelSummary";
 import type { ModuleDefinition } from "./types";
 import type { ModuleId } from "./registry";
 
@@ -92,5 +94,7 @@ export const moduleDefinitions: Partial<Record<ModuleId, ModuleDefinition>> = {
     Tv: WheelTv,
     Guest: WheelGuest,
     Host: WheelHost,
+    Live: WheelLive,
+    useSummary: useWheelSummary,
   },
 };

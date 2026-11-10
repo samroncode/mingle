@@ -499,6 +499,23 @@
         "putBackShort": "Lägg tillbaka",
         "removeOff": "Radera {{name}} helt",
         "removeShort": "Radera"
+      },
+      "summary": "{{onWheel}}, {{spins}}",
+      "onWheel_one": "{{count}} rad på hjulet",
+      "onWheel_other": "{{count}} rader på hjulet",
+      "spins_one": "{{count}} snurr",
+      "spins_other": "{{count}} snurr",
+      "live": {
+        "spin": "Snurra",
+        "spinning": "Snurrar…",
+        "stop": "Stoppa hjulet",
+        "tooFew": "Lägg minst två rader på hjulet för att kunna snurra.",
+        "noSpins": "Inget draget än. Tryck på Snurra.",
+        "latest": "Snurr {{number}} landade på",
+        "takeOff": "Ta av från hjulet",
+        "auto": "Ta av dragna rader automatiskt",
+        "drawnTitle": "Dragna ikväll",
+        "clear": "Rensa listan"
       }
     }
   },
