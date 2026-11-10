@@ -70,6 +70,9 @@ describe("hostPanelErrorKey", () => {
     expect(hostPanelErrorKey("ended")).toBe("hostPanel.errors.ended");
     expect(hostPanelErrorKey("too_many")).toBe("hostPanel.errors.too_many");
     expect(hostPanelErrorKey("too_soon")).toBe("hostPanel.errors.too_soon");
+    expect(hostPanelErrorKey("not_enough_entries")).toBe(
+      "hostPanel.errors.not_enough_entries",
+    );
     expect(hostPanelErrorKey("internal_error")).toBe(
       "hostPanel.errors.internal_error",
     );

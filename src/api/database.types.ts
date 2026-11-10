@@ -405,6 +405,7 @@ export type Database = {
           party: NonNullable<Json>;
           phase: string;
           status: string;
+          wheel_auto_take_off: boolean;
         };
         ComputedFields: never;
         Insert: {
@@ -423,6 +424,7 @@ export type Database = {
           party?: NonNullable<Json>;
           phase?: string;
           status?: string;
+          wheel_auto_take_off?: boolean;
         };
         Update: {
           bright_room?: boolean;
@@ -440,6 +442,7 @@ export type Database = {
           party?: NonNullable<Json>;
           phase?: string;
           status?: string;
+          wheel_auto_take_off?: boolean;
         };
         Relationships: [];
       };
@@ -771,6 +774,49 @@ export type Database = {
           },
         ];
       };
+      wheel_spins: {
+        Row: {
+          entry_id: string | null;
+          event_id: string;
+          id: string;
+          label: string;
+          number: number;
+          spun_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          entry_id?: string | null;
+          event_id: string;
+          id?: string;
+          label: string;
+          number: number;
+          spun_at?: string;
+        };
+        Update: {
+          entry_id?: string | null;
+          event_id?: string;
+          id?: string;
+          label?: string;
+          number?: number;
+          spun_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wheel_spins_entry_id_fkey";
+            columns: ["entry_id"];
+            isOneToOne: false;
+            referencedRelation: "wheel_entries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wheel_spins_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -878,6 +924,10 @@ export type Database = {
       claim_host: {
         Args: { caller: string; target_event_id: string };
         Returns: boolean;
+      };
+      clear_wheel_spins: {
+        Args: { target_event_id: string };
+        Returns: string;
       };
       consume_rate_limit: {
         Args: {
@@ -1138,8 +1188,16 @@ export type Database = {
         };
         Returns: string;
       };
+      set_wheel_auto_take_off: {
+        Args: { enabled: boolean; target_event_id: string };
+        Returns: string;
+      };
       set_wheel_entry_state: {
         Args: { entry_id: string; new_state: string; target_event_id: string };
+        Returns: string;
+      };
+      spin_wheel: {
+        Args: { target_event_id: string };
         Returns: string;
       };
       submit_pizza_order: {

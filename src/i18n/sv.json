@@ -887,7 +887,8 @@
       "ended": "Kvällen är slut, så det går inte att skicka mer.",
       "too_many": "Du har skickat så många meddelanden som en kväll tillåter. Ta bort något gammalt först.",
       "too_soon": "Vänta några sekunder innan du skickar nästa meddelande.",
-      "already_added": "Den gästen finns redan på hjulet."
+      "already_added": "Den gästen finns redan på hjulet.",
+      "not_enough_entries": "Lägg minst två val på hjulet för att kunna snurra det."
     },
     "guestList": {
       "empty": "Inga gäster har gått med än.",

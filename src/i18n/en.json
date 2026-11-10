@@ -887,7 +887,8 @@
       "ended": "That evening has ended, so nothing more can be sent.",
       "too_many": "You have sent the most messages one evening allows. Delete an old one first.",
       "too_soon": "Wait a few seconds before sending the next message.",
-      "already_added": "That guest is already on the wheel."
+      "already_added": "That guest is already on the wheel.",
+      "not_enough_entries": "Put at least two entries on the wheel to spin it."
     },
     "guestList": {
       "empty": "No guests have joined yet.",

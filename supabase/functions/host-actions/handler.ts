@@ -38,6 +38,9 @@ import { updateHotTakes } from "./update-hottakes.ts";
 import { updatePartyContent } from "./update-party-content.ts";
 import { updateQuiz } from "./update-quiz.ts";
 import { updateWheel } from "./update-wheel.ts";
+import { spinWheel } from "./spin-wheel.ts";
+import { setWheelAutoTakeOff } from "./set-wheel-auto-take-off.ts";
+import { clearWheelSpins } from "./clear-wheel-spins.ts";
 
 export type HandlerConfig = {
   db: Db;
@@ -149,6 +152,12 @@ async function runAction(
       return updateCompetitions(db, caller, request);
     case "update_wheel":
       return updateWheel(db, caller, request);
+    case "spin_wheel":
+      return spinWheel(db, caller, request);
+    case "set_wheel_auto_take_off":
+      return setWheelAutoTakeOff(db, caller, request);
+    case "clear_wheel_spins":
+      return clearWheelSpins(db, caller, request);
     case "update_match":
       return updateMatch(db, caller, request);
     case "rename_guest":

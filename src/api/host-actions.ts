@@ -37,6 +37,15 @@ import {
   type UpdateCompetitionsRequest,
   type UpdateCompetitionsResponse,
   UpdateCompetitionsResponseSchema,
+  type ClearWheelSpinsRequest,
+  type ClearWheelSpinsResponse,
+  ClearWheelSpinsResponseSchema,
+  type SetWheelAutoTakeOffRequest,
+  type SetWheelAutoTakeOffResponse,
+  SetWheelAutoTakeOffResponseSchema,
+  type SpinWheelRequest,
+  type SpinWheelResponse,
+  SpinWheelResponseSchema,
   type UpdateWheelRequest,
   type UpdateWheelResponse,
   UpdateWheelResponseSchema,
@@ -254,6 +263,50 @@ export async function updateWheel(
   return toHostActionResult(
     UpdateWheelResponseSchema,
     await invokeHostActions({ action: "update_wheel", ...input }),
+  );
+}
+
+/**
+ * Spins the Lucky wheel; the server draws the winner and stores the spin.
+ * Fails with `not_enough_entries` when fewer than two entries are on the
+ * wheel, `invalid_transition` when the wheel isn't the running activity or
+ * the event has ended, `module_disabled` while it is switched off, and
+ * `rate_limited` on a flood of spins.
+ */
+export async function spinWheelAction(
+  input: Omit<SpinWheelRequest, "action">,
+): Promise<HostActionResult<SpinWheelResponse>> {
+  return toHostActionResult(
+    SpinWheelResponseSchema,
+    await invokeHostActions({ action: "spin_wheel", ...input }),
+  );
+}
+
+/**
+ * Switches "take drawn entries off automatically" on or off. Fails with
+ * `module_disabled` while the wheel is switched off and `invalid_transition`
+ * once the event has ended.
+ */
+export async function setWheelAutoTakeOffAction(
+  input: Omit<SetWheelAutoTakeOffRequest, "action">,
+): Promise<HostActionResult<SetWheelAutoTakeOffResponse>> {
+  return toHostActionResult(
+    SetWheelAutoTakeOffResponseSchema,
+    await invokeHostActions({ action: "set_wheel_auto_take_off", ...input }),
+  );
+}
+
+/**
+ * Clears the list of spins drawn this evening. Fails with `module_disabled`
+ * while the wheel is switched off and `invalid_transition` once the event
+ * has ended.
+ */
+export async function clearWheelSpinsAction(
+  input: Omit<ClearWheelSpinsRequest, "action">,
+): Promise<HostActionResult<ClearWheelSpinsResponse>> {
+  return toHostActionResult(
+    ClearWheelSpinsResponseSchema,
+    await invokeHostActions({ action: "clear_wheel_spins", ...input }),
   );
 }
 
