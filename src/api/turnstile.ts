@@ -1,7 +1,7 @@
 const SCRIPT_URL =
   "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 /** Gives a person time to tick the checkbox when Cloudflare asks for one. */
-const TOKEN_TIMEOUT_MS = 120_000;
+const TOKEN_TIMEOUT_MS = 60_000;
 
 interface TurnstileApi {
   render(
@@ -47,11 +47,15 @@ function loadTurnstile(): Promise<TurnstileApi> {
   return scriptLoad;
 }
 
-/** A box that stays out of the way until Cloudflare needs a checkbox. */
+/**
+ * A centred box that is empty until Cloudflare needs a checkbox. It must
+ * stay clickable: pointer-events:none here is inherited by the iframe and
+ * made the checkbox impossible to tick, so creating a party hung.
+ */
 function createContainer(): HTMLElement {
   const container = document.createElement("div");
   container.style.cssText =
-    "position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:2147483647";
+    "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2147483647";
   document.body.append(container);
   return container;
 }
