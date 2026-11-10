@@ -499,6 +499,12 @@
         "putBackShort": "Lägg tillbaka",
         "removeOff": "Radera {{name}} helt",
         "removeShort": "Radera"
+      },
+      "tv": {
+        "waiting": "Väntar på att värden lägger till rader",
+        "spinning": "Snurrar…",
+        "drawn": "Dragning {{number}}",
+        "wheelLabel": "Lyckohjulet med {{count}} rader"
       }
     }
   },
