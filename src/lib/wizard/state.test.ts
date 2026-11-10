@@ -72,6 +72,28 @@ describe("activities", () => {
     expect(draft.enabledModules).toEqual(["quiz"]);
   });
 
+  it("switches the Lucky wheel on and off, and sends it to create_event", () => {
+    const start = initialDraft("en");
+    expect(start.enabledModules).not.toContain("wheel");
+    const on = run(start, { type: "toggle_module", module: "wheel" });
+    expect(on.enabledModules).toContain("wheel");
+    const request = toCreateRequest(on);
+    expect(CreateEventRequestSchema.safeParse(request).success).toBe(true);
+    expect(request.enabledModules).toContain("wheel");
+    // The wheel has no wizard step of its own.
+    expect(stepsFor(on)).toEqual(stepsFor(start));
+    const off = run(on, { type: "toggle_module", module: "wheel" });
+    expect(off.enabledModules).not.toContain("wheel");
+  });
+
+  it("names the Lucky wheel's default in every niche", () => {
+    for (const niche of Object.values(niches)) {
+      expect(typeof niche.defaultModules.includes("wheel")).toBe("boolean");
+    }
+    expect(niches.bachelor.defaultModules).toContain("wheel");
+    expect(niches.aw.defaultModules).not.toContain("wheel");
+  });
+
   it("resets to the niche defaults when the niche changes", () => {
     const draft = run(
       initialDraft("en"),

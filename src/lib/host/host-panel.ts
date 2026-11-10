@@ -76,6 +76,7 @@ export function hostPanelErrorKey(error: HostActionError) {
     case "ended":
     case "too_many":
     case "too_soon":
+    case "already_added":
       return `hostPanel.errors.${error}` as const;
     case "not_authenticated":
       return "hostPanel.errors.not_authorized" as const;

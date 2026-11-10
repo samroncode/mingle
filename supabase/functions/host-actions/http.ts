@@ -21,6 +21,7 @@ const statusByError: Record<HostActionErrorCode, number> = {
   invalid_sharer: 409,
   ended: 409,
   too_many: 409,
+  already_added: 409,
   too_soon: 429,
   internal_error: 500,
 };

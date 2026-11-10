@@ -37,6 +37,9 @@ import {
   type UpdateCompetitionsRequest,
   type UpdateCompetitionsResponse,
   UpdateCompetitionsResponseSchema,
+  type UpdateWheelRequest,
+  type UpdateWheelResponse,
+  UpdateWheelResponseSchema,
   type UpdateMatchRequest,
   type UpdateMatchResponse,
   UpdateMatchResponseSchema,
@@ -234,6 +237,23 @@ export async function updateCompetitions(
   return toHostActionResult(
     UpdateCompetitionsResponseSchema,
     await invokeHostActions({ action: "update_competitions", ...input }),
+  );
+}
+
+/**
+ * Puts guests on the Lucky wheel, adds an entry with the host's own text,
+ * takes one off the wheel or puts it back, or deletes one. Fails with
+ * `module_disabled` while the wheel is switched off, `invalid_transition`
+ * once the event has ended, `too_many` past 24 entries, `invalid_name` for
+ * text that isn't 1 to 30 characters, `already_added` for a guest who is on
+ * the wheel, and `not_found` for an entry or guest that isn't the event's.
+ */
+export async function updateWheel(
+  input: Omit<UpdateWheelRequest, "action">,
+): Promise<HostActionResult<UpdateWheelResponse>> {
+  return toHostActionResult(
+    UpdateWheelResponseSchema,
+    await invokeHostActions({ action: "update_wheel", ...input }),
   );
 }
 

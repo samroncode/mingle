@@ -223,6 +223,14 @@ _Avoid_: Tournament (brackets are out of scope), game, league
 One played game in a competition: a winner and a loser among the guests, with an optional score, reported by a guest who took part. Matches are built after the competitions themselves (spec #262).
 _Avoid_: Result, round, fixture
 
+**Lucky wheel**:
+The fifth activity: a wheel on the TV that the host spins to draw a guest, a dare, a prize or a team. It can be switched on or off in the setup wizard, and the niche sets the default. An event has one wheel. Called "Lyckohjul" in Swedish (spec #292).
+_Avoid_: Challenge wheel, roulette, spinner
+
+**Wheel entry**:
+One wedge on the Lucky wheel: either a guest (shown under their current display name) or a custom entry with text of 1 to 30 characters the host wrote. A wheel holds at most 24 entries. An entry is on the wheel or taken off it; taking off keeps it, so it can be put back. A guest can be on the wheel only once, and leaves it when removed from the event.
+_Avoid_: Option, slice, participant
+
 **Notice**:
 A short text the host sends to every guest's phone, shown as a dismissible banner and listed under "You're in". Called "Messages" in the UI.
 _Avoid_: Notification (it implies push), announcement, alert

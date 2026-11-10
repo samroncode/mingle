@@ -7,6 +7,7 @@ export const moduleIds = [
   "awards",
   "hottakes",
   "competitions",
+  "wheel",
 ] as const;
 export type ModuleId = (typeof moduleIds)[number];
 

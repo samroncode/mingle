@@ -463,6 +463,21 @@
         "title": "Tävlingar",
         "winner": "Vinnare: {{name}}"
       }
+    },
+    "wheel": {
+      "name": "Lyckohjul",
+      "items_one": "{{count}} post",
+      "items_other": "{{count}} poster",
+      "description": "Snurra ett hjul för att lotta en gäst, en utmaning eller ett pris.",
+      "host": {
+        "soon": "Hjulets poster ställer du in här inom kort.",
+        "errors": {
+          "too_many": "Hjulet rymmer högst 24 poster. Ta bort en först.",
+          "already_added": "Den gästen finns redan på hjulet.",
+          "invalid_name": "Skriv en post på 1 till 30 tecken.",
+          "not_found": "Den posten eller gästen finns redan inte kvar. Ladda om sidan för att se listan."
+        }
+      }
     }
   },
   "links": {
@@ -849,7 +864,8 @@
       "invalid_sharer": "Ett inköp har en gäst som inte längre är med på kvällen. Kontrollera vilka som delar det.",
       "ended": "Kvällen är slut, så det går inte att skicka mer.",
       "too_many": "Du har skickat så många meddelanden som en kväll tillåter. Ta bort något gammalt först.",
-      "too_soon": "Vänta några sekunder innan du skickar nästa meddelande."
+      "too_soon": "Vänta några sekunder innan du skickar nästa meddelande.",
+      "already_added": "Den gästen finns redan på hjulet."
     },
     "guestList": {
       "empty": "Inga gäster har gått med än.",

@@ -722,11 +722,68 @@ export type Database = {
           },
         ];
       };
+      wheel_entries: {
+        Row: {
+          created_at: string;
+          event_id: string;
+          id: string;
+          kind: string;
+          label: string | null;
+          member_id: string | null;
+          position: number;
+          state: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          event_id: string;
+          id?: string;
+          kind: string;
+          label?: string | null;
+          member_id?: string | null;
+          position: number;
+          state?: string;
+        };
+        Update: {
+          created_at?: string;
+          event_id?: string;
+          id?: string;
+          kind?: string;
+          label?: string | null;
+          member_id?: string | null;
+          position?: number;
+          state?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "wheel_entries_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "wheel_entries_event_id_member_id_fkey";
+            columns: ["event_id", "member_id"];
+            isOneToOne: false;
+            referencedRelation: "members";
+            referencedColumns: ["event_id", "user_id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      add_wheel_custom: {
+        Args: { entry_label: string; target_event_id: string };
+        Returns: string;
+      };
+      add_wheel_guests: {
+        Args: { guest_ids: string[]; target_event_id: string };
+        Returns: string;
+      };
       award_progress: {
         Args: { target_event_id: string };
         Returns: {
@@ -862,6 +919,10 @@ export type Database = {
       };
       delete_notice: {
         Args: { notice_id: string; target_event_id: string };
+        Returns: string;
+      };
+      delete_wheel_entry: {
+        Args: { entry_id: string; target_event_id: string };
         Returns: string;
       };
       edit_match: {
@@ -1075,6 +1136,10 @@ export type Database = {
           target_event_id: string;
           target_user_id: string;
         };
+        Returns: string;
+      };
+      set_wheel_entry_state: {
+        Args: { entry_id: string; new_state: string; target_event_id: string };
         Returns: string;
       };
       submit_pizza_order: {

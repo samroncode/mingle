@@ -103,7 +103,8 @@ function StartButton({
       </Button>
     );
   }
-  if (!Object.hasOwn(startLabelKeys, id)) return null;
+  // The Lucky wheel gets its Start button with the spin ticket.
+  if (id === "wheel" || !Object.hasOwn(startLabelKeys, id)) return null;
   return (
     <RunControls
       code={event.code}
