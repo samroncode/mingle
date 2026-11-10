@@ -21,7 +21,7 @@ export function WheelResult({
       data-testid="wheel-result"
       data-mine={mine}
       className={cn(
-        "fun-pop relative space-y-2 rounded-lg border-[length:var(--border-thick)] border-edge p-5 text-center shadow-pop-md",
+        "fun-pop relative space-y-2 rounded-lg border-[length:var(--border-thick)] border-edge p-5 text-center",
         mine ? "bg-coral text-on-coral" : "bg-paper text-on-paper",
       )}
     >
