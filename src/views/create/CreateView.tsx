@@ -63,14 +63,16 @@ export function CreateView() {
   if (created) {
     return (
       <NicheTheme niche={draft.niche}>
-        <DoneScreen code={created.code} hostKey={created.key} />
+        <div className="mx-auto w-full max-w-2xl">
+          <DoneScreen code={created.code} hostKey={created.key} />
+        </div>
       </NicheTheme>
     );
   }
 
   return (
     <NicheTheme niche={draft.niche}>
-      <div className="flex min-h-[calc(100svh-6rem)] flex-col gap-5">
+      <div className="mx-auto flex min-h-[calc(100svh-6rem)] w-full max-w-2xl flex-col gap-5">
         <header className="space-y-2">
           <p className="font-display text-sm font-bold text-ink-muted">
             {t("wizard.progress", {
