@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useHostAction } from "@/hooks/useHostAction";
 import { wheelErrorKey } from "@/lib/host/wheel-errors";
-import { SPIN_ANIMATION_MS } from "@/lib/wheel/reveal";
+import { spinDurationMs } from "@/lib/wheel/geometry";
 import type { ModuleLiveProps } from "../../types";
 import { useWheelEntries } from "../useWheelEntries";
 import { announceSpinsChanged, useWheelSpins } from "../useWheelSpins";
@@ -56,7 +56,7 @@ export function WheelLive({
     if (!result.ok) return;
     announceSpinsChanged();
     setAnimating(true);
-    timer.current = setTimeout(() => setAnimating(false), SPIN_ANIMATION_MS);
+    timer.current = setTimeout(() => setAnimating(false), spinDurationMs);
   }
 
   async function change(
