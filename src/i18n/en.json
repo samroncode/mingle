@@ -512,6 +512,23 @@
         "removeOff": "Delete {{name}} for good",
         "removeShort": "Delete"
       },
+      "summary": "{{onWheel}}, {{spins}}",
+      "onWheel_one": "{{count}} entry on the wheel",
+      "onWheel_other": "{{count}} entries on the wheel",
+      "spins_one": "{{count}} spin",
+      "spins_other": "{{count}} spins",
+      "live": {
+        "spin": "Spin",
+        "spinning": "Spinning…",
+        "stop": "Stop the wheel",
+        "tooFew": "Put at least two entries on the wheel to spin.",
+        "noSpins": "Nothing drawn yet. Press Spin.",
+        "latest": "Spin {{number}} landed on",
+        "takeOff": "Take off the wheel",
+        "auto": "Take drawn entries off automatically",
+        "drawnTitle": "Drawn this evening",
+        "clear": "Clear list"
+      },
       "tv": {
         "waiting": "Waiting for the host to add entries",
         "spinning": "Spinning…",

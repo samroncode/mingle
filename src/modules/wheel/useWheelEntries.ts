@@ -4,6 +4,7 @@ import {
   subscribeToWheelChanges,
   type WheelEntryView,
 } from "@/api/wheel";
+import { wheelChanged } from "./wheelChanged";
 import { useLoad, type LoadState } from "@/hooks/useLoad";
 
 /**
@@ -22,7 +23,12 @@ export function useWheelEntries(
   const reload = () => setChanges((n) => n + 1);
   useEffect(() => {
     if (!enabled) return;
-    return subscribeToWheelChanges(eventId, reload);
+    window.addEventListener(wheelChanged, reload);
+    const stop = subscribeToWheelChanges(eventId, reload);
+    return () => {
+      window.removeEventListener(wheelChanged, reload);
+      stop();
+    };
   }, [eventId, enabled]);
   const entries = useLoad(eventId, () => listWheelEntries(eventId), {
     enabled,
