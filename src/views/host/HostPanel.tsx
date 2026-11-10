@@ -55,10 +55,9 @@ interface SectionsProps {
   members: MemberRow[];
   ended: boolean;
   onEnded: () => void;
-  phone: boolean;
 }
 
-/** Every section in today's order; the dashboard tickets move them into slots. */
+/** The phone's one-column list of sections, flat rows in a fixed order. */
 function Sections({
   eventId,
   link,
@@ -66,17 +65,16 @@ function Sections({
   members,
   ended,
   onEnded,
-  phone,
 }: SectionsProps) {
   const { t } = useTranslation();
   return (
-    <FlatSections value={phone}>
+    <FlatSections value>
       <NowPanel
         event={event}
         members={members}
         hostKey={link.key}
         ended={ended}
-        phone={phone}
+        phone
       />
       {ended ? (
         <p className="rounded-md border-[length:var(--border-thin)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright">
@@ -176,7 +174,6 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
               members={members}
               ended={ended}
               onEnded={() => setEndedHere(true)}
-              phone={phone}
             />
           )
         }

@@ -37,6 +37,41 @@ test.describe("phone layout", () => {
     expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(844);
   });
 
+  test("the bottom bar stays put when the page is scrolled", async ({
+    page,
+  }) => {
+    await openRunningQuiz(page);
+    const bar = page.getByTestId("host-bottom-bar");
+    await expect(bar).toBeVisible();
+    const edge = async () => {
+      const box = await bar.boundingBox();
+      return (box?.y ?? 0) + (box?.height ?? 0);
+    };
+    const before = await edge();
+    await page.getByTestId("host-guests").scrollIntoViewIfNeeded();
+    await page.mouse.wheel(0, 3000);
+    expect(await edge()).toBe(before);
+    expect(before).toBeLessThanOrEqual(844);
+  });
+
+  test("a failed button shows its error inside the bar", async ({ page }) => {
+    await fakeSupabase(page, [
+      () => [200, {}],
+      () => [409, { error: "invalid_transition" }],
+    ]);
+    await fakeHostPanel(page, {
+      code,
+      enabledModules: ["quiz", "awards"],
+      status: "live",
+      flow: { ...runEvent(code, "aw", "quiz", "open") },
+    });
+    await fakeRun(page, "open");
+    await page.goto(`/host/${code}#key=${key}`);
+    const bar = page.getByTestId("host-bottom-bar");
+    await bar.getByRole("button", { name: "Reveal" }).click();
+    await expect(bar.getByRole("alert")).toBeVisible();
+  });
+
   test("nothing running: no bottom bar, activities are flat rows at the top", async ({
     page,
   }) => {

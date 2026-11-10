@@ -62,7 +62,15 @@ _Avoid_: Idle screen, home screen
 
 **Control panel**:
 The host's page for running the evening, opened from the host link: what the TV shows, the activities, the party screen, the guests and ending the evening.
-_Avoid_: Host panel, admin page, dashboard
+_Avoid_: Host panel, admin page
+
+**Dashboard**:
+The control panel's layout on wide screens (1024 px and up): section navigation on the left, the work area in the middle, and a column on the right with a live copy of the TV, the guests and a message field. On a phone the same panel is one column.
+_Avoid_: Admin dashboard, desktop mode
+
+**Now panel**:
+The first part of the control panel, in the dashboard and on a phone: what is running now, with its controls (next question, reveal, stop), or a calm line when nothing runs.
+_Avoid_: Live bar, status bar
 
 **Removed guest**:
 A guest the host has taken out of the event. They no longer count as a member, can't read or do anything in the event and can't rejoin from the same phone.

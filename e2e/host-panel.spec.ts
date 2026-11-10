@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { memberRow } from "./fake-rows.ts";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { isDesktop } from "./panel.ts";
 
 const code = "ABC234";
 const key = "d".repeat(43);
@@ -37,6 +38,17 @@ test("the control panel starts shut, with a summary on each header", async ({
     "1 of 5 parts filled in",
   );
   await expect(page.getByTestId("host-guests")).toContainText("1 guest");
+
+  if (isDesktop(page)) {
+    // The dashboard has no accordion: the summaries and the guest list show
+    // at once, and the quiz is edited in a fold that opens from its cell.
+    await expect(page.getByTestId("host-side")).toContainText("Anna");
+    await page.screenshot({ path: "test-results/host-panel-dashboard.png" });
+    await page.getByRole("button", { name: "Edit Quiz" }).click();
+    const fold = page.getByRole("region", { name: "Quiz" });
+    await expect(fold.getByText("1. Capital of Australia?")).toBeVisible();
+    return;
+  }
 
   // Nothing but headers until a section is opened.
   await expect(page.getByText("Capital of Australia?")).toHaveCount(0);

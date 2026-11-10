@@ -11,6 +11,18 @@ const executablePath =
 
 const port = 5174;
 
+// Host specs that must pass on a phone and on a desktop screen. The "desktop"
+// project runs exactly these at 1440 px; every spec runs in "phone". Specs that
+// pick their own width (host-dashboard, host-side-column, host-phone) are not
+// listed, they only run once.
+const bothWidths = [
+  "host-panel",
+  "host-activities",
+  "host-messages",
+  "host-guests",
+  "competitions-spotlight",
+].map((name) => new RegExp(`${name}\\.spec\\.ts$`));
+
 export default defineConfig({
   testDir: ".",
   use: {
@@ -29,6 +41,18 @@ export default defineConfig({
       ],
     },
   },
+  projects: [
+    { name: "phone", use: { viewport: { width: 390, height: 844 } } },
+    {
+      name: "desktop",
+      testMatch: bothWidths,
+      use: {
+        viewport: { width: 1440, height: 900 },
+        isMobile: false,
+        hasTouch: false,
+      },
+    },
+  ],
   webServer: {
     cwd: path.resolve(import.meta.dirname, ".."),
     command: `npm run dev -- --port ${port} --strictPort`,
