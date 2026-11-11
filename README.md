@@ -12,7 +12,7 @@ Värden skapar ett event på sin telefon, väljer typ av fest (afterwork, teamev
 
 - **Partyskärmen** visar sig själv utan att värden gör något: välkomstmeddelande, QR-kod för att gå med, wifi, musik (länk till Spotify Jam eller en delad spellista), meny, kvällens program och vilka gäster som har gått med.
 - **Aktiviteter** är valfria och kan stängas av en och en: **Quiz** (flervalsfrågor med poängtavla), **Awards** ("Mest sannolikt att…" där gästerna röstar på varandra), **Hot takes** (håller med eller inte), **Tävlingar** (pingis, dart och liknande där gästerna rapporterar matcher och en tabell uppdateras live) och **Lyckohjulet** (värden snurrar ett hjul på TV:n som drar en gäst, en utmaning eller ett pris).
-- **Värdpanelen** är en privat länk som fungerar som fjärrkontroll: starta och stoppa aktiviteter, gå till nästa fråga, visa resultat, se och ta bort gäster, samt ett ljust läge för soliga rum.
+- **Värdpanelen** är en privat länk med två vyer. **Run** är fjärrkontrollen: se vad TV:n visar, starta nästa aktivitet, gå till nästa fråga, visa resultat och skicka ett kort meddelande till gästerna. **Prepare** är allt värden ändrar: innehållet i varje aktivitet, partyskärmen, program, delade kostnader, gäster, länkar och ett ljust läge för soliga rum.
 - **Delade kostnader** (valfritt): värden listar vad som köpts och vem som delar på vad. Gästerna ser först något när värden skickar räkningen, och får då sin del med en Swish-knapp. Mingle flyttar aldrig pengar själv.
 - **Sammanfattning** efter kvällen på `/p/:code/summary` (visar i dag resultaten från tävlingarna).
 - **Språk:** gränssnittet finns på svenska och engelska, och alla kan byta språk på sin enhet.
@@ -27,7 +27,7 @@ Allt innehåll kommer från appen eller värden själv. Mingle fungerar fullt ut
     <th>Gäst (telefon)</th>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/screenshots/host-panel.png" alt="Värdens kontrollpanel på en telefon, med avsnitt för quiz, awards, hot takes, partyskärm, ljust läge, gäster och delade kostnader"></td>
+    <td width="50%"><img src="docs/screenshots/host-panel.png" alt="Värdens kontrollpanel på en telefon, med vyerna Run och Prepare"></td>
     <td width="50%"><img src="docs/screenshots/guest-quiz.png" alt="En gäst som svarar på en quizfråga på sin telefon, med fyra stora färgade svarsknappar"></td>
   </tr>
 </table>

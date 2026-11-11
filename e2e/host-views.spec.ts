@@ -162,3 +162,28 @@ test("the phone has two tabs at the bottom, and the wide screen a switch in the 
     await expect(page.getByTestId("view-tabs")).toHaveCount(0);
   }
 });
+
+async function expectNoHorizontalScroll(page: import("@playwright/test").Page) {
+  // A string expression, because the e2e tsconfig has no DOM types.
+  const overflow = await page.evaluate<number>(
+    "document.documentElement.scrollWidth - document.documentElement.clientWidth",
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+}
+
+test("Run (idle and running) and Prepare never scroll sideways", async ({
+  page,
+}) => {
+  await idle(page);
+  await page.goto(`/host/${code}#key=${key}`);
+  await expect(page.getByTestId("run-work-area")).toBeVisible();
+  await expectNoHorizontalScroll(page);
+  await openPrepare(page);
+  await expectNoHorizontalScroll(page);
+
+  await page.unrouteAll();
+  await running(page);
+  await page.goto(`/host/${code}#key=${key}`);
+  await expect(page.getByTestId("run-work-area")).toBeVisible();
+  await expectNoHorizontalScroll(page);
+});

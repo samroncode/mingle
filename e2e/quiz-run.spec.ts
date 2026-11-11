@@ -45,10 +45,8 @@ test.describe("the control panel", () => {
       played: 2,
     });
 
-    await page.goto(`/host/${code}?view=prepare#key=${key}`);
-    await openSection(page, "activity-quiz");
-    const panel = page.getByTestId("quiz-host");
-    await expect(panel).toContainText("Every question has been played.");
+    await page.goto(`/host/${code}#key=${key}`);
+    const panel = page.getByTestId("activity-quiz");
     await panel.getByRole("button", { name: "Start quiz" }).click();
 
     await expect(panel.getByRole("alert")).toHaveText(
@@ -78,8 +76,7 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
-    await openSection(page, "activity-quiz");
-    const panel = page.getByTestId("quiz-host");
+    const panel = page;
     await expect(panel.getByTestId("quiz-progress")).toHaveText(
       "Question 2 of 2",
     );
@@ -112,9 +109,8 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
-    await openSection(page, "activity-quiz");
 
-    const answered = page.getByTestId("quiz-host").getByTestId("quiz-answered");
+    const answered = page.getByTestId("now-panel").getByTestId("quiz-answered");
     await expect(answered).toContainText("2 of 3 answered");
     await expect(answered.getByRole("listitem")).toHaveText([
       "Anna",
@@ -139,18 +135,21 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
-    await openSection(page, "activity-quiz");
-
-    const panel = page.getByTestId("quiz-host");
+    const now = page;
     await expect(
-      panel.getByTestId("quiz-scores").getByRole("listitem"),
-    ).toHaveText(["1Anna2 points", "2Dennis0 points"]);
-    await expect(
-      panel.getByRole("button", { name: "Back to party screen" }),
+      now.getByRole("button", { name: "Back to party screen" }),
     ).toBeVisible();
+    await expect(now.getByRole("button", { name: "Show results" })).toHaveCount(
+      0,
+    );
+
+    await openSection(page, "activity-quiz");
     await expect(
-      panel.getByRole("button", { name: "Show results" }),
-    ).toHaveCount(0);
+      page
+        .getByTestId("quiz-host")
+        .getByTestId("quiz-scores")
+        .getByRole("listitem"),
+    ).toHaveText(["1Anna2 points", "2Dennis0 points"]);
   });
 
   test("labels the one button for each phase", async ({ page }) => {
@@ -163,11 +162,8 @@ test.describe("the control panel", () => {
     });
 
     await page.goto(`/host/${code}#key=${key}`);
-    await openSection(page, "activity-quiz");
 
-    await expect(
-      page.getByTestId("quiz-host").getByRole("button", { name: "Reveal" }),
-    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Reveal" })).toBeVisible();
     await expect(page.getByTestId("tv-now")).toContainText(
       "Quiz, question 1 of 2, open",
     );
