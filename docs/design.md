@@ -105,17 +105,15 @@ Do not use: blue-purple gradients, emoji cards, cards with a colored left border
 
 - The host panel, including the module sections, is not in the look spec (it needs a host key and several fakes); the TV and guest screens are.
 
-## Host control panel
+## Host control panel: Run and Prepare
 
-The panel is a stack of `PanelSection`s (`src/components/PanelSection.tsx`): paper cards that are shut by default, with a title and one calm summary line on the header. The content is only rendered while the section is open, so long lists cost nothing until asked for. A new panel section uses `PanelSection`; an activity gets its header summary from `useSummary` in its module definition.
+The control panel has two views, chosen with a switch in the top bar: **Run** (the overview and the remote control) and **Prepare** (everything the host changes). The view and the Prepare section are in the URL's query (`view`, `section`); the fragment keeps the admin key alone. Unknown values fall back to Run and to the first section. The breakpoint is 1024 px (`lg`), the same in CSS and in code (`useIsPhone`).
 
-## Host dashboard
-
-From 1024 px (`lg`) the control panel becomes a dashboard (`HostFrame`, `src/views/host/dashboard/`). Below that it stays the one-column phone list above. The breakpoint is the same in CSS (`lg:`) and in code (`useIsPhone`), so the two never disagree.
-
-- **Flat.** No cards in cards. The three columns are separated by thin lines (`divide-line`), sections are headed by a title and a thin rule, and the only paper surface is the place an editor folds out in (`EditFold`), because the existing editors are made for paper.
-- **Left column (13rem):** section navigation with a count on each entry (activities, guests). It scrolls to a section and marks the one in view (`aria-current="location"`), plus a link to End the evening.
-- **Middle:** the Now panel first, then one row of activities (a cell each: summary and Start), the party program, shared costs, guests, messages and the evening's end. Edit opens an activity's editor in a fold under the row; nothing is shut behind a header.
-- **Right column (22rem):** a live copy of the TV, the guest list with removal, and a one-line message to the guests. The copy is the TV's own screen laid out at 1920 px and scaled down (`TvMirror`). It is read-only (`inert`, `aria-hidden`) and never joins as a TV.
-- **Phone.** The running activity's status is on top, its main buttons are fixed to the bottom (`BottomBar`, at least 48 px high, above the safe area, errors shown inside the bar), and the other sections are flat rows. With nothing running there is no bottom bar.
-- **Tests.** `e2e/host-dashboard.spec.ts`, `host-side-column.spec.ts` and `host-phone.spec.ts` cover each layout. The main host specs run at both widths through the `phone` and `desktop` projects in `e2e/playwright.config.ts`; add a new host spec to `bothWidths` there.
+- **Flat.** Thin rules (`divide-line`) and space, no cards in cards. The only paper surface in Run is the running activity.
+- **One line on top.** Logo, the Run / Prepare switch, the language switcher, the guest count (a link to Prepare > Guests) and the event code. In Prepare, while an activity runs, the bar also says "On the TV: ..." as a link back to Run. There is no Stop in the bar. On a phone the switch is a tab bar at the bottom instead.
+- **One primary button per screen.** In Run with nothing running, the activity that is up next carries the coral Start, the others a quiet Start. An activity without a Start of its own gets a quiet Open that goes to its Prepare section. While an activity runs it takes over the work area with its one primary button and a quiet Stop, and the other activities shrink to names and summaries without buttons.
+- **Side column in Run (22rem).** A live copy of the TV (`TvMirror`, the TV's own screen at 1920 px scaled down, read-only with `inert` and `aria-hidden`), the next program point and a one-line message to the guests.
+- **Prepare.** A list of sections on the left and one open editor on the right, no accordion headers. Three groups: Activities (each with its count, or "off"), The evening (Party screen, Program, Shared costs, Guests, Messages, Winners) and Event (Links and TV, Bright room, End the evening). An activity's section starts with its Use switch; its Start and Stop live in Run only, so its editor is compact.
+- **Phone.** Run keeps the running activity's status on top and its main buttons fixed at the bottom above the tabs (`BottomBar`, at least 48 px high, errors shown inside the bar). In Prepare the list is a page and a section opens as its own page with a back link.
+- **Code.** `src/views/host/run/`, `src/views/host/prepare/`, `HostFrame`, `TopBar`, `ViewSwitch`, `SideColumn`. A new editor goes in Prepare by adding a section; an activity plugs in through its module definition (`Live`, `Host`, `startLabelKey`), never with a check on its id in the views.
+- **Tests.** `e2e/host-views.spec.ts` (the switch, the URL, no sideways scroll at 390 and 1440 px), `host-prepare.spec.ts`, `host-dashboard.spec.ts` (Run at 1440 px), `host-side-column.spec.ts` and `host-phone.spec.ts`. The main host specs run at both widths through the `phone` and `desktop` projects in `e2e/playwright.config.ts`; add a new host spec to `bothWidths` there. Starting and revealing in a spec happens in Run; the shared helpers in `e2e/panel.ts` open a Prepare section.

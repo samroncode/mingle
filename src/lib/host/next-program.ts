@@ -27,3 +27,19 @@ export function nextProgramPoint<T extends ProgramLine>(
   }
   return best?.line;
 }
+
+/**
+ * Which program line is on now: the last timed line that has started. Nothing
+ * (-1) when no line has a time, or none has started yet.
+ */
+export function currentProgramIndex(
+  lines: readonly { time?: string }[],
+  nowMinutes: number,
+): number {
+  let current = -1;
+  lines.forEach((line, index) => {
+    const start = minutesOf(line.time);
+    if (start !== undefined && start <= nowMinutes) current = index;
+  });
+  return current;
+}

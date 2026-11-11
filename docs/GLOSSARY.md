@@ -61,16 +61,19 @@ What the TV shows when no activity is running: welcome message, join QR code, me
 _Avoid_: Idle screen, home screen
 
 **Control panel**:
-The host's page for running the evening, opened from the host link: what the TV shows, the activities, the party screen, the guests and ending the evening.
+The host's page for running the evening, opened from the host link: in two views: Run and Prepare.
 _Avoid_: Host panel, admin page
 
-**Dashboard**:
-The control panel's layout on wide screens (1024 px and up): section navigation on the left, the work area in the middle, and a column on the right with a live copy of the TV, the guests and a message field. On a phone the same panel is one column.
-_Avoid_: Admin dashboard, desktop mode
+**Run**:
+The control panel's overview and remote control, and the view it opens in. Nothing running: what the TV shows and the enabled activities, with the one that is up next carrying the primary Start. An activity running: it takes over the work area with its one next button and a quiet Stop. Beside it on a wide screen: a live copy of the TV, the next program point and a message field.
+_Avoid_: Dashboard, live view, now panel
 
-**Now panel**:
-The first part of the control panel, in the dashboard and on a phone: what is running now, with its controls (next question, reveal, stop), or a calm line when nothing runs.
-_Avoid_: Live bar, status bar
+**Prepare**:
+The control panel's view for everything the host changes: each activity's content and switch, the party screen, program, shared costs, guests, messages, winners, links, Bright room and ending the evening. A list of sections and one open editor; on a phone a section is its own page.
+_Avoid_: Settings, edit mode, admin
+
+**Up next**:
+The activity in Run that gets the primary Start: the first enabled one, in the event's order, that still has items left to play. Competitions and the lucky wheel are never up next.
 
 **Removed guest**:
 A guest the host has taken out of the event. They no longer count as a member, can't read or do anything in the event and can't rejoin from the same phone.

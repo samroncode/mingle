@@ -14,7 +14,8 @@ const port = 5174;
 // Host specs that must pass on a phone and on a desktop screen. The "desktop"
 // project runs exactly these at 1440 px; every spec runs in "phone". Specs that
 // pick their own width (host-dashboard, host-side-column, host-phone) are not
-// listed, they only run once.
+// listed, they only run once. host-views and host-prepare read the width and
+// check both layouts of Run and Prepare.
 const bothWidths = [
   "host-panel",
   "host-activities",

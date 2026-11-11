@@ -12,7 +12,7 @@ import { Messages } from "../Messages";
 import { PartyScreen } from "../PartyScreen";
 import { SharedCosts } from "../SharedCosts";
 import { Winners } from "../Winners";
-import { ProgramBlock } from "../dashboard/ProgramBlock";
+import { ProgramBlock } from "./ProgramBlock";
 import { ActivityEditor } from "./ActivityEditor";
 
 interface PrepareEditorProps {

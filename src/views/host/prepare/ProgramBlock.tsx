@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { EventRow } from "@/api/events";
 import { Button } from "@/components/ui/button";
-import { currentProgramIndex } from "@/lib/host/dashboard-nav";
+import { currentProgramIndex } from "@/lib/host/next-program";
 import { readParty } from "@/lib/party";
 import { anyLineHasTime, formatScheduleLine } from "@/lib/schedule";
 import { PartyEditor } from "../PartyScreen";

@@ -846,8 +846,7 @@
   },
   "hostPanel": {
     "now": {
-      "title": "Just nu",
-      "empty": "Inget pågår. Välj en aktivitet att starta."
+      "title": "Just nu"
     },
     "loading": "Laddar kvällen…",
     "loadFailed": "Kunde inte ladda kvällen. Ladda om sidan.",
@@ -857,7 +856,6 @@
     "guests_other": "{{count}} gäster",
     "tvNow": "På TV:n:",
     "stop": "Stoppa",
-    "stopFirst": "Stoppa {{name}} först",
     "running": "Pågår",
     "activity": {
       "use": "Använd den här aktiviteten",
@@ -868,7 +866,6 @@
       "title": "Ljust rum",
       "help": "Visar TV:n och gästernas mobiler i ett ljust tema som är lättare att läsa i ett ljust rum."
     },
-    "switchedOff": "Avstängda ({{count}})",
     "partyScreen": "Festskärm",
     "summary": {
       "activity": "{{items}}, {{state}}",
@@ -1048,28 +1045,10 @@
       "retry": "Försök igen"
     },
     "dashboard": {
-      "nav": {
-        "label": "Sektioner",
-        "live": "Live",
-        "activities": "Aktiviteter",
-        "program": "Program",
-        "messages": "Meddelanden",
-        "guests": "Gäster",
-        "costs": "Gemensamma kostnader",
-        "party": "Festskärm",
-        "brightRoom": "Ljust rum",
-        "end": "Avsluta kvällen"
-      },
-      "showTable": "Visa tabell på TV",
-      "edit": "Redigera {{name}}",
-      "editShort": "Redigera",
       "close": "Stäng",
-      "progress": "Framsteg för {{name}}",
-      "progressText": "{{done}} av {{total}}",
       "programEmpty": "Inget program än.",
       "programNow": "nu",
-      "programEdit": "Redigera programmet",
-      "costsOpen": "Öppna gemensamma kostnader"
+      "programEdit": "Redigera programmet"
     },
     "view": {
       "label": "Kör eller förbered kvällen",

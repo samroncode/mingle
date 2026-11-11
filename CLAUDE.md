@@ -29,7 +29,7 @@ In scope:
 - Optional **music link**: the host can paste a Spotify Jam or shared playlist link, shown as a QR code in the TV lobby (link only, no Spotify API integration)
 - **Built-in content per niche**: quiz questions, award categories and hot takes in Swedish and English. The host picks from it and adds their own.
 - **Optional AI suggestions** (a bonus, never required): generated on request and hidden when no AI key is configured. The host reviews, edits, deletes and approves before anything is shown.
-- Host control panel: start/stop modules, advance questions, reveal results
+- Host control panel with two views, Run (start/stop activities, advance questions, reveal results) and Prepare (everything the host changes)
 - TV view: lobby with QR code, live module view, results
 - Guest view: join, answer, vote
 - Summary page after the event

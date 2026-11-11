@@ -74,6 +74,7 @@ export function ActivityEditor({
             code={event.code}
             hostKey={hostKey}
             startDisabled={running !== null && running !== id}
+            compact
           />
         )
       ) : (

@@ -188,9 +188,8 @@ test("the host starts awards and sees the category and the next move", async ({
     awards: ["Most likely to dance"],
   });
 
-  await page.goto(`/host/${code}?view=prepare#key=${key}`);
-  await openSection(page, "activity-awards");
-  const panel = page.getByTestId("awards-host");
+  await page.goto(`/host/${code}#key=${key}`);
+  const panel = page.getByTestId("activity-awards");
   await panel.getByRole("button", { name: "Start awards" }).click();
 
   await expect(panel.getByRole("alert")).toBeVisible();
@@ -219,8 +218,7 @@ test("the control panel shows the open category and the Reveal button", async ({
   });
 
   await page.goto(`/host/${code}#key=${key}`);
-  await openSection(page, "activity-awards");
-  const panel = page.getByTestId("awards-host");
+  const panel = page;
   await expect(panel.getByTestId("awards-progress")).toHaveText("Award 2 of 2");
   await expect(panel.getByText("Most likely to bake")).toBeVisible();
   await expect(panel.getByRole("button", { name: "Reveal" })).toBeVisible();

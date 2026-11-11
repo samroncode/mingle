@@ -846,8 +846,7 @@
   },
   "hostPanel": {
     "now": {
-      "title": "Now",
-      "empty": "Nothing is running. Pick an activity to start."
+      "title": "Now"
     },
     "loading": "Loading the evening…",
     "loadFailed": "Couldn't load the evening. Reload the page.",
@@ -857,7 +856,6 @@
     "guests_other": "{{count}} guests",
     "tvNow": "On the TV:",
     "stop": "Stop",
-    "stopFirst": "Stop the {{name}} first",
     "running": "Running",
     "activity": {
       "use": "Use this activity",
@@ -868,7 +866,6 @@
       "title": "Bright room",
       "help": "Shows the TV and the guests' phones in a light theme, easier to read in a bright room."
     },
-    "switchedOff": "Switched off ({{count}})",
     "partyScreen": "Party screen",
     "summary": {
       "activity": "{{items}}, {{state}}",
@@ -1048,28 +1045,10 @@
       "retry": "Try again"
     },
     "dashboard": {
-      "nav": {
-        "label": "Sections",
-        "live": "Live",
-        "activities": "Activities",
-        "program": "Program",
-        "messages": "Messages",
-        "guests": "Guests",
-        "costs": "Shared costs",
-        "party": "Party screen",
-        "brightRoom": "Bright room",
-        "end": "End the evening"
-      },
-      "showTable": "Show table on TV",
-      "edit": "Edit {{name}}",
-      "editShort": "Edit",
       "close": "Close",
-      "progress": "{{name}} progress",
-      "progressText": "{{done}} of {{total}}",
       "programEmpty": "No program yet.",
       "programNow": "now",
-      "programEdit": "Edit program",
-      "costsOpen": "Open shared costs"
+      "programEdit": "Edit program"
     },
     "view": {
       "label": "Run or prepare the evening",
