@@ -12,7 +12,11 @@ const key = "d".repeat(43);
 const anna = "00000000-0000-4000-8000-0000000000a1";
 const bertil = "00000000-0000-4000-8000-0000000000b2";
 
-test.use({ viewport: { width: 1440, height: 900 } });
+test.use({
+  viewport: { width: 1440, height: 900 },
+  isMobile: false,
+  hasTouch: false,
+});
 
 const guests = [
   memberRow({ user_id: anna, display_name: "Anna" }),
@@ -33,7 +37,6 @@ test("the right column mirrors the TV without joining as a TV", async ({
   await page.goto(`/host/${code}#key=${key}`);
 
   const side = page.getByTestId("host-side");
-  await expect(side.getByTestId("side-event-code")).toHaveText(code);
   const mirror = side.getByTestId("tv-mirror");
   await expect(mirror).toContainText("Welcome to Friday!");
   // Read-only: out of the accessibility tree and not clickable.
@@ -41,49 +44,75 @@ test("the right column mirrors the TV without joining as a TV", async ({
   expect(urls.some((url) => url.includes("join_tv"))).toBe(false);
 });
 
-test("guest tools and the message field work from the column", async ({
+test("the column shows only the TV, the next point and the message field", async ({
   page,
 }) => {
-  const bodies = await fakeSupabase(page, [
-    () => [200, {}],
-    () => [200, {}],
-    () => [200, {}],
-  ]);
-  await fakeHostPanel(page, { code, enabledModules: [], guests });
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, {
+    code,
+    enabledModules: [],
+    guests,
+    party: {
+      schedule: [
+        { time: "00:00", title: "Doors open" },
+        { time: "23:59", title: "Last dance" },
+      ],
+    },
+  });
   await page.goto(`/host/${code}#key=${key}`);
 
   const side = page.getByTestId("host-side");
-  const list = side.getByTestId("side-guests");
-  await expect(list.getByTestId("side-guest-count")).toHaveText("2");
-  await expect(list).toContainText("+ latest: Bertil");
+  await expect(side.getByTestId("tv-mirror")).toBeVisible();
+  const next = side.getByTestId("side-next");
+  await expect(next).toContainText("23:59");
+  await expect(next).toContainText("Last dance");
+  await expect(next).not.toContainText("Doors open");
+  await expect(side.getByTestId("side-message")).toBeVisible();
+  // Moved elsewhere: code, copy buttons, Open TV and the guest list.
+  await expect(side.getByTestId("side-event-code")).toHaveCount(0);
+  // (the TV copy is inert, so it has no buttons or links of its own)
+  await expect(side.getByRole("button", { name: /Copy/ })).toHaveCount(0);
+  await expect(side.getByRole("link", { name: "Open TV" })).toHaveCount(0);
+  await expect(side.getByTestId("side-guests")).toHaveCount(0);
+});
 
-  await list.getByRole("button", { name: "Anna" }).click();
-  await list.getByRole("button", { name: "Remove" }).click();
-  await page
-    .getByRole("alertdialog")
-    .getByRole("button", { name: "Remove" })
-    .click();
-  expect(bodies.at(-1)).toEqual({
-    action: "remove_guest",
-    code,
-    key,
-    userId: anna,
-  });
+test("no next point is rendered without a program", async ({ page }) => {
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, { code, enabledModules: [], guests });
+  await page.goto(`/host/${code}#key=${key}`);
+  await expect(page.getByTestId("side-message")).toBeVisible();
+  await expect(page.getByTestId("side-next")).toHaveCount(0);
+});
 
-  const message = side.getByTestId("side-message");
+test("the message field sends a notice and clears", async ({ page }) => {
+  const bodies = await fakeSupabase(page, [() => [200, {}], () => [200, {}]]);
+  await fakeHostPanel(page, { code, enabledModules: [], guests });
+  await page.goto(`/host/${code}#key=${key}`);
+
+  const message = page.getByTestId("host-side").getByTestId("side-message");
   const send = message.getByRole("button", { name: "Send" });
   await expect(send).toBeDisabled();
-  await message.getByLabel("Message to the guests").fill("Food is ready!");
+  const field = message.getByLabel("Message to the guests");
+  await field.fill("Food is ready!");
   await send.click();
   await expect(message.getByTestId("side-message-sent")).toContainText(
     "Food is ready!",
   );
+  await expect(field).toHaveValue("");
   expect(bodies.at(-1)).toEqual({
     action: "send_notice",
     code,
     key,
     text: "Food is ready!",
   });
+});
+
+test("the column is not rendered in Prepare", async ({ page }) => {
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, { code, enabledModules: [], guests });
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await expect(page.getByTestId("host-main")).toBeVisible();
+  await expect(page.getByTestId("host-side")).toHaveCount(0);
 });
 
 test("the mirror says the same as the real TV", async ({ page, context }) => {

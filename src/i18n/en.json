@@ -1035,15 +1035,12 @@
       }
     },
     "side": {
-      "latest": "+ latest: {{name}}",
+      "nextTitle": "Next on the program",
       "messageTitle": "Message",
       "messageLabel": "Message to the guests",
       "messagePlaceholder": "Food is ready!",
       "messageSend": "Send",
-      "messageSent": "Sent: {{text}}",
-      "guestLink": "Guest link",
-      "copyGuest": "Copy guest link",
-      "openTv": "Open TV"
+      "messageSent": "Sent: {{text}}"
     },
     "mirror": {
       "title": "On the TV",
