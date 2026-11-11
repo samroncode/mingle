@@ -96,6 +96,7 @@ function StartButton({
   if (id === "competitions") {
     return (
       <Button
+        size="lg"
         disabled={blocked || event.status === "ended"}
         aria-expanded={open}
         onClick={onToggle}
@@ -124,7 +125,10 @@ function CellView({ data, ...props }: CellProps & { data: CellData }) {
   const name = t(`modules.${id}.name`);
   const blocked = running !== null && running !== id;
   return (
-    <li data-testid={`activity-${id}`} className="min-w-0 space-y-1.5">
+    <li
+      data-testid={`activity-${id}`}
+      className="flex min-w-0 flex-col gap-1.5"
+    >
       <h3 className="font-display text-lg font-bold">{name}</h3>
       <p className="text-sm text-ink-muted">{data.summary}</p>
       {data.counts && <ProgressBar counts={data.counts} name={name} />}
@@ -135,11 +139,12 @@ function CellView({ data, ...props }: CellProps & { data: CellData }) {
           })}
         </p>
       )}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="mt-auto flex flex-col items-stretch gap-2">
         <StartButton id={id} props={props} blocked={blocked} />
         <Button
           size="sm"
           variant="outline"
+          className="w-full"
           aria-expanded={open}
           aria-label={t("hostPanel.dashboard.edit", { name })}
           onClick={onToggle}
