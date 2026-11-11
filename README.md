@@ -1,134 +1,165 @@
 # Mingle
 
-**Run an interactive party evening on your TV in a few minutes.**
+Mingle låter dig sätta upp en interaktiv festkväll på några minuter: gästerna går med från sina telefoner och resultaten visas live på TV:n. Det löser problemet att den som är värd för en afterwork, ett teamevent eller en svensexa annars bygger underhållningen från noll, med frågor i ett dokument, omröstningar genom handuppräckning och en tom TV.
 
-![The Mingle party screen on a TV](docs/screenshots/tv-party-screen.png)
+**Live:** https://mingle-woad.vercel.app
 
-Mingle is a web app for hosting an afterwork, a team event or a bachelor/bachelorette party. You set up the evening on your phone, open the TV link in a browser on the TV or a laptop, and your guests join by scanning the QR code on the screen. Nobody needs to install anything or create an account.
+![Mingles partyskärm på en TV](docs/screenshots/tv-party-screen.png)
 
-## What it does
+## Vad det gör
 
-### The party screen
+Värden skapar ett event på sin telefon, väljer typ av fest (afterwork, teamevent eller svensexa/möhippa) och får färdigt innehåll på svenska eller engelska. TV:n öppnas i en webbläsare och visar en QR-kod som gästerna skannar för att gå med, utan app och utan konto, bara med ett visningsnamn.
 
-The TV is useful from the moment it is switched on, even if you never start an activity. It rotates calmly between your welcome message, the join QR code, a QR code for the wifi, a QR code for the music (paste a Spotify Jam or shared playlist link; it must start with `https://`), the menu, the evening's program and the guests who have joined. Program lines can have a time ("19:00 Dinner") or just a title ("Cake"), so you can list the evening without fixing the clock.
+- **Partyskärmen** visar sig själv utan att värden gör något: välkomstmeddelande, QR-kod för att gå med, wifi, musik (länk till Spotify Jam eller en delad spellista), meny, kvällens program och vilka gäster som har gått med.
+- **Aktiviteter** är valfria och kan stängas av en och en: **Quiz** (flervalsfrågor med poängtavla), **Awards** ("Mest sannolikt att…" där gästerna röstar på varandra), **Hot takes** (håller med eller inte), **Tävlingar** (pingis, dart och liknande där gästerna rapporterar matcher och en tabell uppdateras live) och **Lyckohjulet** (värden snurrar ett hjul på TV:n som drar en gäst, en utmaning eller ett pris).
+- **Värdpanelen** är en privat länk som fungerar som fjärrkontroll: starta och stoppa aktiviteter, gå till nästa fråga, visa resultat, se och ta bort gäster, samt ett ljust läge för soliga rum.
+- **Delade kostnader** (valfritt): värden listar vad som köpts och vem som delar på vad. Gästerna ser först något när värden skickar räkningen, och får då sin del med en Swish-knapp. Mingle flyttar aldrig pengar själv.
+- **Sammanfattning** efter kvällen på `/p/:code/summary` (visar i dag resultaten från tävlingarna).
+- **Språk:** gränssnittet finns på svenska och engelska, och alla kan byta språk på sin enhet.
 
-### Activities, if you want them
+Allt innehåll kommer från appen eller värden själv. Mingle fungerar fullt ut utan AI.
 
-- **Quiz**: multiple-choice questions. Guests answer on their phones, the TV shows how everyone voted and the right answer, and there is a scoreboard at the end.
-- **Awards**: "Most likely to…" categories. Guests vote on each other, and the TV reveals the winners one by one.
-- **Hot takes**: statements to agree or disagree with. The TV shows how the room split.
-
-Each activity comes with ready-made content for the type of party you picked, in Swedish and English. The setup wizard keeps long lists short, showing four suggestions to start with and the rest one tap away. You can use them as they are, remove what doesn't fit, add your own, or switch an activity off completely. Mingle works fully without AI: all content is either built in or written by you.
-
-### Running the evening
-
-You get a private host link that works as your remote control. From your phone you start and stop activities, go to the next question, reveal results, see who has joined and remove a guest if needed. A **bright room** switch gives the TV and the guests' phones a light theme when the room is sunny.
-
-### Shared costs (optional)
-
-If you paid for food or drinks, you can list what you bought and who shares each item. Guests see nothing until you press **Send the bill**. Then each guest gets a small receipt icon on their phone with their share and a Swish button, can tell you they have paid, and you confirm it. Mingle never moves any money itself, and the bill is never shown on the TV.
-
-### Privacy
-
-Guests only give a display name. No emails, phone numbers or other personal data are stored. Every event and everything in it is deleted automatically 30 days after it was created.
-
-## Screenshots
+### Skärmbilder
 
 <table>
   <tr>
-    <th>Host (phone)</th>
-    <th>Guest (phone)</th>
+    <th>Värd (telefon)</th>
+    <th>Gäst (telefon)</th>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/screenshots/host-panel.png" alt="The host's control panel on a phone, with the quiz, awards, hot takes, party screen, bright room, guests and shared costs sections"></td>
-    <td width="50%"><img src="docs/screenshots/guest-quiz.png" alt="A guest answering a quiz question on their phone, with four big colored answer buttons"></td>
+    <td width="50%"><img src="docs/screenshots/host-panel.png" alt="Värdens kontrollpanel på en telefon, med avsnitt för quiz, awards, hot takes, partyskärm, ljust läge, gäster och delade kostnader"></td>
+    <td width="50%"><img src="docs/screenshots/guest-quiz.png" alt="En gäst som svarar på en quizfråga på sin telefon, med fyra stora färgade svarsknappar"></td>
   </tr>
 </table>
 
-**TV during a quiz**: the answers come in from the phones and the right one is revealed.
+**TV under en quiz:** svaren kommer in från telefonerna och rätt svar avslöjas.
 
-![The TV showing a revealed quiz question with the votes per answer](docs/screenshots/tv-quiz.png)
+![TV:n visar en avslöjad quizfråga med rösterna per svar](docs/screenshots/tv-quiz.png)
 
-The screenshots use example data. Every type of party uses the same warm lounge look for now.
+Skärmbilderna använder exempeldata.
 
----
+## Kom igång
 
-## For developers
+### Krav
 
-Everything below is about building and running Mingle yourself.
+- Node 24 (se `.nvmrc`) och npm
+- Docker, bara om du vill köra Supabase lokalt (för att skapa och köra riktiga events)
+- Ett Supabase-projekt om du vill köra mot ett hostat (URL och publishable key)
 
-### Tech stack
-
-| Area | Choice |
-|---|---|
-| Frontend | Vite, React, TypeScript (strict), React Router |
-| Styling | Tailwind CSS v4 and shadcn/ui, themed through CSS variables in `src/app/theme.css` |
-| Backend | Supabase: Postgres with Row Level Security, Realtime, and one Edge Function (`host-actions`) |
-| Guest identity | Supabase anonymous sign-in, so every guest has an `auth.uid()` without an account |
-| Validation | Zod |
-| Languages | react-i18next, Swedish and English |
-| Hosting | Vercel (frontend) and Supabase (backend), on free plans |
-| Tests | Vitest (unit and database), Playwright (key flows, with Supabase faked) |
-
-### How it fits together
-
-- **The database is the source of truth.** The event's state lives in Postgres. The TV and the guests' phones subscribe through Realtime and render it.
-- **Only the host changes the flow of the evening.** Every host action goes through the `host-actions` Edge Function, which checks the secret key from the host link (stored hashed). The key sits in the URL fragment (`#key=…`), so it never reaches a server log.
-- **Security lives in the database.** Guests can only write their own answers and votes, enforced by RLS, so nothing changes if someone calls Supabase from devtools.
-- **All Supabase calls are in `src/api/`.** Components never use the Supabase client directly.
-- **Niches are data.** Each party type is a config file in `src/niches/` with its theme, default activities and built-in content.
-- **Activities are self-contained.** Each one in `src/modules/<name>/` has its own host, TV and guest parts.
-- **Nightly cleanup.** A pg_cron job in the database deletes expired events; every table that belongs to an event cascades from it.
-
-| Route | Who | Purpose |
-|---|---|---|
-| `/` | Everyone | Landing page |
-| `/new` | Host | Setup wizard |
-| `/host/:code#key=…` | Host | Control panel |
-| `/tv/:code` | TV | The big screen |
-| `/p/:code` | Guests | Join and play |
-| `/p/:code/summary` | Everyone | Summary after the event (a placeholder page for now) |
-
-One app serves every event. Events are rows in the database, identified by a short code.
-
-### Run it locally
-
-You need Node 24 (see `.nvmrc`) and npm.
+### Installation
 
 ```bash
+git clone https://github.com/samroncode/mingle
+cd mingle
 npm ci
-cp .env.example .env
-npm run dev
 ```
 
-Then open http://localhost:5173. The app starts without filling in `.env`. To create and run real events locally, start the local Supabase stack (needs Docker) and put its URL and publishable key in `.env`:
+### Konfiguration
+
+Kopiera mallen och fyll i värdena:
 
 ```bash
-npm run db:start
+cp .env.example .env
 ```
 
-[docs/supabase.md](docs/supabase.md) explains the local stack, Docker on Windows and the nightly cleanup.
+```
+VITE_SUPABASE_URL=din-supabase-url
+VITE_SUPABASE_PUBLISHABLE_KEY=din-publishable-key
+```
 
-### Logs and errors
+Alla variabler finns förklarade i `.env.example`. Appen startar även utan ifyllda värden, men då går det inte att skapa events. Hemliga nycklar för Edge Functions får aldrig ha prefixet `VITE_` och hör hemma i `supabase/functions/.env`.
 
-When something fails, the app shows a translated try-again message and logs a short code (never names, amounts or the host key). Read the logs in the Supabase dashboard: browser errors in the `client_errors` table, host actions under Edge Functions, Logs. See [docs/logging.md](docs/logging.md).
+### Kör projektet
 
-### Checks
+```bash
+npm run db:start   # startar lokala Supabase (kräver Docker), kopiera URL och nyckel till .env
+npm run dev        # öppna http://localhost:5173
+```
 
-| Command | What it runs |
+Mer om den lokala stacken: [docs/supabase.md](docs/supabase.md).
+
+### Kontroller
+
+| Kommando | Vad det kör |
 |---|---|
-| `npm run typecheck` | TypeScript for the app |
-| `npm run typecheck:functions` | TypeScript for the Edge Functions |
+| `npm run typecheck` | TypeScript för appen |
+| `npm run typecheck:functions` | TypeScript för Edge Functions |
 | `npm run lint` | ESLint |
 | `npm run format:check` | Prettier |
-| `npm test` | Unit tests and the design-rule check |
-| `npm run test:db` | Database and RLS tests against the local stack |
-| `npm run test:e2e` | Playwright flows, with Supabase faked |
+| `npm test` | Enhetstester och designregler |
+| `npm run test:db` | Databas- och RLS-tester mot lokala stacken |
+| `npm run test:e2e` | Playwright-flöden, med Supabase fejkat |
 
-Pull requests run these on GitHub as well.
+Pull requests kör samma kontroller på GitHub.
 
-### Learn more
+## Arkitektur
 
-- [CLAUDE.md](CLAUDE.md): scope, architecture principles, folder structure and working rules
-- [docs/](docs/README.md): decisions, workflow, Supabase and hosting guides, design and glossary
-- [docs/hosting.md](docs/hosting.md): how Mingle is deployed, and the launch checklist
+Databasen är källan till sanningen. Eventets tillstånd ligger i Postgres, och TV:n och gästernas telefoner prenumererar via Realtime och ritar upp det. Bara värden ändrar kvällens flöde, och varje värdåtgärd går genom Edge Function `host-actions`, som kontrollerar den hemliga nyckeln från värdlänken (lagrad hashad, och placerad efter `#` i URL:en så att den aldrig når en serverlogg). Gäster kan bara skriva sina egna svar och röster, vilket Row Level Security i databasen garanterar även om någon anropar Supabase direkt. All Supabase-åtkomst ligger i `src/api/`. Fester och aktiviteter är data respektive självständiga moduler, och ett nattligt pg_cron-jobb raderar events 30 dagar efter att de skapats.
+
+```
+mingle/
+├── src/
+│   ├── api/          # all Supabase-åtkomst (frågor, ändringar, realtime)
+│   ├── app/          # appskal, router, tema (theme.css)
+│   ├── modules/      # quiz, awards, hottakes, competitions, wheel (host, TV, gäst)
+│   ├── niches/       # festtyper: tema, standardaktiviteter, färdigt innehåll
+│   ├── partyscreen/  # TV:ns viloläge
+│   ├── views/        # sidor per route (skapa, värd, TV, gäst, sammanfattning)
+│   ├── i18n/         # sv.json, en.json
+│   └── lib/          # hjälpfunktioner och Zod-scheman
+├── supabase/
+│   ├── migrations/   # databasschema och RLS-policyer
+│   ├── functions/    # Edge Function host-actions
+│   └── tests/        # databastester mot lokala stacken
+├── e2e/              # Playwright-tester
+└── docs/             # beslut, hosting, design, ordlista
+```
+
+| Route | Vem | Vad |
+|---|---|---|
+| `/` | Alla | Startsida |
+| `/new` | Värd | Guide för att skapa event |
+| `/host/:code#key=…` | Värd | Kontrollpanel |
+| `/tv/:code` | TV | Storbildsskärmen |
+| `/p/:code` | Gäster | Gå med och spela |
+| `/p/:code/summary` | Alla | Sammanfattning efter kvällen |
+
+## Teknisk stack
+
+| Komponent | Val | Anledning |
+|---|---|---|
+| Frontend | Vite, React, TypeScript (strict) | Snabbt, välkänt och bra stöd i verktyg |
+| Routing | React Router | Varje vy är en route |
+| Styling | Tailwind CSS v4, shadcn/ui | Konsekventa komponenter, tema via CSS-variabler |
+| Backend | Supabase (Postgres, Realtime, Edge Functions) | Realtid mellan TV, värd och gäster utan egen server |
+| Gästidentitet | Supabase anonym inloggning | Varje gäst får ett `auth.uid()` för RLS utan konto |
+| Validering | Zod | Delade scheman för formulär och API |
+| Språk | react-i18next | Svenska och engelska |
+| Hosting | Vercel och Supabase | Gratisplaner och enkla deployer |
+| Tester | Vitest, Playwright | Enhets-, databas- och flödestester |
+
+## Begränsningar
+
+- **Ingen AI-hjälp i dag.** AI-förslag på innehåll finns planerade som ett tillval men är inte byggda. Allt färdigt innehåll är skrivet i förväg.
+- **Ingen musikintegration.** Musik är bara en länk som visas som QR-kod, utan Spotify-API.
+- **Inga konton.** Den som tappar värdlänken kan inte ta tillbaka kontrollen över eventet.
+- **Eventen försvinner.** Allt raderas automatiskt efter 30 dagar.
+- **Sammanfattningen är kort.** Den visar i dag bara tävlingarnas resultat, inte Quiz, Awards eller Hot takes.
+- **Alla festtyper ser likadana ut** (samma "lounge"-tema) tills vidare.
+- **Delade kostnader** använder Swish och passar därför bara svenska användare.
+- **Kräver internet** hos TV, värd och gäster, eftersom allt synkas via Supabase.
+
+## Utvecklat med
+
+Claude Code (agentdriven utveckling) som del av kursen Next-Generation Software Development with AI.
+
+## Läs mer
+
+- [CLAUDE.md](CLAUDE.md): omfattning, arkitekturprinciper och arbetsregler
+- [docs/](docs/README.md): beslut, arbetssätt, Supabase, design och ordlista
+- [docs/hosting.md](docs/hosting.md): hur Mingle driftsätts, och checklistan för lansering
+- [docs/logging.md](docs/logging.md): felloggar och hur man läser dem
+
+## CV-punkt
+
+Designade och utvecklade Mingle, en webbapp i React, TypeScript, Tailwind och Supabase (Postgres med Row Level Security, Realtime, Edge Functions), med hjälp av agentdriven utveckling (Claude Code). Projektet låter en värd köra en interaktiv festkväll med quiz, omröstningar, tävlingar och lyckohjul på TV:n, och är tillgängligt på https://mingle-woad.vercel.app (kod: github.com/samroncode/mingle).
