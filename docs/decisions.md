@@ -14,8 +14,8 @@ Entry format:
 
 ## 2026-11-11: The control panel is split into Run and Prepare (#316)
 
-**Decision:** The host control panel has two views, chosen with a switch in the top bar: **Run** (overview and remote control) and **Prepare** (everything the host changes). Built as tickets #317 to #321. It replaces the three-column dashboard from #279.
-- **Run** shows what the TV shows and lists the enabled activities. With nothing running, the activity that is **up next** (the first enabled one, in the event's order, that still has items to play) has the one primary Start; the others have a quiet Start. An activity without counts (competitions, wheel) is never up next. While an activity runs it takes over the work area and the others have no buttons.
+**Decision:** The host control panel has two views, chosen with a switch in the top bar: **Prepare** (everything the host changes) and **Run** (overview and remote control, "Kör kvällen"). **Prepare is the first and default view**; Run is reached with `?view=run`, and an unknown `view` value falls back to Prepare (#328). Built as tickets #317 to #321. It replaces the three-column dashboard from #279.
+- **Run** (`?view=run`) shows what the TV shows and lists the enabled activities. With nothing running, the activity that is **up next** (the first enabled one, in the event's order, that still has items to play) has the one primary Start; the others have a quiet Start. An activity without counts (competitions, wheel) is never up next. While an activity runs it takes over the work area and the others have no buttons.
 - **Competitions** has no Start of its own, so its row says **Open** and goes to its Prepare section.
 - **Start and Stop live only in Run.** Prepare's activity editors are compact and have neither.
 - **The guest list lives in Prepare** (the guest count in the top bar links to it).
