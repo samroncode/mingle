@@ -19,6 +19,25 @@ Värden skapar ett event på sin telefon, väljer typ av fest (afterwork, teamev
 
 Allt innehåll kommer från appen eller värden själv. Mingle fungerar fullt ut utan AI.
 
+### Skärmbilder
+
+<table>
+  <tr>
+    <th>Värd (telefon)</th>
+    <th>Gäst (telefon)</th>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/host-panel.png" alt="Värdens kontrollpanel på en telefon, med avsnitt för quiz, awards, hot takes, partyskärm, ljust läge, gäster och delade kostnader"></td>
+    <td width="50%"><img src="docs/screenshots/guest-quiz.png" alt="En gäst som svarar på en quizfråga på sin telefon, med fyra stora färgade svarsknappar"></td>
+  </tr>
+</table>
+
+**TV under en quiz:** svaren kommer in från telefonerna och rätt svar avslöjas.
+
+![TV:n visar en avslöjad quizfråga med rösterna per svar](docs/screenshots/tv-quiz.png)
+
+Skärmbilderna använder exempeldata.
+
 ## Kom igång
 
 ### Krav
