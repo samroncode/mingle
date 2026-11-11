@@ -48,7 +48,7 @@ test.describe("the control panel", () => {
       status: "live",
       competitions,
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     const fold = await openActivity(page, "competitions");
     const spot = fold.getByTestId("competitions-spotlight");
 
@@ -90,7 +90,7 @@ test.describe("the control panel", () => {
       competitions,
       flow: spotlight(1),
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     // The Now panel (desktop) or the activity row (phone) says what is shown.
     const state = page.getByTestId("competitions-spotlight-state").first();
     await expect(state).toHaveText("On the TV now: Darts");

@@ -45,7 +45,7 @@ test.describe("the control panel", () => {
       played: 2,
     });
 
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     const panel = page.getByTestId("activity-quiz");
     await panel.getByRole("button", { name: "Start quiz" }).click();
 
@@ -75,7 +75,7 @@ test.describe("the control panel", () => {
       flow: quizAt(1, "revealed"),
     });
 
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     const panel = page;
     await expect(panel.getByTestId("quiz-progress")).toHaveText(
       "Question 2 of 2",
@@ -108,7 +108,7 @@ test.describe("the control panel", () => {
       answeredBy: ["g1", "g3"],
     });
 
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
 
     const answered = page.getByTestId("now-panel").getByTestId("quiz-answered");
     await expect(answered).toContainText("2 of 3 answered");
@@ -134,7 +134,7 @@ test.describe("the control panel", () => {
       ],
     });
 
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     const now = page;
     await expect(
       now.getByRole("button", { name: "Back to party screen" }),
@@ -161,7 +161,7 @@ test.describe("the control panel", () => {
       flow: quizAt(0, "open"),
     });
 
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
 
     await expect(page.getByRole("button", { name: "Reveal" })).toBeVisible();
     await expect(page.getByTestId("tv-now")).toContainText(

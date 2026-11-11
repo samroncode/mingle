@@ -57,7 +57,7 @@ test.describe("the host control panel at 1440 px", () => {
       ...evening,
       enabledModules: [...evening.enabledModules],
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
 
     const quizCell = page.getByTestId("activity-quiz");
     await expect(
@@ -109,7 +109,7 @@ test.describe("the host control panel at 1440 px", () => {
         phase: "open",
       },
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
 
     await expect(page.getByTestId("now-panel")).toContainText("Question 1?");
     const others = page.getByTestId("run-others");
@@ -135,7 +135,7 @@ test.describe("the host control panel at 1440 px", () => {
       ...evening,
       enabledModules: [...evening.enabledModules],
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     await page.getByRole("button", { name: "Start awards" }).click();
     await expect.poll(() => bodies.length).toBe(2);
     expect(bodies[1]).toEqual({
@@ -154,13 +154,13 @@ test.describe("the host control panel at 1440 px", () => {
       ...evening,
       enabledModules: ["competitions"],
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     await page
       .getByTestId("activity-competitions")
       .getByRole("link", { name: "Open" })
       .click();
     await expect(page.getByTestId("prepare-view")).toBeVisible();
-    await expect(page).toHaveURL(/view=prepare&section=competitions/);
+    await expect(page).toHaveURL(/section=competitions/);
   });
 
   test("with no countable activity left no Start is primary", async ({
@@ -171,7 +171,7 @@ test.describe("the host control panel at 1440 px", () => {
       ...evening,
       enabledModules: ["wheel", "competitions"],
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     await expect(page.getByTestId("run-work-area")).toBeVisible();
     await expect(
       page.getByTestId("run-work-area").locator('[data-variant="default"]'),
@@ -184,7 +184,7 @@ test.describe("the host control panel at 1440 px", () => {
       ...evening,
       enabledModules: [...evening.enabledModules],
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
 
     const quiz = await openActivity(page, "quiz");
     await expect(quiz.getByText("1. Question 1?")).toBeVisible();

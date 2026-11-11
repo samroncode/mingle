@@ -14,7 +14,7 @@ async function openRunningQuiz(page: import("@playwright/test").Page) {
     flow: { ...runEvent(code, "aw", "quiz", "open") },
   });
   await fakeRun(page, "open");
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
 }
 
 test.describe("phone layout", () => {
@@ -69,7 +69,7 @@ test.describe("phone layout", () => {
       flow: { ...runEvent(code, "aw", "quiz", "open") },
     });
     await fakeRun(page, "open");
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     const bar = page.getByTestId("host-bottom-bar");
     await bar.getByRole("button", { name: "Reveal" }).click();
     await expect(bar.getByRole("alert")).toBeVisible();
@@ -84,7 +84,7 @@ test.describe("phone layout", () => {
       enabledModules: ["quiz", "awards"],
       status: "live",
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=run#key=${key}`);
     await expect(page.getByTestId("activity-quiz")).toBeVisible();
     await expect(page.getByTestId("host-bottom-bar")).toHaveCount(0);
     await expect(page.getByTestId("view-tabs")).toBeVisible();

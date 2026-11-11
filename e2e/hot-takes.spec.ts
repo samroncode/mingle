@@ -179,7 +179,7 @@ test("the host starts hot takes and sees the error line on a refusal", async ({
     hottakes: ["Cats beat dogs"],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   const panel = page.getByTestId("activity-hottakes");
   await panel.getByRole("button", { name: "Start hot takes" }).click();
 
@@ -208,7 +208,7 @@ test("the control panel shows the open hot take and the Reveal button", async ({
     },
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   const panel = page;
   await expect(panel.getByTestId("hottakes-progress")).toHaveText(
     "Hot take 2 of 2",

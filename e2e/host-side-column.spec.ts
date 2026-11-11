@@ -34,7 +34,7 @@ test("the right column mirrors the TV without joining as a TV", async ({
     party: { welcome: "Welcome to Friday!" },
   });
   const urls = recordRequestUrls(page);
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
 
   const side = page.getByTestId("host-side");
   const mirror = side.getByTestId("tv-mirror");
@@ -59,7 +59,7 @@ test("the column shows only the TV, the next point and the message field", async
       ],
     },
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
 
   const side = page.getByTestId("host-side");
   await expect(side.getByTestId("tv-mirror")).toBeVisible();
@@ -79,7 +79,7 @@ test("the column shows only the TV, the next point and the message field", async
 test("no next point is rendered without a program", async ({ page }) => {
   await fakeSupabase(page, [() => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: [], guests });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await expect(page.getByTestId("side-message")).toBeVisible();
   await expect(page.getByTestId("side-next")).toHaveCount(0);
 });
@@ -87,7 +87,7 @@ test("no next point is rendered without a program", async ({ page }) => {
 test("the message field sends a notice and clears", async ({ page }) => {
   const bodies = await fakeSupabase(page, [() => [200, {}], () => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: [], guests });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
 
   const message = page.getByTestId("host-side").getByTestId("side-message");
   const send = message.getByRole("button", { name: "Send" });
@@ -107,6 +107,22 @@ test("the message field sends a notice and clears", async ({ page }) => {
   });
 });
 
+test("the message field takes spaces beside the TV mirror", async ({
+  page,
+}) => {
+  await fakeSupabase(page, [() => [200, {}]]);
+  await fakeHostPanel(page, { code, enabledModules: [], guests });
+  await page.goto(`/host/${code}?view=run#key=${key}`);
+
+  const field = page
+    .getByTestId("host-side")
+    .getByTestId("side-message")
+    .getByLabel("Message to the guests");
+  await field.click();
+  await page.keyboard.type("Food is ready");
+  await expect(field).toHaveValue("Food is ready");
+});
+
 test("the column is not rendered in Prepare", async ({ page }) => {
   await fakeSupabase(page, [() => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: [], guests });
@@ -124,7 +140,7 @@ test("the mirror says the same as the real TV", async ({ page, context }) => {
     guests,
     party: { welcome },
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   const mirror = page.getByTestId("tv-mirror");
   await expect(mirror).toContainText(welcome);
 
