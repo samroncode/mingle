@@ -15,6 +15,13 @@ import { cn } from "cn";
 const FlatContext = createContext(false);
 export const FlatSections = FlatContext.Provider;
 
+/**
+ * Sections inside this provider have no header and no fold: something else
+ * (Prepare's section list) is the navigation, so the editor is always open.
+ */
+const BareContext = createContext(false);
+export const BareSections = BareContext.Provider;
+
 interface PanelSectionProps {
   title: string;
   /** One calm line shown under the title, also while the section is shut. */
@@ -41,7 +48,17 @@ export function PanelSection({
 }: PanelSectionProps) {
   const bodyId = useId();
   const flat = useContext(FlatContext);
+  const bare = useContext(BareContext);
   const [open, setOpen] = useState(defaultOpen);
+
+  if (bare) {
+    return (
+      <section data-testid={testId} data-open className="space-y-3">
+        {summary && <p className="text-sm text-ink-muted">{summary}</p>}
+        {children}
+      </section>
+    );
+  }
 
   return (
     <section

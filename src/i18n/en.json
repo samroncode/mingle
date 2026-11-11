@@ -1076,6 +1076,27 @@
       "run": "Run the evening",
       "prepare": "Prepare"
     },
+    "prepare": {
+      "label": "Sections",
+      "back": "All sections",
+      "off": "off",
+      "groups": {
+        "activities": "Activities",
+        "evening": "The evening",
+        "event": "Event"
+      },
+      "sections": {
+        "party": "Party screen",
+        "program": "Program",
+        "costs": "Shared costs",
+        "guests": "Guests",
+        "messages": "Messages",
+        "winners": "Winners",
+        "links": "Links and TV",
+        "brightroom": "Bright room",
+        "end": "End the evening"
+      }
+    },
     "run": {
       "open": "Open",
       "idleTitle": "The party screen is on the TV",

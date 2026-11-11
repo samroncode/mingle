@@ -106,7 +106,6 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
               members={members}
               ended={ended}
               onEnded={() => setEndedHere(true)}
-              focus={location.hasSection ? location.section : undefined}
             />
           }
         />

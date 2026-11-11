@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { memberRow } from "./fake-rows.ts";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "d".repeat(43);
@@ -18,11 +19,10 @@ test("the host switches on shared costs and adds a purchase", async ({
   await fakeHostPanel(page, { code, enabledModules: [], guests });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
-  // Closed to start with, and nothing about money in the one line yet.
-  await expect(section.getByText("Not switched on")).toHaveCount(0);
+  await expect(section.getByText("Not switched on")).toBeVisible();
 
-  await section.getByRole("button", { name: "Shared costs" }).click();
   await section.getByRole("button", { name: "Switch on" }).click();
   await section.getByLabel("Guests pay").fill("Sam");
   await section.getByLabel("Your Swish number").fill("070-123 45 67");
@@ -52,8 +52,8 @@ test("a purchase nobody shares, a bad number and a bad price are not sent", asyn
   await fakeHostPanel(page, { code, enabledModules: [], guests });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
-  await section.getByRole("button", { name: "Shared costs" }).click();
   await section.getByRole("button", { name: "Switch on" }).click();
   await section.getByLabel("Guests pay").fill("Sam");
   await section.getByLabel("Your Swish number").fill("12345");
@@ -69,7 +69,7 @@ test("a purchase nobody shares, a bad number and a bad price are not sent", asyn
   expect(bodies).toHaveLength(1);
 });
 
-test("shared costs show spent and still owed in one line, closed", async ({
+test("shared costs show spent and still owed in one line above the purchases", async ({
   page,
 }) => {
   await fakeSupabase(page, [() => [200, {}]]);
@@ -88,13 +88,12 @@ test("shared costs show spent and still owed in one line, closed", async ({
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
 
   // 450 over two = 225 each; 100 over the two current sharers = 50 each.
   await expect(section).toContainText("550 kr spent · 550 kr still owed");
-  await expect(section.getByText("Drinks")).toHaveCount(0);
 
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   await expect(section).toContainText("Guests pay Sam on Swish 0701234567");
   await expect(section).toContainText("Shared by 2 guests, 225 kr each");
   await expect(section).toContainText("Shared by 2 guests, 50 kr each");
@@ -110,8 +109,8 @@ test("the host switches shared costs off after a confirm", async ({ page }) => {
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   await section.getByRole("button", { name: "Switch off" }).click();
   await expect(page.getByRole("alertdialog")).toContainText(
     "The Swish number and all purchases are deleted.",
@@ -147,9 +146,9 @@ test("the host sends the bill after a confirm", async ({ page }) => {
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
   await expect(section).toContainText("Bill not sent");
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   await section.getByRole("button", { name: "Send the bill" }).click();
   // Nothing is sent until the confirm.
   expect(
@@ -183,9 +182,9 @@ test("the host hides a sent bill", async ({ page }) => {
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
   await expect(section).toContainText("Bill sent");
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   // Each guest's share is listed.
   await expect(section).toContainText("What each guest pays");
   await section.getByRole("button", { name: "Hide the bill" }).click();
@@ -216,8 +215,8 @@ test("the host sees Owes, Says paid and Paid, and confirms a guest who says they
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   const rows = section.getByTestId("guest-payment");
   await expect(rows.filter({ hasText: "Anna" })).toContainText("Says paid");
   await expect(rows.filter({ hasText: "Bertil" })).toContainText("Owes");
@@ -250,10 +249,10 @@ test("the host marks a guest paid in cash and undoes a confirmation", async ({
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
   // Spent 450, Anna's 225 is confirmed: one line shows what is still owed.
   await expect(section).toContainText("450 kr spent · 225 kr still owed");
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   const rows = section.getByTestId("guest-payment");
   await expect(rows.filter({ hasText: "Anna" })).toContainText("Paid");
 
@@ -290,8 +289,8 @@ test("the host is told when a removed guest had paid", async ({ page }) => {
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   const notes = section.getByTestId("removed-payers");
   await expect(notes).toContainText("Anna paid 120 kr before being removed");
   await expect(notes).toContainText(
@@ -309,8 +308,8 @@ test("there is no note when no removed guest had paid", async ({ page }) => {
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   const section = page.getByTestId("host-costs");
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   await expect(section.getByTestId("guest-payment")).toHaveCount(1);
   await expect(section.getByTestId("removed-payers")).toHaveCount(0);
 });
@@ -328,9 +327,9 @@ test("after the evening has ended the host can still confirm a payment", async (
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-costs");
   await expect(page.getByText("The evening has ended")).toBeVisible();
   const section = page.getByTestId("host-costs");
-  await section.getByRole("button", { name: /Shared costs/ }).click();
   await section
     .getByTestId("guest-payment")
     .filter({ hasText: "Anna" })
