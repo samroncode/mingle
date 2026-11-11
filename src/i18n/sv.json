@@ -1035,15 +1035,12 @@
       }
     },
     "side": {
-      "latest": "+ senast: {{name}}",
+      "nextTitle": "Nästa på programmet",
       "messageTitle": "Meddelande",
       "messageLabel": "Meddelande till gästerna",
       "messagePlaceholder": "Maten är klar!",
       "messageSend": "Skicka",
-      "messageSent": "Skickat: {{text}}",
-      "guestLink": "Gästlänk",
-      "copyGuest": "Kopiera gästlänk",
-      "openTv": "Öppna TV"
+      "messageSent": "Skickat: {{text}}"
     },
     "mirror": {
       "title": "På TV:n",
