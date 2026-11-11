@@ -12,6 +12,19 @@ Entry format:
 **Why:** The reason, and any alternatives that were rejected.
 ```
 
+## 2026-11-11: The control panel is split into Run and Prepare (#316)
+
+**Decision:** The host control panel has two views, chosen with a switch in the top bar: **Run** (overview and remote control) and **Prepare** (everything the host changes). Built as tickets #317 to #321. It replaces the three-column dashboard from #279.
+- **Run** shows what the TV shows and lists the enabled activities. With nothing running, the activity that is **up next** (the first enabled one, in the event's order, that still has items to play) has the one primary Start; the others have a quiet Start. An activity without counts (competitions, wheel) is never up next. While an activity runs it takes over the work area and the others have no buttons.
+- **Competitions** has no Start of its own, so its row says **Open** and goes to its Prepare section.
+- **Start and Stop live only in Run.** Prepare's activity editors are compact and have neither.
+- **The guest list lives in Prepare** (the guest count in the top bar links to it).
+- **The view is in the URL query** (`view`, `section`); the admin key stays alone in the fragment.
+- **Left out:** showing the answer spread per option before the reveal. Hosts cannot read guests' choices before the reveal, so it needs a database change.
+- Frontend only: no migration, Edge Function or dependency change.
+
+**Why:** After the demo the panel showed too much at first glance: the same things were shown several times and running the evening shared a page with setting it up. Running and setting up are two jobs, so each gets its own view, with one primary button per screen.
+
 ## 2026-11-10: The Lucky wheel is a fifth activity (#292)
 
 **Decision:** The Lucky wheel (Swedish: lyckohjulet) is a fifth activity id, `wheel`, that the host switches on or off in the setup wizard; the niche sets the default. Built as tickets #293 to #298.
