@@ -1,44 +1,38 @@
 import type { ReactNode } from "react";
+import { cn } from "cn";
 
 interface HostFrameProps {
-  /** Accessible name of the navigation landmark. */
-  navLabel?: string;
-  /** Left column on wide screens: the section navigation. */
-  nav?: ReactNode;
-  /** The work area: the phone's section list, or the dashboard's middle column. */
+  /** The work area of the current view. */
   main: ReactNode;
-  /** Right column on wide screens: TV mirror, guests and message to the TV. */
+  /** Right column on wide screens (Run only); Prepare leaves it out. */
   side?: ReactNode;
 }
 
 /**
  * The layout of the control panel, with no data of its own. One column on a
- * phone; from `lg` a flat three-column frame separated by thin lines.
+ * phone; from `lg` the work area with an optional side column, separated by a
+ * thin line.
  */
-export function HostFrame({ nav, navLabel, main, side }: HostFrameProps) {
+export function HostFrame({ main, side }: HostFrameProps) {
   return (
     <div
       data-testid="host-frame"
-      className="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)_22rem] lg:divide-x-[length:var(--border-thin)] lg:divide-line"
+      className={cn(
+        side &&
+          "lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:divide-x-[length:var(--border-thin)] lg:divide-line",
+      )}
     >
-      <nav
-        data-testid="host-nav"
-        className="hidden lg:block lg:px-4 lg:py-4"
-        aria-label={nav ? navLabel : undefined}
-        aria-hidden={nav ? undefined : true}
-      >
-        {nav}
-      </nav>
       <div data-testid="host-main" className="space-y-6 lg:px-6 lg:py-4">
         {main}
       </div>
-      <aside
-        data-testid="host-side"
-        className="hidden lg:block lg:px-4 lg:py-4"
-        aria-hidden={side ? undefined : true}
-      >
-        {side}
-      </aside>
+      {side && (
+        <aside
+          data-testid="host-side"
+          className="hidden lg:block lg:px-4 lg:py-4"
+        >
+          {side}
+        </aside>
+      )}
     </div>
   );
 }

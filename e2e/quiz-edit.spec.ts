@@ -34,7 +34,7 @@ async function openPanel(page: Page, updateAnswer: [number, object]) {
       },
     ],
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-quiz");
   await page.getByRole("button", { name: "Edit questions" }).click();
   return bodies;

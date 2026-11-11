@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import type { EventRow, MemberRow } from "@/api/events";
 import { ErrorLine } from "@/components/ErrorLine";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { usePanelLocation } from "@/hooks/usePanelLocation";
 import { orderActivities } from "@/lib/host/host-panel";
 import { moduleDefinitions } from "@/modules/definitions";
 import { RunControls } from "@/modules/RunControls";
@@ -17,6 +19,8 @@ interface RowProps {
   event: EventRow;
   members: MemberRow[];
   hostKey: string;
+  /** Run view: Start only; no Edit buttons, no edit fold, no switched-off list. */
+  startOnly?: boolean;
 }
 
 interface CellProps extends RowProps {
@@ -86,11 +90,21 @@ function StartButton({
 }) {
   const { t } = useTranslation();
   const { event, hostKey, running, open, onToggle } = props;
+  const openLocation = usePanelLocation();
   if (running === id) {
     return (
       <p className="font-display font-bold text-sage-text">
         {t("hostPanel.running")}
       </p>
+    );
+  }
+  if (id === "competitions" && props.startOnly) {
+    return (
+      <Button asChild variant="outline" size="lg" disabled={blocked}>
+        <Link to={openLocation.to("prepare", "competitions")}>
+          {t("hostPanel.run.open")}
+        </Link>
+      </Button>
     );
   }
   if (id === "competitions") {
@@ -141,20 +155,22 @@ function CellView({ data, ...props }: CellProps & { data: CellData }) {
       )}
       <div className="mt-auto flex flex-col items-stretch gap-2">
         <StartButton id={id} props={props} blocked={blocked} />
-        <Button
-          size="sm"
-          variant="outline"
-          className="w-full"
-          aria-expanded={open}
-          aria-label={t("hostPanel.dashboard.edit", { name })}
-          onClick={onToggle}
-        >
-          {t(
-            open
-              ? "hostPanel.dashboard.close"
-              : "hostPanel.dashboard.editShort",
-          )}
-        </Button>
+        {!props.startOnly && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full"
+            aria-expanded={open}
+            aria-label={t("hostPanel.dashboard.edit", { name })}
+            onClick={onToggle}
+          >
+            {t(
+              open
+                ? "hostPanel.dashboard.close"
+                : "hostPanel.dashboard.editShort",
+            )}
+          </Button>
+        )}
       </div>
     </li>
   );
@@ -300,10 +316,10 @@ export function ActivitiesRow(props: RowProps) {
           <Cell key={id} {...cell(id)} />
         ))}
       </ul>
-      {openId && enabled.includes(openId) && (
+      {!props.startOnly && openId && enabled.includes(openId) && (
         <FoldBody id={openId} props={cell(openId)} />
       )}
-      {disabled.length > 0 && (
+      {!props.startOnly && disabled.length > 0 && (
         <details data-testid="disabled-activities">
           <summary className="cursor-pointer py-1 font-display font-bold text-ink-muted">
             {t("hostPanel.switchedOff", { count: disabled.length })}

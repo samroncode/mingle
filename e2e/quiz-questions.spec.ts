@@ -140,7 +140,7 @@ test("the control panel lists the quiz questions with the right answer", async (
     ],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-quiz");
   const panel = page.getByTestId("quiz-host");
   await expect(panel.getByText("1. Capital of Australia?")).toBeVisible();
@@ -156,7 +156,7 @@ test("the control panel says when the quiz has no questions", async ({
   await fakeSupabase(page, [() => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: ["quiz"] });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-quiz");
   await expect(page.getByTestId("quiz-host")).toContainText(
     "There are no questions in this quiz yet.",

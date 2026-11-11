@@ -10,7 +10,7 @@ interface BottomBarProps {
 
 /**
  * Phone only: the running activity's main buttons, pinned to the bottom above
- * the safe area. Not rendered when nothing runs. Errors from a button show
+ * the view tabs. Not rendered when nothing runs. Errors from a button show
  * inside the bar, right above the buttons.
  */
 export function BottomBar({ event, members, hostKey }: BottomBarProps) {
@@ -18,7 +18,7 @@ export function BottomBar({ event, members, hostKey }: BottomBarProps) {
   return (
     <div
       data-testid="host-bottom-bar"
-      className="fixed inset-x-0 bottom-0 z-20 border-t-[length:var(--border-chunky)] border-edge bg-surface px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] empty:hidden [&_button]:min-h-12 [&_button]:flex-1"
+      className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-20 border-t-[length:var(--border-chunky)] border-edge bg-surface px-4 py-3 empty:hidden [&_button]:min-h-12 [&_button]:flex-1"
     >
       <RunningLive
         event={event}

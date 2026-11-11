@@ -31,10 +31,14 @@ test.describe("phone layout", () => {
     const bar = page.getByTestId("host-bottom-bar");
     await expect(bar.getByRole("button", { name: "Reveal" })).toBeVisible();
     await expect(page.getByTestId("tv-now")).toContainText("On the TV:");
-    // Buttons are at least 48px high and inside the viewport.
+    // Buttons are at least 48px high and inside the viewport, above the tabs.
     const box = await bar.getByRole("button", { name: "Reveal" }).boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(48);
-    expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(844);
+    const tabs = await page.getByTestId("view-tabs").boundingBox();
+    expect((box?.y ?? 0) + (box?.height ?? 0)).toBeLessThanOrEqual(
+      tabs?.y ?? 0,
+    );
+    expect((tabs?.y ?? 0) + (tabs?.height ?? 0)).toBeLessThanOrEqual(844);
   });
 
   test("the bottom bar stays put when the page is scrolled", async ({
@@ -48,7 +52,6 @@ test.describe("phone layout", () => {
       return (box?.y ?? 0) + (box?.height ?? 0);
     };
     const before = await edge();
-    await page.getByTestId("host-guests").scrollIntoViewIfNeeded();
     await page.mouse.wheel(0, 3000);
     expect(await edge()).toBe(before);
     expect(before).toBeLessThanOrEqual(844);
@@ -72,7 +75,7 @@ test.describe("phone layout", () => {
     await expect(bar.getByRole("alert")).toBeVisible();
   });
 
-  test("nothing running: no bottom bar, activities are flat rows at the top", async ({
+  test("nothing running: no bottom bar, the activities are rows with a Start", async ({
     page,
   }) => {
     await fakeSupabase(page, [() => [200, {}]]);
@@ -84,6 +87,7 @@ test.describe("phone layout", () => {
     await page.goto(`/host/${code}#key=${key}`);
     await expect(page.getByTestId("activity-quiz")).toBeVisible();
     await expect(page.getByTestId("host-bottom-bar")).toHaveCount(0);
+    await expect(page.getByTestId("view-tabs")).toBeVisible();
     await page.screenshot({
       path: `test-results/${process.env.SHOT ?? "after"}-phone-idle.png`,
     });

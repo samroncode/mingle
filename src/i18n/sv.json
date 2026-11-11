@@ -1073,6 +1073,14 @@
       "programNow": "nu",
       "programEdit": "Redigera programmet",
       "costsOpen": "Öppna gemensamma kostnader"
+    },
+    "view": {
+      "label": "Kör eller förbered kvällen",
+      "run": "Kör kvällen",
+      "prepare": "Förbered"
+    },
+    "run": {
+      "open": "Öppna"
     }
   }
 }

@@ -77,7 +77,7 @@ test("the host sends the bill, a guest says they paid and the host confirms", as
   await fakeHostPanel(hostPage, hostOptions);
 
   // 1. The host switches shared costs on, adds a purchase and sends the bill.
-  await hostPage.goto(`/host/${code}#key=${key}`);
+  await hostPage.goto(`/host/${code}?view=prepare#key=${key}`);
   const section = hostPage.getByTestId("host-costs");
   await section.getByRole("button", { name: "Shared costs" }).click();
   await section.getByRole("button", { name: "Switch on" }).click();

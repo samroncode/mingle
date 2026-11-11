@@ -155,7 +155,7 @@ test("the control panel lists the award categories before awards start", async (
     awards: ["Most likely to dance", "Most likely to bake"],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-awards");
   const panel = page.getByTestId("awards-host");
   await expect(panel.getByText("1. Most likely to dance")).toBeVisible();
@@ -168,7 +168,7 @@ test("the control panel says when the awards have no categories", async ({
   await fakeSupabase(page, [() => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: ["awards"] });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-awards");
   await expect(page.getByTestId("awards-host")).toContainText(
     "There are no categories in these awards yet.",
@@ -188,7 +188,7 @@ test("the host starts awards and sees the category and the next move", async ({
     awards: ["Most likely to dance"],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-awards");
   const panel = page.getByTestId("awards-host");
   await panel.getByRole("button", { name: "Start awards" }).click();

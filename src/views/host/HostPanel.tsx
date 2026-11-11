@@ -1,29 +1,21 @@
 import { ErrorLine } from "@/components/ErrorLine";
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatSections, PanelSection } from "@/components/PanelSection";
+import { PanelSection } from "@/components/PanelSection";
 import { EventLinks } from "@/components/EventLinks";
 import { useEventLanguage } from "@/hooks/useEventLanguage";
-import type { EventRow, MemberRow } from "@/api/events";
 import { useIsPhone } from "@/hooks/useIsPhone";
+import { usePanelLocation } from "@/hooks/usePanelLocation";
 import { useEventState } from "@/hooks/useEventState";
 import { useHostEventId } from "@/hooks/useHostEventId";
 import type { HostLinkParts } from "@/lib/host/host-door";
-import { Activities } from "./Activities";
 import { BottomBar } from "./BottomBar";
-import { BrightRoom } from "./BrightRoom";
-import { EndEvent } from "./EndEvent";
-import { DashboardMain } from "./dashboard/DashboardMain";
-import { DashboardNav } from "./dashboard/DashboardNav";
-import { Guests } from "./Guests";
 import { HostFrame } from "./HostFrame";
-import { Messages } from "./Messages";
-import { NowPanel } from "./NowPanel";
-import { PartyScreen } from "./PartyScreen";
 import { SideColumn } from "./SideColumn";
-import { SharedCosts } from "./SharedCosts";
+import { PrepareView } from "./prepare/PrepareView";
+import { RunWorkArea } from "./run/RunWorkArea";
 import { TopBar } from "./TopBar";
-import { Winners } from "./Winners";
+import { ViewSwitch } from "./ViewSwitch";
 
 function EventSection({
   link,
@@ -48,77 +40,6 @@ function EventSection({
   );
 }
 
-interface SectionsProps {
-  eventId: string;
-  link: HostLinkParts;
-  event: EventRow;
-  members: MemberRow[];
-  ended: boolean;
-  onEnded: () => void;
-}
-
-/** The phone's one-column list of sections, flat rows in a fixed order. */
-function Sections({
-  eventId,
-  link,
-  event,
-  members,
-  ended,
-  onEnded,
-}: SectionsProps) {
-  const { t } = useTranslation();
-  return (
-    <FlatSections value>
-      <NowPanel
-        event={event}
-        members={members}
-        hostKey={link.key}
-        ended={ended}
-        phone
-      />
-      {ended ? (
-        <p className="rounded-md border-[length:var(--border-thin)] border-edge bg-champagne p-4 font-display text-xl font-bold text-on-bright">
-          {t("hostPanel.ended")}
-        </p>
-      ) : (
-        <Activities event={event} members={members} hostKey={link.key} />
-      )}
-      {!ended && <PartyScreen event={event} hostKey={link.key} />}
-      {!ended && <Winners event={event} hostKey={link.key} />}
-      {!ended && <BrightRoom event={event} hostKey={link.key} />}
-      <Guests
-        code={event.code}
-        hostKey={link.key}
-        members={members}
-        language={event.language}
-        ended={ended}
-      />
-      <SharedCosts
-        eventId={eventId}
-        code={event.code}
-        hostKey={link.key}
-        members={members}
-        language={event.language}
-        costsVersion={event.costs_version}
-      />
-      {!ended && (
-        <Messages
-          eventId={eventId}
-          code={event.code}
-          hostKey={link.key}
-          language={event.language}
-          noticesVersion={event.notices_version}
-        />
-      )}
-      <EventSection link={link}>
-        {!ended && (
-          <EndEvent code={event.code} hostKey={link.key} onEnded={onEnded} />
-        )}
-      </EventSection>
-    </FlatSections>
-  );
-}
-
 function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
   const { t } = useTranslation();
   const state = useEventState(eventId);
@@ -127,7 +48,7 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
   // Right after End, until the snapshot catches up.
   const [endedHere, setEndedHere] = useState(false);
   const phone = useIsPhone();
-  const wide = !phone;
+  const location = usePanelLocation();
 
   if (!event) {
     return (
@@ -144,51 +65,56 @@ function Live({ eventId, link }: { eventId: string; link: HostLinkParts }) {
     );
   }
   const ended = event.status === "ended" || endedHere;
-  const barShown = phone && !ended && !!event.current_module;
+  const run = location.view === "run";
+  const barShown = phone && run && !ended && !!event.current_module;
+  const hostKey = link.key;
+  let padding: string | undefined;
+  if (phone) padding = barShown ? "pb-48" : "pb-24";
   return (
-    <div className={barShown ? "pb-32" : undefined}>
-      <TopBar event={event} members={members} hostKey={link.key} slim={phone} />
+    <div className={padding}>
+      <TopBar event={event} members={members} />
       {state.status === "error" && (
         <ErrorLine>{t("hostPanel.offline")}</ErrorLine>
       )}
-      <HostFrame
-        navLabel={t("hostPanel.dashboard.nav.label")}
-        nav={
-          wide ? <DashboardNav event={event} members={members} /> : undefined
-        }
-        main={
-          wide ? (
-            <DashboardMain
+      {run ? (
+        <HostFrame
+          main={
+            <RunWorkArea
+              event={event}
+              members={members}
+              hostKey={hostKey}
+              ended={ended}
+              phone={phone}
+            />
+          }
+          side={
+            <SideColumn
+              event={event}
+              members={members}
+              hostKey={hostKey}
+              ended={ended}
+            />
+          }
+        />
+      ) : (
+        <HostFrame
+          main={
+            <PrepareView
               eventId={eventId}
               link={link}
               event={event}
               members={members}
               ended={ended}
               onEnded={() => setEndedHere(true)}
+              focus={location.hasSection ? location.section : undefined}
             />
-          ) : (
-            <Sections
-              eventId={eventId}
-              link={link}
-              event={event}
-              members={members}
-              ended={ended}
-              onEnded={() => setEndedHere(true)}
-            />
-          )
-        }
-        side={
-          <SideColumn
-            event={event}
-            members={members}
-            hostKey={link.key}
-            ended={ended}
-          />
-        }
-      />
-      {barShown && (
-        <BottomBar event={event} members={members} hostKey={link.key} />
+          }
+        />
       )}
+      {barShown && (
+        <BottomBar event={event} members={members} hostKey={hostKey} />
+      )}
+      {phone && <ViewSwitch variant="tabs" />}
     </div>
   );
 }

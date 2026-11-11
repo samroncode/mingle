@@ -16,7 +16,7 @@ async function openPanel(page: Page, updateAnswer: [number, object]) {
     status: "live",
     hottakes: ["Pineapple belongs on pizza", "Karaoke is overrated"],
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-hottakes");
   await page.getByRole("button", { name: "Edit hot takes" }).click();
   return bodies;

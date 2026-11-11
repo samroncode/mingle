@@ -25,7 +25,7 @@ test("the host edits the wifi password and ends the evening", async ({
     party: { wifi: { ssid: "PartyNet", password: "oldpass" } },
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "party-screen");
   await openSection(page, "event-section");
   await expect(page.getByTestId("event-code")).toHaveText(code);
@@ -65,7 +65,7 @@ test("shows the ended state when the panel opens after the end", async ({
 }) => {
   await fakeSupabase(page, [() => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: [], status: "ended" });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "event-section");
   await expect(page.getByText("The evening has ended")).toBeVisible();
   await expect(page.getByTestId("party-screen")).toHaveCount(0);

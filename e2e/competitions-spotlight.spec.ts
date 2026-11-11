@@ -49,7 +49,7 @@ test.describe("the control panel", () => {
       competitions,
     });
     await page.goto(`/host/${code}#key=${key}`);
-    const fold = await openActivity(page, "competitions", "Competitions");
+    const fold = await openActivity(page, "competitions");
     const spot = fold.getByTestId("competitions-spotlight");
 
     await expect(spot.getByTestId("competitions-spotlight-state")).toHaveText(
