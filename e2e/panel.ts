@@ -5,11 +5,11 @@ function viewSwitch(page: Page) {
   return page.getByRole("navigation", { name: "Run or prepare the evening" });
 }
 
-/** Opens the Prepare view (the host link's view query is `prepare`). */
+/** Opens the Prepare view (the default view, no view query). */
 export async function openPrepare(page: Page) {
-  if (new URL(page.url()).searchParams.get("view") !== "prepare") {
+  if (new URL(page.url()).searchParams.get("view") === "run") {
     await viewSwitch(page).getByRole("link", { name: "Prepare" }).click();
-    await page.waitForURL(/view=prepare/);
+    await page.waitForURL((url) => url.searchParams.get("view") !== "run");
   }
   await page.getByTestId("prepare-view").waitFor();
 }
@@ -17,7 +17,7 @@ export async function openPrepare(page: Page) {
 /** Goes back to the Run view. */
 export async function openRun(page: Page) {
   await viewSwitch(page).getByRole("link", { name: "Run the evening" }).click();
-  await page.waitForURL((url) => !url.searchParams.has("view"));
+  await page.waitForURL(/view=run/);
 }
 
 /** The Prepare section a test id belongs to; other names are section ids. */

@@ -20,7 +20,7 @@ async function openPanel(
     status: "live",
     competitions: list,
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await openSection(page, "activity-competitions");
   return bodies;
 }

@@ -82,7 +82,7 @@ async function openPanel(
   await page.route(`${supabase}/rest/v1/competition_matches*`, (route) =>
     json(route, 200, matches),
   );
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await openSection(page, "activity-competitions");
   return { bodies, section: page.getByTestId("competitions-matches") };
 }

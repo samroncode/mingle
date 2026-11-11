@@ -48,7 +48,7 @@ async function openRunning(
       memberRow({ user_id: bertil, display_name: "Bertil" }),
     ],
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   return bodies;
 }
 
@@ -179,7 +179,7 @@ test("an idle wheel has a Start button that starts it", async ({ page }) => {
     flow: { current_module: null, current_step: 0, phase: "idle" },
     guests: [memberRow({ user_id: anna, display_name: "Anna" })],
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await page
     .getByTestId("activity-wheel")
     .getByText("Lucky wheel")

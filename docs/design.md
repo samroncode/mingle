@@ -107,7 +107,7 @@ Do not use: blue-purple gradients, emoji cards, cards with a colored left border
 
 ## Host control panel: Run and Prepare
 
-The control panel has two views, chosen with a switch in the top bar: **Run** (the overview and the remote control) and **Prepare** (everything the host changes). The view and the Prepare section are in the URL's query (`view`, `section`); the fragment keeps the admin key alone. Unknown values fall back to Run and to the first section. The breakpoint is 1024 px (`lg`), the same in CSS and in code (`useIsPhone`).
+The control panel has two views, chosen with a switch in the top bar: **Prepare** (everything the host changes; the first view and the default when the admin opens) and **Run** (the overview and the remote control). The view and the Prepare section are in the URL's query (`section` for Prepare, `view=run` for Run); the fragment keeps the admin key alone. Unknown values fall back to Prepare and to the first section. The breakpoint is 1024 px (`lg`), the same in CSS and in code (`useIsPhone`).
 
 - **Flat.** Thin rules (`divide-line`) and space, no cards in cards. The only paper surface in Run is the running activity.
 - **One line on top.** Logo, the Run / Prepare switch, the language switcher, the guest count (a link to Prepare > Guests) and the event code. In Prepare, while an activity runs, the bar also says "On the TV: ..." as a link back to Run. There is no Stop in the bar. On a phone the switch is a tab bar at the bottom instead.

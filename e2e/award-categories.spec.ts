@@ -188,7 +188,7 @@ test("the host starts awards and sees the category and the next move", async ({
     awards: ["Most likely to dance"],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   const panel = page.getByTestId("activity-awards");
   await panel.getByRole("button", { name: "Start awards" }).click();
 
@@ -217,7 +217,7 @@ test("the control panel shows the open category and the Reveal button", async ({
     },
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   const panel = page;
   await expect(panel.getByTestId("awards-progress")).toHaveText("Award 2 of 2");
   await expect(panel.getByText("Most likely to bake")).toBeVisible();

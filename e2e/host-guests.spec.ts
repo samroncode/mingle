@@ -23,7 +23,7 @@ test("the host removes a guest after a confirm", async ({ page }) => {
     ],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await openSection(page, "host-guests");
   const guests = page.getByTestId("host-guests");
   await expect(guests).toContainText("Anna");
@@ -67,7 +67,7 @@ test("a failed removal shows a plain message", async ({ page }) => {
     ],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await openSection(page, "host-guests");
   await page.getByRole("button", { name: "Remove Anna" }).click();
   await page

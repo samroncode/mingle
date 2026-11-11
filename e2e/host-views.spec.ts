@@ -35,27 +35,27 @@ async function running(page: import("@playwright/test").Page) {
   await fakeRun(page, "open");
 }
 
-test("Run is the first view; the switch goes to Prepare and back", async ({
+test("Prepare is the first view; the switch goes to Run and back", async ({
   page,
 }) => {
   await idle(page);
   await page.goto(`/host/${code}#key=${key}`);
-  await expect(page.getByTestId("run-work-area")).toBeVisible();
-  await expect(page.getByTestId("prepare-view")).toHaveCount(0);
-
-  await openPrepare(page);
   await expect(page.getByTestId("prepare-view")).toBeVisible();
   await expect(page.getByTestId("run-work-area")).toHaveCount(0);
-  await expect(page.getByTestId("now-panel")).toHaveCount(0);
-  // The fragment keeps the admin key alone, and survives the switch.
-  expect(new URL(page.url()).hash).toBe(`#key=${key}`);
 
   await openRun(page);
   await expect(page.getByTestId("now-panel")).toBeVisible();
+  await expect(page.getByTestId("prepare-view")).toHaveCount(0);
+  // The fragment keeps the admin key alone, and survives the switch.
+  expect(new URL(page.url()).hash).toBe(`#key=${key}`);
+
+  await openPrepare(page);
+  await expect(page.getByTestId("prepare-view")).toBeVisible();
+  await expect(page.getByTestId("now-panel")).toHaveCount(0);
   expect(new URL(page.url()).hash).toBe(`#key=${key}`);
 });
 
-test("the switch is a labelled group that marks the current view", async ({
+test("the switch lists Prepare first and marks the current view", async ({
   page,
 }) => {
   await idle(page);
@@ -63,15 +63,15 @@ test("the switch is a labelled group that marks the current view", async ({
   const group = page.getByRole("navigation", {
     name: "Run or prepare the evening",
   });
+  const links = group.getByRole("link");
+  await expect(links.first()).toHaveText("Prepare");
+  await expect(links.last()).toHaveText("Run the evening");
+  await expect(links.first()).toHaveAttribute("aria-current", "page");
+  await group.getByRole("link", { name: "Run the evening" }).focus();
+  await page.keyboard.press("Enter");
   await expect(
     group.getByRole("link", { name: "Run the evening" }),
   ).toHaveAttribute("aria-current", "page");
-  await group.getByRole("link", { name: "Prepare" }).focus();
-  await page.keyboard.press("Enter");
-  await expect(group.getByRole("link", { name: "Prepare" })).toHaveAttribute(
-    "aria-current",
-    "page",
-  );
 });
 
 test("the view and section come from the query and survive a reload", async ({
@@ -90,17 +90,17 @@ test("the view and section come from the query and survive a reload", async ({
   await expect(page.getByTestId("host-guests").getByText("Anna")).toBeVisible();
 });
 
-test("an unknown view or section falls back to Run", async ({ page }) => {
+test("an unknown view or section falls back to Prepare", async ({ page }) => {
   await idle(page);
   await page.goto(`/host/${code}?view=nope&section=nope#key=${key}`);
-  await expect(page.getByTestId("run-work-area")).toBeVisible();
+  await expect(page.getByTestId("prepare-view")).toBeVisible();
 });
 
 test("the guest count in the top bar opens Prepare with the guests", async ({
   page,
 }) => {
   await idle(page);
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await page.getByTestId("host-top-bar").getByTestId("guest-count").click();
   await expect(page.getByTestId("host-guests").getByText("Anna")).toBeVisible();
   expect(new URL(page.url()).searchParams.get("section")).toBe("guests");
@@ -122,7 +122,7 @@ test("Run has no On the TV line in the bar and Stop exists once", async ({
   page,
 }) => {
   await running(page);
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await expect(page.getByTestId("quiz-live").first()).toBeVisible();
   await expect(
     page.getByTestId("host-top-bar").getByTestId("tv-now"),
@@ -132,7 +132,7 @@ test("Run has no On the TV line in the bar and Stop exists once", async ({
 
 test("the top bar is one line", async ({ page }) => {
   await idle(page);
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   const bar = await page.getByTestId("host-top-bar").boundingBox();
   expect(bar?.height).toBeLessThan(80);
   await expect(
@@ -144,7 +144,7 @@ test("the phone has two tabs at the bottom, and the wide screen a switch in the 
   page,
 }) => {
   await idle(page);
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   const phone = (page.viewportSize()?.width ?? 0) < 1024;
   if (phone) {
     const tabs = page.getByTestId("view-tabs");
@@ -175,7 +175,7 @@ test("Run (idle and running) and Prepare never scroll sideways", async ({
   page,
 }) => {
   await idle(page);
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await expect(page.getByTestId("run-work-area")).toBeVisible();
   await expectNoHorizontalScroll(page);
   await openPrepare(page);
@@ -183,7 +183,7 @@ test("Run (idle and running) and Prepare never scroll sideways", async ({
 
   await page.unrouteAll();
   await running(page);
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=run#key=${key}`);
   await expect(page.getByTestId("run-work-area")).toBeVisible();
   await expectNoHorizontalScroll(page);
 });

@@ -9,6 +9,7 @@ import {
   WifiPart,
   WinnersPart,
 } from "./PartPanels";
+import { isTyping } from "./typing";
 import { useStandings } from "@/modules/competitions/useStandings";
 import { partKey, partsOf, type Part } from "./parts";
 import { useRotation } from "./rotation";
@@ -56,7 +57,7 @@ export function PartRotation({
   const { shown, step } = useRotation(parts.map(partKey));
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.altKey || e.ctrlKey || e.metaKey || isTyping(e.target)) return;
       if (e.key === "ArrowRight" || e.key === " ") step(1);
       else if (e.key === "ArrowLeft") step(-1);
       else return;

@@ -1,7 +1,7 @@
 import { moduleIds } from "@/modules/registry";
 
-/** The control panel's two views: running the evening, and preparing it. */
-export const panelViews = ["run", "prepare"] as const;
+/** The control panel's two views: preparing the evening, and running it. */
+export const panelViews = ["prepare", "run"] as const;
 export type PanelView = (typeof panelViews)[number];
 
 /** The sections of Prepare, in the order of its list; the first is the default. */
@@ -39,22 +39,23 @@ function isSection(value: string | null): value is PrepareSection {
 /**
  * Reads the view and the Prepare section from a URL query (`?view=…`). The
  * admin key stays alone in the fragment. Unknown or missing values fall back
- * to Run and to the first section, without an error.
+ * to Prepare and to the first section, without an error.
  */
 export function readPanelLocation(search: string): PanelLocation {
   const params = new URLSearchParams(search);
   const view = params.get("view");
   const section = params.get("section");
   return {
-    view: isView(view) ? view : "run",
+    view: isView(view) ? view : "prepare",
     section: isSection(section) ? section : firstSection,
     hasSection: isSection(section),
   };
 }
 
 /**
- * The query for a view, keeping every other parameter. Run carries no
- * section. `section` is only written for Prepare.
+ * The query for a view, keeping every other parameter. Prepare is the
+ * default view, so it needs no `view` parameter; Run writes `view=run` and
+ * carries no section. `section` is only written for Prepare.
  */
 export function panelSearch(
   search: string,
@@ -64,10 +65,8 @@ export function panelSearch(
   const params = new URLSearchParams(search);
   params.delete("view");
   params.delete("section");
-  if (view === "prepare") {
-    params.set("view", "prepare");
-    if (section) params.set("section", section);
-  }
+  if (view === "run") params.set("view", "run");
+  else if (section) params.set("section", section);
   const text = params.toString();
   return text ? `?${text}` : "";
 }
