@@ -1073,6 +1073,14 @@
       "programNow": "now",
       "programEdit": "Edit program",
       "costsOpen": "Open shared costs"
+    },
+    "view": {
+      "label": "Run or prepare the evening",
+      "run": "Run the evening",
+      "prepare": "Prepare"
+    },
+    "run": {
+      "open": "Open"
     }
   }
 }

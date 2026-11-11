@@ -16,7 +16,7 @@ async function openPanel(page: Page, updateAnswer: [number, object]) {
     status: "live",
     awards: ["Most likely to be late", "Most likely to dance on a table"],
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-awards");
   await page.getByRole("button", { name: "Edit categories" }).click();
   return bodies;

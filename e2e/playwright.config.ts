@@ -21,6 +21,7 @@ const bothWidths = [
   "host-messages",
   "host-guests",
   "competitions-spotlight",
+  "host-views",
 ].map((name) => new RegExp(`${name}\\.spec\\.ts$`));
 
 export default defineConfig({

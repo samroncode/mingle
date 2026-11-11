@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { memberRow } from "./fake-rows.ts";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openPrepare } from "./panel.ts";
 
 const code = "ABC234";
 const key = "d".repeat(43);
@@ -92,7 +93,8 @@ test("the host spins twice, takes the second result off and it leaves the list",
   await expect(
     live.getByRole("button", { name: "Take off the wheel" }),
   ).toHaveCount(0);
-  // Taken off: it has left the wheel (the activity's summary counts it).
+  // Taken off: it has left the wheel (the activity's summary, in Prepare, counts it).
+  await openPrepare(page);
   await expect(
     page.getByRole("button", { name: /1 entry on the wheel, 2 spins/ }),
   ).toBeVisible();

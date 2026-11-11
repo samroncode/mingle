@@ -19,7 +19,7 @@ test("the host adds a winner and hides the slide; the party fields stay", async 
   ]);
   await fakeHostPanel(page, { code, enabledModules: [], party });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   const section = page.getByTestId("host-winners");
   await expect(section.getByText("1 winner")).toBeVisible();
   await openSection(page, "host-winners");
@@ -61,7 +61,7 @@ test("the winners section is gone once the evening has ended", async ({
     status: "ended",
     party,
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await expect(page.getByText("The evening has ended")).toBeVisible();
   await expect(page.getByTestId("host-winners")).toHaveCount(0);
 });

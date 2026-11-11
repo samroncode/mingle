@@ -45,7 +45,7 @@ test.describe("the control panel", () => {
       played: 2,
     });
 
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=prepare#key=${key}`);
     await openSection(page, "activity-quiz");
     const panel = page.getByTestId("quiz-host");
     await expect(panel).toContainText("Every question has been played.");

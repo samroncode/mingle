@@ -1,10 +1,11 @@
-import { ErrorLine } from "@/components/ErrorLine";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import type { EventRow, MemberRow } from "@/api/events";
-import { setFlow } from "@/api/host-actions";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Logo } from "@/components/Logo";
-import { Button } from "@/components/ui/button";
-import { useHostAction } from "@/hooks/useHostAction";
+import { useIsPhone } from "@/hooks/useIsPhone";
+import { usePanelLocation } from "@/hooks/usePanelLocation";
+import { ViewSwitch } from "./ViewSwitch";
 import { countGuests } from "@/partyscreen/guests";
 import { tvNow } from "@/lib/host/host-panel";
 import { moduleDefinitions } from "@/modules/definitions";
@@ -14,9 +15,6 @@ import type { ModuleDefinition } from "@/modules/types";
 interface TopBarProps {
   event: EventRow;
   members: MemberRow[];
-  hostKey: string;
-  /** Phone: only logo, code and guests; the TV line moves into the Now panel. */
-  slim?: boolean;
 }
 
 function definitionOf(event: EventRow): ModuleDefinition | undefined {
@@ -59,56 +57,52 @@ export function TvNow({ event }: { event: EventRow }) {
   );
 }
 
-/** Always-visible bar: code, guests, what the TV shows and Stop. */
-export function TopBar({ event, members, hostKey, slim }: TopBarProps) {
+/**
+ * The always-visible bar, one line: logo, the Run / Prepare switch (wide
+ * screens; a phone has tabs at the bottom), language, guests and the event
+ * code. In Prepare, while an activity runs, a second line says what the TV
+ * shows and leads back to Run.
+ */
+export function TopBar({ event, members }: TopBarProps) {
   const { t } = useTranslation();
-  const { busy, error, run } = useHostAction();
+  const phone = useIsPhone();
+  const location = usePanelLocation();
   const running = !!event.current_module && event.status !== "ended";
-
-  const stop = () =>
-    run(() =>
-      setFlow({
-        code: event.code,
-        key: hostKey,
-        move: { type: "stop_module" },
-      }),
-    );
 
   return (
     <div
       data-testid="host-top-bar"
-      className="sticky top-0 z-10 -mx-4 space-y-2 border-b-[length:var(--border-chunky)] border-edge bg-forest px-4 py-3 text-on-forest"
+      className="sticky top-0 z-10 -mx-4 border-b-[length:var(--border-chunky)] border-edge bg-forest px-4 text-on-forest"
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex min-h-14 items-center gap-2 sm:gap-4">
         <Logo className="text-xl" />
-        <span className="rounded-sm bg-champagne px-2 py-0.5 font-display text-lg font-extrabold tracking-widest text-on-bright">
+        <div className="flex flex-1 justify-center">
+          {!phone && <ViewSwitch variant="bar" />}
+        </div>
+        <LanguageSwitcher />
+        <Link
+          to={location.to("prepare", "guests")}
+          data-testid="guest-count"
+          className="inline-flex min-h-12 items-center text-sm underline-offset-4 hover:underline"
+        >
+          {t("hostPanel.guests", { count: countGuests(members) })}
+        </Link>
+        <span
+          data-testid="top-bar-code"
+          className="rounded-sm bg-champagne px-2 py-0.5 font-display text-lg font-extrabold tracking-widest text-on-bright"
+        >
           {event.code}
         </span>
-        <span data-testid="guest-count" className="text-sm">
-          {t("hostPanel.guests", { count: countGuests(members) })}
-        </span>
       </div>
-      {!slim && (
-        <div className="flex items-center justify-between gap-2">
-          <p
-            data-testid="tv-now"
-            className="font-body text-base text-on-forest"
-          >
-            {t("hostPanel.tvNow")} <TvNow event={event} />
-          </p>
-          {running && (
-            <Button
-              size="sm"
-              variant="secondary"
-              disabled={busy}
-              onClick={() => void stop()}
-            >
-              {t("hostPanel.stop")}
-            </Button>
-          )}
-        </div>
+      {running && location.view === "prepare" && (
+        <Link
+          to={location.to("run")}
+          data-testid="tv-now"
+          className="block pb-2 font-body text-base text-on-forest underline-offset-4 hover:underline"
+        >
+          {t("hostPanel.tvNow")} <TvNow event={event} />
+        </Link>
       )}
-      {error && <ErrorLine>{error}</ErrorLine>}
     </div>
   );
 }

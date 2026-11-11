@@ -37,7 +37,7 @@ export function NowPanel({
       }
     >
       <h2 className="font-display text-sm font-bold uppercase tracking-wide text-ink-muted">
-        {phone && live ? (
+        {live ? (
           <span data-testid="tv-now">
             {t("hostPanel.tvNow")} <TvNow event={event} />
           </span>

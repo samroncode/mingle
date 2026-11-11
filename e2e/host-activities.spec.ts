@@ -25,7 +25,7 @@ async function openPanel(
     ],
     ...panel,
   });
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   return bodies;
 }
 
@@ -86,7 +86,7 @@ test("the running activity can't be switched off", async ({ page }) => {
     page.getByTestId("activity-quiz").getByText("Running", { exact: true }),
   ).toBeVisible();
   // The running activity's row (phone) or fold (desktop) starts shut.
-  const quiz = await openActivity(page, "quiz", "Quiz");
+  const quiz = await openActivity(page, "quiz");
   await expect(
     quiz.getByRole("switch", { name: "Use this activity" }),
   ).toBeDisabled();

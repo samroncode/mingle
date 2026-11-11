@@ -20,7 +20,7 @@ test("the host sends a message; empty and too long texts are not sent", async ({
     ],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   const section = page.getByTestId("host-messages");
   await expect(section.getByText("1 sent")).toBeVisible();
   await section.getByRole("button", { name: "Messages" }).click();
@@ -56,7 +56,7 @@ test("a message sent too soon shows a plain message and keeps the text", async (
   ]);
   await fakeHostPanel(page, { code, enabledModules: [] });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   const section = page.getByTestId("host-messages");
   await section.getByRole("button", { name: "Messages" }).click();
   await section.getByLabel("Message to all guests").fill("Hello");

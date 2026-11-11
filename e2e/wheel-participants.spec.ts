@@ -37,8 +37,8 @@ async function openPanel(
       memberRow({ user_id: bertil, display_name: "Bertil" }),
     ],
   });
-  await page.goto(`/host/${code}#key=${key}`);
-  await openActivity(page, "wheel", "Lucky wheel");
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openActivity(page, "wheel");
   return bodies;
 }
 

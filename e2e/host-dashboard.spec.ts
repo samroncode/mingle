@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { memberRow } from "./fake-rows.ts";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openActivity, openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "f".repeat(43);
@@ -47,8 +48,8 @@ const evening = {
   },
 };
 
-test.describe("the host dashboard at 1440 px", () => {
-  test("shows the activities in one row and starts one from it", async ({
+test.describe("the host control panel at 1440 px", () => {
+  test("Run lists the activities with Start only and starts one", async ({
     page,
   }) => {
     const bodies = await fakeSupabase(page, [() => [200, {}], () => [200, {}]]);
@@ -62,10 +63,10 @@ test.describe("the host dashboard at 1440 px", () => {
     await expect(quizCell).toContainText("3 questions, not started");
     await expect(page.getByTestId("activity-awards")).toBeVisible();
     await expect(page.getByTestId("activity-hottakes")).toBeVisible();
-    await expect(page.getByTestId("program-list")).toContainText("Last dance");
-    await expect(page.getByTestId("costs-summary")).toContainText(
-      "450 kr spent",
-    );
+    await expect(page.getByRole("button", { name: /^Edit/ })).toHaveCount(0);
+    await expect(
+      page.getByRole("navigation", { name: "Sections" }),
+    ).toHaveCount(0);
     await page.screenshot({ path: "test-results/host-dashboard-idle.png" });
 
     await quizCell.getByRole("button", { name: "Start quiz" }).click();
@@ -78,7 +79,7 @@ test.describe("the host dashboard at 1440 px", () => {
     });
   });
 
-  test("keeps the running state, program and costs on one screen", async ({
+  test("Run keeps the running state and the side column on one screen", async ({
     page,
   }) => {
     await fakeSupabase(page, [() => [200, {}]]);
@@ -103,16 +104,11 @@ test.describe("the host dashboard at 1440 px", () => {
         .getByTestId("activity-awards")
         .getByRole("button", { name: "Start awards" }),
     ).toBeDisabled();
+    await expect(page.getByTestId("host-side")).toBeVisible();
     await page.screenshot({ path: "test-results/host-dashboard-running.png" });
-    // Program and costs start on the first screen: the question and its
-    // buttons, and the activities row, sit above them.
-    for (const id of ["program-list", "costs-summary"]) {
-      const box = await page.getByTestId(id).boundingBox();
-      expect(box?.y ?? Infinity).toBeLessThan(880);
-    }
   });
 
-  test("edits an activity in place and switches it off", async ({ page }) => {
+  test("Prepare edits an activity and switches it off", async ({ page }) => {
     const bodies = await fakeSupabase(page, [() => [200, {}], () => [200, {}]]);
     await fakeHostPanel(page, {
       ...evening,
@@ -120,14 +116,11 @@ test.describe("the host dashboard at 1440 px", () => {
     });
     await page.goto(`/host/${code}#key=${key}`);
 
-    await page.getByRole("button", { name: "Edit Quiz" }).click();
-    const fold = page.getByRole("region", { name: "Quiz" });
-    await expect(fold.getByText("1. Question 1?")).toBeVisible();
-    await expect(fold.getByRole("button", { name: "Start quiz" })).toHaveCount(
-      0,
-    );
+    const quiz = await openActivity(page, "quiz");
+    await expect(quiz.getByText("1. Question 1?")).toBeVisible();
+    await page.screenshot({ path: "test-results/host-dashboard-prepare.png" });
 
-    await fold.getByRole("switch", { name: "Use this activity" }).click();
+    await quiz.getByRole("switch", { name: "Use this activity" }).click();
     await expect.poll(() => bodies.length).toBe(2);
     expect(bodies[1]).toMatchObject({
       action: "set_modules",
@@ -135,51 +128,16 @@ test.describe("the host dashboard at 1440 px", () => {
     });
   });
 
-  test("the navigation scrolls to a section and marks it", async ({ page }) => {
+  test("Prepare opens the program and the shared costs", async ({ page }) => {
     await fakeSupabase(page, [() => [200, {}]]);
     await fakeHostPanel(page, {
       ...evening,
       enabledModules: [...evening.enabledModules],
     });
-    await page.goto(`/host/${code}#key=${key}`);
+    await page.goto(`/host/${code}?view=prepare&section=costs#key=${key}`);
 
-    const nav = page.getByRole("navigation", { name: "Sections" });
-    await expect(nav.getByRole("button", { name: /Activities/ })).toContainText(
-      "3",
-    );
-    await expect(nav.getByRole("button", { name: /Guests/ })).toContainText(
-      "2",
-    );
-    await expect(nav.getByRole("button", { name: /Live/ })).toHaveAttribute(
-      "aria-current",
-      "location",
-    );
-
-    await nav.getByRole("button", { name: /^Guests/ }).click();
-    await expect(page.locator("#dash-guests")).toBeInViewport();
-    await expect(nav.getByRole("button", { name: /^Guests/ })).toHaveAttribute(
-      "aria-current",
-      "location",
-    );
-    await page.screenshot({ path: "test-results/host-dashboard-nav.png" });
-
-    await nav.getByRole("button", { name: "End the evening" }).click();
-    await expect(page.locator("#dash-event")).toBeInViewport();
-  });
-
-  test("opens the program and costs editors in place", async ({ page }) => {
-    await fakeSupabase(page, [() => [200, {}]]);
-    await fakeHostPanel(page, {
-      ...evening,
-      enabledModules: [...evening.enabledModules],
-    });
-    await page.goto(`/host/${code}#key=${key}`);
-
-    await page.getByRole("button", { name: "Edit program" }).click();
-    await expect(page.getByRole("button", { name: "Save" })).toBeVisible();
-    await page.getByRole("button", { name: "Cancel" }).click();
-
-    await page.getByRole("button", { name: "Open shared costs" }).click();
     await expect(page.getByTestId("host-costs")).toContainText("Drinks");
+    await openSection(page, "party-screen");
+    await expect(page.getByTestId("party-screen")).toContainText("Last dance");
   });
 });

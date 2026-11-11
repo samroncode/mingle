@@ -220,7 +220,7 @@ test.describe("shared costs, phone size", () => {
             removedPayers: [{ userId: "c3", name: "Cecilia", paidKr: 120 }],
           },
         });
-        await page.goto(`/host/${code}#key=${hostKey}`);
+        await page.goto(`/host/${code}?view=prepare#key=${hostKey}`);
         const section = page.getByTestId("host-costs");
         await section.getByRole("button").first().click();
         await expect(section.getByTestId("removed-payers")).toBeVisible();
@@ -245,7 +245,7 @@ test.describe("shared costs, phone size", () => {
             ],
           },
         });
-        await page.goto(`/host/${code}#key=${hostKey}`);
+        await page.goto(`/host/${code}?view=prepare#key=${hostKey}`);
         const section = page.getByTestId("host-winners");
         await section.getByRole("button").first().click();
         await expect(section.getByText("Anna")).toBeVisible();

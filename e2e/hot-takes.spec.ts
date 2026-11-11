@@ -146,7 +146,7 @@ test("the control panel lists the hot takes before hot takes start", async ({
     hottakes: ["Cats beat dogs", "Pineapple belongs on pizza"],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-hottakes");
   const panel = page.getByTestId("hottakes-host");
   await expect(panel.getByText("1. Cats beat dogs")).toBeVisible();
@@ -159,7 +159,7 @@ test("the control panel says when the hot takes have no hot takes", async ({
   await fakeSupabase(page, [() => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: ["hottakes"] });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-hottakes");
   await expect(page.getByTestId("hottakes-host")).toContainText(
     "There are no hot takes yet.",
@@ -179,7 +179,7 @@ test("the host starts hot takes and sees the error line on a refusal", async ({
     hottakes: ["Cats beat dogs"],
   });
 
-  await page.goto(`/host/${code}#key=${key}`);
+  await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "activity-hottakes");
   const panel = page.getByTestId("hottakes-host");
   await panel.getByRole("button", { name: "Start hot takes" }).click();
