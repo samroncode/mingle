@@ -1080,7 +1080,12 @@
       "prepare": "Förbered"
     },
     "run": {
-      "open": "Öppna"
+      "open": "Öppna",
+      "idleTitle": "Festskärmen visas på TV:n",
+      "idleHint": "Inget pågår. Starta en aktivitet när ni är redo.",
+      "noActivities": "Ingen aktivitet är påslagen. Slå på några under Förbered.",
+      "upNext": "Nästa",
+      "startNext": "Starta nästa när {{name}} är slut"
     }
   }
 }

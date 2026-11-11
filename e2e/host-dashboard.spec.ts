@@ -60,13 +60,29 @@ test.describe("the host control panel at 1440 px", () => {
     await page.goto(`/host/${code}#key=${key}`);
 
     const quizCell = page.getByTestId("activity-quiz");
+    await expect(
+      page.getByRole("heading", { name: "The party screen is on the TV" }),
+    ).toBeVisible();
     await expect(quizCell).toContainText("3 questions, not started");
+    await expect(quizCell).toContainText("Up next");
     await expect(page.getByTestId("activity-awards")).toBeVisible();
     await expect(page.getByTestId("activity-hottakes")).toBeVisible();
     await expect(page.getByRole("button", { name: /^Edit/ })).toHaveCount(0);
     await expect(
       page.getByRole("navigation", { name: "Sections" }),
     ).toHaveCount(0);
+    // Only the quiz, which is up next, has the primary (coral) Start.
+    await expect(
+      page.getByTestId("run-work-area").locator('[data-variant="default"]'),
+    ).toHaveCount(1);
+    await expect(
+      quizCell.getByRole("button", { name: "Start quiz" }),
+    ).toHaveAttribute("data-variant", "default");
+    await expect(
+      page
+        .getByTestId("activity-awards")
+        .getByRole("button", { name: "Start awards" }),
+    ).toHaveAttribute("data-variant", "link");
     await page.screenshot({ path: "test-results/host-dashboard-idle.png" });
 
     await quizCell.getByRole("button", { name: "Start quiz" }).click();
@@ -96,16 +112,70 @@ test.describe("the host control panel at 1440 px", () => {
     await page.goto(`/host/${code}#key=${key}`);
 
     await expect(page.getByTestId("now-panel")).toContainText("Question 1?");
-    await expect(page.getByTestId("activity-awards")).toContainText(
-      "Stop the quiz first",
-    );
+    const others = page.getByTestId("run-others");
+    await expect(others).toContainText("Awards");
+    await expect(others.getByRole("button")).toHaveCount(0);
+    await expect(page.getByText("Stop the quiz first")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Stop" })).toHaveCount(1);
     await expect(
-      page
-        .getByTestId("activity-awards")
-        .getByRole("button", { name: "Start awards" }),
-    ).toBeDisabled();
+      page.getByTestId("run-work-area").locator('[data-variant="default"]'),
+    ).toHaveCount(1);
+    await expect(
+      page.getByTestId("run-work-area").getByRole("button", { name: "Reveal" }),
+    ).toHaveAttribute("data-variant", "default");
     await expect(page.getByTestId("host-side")).toBeVisible();
     await page.screenshot({ path: "test-results/host-dashboard-running.png" });
+  });
+
+  test("a quiet Start sends the same action as the primary one", async ({
+    page,
+  }) => {
+    const bodies = await fakeSupabase(page, [() => [200, {}], () => [200, {}]]);
+    await fakeHostPanel(page, {
+      ...evening,
+      enabledModules: [...evening.enabledModules],
+    });
+    await page.goto(`/host/${code}#key=${key}`);
+    await page.getByRole("button", { name: "Start awards" }).click();
+    await expect.poll(() => bodies.length).toBe(2);
+    expect(bodies[1]).toEqual({
+      action: "set_flow",
+      code,
+      key,
+      move: { type: "start_module", module: "awards" },
+    });
+  });
+
+  test("an activity without a Start of its own offers Open", async ({
+    page,
+  }) => {
+    await fakeSupabase(page, [() => [200, {}]]);
+    await fakeHostPanel(page, {
+      ...evening,
+      enabledModules: ["competitions"],
+    });
+    await page.goto(`/host/${code}#key=${key}`);
+    await page
+      .getByTestId("activity-competitions")
+      .getByRole("link", { name: "Open" })
+      .click();
+    await expect(page.getByTestId("prepare-view")).toBeVisible();
+    await expect(page).toHaveURL(/view=prepare&section=competitions/);
+  });
+
+  test("with no countable activity left no Start is primary", async ({
+    page,
+  }) => {
+    await fakeSupabase(page, [() => [200, {}]]);
+    await fakeHostPanel(page, {
+      ...evening,
+      enabledModules: ["wheel", "competitions"],
+    });
+    await page.goto(`/host/${code}#key=${key}`);
+    await expect(page.getByTestId("run-work-area")).toBeVisible();
+    await expect(
+      page.getByTestId("run-work-area").locator('[data-variant="default"]'),
+    ).toHaveCount(0);
   });
 
   test("Prepare edits an activity and switches it off", async ({ page }) => {

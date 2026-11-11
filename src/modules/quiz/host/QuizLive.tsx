@@ -5,7 +5,7 @@ import { RunControls } from "../../RunControls";
 import { hostNextMove } from "../screen";
 import { useQuizRun } from "../useQuizRun";
 import { AnswerStatus } from "./AnswerStatus";
-import { QuestionCard } from "./QuestionList";
+import { LiveQuestion } from "./LiveQuestion";
 
 /**
  * The running quiz: the question, who has answered, and the one "next"
@@ -35,7 +35,7 @@ export function QuizLive({
     <div data-testid="quiz-live" className="space-y-3">
       {part !== "actions" && (
         <>
-          <p data-testid="quiz-progress" className="text-sm text-ink-muted">
+          <p data-testid="quiz-progress" className="text-sm opacity-70">
             {next
               ? t("modules.quiz.counter", {
                   number: event.current_step + 1,
@@ -43,7 +43,7 @@ export function QuizLive({
                 })
               : t("modules.quiz.results")}
           </p>
-          {current && next && <QuestionCard question={current} />}
+          {current && next && <LiveQuestion question={current} />}
           {current && next && event.phase !== "idle" && (
             <AnswerStatus
               question={current}

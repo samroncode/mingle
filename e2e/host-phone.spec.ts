@@ -88,6 +88,17 @@ test.describe("phone layout", () => {
     await expect(page.getByTestId("activity-quiz")).toBeVisible();
     await expect(page.getByTestId("host-bottom-bar")).toHaveCount(0);
     await expect(page.getByTestId("view-tabs")).toBeVisible();
+    const start = page
+      .getByTestId("activity-quiz")
+      .getByRole("button", { name: "Start quiz" });
+    expect((await start.boundingBox())?.height).toBeGreaterThanOrEqual(48);
+    const scroll = await page.evaluate<number>(
+      "document.documentElement.scrollWidth",
+    );
+    const client = await page.evaluate<number>(
+      "document.documentElement.clientWidth",
+    );
+    expect(scroll).toBeLessThanOrEqual(client);
     await page.screenshot({
       path: `test-results/${process.env.SHOT ?? "after"}-phone-idle.png`,
     });

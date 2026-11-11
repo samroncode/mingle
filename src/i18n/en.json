@@ -1080,7 +1080,12 @@
       "prepare": "Prepare"
     },
     "run": {
-      "open": "Open"
+      "open": "Open",
+      "idleTitle": "The party screen is on the TV",
+      "idleHint": "Nothing is running. Start an activity when you are ready.",
+      "noActivities": "No activity is switched on. Turn some on in Prepare.",
+      "upNext": "Up next",
+      "startNext": "Start next, when the {{name}} is over"
     }
   }
 }
