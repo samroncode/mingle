@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
-import { openActivity } from "./panel.ts";
+import { openActivity, openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "e".repeat(43);
@@ -34,9 +34,10 @@ test("the host switches an activity on and gets the ready-made list", async ({
 }) => {
   const bodies = await openPanel(page, [() => [200, {}], () => [200, {}]]);
 
-  await page.getByText("Switched off (4)").click();
+  await expect(page.getByTestId("section-link-awards")).toContainText("off");
+  await openSection(page, "activity-awards");
   await page.screenshot({ path: "test-results/host-activities-off.png" });
-  await page.getByRole("switch", { name: "Awards" }).click();
+  await page.getByRole("switch", { name: "Use this activity" }).click();
 
   await expect.poll(() => bodies.length).toBe(3);
   expect(bodies[1]).toEqual({
@@ -59,8 +60,8 @@ test("an activity stays on with a plain message when its list can't be added", a
     () => [500, { error: "internal_error" }],
   ]);
 
-  await page.getByText("Switched off (4)").click();
-  await page.getByRole("switch", { name: "Awards" }).click();
+  await openSection(page, "activity-awards");
+  await page.getByRole("switch", { name: "Use this activity" }).click();
 
   await expect(page.getByRole("alert")).toContainText(
     "Awards is on, but its ready-made list couldn't be added",
@@ -70,8 +71,8 @@ test("an activity stays on with a plain message when its list can't be added", a
 test("the panel says why a switch was refused", async ({ page }) => {
   await openPanel(page, [() => [409, { error: "invalid_transition" }]]);
 
-  await page.getByText("Switched off (4)").click();
-  await page.getByRole("switch", { name: "Hot takes" }).click();
+  await openSection(page, "activity-hottakes");
+  await page.getByRole("switch", { name: "Use this activity" }).click();
 
   await expect(page.getByRole("alert")).toBeVisible();
 });
@@ -82,11 +83,8 @@ test("the running activity can't be switched off", async ({ page }) => {
     flow: { current_module: "quiz" },
   });
 
-  await expect(
-    page.getByTestId("activity-quiz").getByText("Running", { exact: true }),
-  ).toBeVisible();
-  // The running activity's row (phone) or fold (desktop) starts shut.
   const quiz = await openActivity(page, "quiz");
+  await expect(quiz.getByText("Running", { exact: true })).toBeVisible();
   await expect(
     quiz.getByRole("switch", { name: "Use this activity" }),
   ).toBeDisabled();
@@ -97,6 +95,7 @@ test("the running activity can't be switched off", async ({ page }) => {
 test("the host switches the bright room on", async ({ page }) => {
   const bodies = await openPanel(page, [() => [200, {}]]);
 
+  await openSection(page, "bright-room");
   const bright = page.getByRole("switch", { name: "Bright room" });
   await expect(bright).not.toBeChecked();
   await page.getByTestId("bright-room").scrollIntoViewIfNeeded();

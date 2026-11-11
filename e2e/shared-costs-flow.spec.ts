@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { memberRow } from "./fake-rows.ts";
 import { fakeEvent, fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 // The whole shared costs flow with two phones that share one fake world:
 // the host adds a purchase and sends the bill, a guest sees the icon, opens
@@ -78,8 +79,8 @@ test("the host sends the bill, a guest says they paid and the host confirms", as
 
   // 1. The host switches shared costs on, adds a purchase and sends the bill.
   await hostPage.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(hostPage, "host-costs");
   const section = hostPage.getByTestId("host-costs");
-  await section.getByRole("button", { name: "Shared costs" }).click();
   await section.getByRole("button", { name: "Switch on" }).click();
   await section.getByLabel("Guests pay").fill("Sam");
   await section.getByLabel("Your Swish number").fill("070-123 45 67");
@@ -134,7 +135,6 @@ test("the host sends the bill, a guest says they paid and the host confirms", as
   // 3. The host sees Says paid and confirms.
   await hostPage.reload();
   const hostSection = hostPage.getByTestId("host-costs");
-  await hostSection.getByRole("button", { name: /Shared costs/ }).click();
   const row = hostSection.getByTestId("guest-payment").filter({
     hasText: "Anna",
   });

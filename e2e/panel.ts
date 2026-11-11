@@ -20,13 +20,32 @@ export async function openRun(page: Page) {
   await page.waitForURL((url) => !url.searchParams.has("view"));
 }
 
-/** Opens a Prepare section by test id; leaves an open one alone. */
-export async function openSection(page: Page, testId: string) {
+/** The Prepare section a test id belongs to; other names are section ids. */
+const sectionOfTestId: Record<string, string> = {
+  "party-screen": "party",
+  "host-costs": "costs",
+  "host-guests": "guests",
+  "host-messages": "messages",
+  "host-winners": "winners",
+  "bright-room": "brightroom",
+  "event-section": "links",
+};
+
+/**
+ * Opens a Prepare section from the section list (on a phone, back to the list
+ * first). Takes a section id such as `guests` or `end`, or the test id the
+ * section's editor carries (`host-guests`, `activity-quiz`).
+ */
+export async function openSection(page: Page, name: string) {
   await openPrepare(page);
-  const header = page.getByTestId(testId).getByRole("button").first();
-  if ((await header.getAttribute("aria-expanded")) === "false") {
-    await header.click();
+  const section = sectionOfTestId[name] ?? name.replace(/^activity-/, "");
+  const link = page.getByTestId(`section-link-${section}`);
+  if (!(await link.isVisible())) {
+    await page.getByTestId("prepare-back").click();
   }
+  await link.click();
+  await page.waitForURL((url) => url.searchParams.get("section") === section);
+  await page.getByTestId("prepare-editor").waitFor();
 }
 
 /** The dashboard layout starts at 1024 px; below it the panel is one column. */

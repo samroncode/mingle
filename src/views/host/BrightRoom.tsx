@@ -9,13 +9,15 @@ import { useHostAction } from "@/hooks/useHostAction";
 interface BrightRoomProps {
   event: EventRow;
   hostKey: string;
+  /** No card and no title: Prepare's editor brings the heading. */
+  flat?: boolean;
 }
 
 /**
  * One switch: show the TV and the guests' phones in the light theme, for a
  * bright room. The screens follow the event row, so nothing else changes here.
  */
-export function BrightRoom({ event, hostKey }: BrightRoomProps) {
+export function BrightRoom({ event, hostKey, flat = false }: BrightRoomProps) {
   const { t } = useTranslation();
   const { busy, error, run } = useHostAction();
 
@@ -26,20 +28,35 @@ export function BrightRoom({ event, hostKey }: BrightRoomProps) {
   return (
     <div className="space-y-2" data-testid="bright-room">
       {error && <ErrorLine>{error}</ErrorLine>}
-      <Card className="flex-row items-center justify-between">
-        <div>
-          <CardTitle id="bright-room-label">
-            {t("hostPanel.brightRoom.title")}
-          </CardTitle>
-          <CardDescription>{t("hostPanel.brightRoom.help")}</CardDescription>
+      {flat ? (
+        <div className="flex items-center justify-between gap-4">
+          <p id="bright-room-label" className="text-ink-muted">
+            {t("hostPanel.brightRoom.help")}
+          </p>
+          <Switch
+            aria-label={t("hostPanel.brightRoom.title")}
+            aria-describedby="bright-room-label"
+            checked={event.bright_room}
+            disabled={busy}
+            onCheckedChange={(bright) => void change(bright)}
+          />
         </div>
-        <Switch
-          aria-labelledby="bright-room-label"
-          checked={event.bright_room}
-          disabled={busy}
-          onCheckedChange={(bright) => void change(bright)}
-        />
-      </Card>
+      ) : (
+        <Card className="flex-row items-center justify-between">
+          <div>
+            <CardTitle id="bright-room-label">
+              {t("hostPanel.brightRoom.title")}
+            </CardTitle>
+            <CardDescription>{t("hostPanel.brightRoom.help")}</CardDescription>
+          </div>
+          <Switch
+            aria-labelledby="bright-room-label"
+            checked={event.bright_room}
+            disabled={busy}
+            onCheckedChange={(bright) => void change(bright)}
+          />
+        </Card>
+      )}
     </div>
   );
 }

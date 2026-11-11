@@ -1079,6 +1079,27 @@
       "run": "Kör kvällen",
       "prepare": "Förbered"
     },
+    "prepare": {
+      "label": "Sektioner",
+      "back": "Alla sektioner",
+      "off": "av",
+      "groups": {
+        "activities": "Aktiviteter",
+        "evening": "Kvällen",
+        "event": "Event"
+      },
+      "sections": {
+        "party": "Festskärm",
+        "program": "Program",
+        "costs": "Gemensamma kostnader",
+        "guests": "Gäster",
+        "messages": "Meddelanden",
+        "winners": "Vinnare",
+        "links": "Länkar och TV",
+        "brightroom": "Ljust rum",
+        "end": "Avsluta kvällen"
+      }
+    },
     "run": {
       "open": "Öppna"
     }

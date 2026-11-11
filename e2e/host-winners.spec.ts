@@ -20,9 +20,9 @@ test("the host adds a winner and hides the slide; the party fields stay", async 
   await fakeHostPanel(page, { code, enabledModules: [], party });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-winners");
   const section = page.getByTestId("host-winners");
   await expect(section.getByText("1 winner")).toBeVisible();
-  await openSection(page, "host-winners");
   await expect(section.getByText("Anna")).toBeVisible();
 
   await section.getByRole("button", { name: "Add winner" }).click();

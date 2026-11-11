@@ -95,9 +95,9 @@ test("the host spins twice, takes the second result off and it leaves the list",
   ).toHaveCount(0);
   // Taken off: it has left the wheel (the activity's summary, in Prepare, counts it).
   await openPrepare(page);
-  await expect(
-    page.getByRole("button", { name: /1 entry on the wheel, 2 spins/ }),
-  ).toBeVisible();
+  await expect(page.getByTestId("section-link-wheel")).toContainText(
+    /1 entry on the wheel, 2 spins/,
+  );
   await page.screenshot({ path: "test-results/wheel-host-live.png" });
 });
 

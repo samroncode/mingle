@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { fakeHostPanel, fakeSupabase } from "./fake-supabase.ts";
+import { openSection } from "./panel.ts";
 
 const code = "ABC234";
 const key = "d".repeat(43);
@@ -21,9 +22,9 @@ test("the host sends a message; empty and too long texts are not sent", async ({
   });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-messages");
   const section = page.getByTestId("host-messages");
   await expect(section.getByText("1 sent")).toBeVisible();
-  await section.getByRole("button", { name: "Messages" }).click();
   await expect(section.getByText("Taxi leaves at 01:00")).toBeVisible();
 
   const send = section.getByRole("button", { name: "Send" });
@@ -57,8 +58,8 @@ test("a message sent too soon shows a plain message and keeps the text", async (
   await fakeHostPanel(page, { code, enabledModules: [] });
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
+  await openSection(page, "host-messages");
   const section = page.getByTestId("host-messages");
-  await section.getByRole("button", { name: "Messages" }).click();
   await section.getByLabel("Message to all guests").fill("Hello");
   await section.getByRole("button", { name: "Send" }).click();
   await expect(section.getByRole("alert")).toContainText("Wait a few seconds");

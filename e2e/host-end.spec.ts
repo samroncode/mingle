@@ -27,14 +27,14 @@ test("the host edits the wifi password and ends the evening", async ({
 
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
   await openSection(page, "party-screen");
-  await openSection(page, "event-section");
-  await expect(page.getByTestId("event-code")).toHaveText(code);
-
   const party = page.getByTestId("party-screen");
   await party.getByRole("button", { name: "Edit" }).click();
   await page.getByLabel(/password/i).fill("newpass");
   await party.getByRole("button", { name: "Save" }).click();
   await expect(party.getByRole("button", { name: "Edit" })).toBeVisible();
+  await openSection(page, "links");
+  await expect(page.getByTestId("event-code")).toHaveText(code);
+  await openSection(page, "end");
 
   // Cancel sends nothing; confirming sends end_event once.
   await page.getByRole("button", { name: "End the evening" }).click();
@@ -47,7 +47,7 @@ test("the host edits the wifi password and ends the evening", async ({
   await page.getByRole("button", { name: "End the evening" }).click();
   await page.getByRole("button", { name: "End it now" }).click();
   await expect(page.getByText("The evening has ended")).toBeVisible();
-  await expect(party).toHaveCount(0);
+  await expect(page.getByTestId("section-link-party")).toHaveCount(0);
   await expect(
     page.getByRole("button", { name: "End the evening" }),
   ).toHaveCount(0);
@@ -66,7 +66,6 @@ test("shows the ended state when the panel opens after the end", async ({
   await fakeSupabase(page, [() => [200, {}]]);
   await fakeHostPanel(page, { code, enabledModules: [], status: "ended" });
   await page.goto(`/host/${code}?view=prepare#key=${key}`);
-  await openSection(page, "event-section");
   await expect(page.getByText("The evening has ended")).toBeVisible();
   await expect(page.getByTestId("party-screen")).toHaveCount(0);
   await expect(

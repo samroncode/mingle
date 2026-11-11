@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { fakeNotices } from "./fake-notices.ts";
 import { eventRow, memberRow } from "./fake-rows.ts";
+import { openSection } from "./panel.ts";
 import {
   fakeRun,
   runEvent,
@@ -221,8 +222,8 @@ test.describe("shared costs, phone size", () => {
           },
         });
         await page.goto(`/host/${code}?view=prepare#key=${hostKey}`);
+        await openSection(page, "host-costs");
         const section = page.getByTestId("host-costs");
-        await section.getByRole("button").first().click();
         await expect(section.getByTestId("removed-payers")).toBeVisible();
         await expectNoHorizontalScroll(page);
         await expectTapTargetsAtLeast48px(page);
@@ -246,8 +247,8 @@ test.describe("shared costs, phone size", () => {
           },
         });
         await page.goto(`/host/${code}?view=prepare#key=${hostKey}`);
+        await openSection(page, "host-winners");
         const section = page.getByTestId("host-winners");
-        await section.getByRole("button").first().click();
         await expect(section.getByText("Anna")).toBeVisible();
         await expectNoHorizontalScroll(page);
         await expectTapTargetsAtLeast48px(page);
