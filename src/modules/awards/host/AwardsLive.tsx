@@ -1,6 +1,5 @@
 import { ErrorLine } from "@/components/ErrorLine";
 import { useTranslation } from "react-i18next";
-import { Card } from "@/components/ui/card";
 import type { ModuleLiveProps } from "../../types";
 import { RunControls } from "../../RunControls";
 import { awardsNextMove } from "../screen";
@@ -36,7 +35,7 @@ export function AwardsLive({
     <div data-testid="awards-live" className="space-y-3">
       {part !== "actions" && (
         <>
-          <p data-testid="awards-progress" className="text-sm text-ink-muted">
+          <p data-testid="awards-progress" className="text-sm opacity-70">
             {next
               ? t("modules.awards.counter", {
                   number: event.current_step + 1,
@@ -45,8 +44,10 @@ export function AwardsLive({
               : t("modules.awards.winnersStep")}
           </p>
           {current && next && (
-            <Card className="p-3">
-              <p className="font-display font-bold">{current.text}</p>
+            <div className="space-y-3">
+              <h2 className="font-display text-2xl leading-tight font-bold lg:text-4xl">
+                {current.text}
+              </h2>
               {event.phase === "open" && (
                 <VoteStatus
                   category={current}
@@ -62,7 +63,7 @@ export function AwardsLive({
                   version={run.version}
                 />
               )}
-            </Card>
+            </div>
           )}
         </>
       )}

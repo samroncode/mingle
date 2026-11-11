@@ -1,3 +1,4 @@
+import type { ParseKeys } from "i18next";
 import type { ComponentType, Dispatch } from "react";
 import type { EventRow, MemberRow } from "@/api/events";
 import type { WizardAction, WizardDraft } from "@/lib/wizard/state";
@@ -84,6 +85,11 @@ export interface ModuleDefinition {
    * the dashboard's progress bar. Left out when the activity has none.
    */
   useCounts?: (event: EventRow) => ActivityCounts | undefined;
+  /**
+   * i18n key of the Start button's label. Left out when the activity has no
+   * Start of its own; Run then offers "Open" to its section in Prepare.
+   */
+  startLabelKey?: ParseKeys;
   /** An extra setup wizard step, for activities that need one. */
   WizardStep?: ComponentType<ModuleWizardStepProps>;
 }

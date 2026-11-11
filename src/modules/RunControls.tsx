@@ -27,10 +27,13 @@ interface RunControlsProps {
   next: NextMove | null;
   /** i18n key of the Stop button's label; "Stop" unless given. */
   stopLabelKey?: ParseKeys;
+  /** Start as a quiet text link instead of the primary button. */
+  quietStart?: boolean;
 }
 
 /**
- * Start, the one button that does the next thing, and Stop: the buttons every
+ * Start, the one button that does the next thing, and Stop (a quiet link
+ * while there is a next move; the primary button once nothing is left): the buttons every
  * activity's control panel section shares. Shows its own error line.
  */
 export function RunControls({
@@ -42,6 +45,7 @@ export function RunControls({
   startLabelKey,
   next,
   stopLabelKey = "hostPanel.stop",
+  quietStart = false,
 }: RunControlsProps) {
   const { t } = useTranslation();
   const { busy, error, run } = useHostAction();
@@ -65,8 +69,11 @@ export function RunControls({
               </Button>
             )}
             <Button
-              size="lg"
-              variant="outline"
+              size={next ? "default" : "lg"}
+              variant={next ? "link" : "default"}
+              className={
+                next ? "text-current underline shadow-none!" : undefined
+              }
               disabled={busy}
               onClick={() => send({ type: "stop_module" })}
             >
@@ -75,7 +82,9 @@ export function RunControls({
           </>
         ) : (
           <Button
-            size="lg"
+            size={quietStart ? "default" : "lg"}
+            variant={quietStart ? "link" : "default"}
+            className={quietStart ? "shadow-none!" : undefined}
             disabled={busy || startDisabled}
             onClick={() => send({ type: "start_module", module })}
           >

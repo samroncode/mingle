@@ -83,7 +83,7 @@ test.describe("the control panel", () => {
     await expect(panel.getByTestId("quiz-progress")).toHaveText(
       "Question 2 of 2",
     );
-    await expect(panel.getByText("2. Feta comes from?")).toBeVisible();
+    await expect(panel.getByText("Feta comes from?")).toBeVisible();
     await expect(panel.getByText("B. Greece")).toContainText("Right answer");
     await expect(panel.getByRole("button", { name: "Stop" })).toBeVisible();
 
