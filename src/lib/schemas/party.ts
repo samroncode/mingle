@@ -93,6 +93,8 @@ export const PartySchema = z.strictObject({
   winners: z.array(WinnerSchema).max(partyLimits.winners).optional(),
   /** Hides the winners slide while keeping the list. */
   winnersHidden: z.boolean().optional(),
+  /** The key of the part the TV stays on; left out, the parts take turns. */
+  tvPin: z.string().trim().min(1).max(80).optional(),
 });
 
 export type Party = z.infer<typeof PartySchema>;

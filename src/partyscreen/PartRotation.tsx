@@ -11,16 +11,9 @@ import {
 } from "./PartPanels";
 import { isTyping } from "./typing";
 import { useStandings } from "@/modules/competitions/useStandings";
-import { partKey, partsOf, type Part } from "./parts";
+import { isSlotPart, partKey, partsOf, type SlotPart } from "./parts";
 import { useRotation } from "./rotation";
 import { WelcomePart } from "./WelcomePart";
-
-/** The parts that take turns under the welcome; welcome and guests stay put. */
-type SlotPart = Exclude<Part, { kind: "welcome" } | { kind: "guests" }>;
-
-function isSlotPart(part: Part): part is SlotPart {
-  return part.kind !== "welcome" && part.kind !== "guests";
-}
 
 function PartView({ part }: { part: SlotPart }) {
   switch (part.kind) {
@@ -55,8 +48,11 @@ export function PartRotation({
   const { tables } = useStandings(event, members);
   const parts = partsOf(party, members, tables).filter(isSlotPart);
   const { shown, step } = useRotation(parts.map(partKey));
+  // A part the host locked the TV on wins, as long as it still exists.
+  const pinned = parts.find((candidate) => partKey(candidate) === party.tvPin);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (pinned) return;
       if (e.altKey || e.ctrlKey || e.metaKey || isTyping(e.target)) return;
       if (e.key === "ArrowRight" || e.key === " ") step(1);
       else if (e.key === "ArrowLeft") step(-1);
@@ -65,16 +61,17 @@ export function PartRotation({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [step]);
-  const part = parts.find((candidate) => partKey(candidate) === shown);
+  }, [step, pinned]);
+  const part =
+    pinned ?? parts.find((candidate) => partKey(candidate) === shown);
   return (
     <div className="flex h-full flex-col gap-(--space-6)">
       <WelcomePart welcome={party.welcome} />
       {part && (
         <div
           data-testid="part-click"
-          className="min-h-0 flex-1 cursor-pointer overflow-hidden"
-          onClick={() => step(1)}
+          className={`min-h-0 flex-1 overflow-hidden ${pinned ? "" : "cursor-pointer"}`}
+          onClick={() => !pinned && step(1)}
         >
           <PartView key={partKey(part)} part={part} />
         </div>

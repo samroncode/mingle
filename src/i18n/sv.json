@@ -1083,6 +1083,19 @@
       "noActivities": "Ingen aktivitet är påslagen. Slå på några under Förbered.",
       "upNext": "Nästa",
       "startNext": "Starta nästa när {{name}} är slut"
+    },
+    "tvScreen": {
+      "title": "TV-skärm",
+      "auto": "Auto",
+      "autoHelp": "TV:n växlar mellan dessa var 30:e sekund. Välj en för att låsa den.",
+      "locked": "TV:n stannar på {{name}} tills du väljer Auto.",
+      "parts": {
+        "menu": "Meny",
+        "schedule": "Schema",
+        "winners": "Vinnare",
+        "wifi": "Wifi",
+        "music": "Musik"
+      }
     }
   }
 }

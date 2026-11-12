@@ -1083,6 +1083,19 @@
       "noActivities": "No activity is switched on. Turn some on in Prepare.",
       "upNext": "Up next",
       "startNext": "Start next, when the {{name}} is over"
+    },
+    "tvScreen": {
+      "title": "TV screen",
+      "auto": "Auto",
+      "autoHelp": "The TV switches between these every 30 seconds. Pick one to lock it.",
+      "locked": "The TV stays on {{name}} until you choose Auto.",
+      "parts": {
+        "menu": "Menu",
+        "schedule": "Schedule",
+        "winners": "Winners",
+        "wifi": "Wifi",
+        "music": "Music"
+      }
     }
   }
 }

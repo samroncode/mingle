@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { MemberRow } from "@/api/events";
-import { partKey, partsOf } from "./parts";
+import { isSlotPart, partKey, partsOf } from "./parts";
 
 function member(role: string, name: string | null): MemberRow {
   return {
@@ -85,5 +85,14 @@ describe("partsOf", () => {
       member("guest", null),
     ]);
     expect(parts).toEqual([{ kind: "guests", names: ["Anna"] }]);
+  });
+});
+
+describe("isSlotPart", () => {
+  it("leaves out the parts that stay put", () => {
+    const kinds = partsOf(full, [member("guest", "Anna")])
+      .filter(isSlotPart)
+      .map((part) => part.kind);
+    expect(kinds).toEqual(["menu", "schedule", "wifi", "music"]);
   });
 });
