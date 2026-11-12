@@ -13,6 +13,13 @@ export type Part =
   | { kind: "standings"; table: CompetitionTable }
   | { kind: "guests"; names: string[] };
 
+/** The parts that take turns under the welcome; welcome and guests stay put. */
+export type SlotPart = Exclude<Part, { kind: "welcome" } | { kind: "guests" }>;
+
+export function isSlotPart(part: Part): part is SlotPart {
+  return part.kind !== "welcome" && part.kind !== "guests";
+}
+
 /** The key a part rotates by; each competition's table is its own part. */
 export function partKey(part: Part): string {
   return part.kind === "standings"

@@ -24,11 +24,12 @@ export function partyToForm(party: Party): PartyForm {
   };
 }
 
-/** `party` with the winners fields of `saved`, which this editor doesn't own. */
+/** `party` with the fields of `saved` that this editor doesn't own. */
 function withWinners(party: Party, saved: Party): Party {
-  const { winners, winnersHidden } = saved;
+  const { winners, winnersHidden, tvPin } = saved;
   return {
     ...party,
+    ...(tvPin !== undefined && { tvPin }),
     ...(winners !== undefined && { winners }),
     ...(winnersHidden !== undefined && { winnersHidden }),
   };

@@ -6,6 +6,7 @@ import { hasLive } from "../hasLive";
 import { RunningLive } from "../RunningLive";
 import { TvNow } from "../TopBar";
 import { ActivityRows, OtherActivities } from "./ActivityRows";
+import { TvScreenPicker } from "./TvScreenPicker";
 
 interface RunWorkAreaProps {
   event: EventRow;
@@ -87,6 +88,7 @@ export function RunWorkArea({
           )}
         </p>
       </section>
+      <TvScreenPicker event={event} members={members} hostKey={hostKey} />
       <ActivityRows ids={enabled} event={event} hostKey={hostKey} />
     </div>
   );
