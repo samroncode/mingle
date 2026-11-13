@@ -45,20 +45,6 @@ export const awQuiz: QuizContent[] = [
     },
   },
   {
-    id: "aw-guitar",
-    correct: 3,
-    texts: {
-      sv: {
-        text: "Hur många strängar har en vanlig gitarr?",
-        options: ["4", "5", "7", "6"],
-      },
-      en: {
-        text: "How many strings does a standard guitar have?",
-        options: ["4", "5", "7", "6"],
-      },
-    },
-  },
-  {
     id: "aw-mojito",
     correct: 0,
     texts: {
@@ -87,48 +73,6 @@ export const awQuiz: QuizContent[] = [
     },
   },
   {
-    id: "aw-jupiter",
-    correct: 1,
-    texts: {
-      sv: {
-        text: "Vilken är den största planeten i solsystemet?",
-        options: ["Saturnus", "Jupiter", "Neptunus", "Jorden"],
-      },
-      en: {
-        text: "Which is the largest planet in the solar system?",
-        options: ["Saturn", "Jupiter", "Neptune", "Earth"],
-      },
-    },
-  },
-  {
-    id: "aw-football",
-    correct: 1,
-    texts: {
-      sv: {
-        text: "Hur många minuter är ordinarie speltid i en fotbollsmatch?",
-        options: ["80", "90", "100", "120"],
-      },
-      en: {
-        text: "How many minutes is the regular time of a football match?",
-        options: ["80", "90", "100", "120"],
-      },
-    },
-  },
-  {
-    id: "aw-raisins",
-    correct: 2,
-    texts: {
-      sv: {
-        text: "Vilken frukt torkas för att bli russin?",
-        options: ["Plommon", "Äpplen", "Druvor", "Körsbär"],
-      },
-      en: {
-        text: "Which fruit is dried to make raisins?",
-        options: ["Plums", "Apples", "Grapes", "Cherries"],
-      },
-    },
-  },
-  {
     id: "aw-marrakech",
     correct: 2,
     texts: {
@@ -139,20 +83,6 @@ export const awQuiz: QuizContent[] = [
       en: {
         text: "In which country is the city of Marrakech?",
         options: ["Tunisia", "Egypt", "Morocco", "Algeria"],
-      },
-    },
-  },
-  {
-    id: "aw-greenmix",
-    correct: 3,
-    texts: {
-      sv: {
-        text: "Vilken färg får du om du blandar blått och gult?",
-        options: ["Orange", "Lila", "Brunt", "Grönt"],
-      },
-      en: {
-        text: "Which colour do you get by mixing blue and yellow?",
-        options: ["Orange", "Purple", "Brown", "Green"],
       },
     },
   },
@@ -171,62 +101,6 @@ export const awQuiz: QuizContent[] = [
     },
   },
   {
-    id: "aw-giraffe",
-    correct: 2,
-    texts: {
-      sv: {
-        text: "Vilket landdjur är världens högsta?",
-        options: ["Elefant", "Kamel", "Giraff", "Struts"],
-      },
-      en: {
-        text: "Which land animal is the tallest in the world?",
-        options: ["Elephant", "Camel", "Giraffe", "Ostrich"],
-      },
-    },
-  },
-  {
-    id: "aw-eiffel",
-    correct: 3,
-    texts: {
-      sv: {
-        text: "I vilken stad står Eiffeltornet?",
-        options: ["Rom", "Lyon", "Bryssel", "Paris"],
-      },
-      en: {
-        text: "In which city does the Eiffel Tower stand?",
-        options: ["Rome", "Lyon", "Brussels", "Paris"],
-      },
-    },
-  },
-  {
-    id: "aw-leapyear",
-    correct: 0,
-    texts: {
-      sv: {
-        text: "Hur många dagar har ett skottår?",
-        options: ["366", "364", "365", "367"],
-      },
-      en: {
-        text: "How many days does a leap year have?",
-        options: ["366", "364", "365", "367"],
-      },
-    },
-  },
-  {
-    id: "aw-wine",
-    correct: 1,
-    texts: {
-      sv: {
-        text: "Vilken dryck görs av jästa druvor?",
-        options: ["Öl", "Vin", "Cider", "Whisky"],
-      },
-      en: {
-        text: "Which drink is made from fermented grapes?",
-        options: ["Beer", "Wine", "Cider", "Whisky"],
-      },
-    },
-  },
-  {
     id: "aw-loreen",
     correct: 0,
     texts: {
@@ -237,100 +111,6 @@ export const awQuiz: QuizContent[] = [
       en: {
         text: 'Who won the Eurovision Song Contest for Sweden in 2012 with "Euphoria"?',
         options: ["Loreen", "Zara Larsson", "Robyn", "Sanna Nielsen"],
-      },
-    },
-  },
-  {
-    id: "aw-yen",
-    correct: 2,
-    texts: {
-      sv: {
-        text: "Vad heter Japans valuta?",
-        options: ["Won", "Yuan", "Yen", "Ringgit"],
-      },
-      en: {
-        text: "What is the currency of Japan called?",
-        options: ["Won", "Yuan", "Yen", "Ringgit"],
-      },
-    },
-  },
-  {
-    id: "aw-wimbledon",
-    correct: 1,
-    texts: {
-      sv: {
-        text: "Vilken sport spelas i Wimbledon?",
-        options: ["Golf", "Tennis", "Cricket", "Badminton"],
-      },
-      en: {
-        text: "Which sport is played at Wimbledon?",
-        options: ["Golf", "Tennis", "Cricket", "Badminton"],
-      },
-    },
-  },
-  {
-    id: "aw-eleven",
-    correct: 3,
-    texts: {
-      sv: {
-        text: "Hur många spelare från samma lag står på planen i en fotbollsmatch?",
-        options: ["9", "10", "12", "11"],
-      },
-      en: {
-        text: "How many players from one team are on the pitch in a football match?",
-        options: ["9", "10", "12", "11"],
-      },
-    },
-  },
-  {
-    id: "aw-pacific",
-    correct: 0,
-    texts: {
-      sv: {
-        text: "Vilket är världens största hav?",
-        options: [
-          "Stilla havet",
-          "Atlanten",
-          "Indiska oceanen",
-          "Norra ishavet",
-        ],
-      },
-      en: {
-        text: "Which is the largest ocean in the world?",
-        options: [
-          "The Pacific",
-          "The Atlantic",
-          "The Indian Ocean",
-          "The Arctic Ocean",
-        ],
-      },
-    },
-  },
-  {
-    id: "aw-monalisa",
-    correct: 2,
-    texts: {
-      sv: {
-        text: "Vem målade Mona Lisa?",
-        options: ["Michelangelo", "Rafael", "Leonardo da Vinci", "Botticelli"],
-      },
-      en: {
-        text: "Who painted the Mona Lisa?",
-        options: ["Michelangelo", "Raphael", "Leonardo da Vinci", "Botticelli"],
-      },
-    },
-  },
-  {
-    id: "aw-giza",
-    correct: 1,
-    texts: {
-      sv: {
-        text: "I vilket land ligger Cheopspyramiden i Giza?",
-        options: ["Sudan", "Egypten", "Jordanien", "Libyen"],
-      },
-      en: {
-        text: "In which country is the Great Pyramid of Giza?",
-        options: ["Sudan", "Egypt", "Jordan", "Libya"],
       },
     },
   },
@@ -349,48 +129,6 @@ export const awQuiz: QuizContent[] = [
     },
   },
   {
-    id: "aw-diamond",
-    correct: 0,
-    texts: {
-      sv: {
-        text: "Vilket är det hårdaste naturliga materialet?",
-        options: ["Diamant", "Kvarts", "Järn", "Granit"],
-      },
-      en: {
-        text: "What is the hardest natural material?",
-        options: ["Diamond", "Quartz", "Iron", "Granite"],
-      },
-    },
-  },
-  {
-    id: "aw-colosseum",
-    correct: 2,
-    texts: {
-      sv: {
-        text: "I vilken stad ligger Colosseum?",
-        options: ["Aten", "Neapel", "Rom", "Milano"],
-      },
-      en: {
-        text: "In which city is the Colosseum?",
-        options: ["Athens", "Naples", "Rome", "Milan"],
-      },
-    },
-  },
-  {
-    id: "aw-hexagon",
-    correct: 1,
-    texts: {
-      sv: {
-        text: "Hur många sidor har en hexagon?",
-        options: ["5", "6", "7", "8"],
-      },
-      en: {
-        text: "How many sides does a hexagon have?",
-        options: ["5", "6", "7", "8"],
-      },
-    },
-  },
-  {
     id: "aw-yeast",
     correct: 3,
     texts: {
@@ -405,20 +143,6 @@ export const awQuiz: QuizContent[] = [
     },
   },
   {
-    id: "aw-everest",
-    correct: 0,
-    texts: {
-      sv: {
-        text: "Vilket är världens högsta berg över havet?",
-        options: ["Mount Everest", "K2", "Mont Blanc", "Kilimanjaro"],
-      },
-      en: {
-        text: "Which is the highest mountain above sea level in the world?",
-        options: ["Mount Everest", "K2", "Mont Blanc", "Kilimanjaro"],
-      },
-    },
-  },
-  {
     id: "aw-margherita",
     correct: 2,
     texts: {
@@ -429,6 +153,372 @@ export const awQuiz: QuizContent[] = [
       en: {
         text: "Pizza Margherita has tomato, mozzarella and which herb?",
         options: ["Oregano", "Rosemary", "Basil", "Thyme"],
+      },
+    },
+  },
+  {
+    id: "aw-ferran",
+    correct: 2,
+    texts: {
+      sv: {
+        text: "Vem gjorde det enda målet i VM-finalen 2026 mellan Spanien och Argentina?",
+        options: [
+          "Lamine Yamal",
+          "Mikel Oyarzabal",
+          "Ferran Torres",
+          "Dani Olmo",
+        ],
+      },
+      en: {
+        text: "Who scored the only goal in the 2026 World Cup final between Spain and Argentina?",
+        options: [
+          "Lamine Yamal",
+          "Mikel Oyarzabal",
+          "Ferran Torres",
+          "Dani Olmo",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-gabriel",
+    correct: 2,
+    texts: {
+      sv: {
+        text: "PSG slog Arsenal på straffar i Champions League-finalen 2026 i Budapest. Vilken Arsenalspelare missade den avgörande sista straffen?",
+        options: [
+          "Bukayo Saka",
+          "Declan Rice",
+          "Gabriel Magalhães",
+          "Martin Ødegaard",
+        ],
+      },
+      en: {
+        text: "PSG beat Arsenal on penalties in the 2026 Champions League final in Budapest. Which Arsenal player missed the decisive last penalty?",
+        options: [
+          "Bukayo Saka",
+          "Declan Rice",
+          "Gabriel Magalhães",
+          "Martin Ødegaard",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-owen",
+    correct: 3,
+    texts: {
+      sv: {
+        text: "Harry Kane vann Ballon d'Or 2026. Vem var den senaste engelsmannen som vunnit priset före honom?",
+        options: [
+          "Kevin Keegan",
+          "David Beckham",
+          "Bobby Charlton",
+          "Michael Owen",
+        ],
+      },
+      en: {
+        text: "Harry Kane won the 2026 Ballon d'Or. Who was the last Englishman to win the award before him?",
+        options: [
+          "Kevin Keegan",
+          "David Beckham",
+          "Bobby Charlton",
+          "Michael Owen",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-bronze26",
+    correct: 2,
+    texts: {
+      sv: {
+        text: "Hur slutade bronsmatchen i VM 2026 mellan England och Frankrike?",
+        options: ["3–2", "2–2, England vann på straffar", "6–4", "5–3"],
+      },
+      en: {
+        text: "How did the 2026 World Cup third-place match between England and France end?",
+        options: ["3–2", "2–2, England won on penalties", "6–4", "5–3"],
+      },
+    },
+  },
+  {
+    id: "aw-arsenal",
+    correct: 2,
+    texts: {
+      sv: {
+        text: "Arsenal vann Premier League 2025/26. Hur många år hade de väntat på ligatiteln?",
+        options: ["19", "20", "22", "25"],
+      },
+      en: {
+        text: "Arsenal won the 2025/26 Premier League. How many years had they waited for the league title?",
+        options: ["19", "20", "22", "25"],
+      },
+    },
+  },
+  {
+    id: "aw-wc1950",
+    correct: 3,
+    texts: {
+      sv: {
+        text: "VM 1950 hade ingen riktig final utan avgjordes i en slutgrupp. Vem vann turneringen?",
+        options: ["Brasilien", "Sverige", "Italien", "Uruguay"],
+      },
+      en: {
+        text: "The 1950 World Cup had no real final and was decided in a final group. Who won the tournament?",
+        options: ["Brazil", "Sweden", "Italy", "Uruguay"],
+      },
+    },
+  },
+  {
+    id: "aw-wc1958",
+    correct: 3,
+    texts: {
+      sv: {
+        text: "Sverige förlorade VM-finalen 1958 mot Brasilien med 2–5. Vilken svensk spelare gjorde finalens första mål?",
+        options: [
+          "Gunnar Gren",
+          "Kurt Hamrin",
+          "Gunnar Nordahl",
+          "Nils Liedholm",
+        ],
+      },
+      en: {
+        text: "Sweden lost the 1958 World Cup final to Brazil 2–5. Which Swedish player scored the first goal of the final?",
+        options: [
+          "Gunnar Gren",
+          "Kurt Hamrin",
+          "Gunnar Nordahl",
+          "Nils Liedholm",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-two-finals",
+    correct: 3,
+    texts: {
+      sv: {
+        text: "Vem var den förste spelaren att göra mål i två olika VM-finaler?",
+        options: ["Pelé", "Zinedine Zidane", "Paul Breitner", "Vavá"],
+      },
+      en: {
+        text: "Who was the first player to score in two different World Cup finals?",
+        options: ["Pelé", "Zinedine Zidane", "Paul Breitner", "Vavá"],
+      },
+    },
+  },
+  {
+    id: "aw-euro92",
+    correct: 1,
+    texts: {
+      sv: {
+        text: "Danmark vann EM 1992 utan att ha kvalat in på planen. Vilket lands plats tog de?",
+        options: [
+          "Sovjetunionen",
+          "Jugoslavien",
+          "Tjeckoslovakien",
+          "Rumänien",
+        ],
+      },
+      en: {
+        text: "Denmark won Euro 1992 without having qualified on the pitch. Whose place did they take?",
+        options: [
+          "The Soviet Union",
+          "Yugoslavia",
+          "Czechoslovakia",
+          "Romania",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-istanbul",
+    correct: 0,
+    texts: {
+      sv: {
+        text: "Liverpool låg under med 0–3 mot Milan i halvtid i Champions League-finalen 2005 i Istanbul. Vem startade vändningen med Liverpools första mål?",
+        options: [
+          "Steven Gerrard",
+          "Vladimír Šmicer",
+          "Xabi Alonso",
+          "Milan Baroš",
+        ],
+      },
+      en: {
+        text: "Liverpool were 0–3 down to Milan at half-time in the 2005 Champions League final in Istanbul. Who started the comeback with Liverpool's first goal?",
+        options: [
+          "Steven Gerrard",
+          "Vladimír Šmicer",
+          "Xabi Alonso",
+          "Milan Baroš",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-ballon26",
+    correct: 0,
+    texts: {
+      sv: {
+        text: "Vem vann Guldbollen som bäste spelare i VM 2026?",
+        options: ["Lionel Messi", "Lamine Yamal", "Rodri", "Pedri"],
+      },
+      en: {
+        text: "Who won the Golden Ball as the best player at the 2026 World Cup?",
+        options: ["Lionel Messi", "Lamine Yamal", "Rodri", "Pedri"],
+      },
+    },
+  },
+  {
+    id: "aw-golden-boot",
+    correct: 0,
+    texts: {
+      sv: {
+        text: "Mbappé vann skytteligan i VM 2026 med 10 mål. Det var flest mål i ett och samma VM sedan vilken spelare?",
+        options: ["Gerd Müller", "Just Fontaine", "Eusébio", "Ronaldo"],
+      },
+      en: {
+        text: "Mbappé won the 2026 World Cup top scorer award with 10 goals. That was the most goals in a single World Cup since which player?",
+        options: ["Gerd Müller", "Just Fontaine", "Eusébio", "Ronaldo"],
+      },
+    },
+  },
+  {
+    id: "aw-assists",
+    correct: 0,
+    texts: {
+      sv: {
+        text: "Bruno Fernandes satte nytt Premier League-rekord med 21 assist säsongen 2025/26. Vilka två spelare delade det gamla rekordet på 20?",
+        options: [
+          "Thierry Henry och Kevin De Bruyne",
+          "Mesut Özil och Cesc Fàbregas",
+          "Frank Lampard och Mohamed Salah",
+          "Ryan Giggs och David Beckham",
+        ],
+      },
+      en: {
+        text: "Bruno Fernandes set a new Premier League record with 21 assists in 2025/26. Which two players shared the old record of 20?",
+        options: [
+          "Thierry Henry and Kevin De Bruyne",
+          "Mesut Özil and Cesc Fàbregas",
+          "Frank Lampard and Mohamed Salah",
+          "Ryan Giggs and David Beckham",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-spain-conceded",
+    correct: 1,
+    texts: {
+      sv: {
+        text: "Hur många mål släppte Spanien in under hela VM 2026?",
+        options: ["0", "1", "3", "5"],
+      },
+      en: {
+        text: "How many goals did Spain concede during the whole 2026 World Cup?",
+        options: ["0", "1", "3", "5"],
+      },
+    },
+  },
+  {
+    id: "aw-martinez",
+    correct: 2,
+    texts: {
+      sv: {
+        text: "Emiliano Martínez satte rekord i VM-finalen mot Spanien. Hur många räddningar gjorde han?",
+        options: ["8", "9", "11", "12"],
+      },
+      en: {
+        text: "Emiliano Martínez set a record in the World Cup final against Spain. How many saves did he make?",
+        options: ["8", "9", "11", "12"],
+      },
+    },
+  },
+  {
+    id: "aw-cl1999",
+    correct: 1,
+    texts: {
+      sv: {
+        text: "Vem kvitterade för Manchester United på tilläggstid i Champions League-finalen 1999 mot Bayern München?",
+        options: [
+          "Ole Gunnar Solskjær",
+          "Teddy Sheringham",
+          "Dwight Yorke",
+          "Andy Cole",
+        ],
+      },
+      en: {
+        text: "Who equalised for Manchester United in stoppage time in the 1999 Champions League final against Bayern Munich?",
+        options: [
+          "Ole Gunnar Solskjær",
+          "Teddy Sheringham",
+          "Dwight Yorke",
+          "Andy Cole",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-duckadam",
+    correct: 0,
+    texts: {
+      sv: {
+        text: "Vilken målvakt räddade alla fyra straffar han mötte i straffläggningen i Europacupfinalen 1986?",
+        options: [
+          "Helmuth Duckadam",
+          "Rinat Dasajev",
+          "Jean-Marie Pfaff",
+          "Andoni Zubizarreta",
+        ],
+      },
+      en: {
+        text: "Which goalkeeper saved all four penalties he faced in the 1986 European Cup final shoot-out?",
+        options: [
+          "Helmuth Duckadam",
+          "Rinat Dasajev",
+          "Jean-Marie Pfaff",
+          "Andoni Zubizarreta",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-ifk1982",
+    correct: 0,
+    texts: {
+      sv: {
+        text: "IFK Göteborg vann UEFA-cupen 1982. Vem var tränare?",
+        options: [
+          "Sven-Göran Eriksson",
+          "Lars Lagerbäck",
+          "Tommy Svensson",
+          "Roy Hodgson",
+        ],
+      },
+      en: {
+        text: "IFK Göteborg won the 1982 UEFA Cup. Who was the coach?",
+        options: [
+          "Sven-Göran Eriksson",
+          "Lars Lagerbäck",
+          "Tommy Svensson",
+          "Roy Hodgson",
+        ],
+      },
+    },
+  },
+  {
+    id: "aw-wc1994",
+    correct: 1,
+    texts: {
+      sv: {
+        text: "Sverige tog brons i VM 1994. Vilket lag slog de i bronsmatchen?",
+        options: ["Rumänien", "Bulgarien", "Italien", "Brasilien"],
+      },
+      en: {
+        text: "Sweden took bronze at the 1994 World Cup. Which team did they beat in the third-place match?",
+        options: ["Romania", "Bulgaria", "Italy", "Brazil"],
       },
     },
   },
