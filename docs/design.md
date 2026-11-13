@@ -16,7 +16,7 @@ A theme is set with `data-theme` on `<html>` or a wrapper. Niche configs in `src
 
 | Theme | id | Look | Used by |
 | --- | --- | --- | --- |
-| Lounge | `lounge` | Charcoal ground, cream cards, brass accents, a greige TV mat, a green join card. Default, also before an event is read (`index.html` and `:root`). | Every niche; Bachelor has blush (rose) leading |
+| Lounge | `lounge` | Charcoal ground, cream cards, brass accents, a green join card. Default, also before an event is read (`index.html` and `:root`). | Every niche; Bachelor has blush (rose) leading |
 | Garden party | `garden` | Forest ground, champagne and cream cards, near-black hard shadows. The look before November 2026. | None now |
 | One loud color | `loud` | Deeper forest, champagne outlines, dark cards, coral only in shadows and stickers. | None now |
 | Champagne day | `day` | Champagne ground, forest TV cards. | Host's "bright room" switch (`events.bright_room`), on the TV and guest phones |
@@ -35,7 +35,6 @@ The token names are kept from Kalas so components keep their roles. In `lounge` 
 - **Sage** is success: answer D, correct, joined, saved.
 - **Forest** is the deep block: the TV join card, the host bar.
 - **Stage** (`stage`, text `on-stage`) is the panel an activity shows on the TV.
-- **Frame** is the mat round the TV picture (decoration only, no text on it).
 - **Award** (`award`, text `on-award` and `on-award-muted`, dots `award-glow`) is the wine-red diploma for award winners and host-entered winners.
 - `danger` is only for wrong answers and destructive actions, always with a word or icon.
 - Each bright has a `-soft` tint for panels, a `-text` version for colored text and a `-soft-fill` for an answer that steps back: when another answer was chosen, or an option that wasn't right on a reveal. Never fade an answer with opacity; it turns the colours muddy.
@@ -89,7 +88,7 @@ Do not use: blue-purple gradients, emoji cards, cards with a colored left border
 
 ## The TV party screen
 
-- The whole TV sits inside a mat (`TvFrame`, `bg-frame`), like a framed poster or a Frame TV showing art. The language switcher sits inside the mat's corner.
+- The TV fills the screen edge to edge on `surface` (`TvSurface`), with no mat or frame round it. The language switcher sits in the top right corner, level with the logo.
 - Inside: the logo over a thin brass line; the welcome on the left (shorter text is bigger, `welcome-size.ts`); the join card on the right; who is here as name chips along the bottom (the latest ten, then "+N till").
 - Only one part rotates, under the welcome: menu, schedule, winners, wifi or music, every 30 seconds. The welcome, the join card and the guests never move.
 - A running activity takes the left side; the join card and the guests stay.

@@ -36,8 +36,8 @@ export function TvLayout() {
       data-layout="tv"
       className="relative min-h-svh p-(--space-6) font-body text-2xl"
     >
-      {/* Inside the party screen's frame, so it sits on the surface, not the mat. */}
-      <header className="absolute top-[calc(var(--space-7)+var(--space-6))] right-[calc(var(--space-7)+var(--space-7))] z-10">
+      {/* In the corner, level with the party screen's logo row. */}
+      <header className="absolute top-(--space-6) right-(--space-7) z-10">
         <LanguageSwitcher />
       </header>
       <main className="space-y-4">

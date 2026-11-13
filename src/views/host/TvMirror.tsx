@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { mirrorScale, TV_HEIGHT, TV_WIDTH } from "@/lib/host/tv-mirror";
 import { TvScreen } from "@/views/tv/TvScreen";
 
-/** The frame is sized to the box, so it must not bleed past it or fill the viewport. */
+/** The TV picture is sized to the box, so it must not bleed past it or fill the viewport. */
 const boxStyle = {
   width: TV_WIDTH,
   height: TV_HEIGHT,
@@ -49,7 +49,7 @@ export function TvMirror({ event, members }: TvMirrorProps) {
     <div
       ref={ref}
       data-testid="tv-mirror"
-      className="relative aspect-video w-full overflow-hidden border-[length:var(--border-thin)] border-edge bg-frame"
+      className="relative aspect-video w-full overflow-hidden border-[length:var(--border-thin)] border-edge bg-surface"
     >
       <CatchBoundary
         onError={() =>
