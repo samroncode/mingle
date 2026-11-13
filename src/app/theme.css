@@ -78,7 +78,6 @@
   --focus-on-paper: #1f1d1c;
   --disabled: #3a3633;
   --on-disabled: #cfc6ba;
-  --frame: #d8d1c6;
   --stage: #262321;
   --on-stage: #f2ece2;
   --award: #5a2433;
@@ -127,7 +126,6 @@
   --focus-on-paper: #1f4d3a;
   --disabled: #2f5242;
   --on-disabled: #c9d6c6;
-  --frame: #0a1d15;
   --stage: #1f4d3a;
   --on-stage: #f6efdc;
   --award: #5a2433;
@@ -176,7 +174,6 @@
   --focus-on-paper: #e6c27a;
   --disabled: #264a3c;
   --on-disabled: #c4cfc2;
-  --frame: #08150f;
   --stage: #1b4536;
   --on-stage: #f1ead8;
   --award: #5a2433;
@@ -225,7 +222,6 @@
   --focus-on-paper: #11301f;
   --disabled: #d8c68f;
   --on-disabled: #2f4337;
-  --frame: #e6d6aa;
   --stage: #11301f;
   --on-stage: #f6efdc;
   --award: #5a2433;
@@ -325,7 +321,6 @@
   --color-disabled: var(--disabled);
   --color-on-disabled: var(--on-disabled);
   --color-on-forest: var(--on-forest);
-  --color-frame: var(--frame);
   --color-stage: var(--stage);
   --color-on-stage: var(--on-stage);
   --color-award: var(--award);

@@ -7,7 +7,7 @@ import { GuestStrip } from "./GuestStrip";
 import { GuestWelcome } from "./GuestWelcome";
 import { JoinPanel } from "./JoinPanel";
 import { PartRotation } from "./PartRotation";
-import { TvFrame } from "./TvFrame";
+import { TvSurface } from "./TvSurface";
 import { WinnerCongrats } from "./WinnerCongrats";
 import { readParty } from "@/lib/party";
 
@@ -19,14 +19,14 @@ interface PartyScreenProps {
 }
 
 /**
- * The TV, framed: the logo on top, the left side (welcome and one rotating
+ * The TV: the logo on top, the left side (welcome and one rotating
  * part, or a running activity), the join card, and who is here along the bottom.
  */
 export function PartyScreen({ event, members, left }: PartyScreenProps) {
   const party = readParty(event.party);
   return (
     <FunZone level="playful">
-      <TvFrame>
+      <TvSurface>
         <header className="border-b border-champagne pb-(--space-3)">
           <Logo className="text-5xl" />
         </header>
@@ -41,7 +41,7 @@ export function PartyScreen({ event, members, left }: PartyScreenProps) {
           <JoinPanel code={event.code} guestCount={countGuests(members)} />
         </div>
         <GuestStrip members={members} />
-      </TvFrame>
+      </TvSurface>
     </FunZone>
   );
 }
